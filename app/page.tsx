@@ -1,9 +1,7 @@
 import Image from "next/image";
 import { ServicesGrid } from "./components/ServicesGrid";
 import { StorageForm } from "./components/StorageServiceFlow";
-import { OrderSummary } from "./components/OrderSummary";
 import { OrderSummaryLive } from "./order-summary/OrderSummaryLive";
-
 
 function JsonLd() {
     // Update phone/address/service area as needed
