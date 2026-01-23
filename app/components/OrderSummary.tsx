@@ -65,7 +65,7 @@ export function OrderSummary({
 
     return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
-            <h2 className="text-xl font-medium text-slate-900">{title}</h2>
+            <h2 className="text-xl font-medium text-slate-900 text-center">{title}</h2>
 
             {/* Totals */}
             <div className="space-y-3">

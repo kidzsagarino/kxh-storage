@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCheckout, type StorageItemId, type TimeSlotId } from "../components/checkout/CheckoutStore";
+import { DatePicker } from "./DatePicker";
 
 const storageItems: { id: StorageItemId; name: string; desc: string }[] = [
     { id: "small-box", name: "Small Box", desc: "45 × 30 × 30 cm" },
@@ -107,8 +108,7 @@ export function StorageForm() {
                                         <button
                                             type="button"
                                             onClick={() => inc(item.id)}
-                                            className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white
-                                 text-slate-800 hover:bg-slate-50"
+                                            className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
                                             aria-label={`Increase ${item.name}`}
                                         >
                                             +
@@ -130,12 +130,16 @@ export function StorageForm() {
             {/* Collection date */}
             <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Collection Date</label>
-                    <input
+                    <span className="block text-sm font-medium text-slate-700 mb-1">Collection Date</span>
+                    {/* <input
                         type="date"
                         value={state.collectionDate}
                         onChange={(e) => setState((s) => ({ ...s, collectionDate: e.target.value }))}
-                        className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-800 focus:ring-2 focus:ring-[#4CAF50]/30 outline-none"
+                    /> */}
+                    <DatePicker
+                        value={state.collectionDate}
+                        onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
                     />
                 </div>
 
@@ -144,9 +148,9 @@ export function StorageForm() {
                     <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {[
-                            { id: "morning", label: "Morning", desc: "8am – 12pm" },
-                            { id: "afternoon", label: "Afternoon", desc: "12pm – 4pm" },
-                            { id: "evening", label: "Evening", desc: "4pm – 8pm" },
+                            { id: "morning", label: "Morning", desc: "7am – 10am" },
+                            { id: "afternoon", label: "Afternoon", desc: "10am – 3pm" },
+                            { id: "evening", label: "Evening", desc: "3pm – 6pm" },
                         ].map((slot) => (
                             <label
                                 key={slot.id}

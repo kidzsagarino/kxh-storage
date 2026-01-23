@@ -68,7 +68,7 @@ export function OrderSummaryLive() {
     return (
         <div className="md:sticky md:top-24 h-fit">
             <OrderSummary
-                title="Your Order"
+                title="Order Summary"
                 storagePerMonth={storagePerMonth}
                 discount={discount}
                 totalDueNow={totalDueNow}

@@ -29,7 +29,7 @@ export function ServicesGrid() {
       {services.map((s) => (
         <div
           key={s.key}
-          className="group rounded-1xl border border-slate-200 bg-white p-6 shadow-sm transition"
+          className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition"
         >
           {/* Icon */}
           <div className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl
