@@ -11,7 +11,7 @@ export type StorageItemId =
   | "half-container"
   | "full-container";
 
-export type TimeSlotId = "morning" | "afternoon" | "evening";
+export type TimeSlotId = "morning" | "afternoon" | "evening" | "";
 
 export type CheckoutState = {
   durationMonth: number;
@@ -22,10 +22,11 @@ export type CheckoutState = {
   postalCode: string;
   streetAddress: string;
   phoneNumber: string;
+  enableButton: boolean;
 };
 
 const emptyState: CheckoutState = {
-  durationMonth: 3,
+  durationMonth: 0,
   quantities: {
     "small-box": 0,
     "medium-box": 0,
@@ -36,10 +37,11 @@ const emptyState: CheckoutState = {
     "full-container": 0,
   },
   collectionDate: "",
-  timeSlot: "morning",
+  timeSlot: "",
   postalCode: "",
   streetAddress: "",
   phoneNumber: "",
+  enableButton: false,
 };
 
 type CheckoutContextValue = {

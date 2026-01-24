@@ -45,7 +45,7 @@ export function OrderSummaryLive() {
         const storagePerMonth = +items.reduce((sum, it) => sum + it.price, 0).toFixed(2);
 
         // duration discount
-        const months = state.durationMonth ?? 3;
+        const months = state.durationMonth == 0 ? 1 : state.durationMonth;
 
         const discountRate =
             months === 3 ? 0.05 :
@@ -62,6 +62,7 @@ export function OrderSummaryLive() {
         const totalDueNow = +(storagePerMonth - discount).toFixed(2);
 
         return { items, storagePerMonth, discount, totalDueNow, discountRate };
+
     }, [state.quantities, state.durationMonth]);
 
 
@@ -73,7 +74,7 @@ export function OrderSummaryLive() {
                 discount={discount}
                 totalDueNow={totalDueNow}
                 items={items}
-                ctaLabel="Continue"
+                ctaLabel="Proceed to Payment"
                 ctaHref="/order-summary" // or "/checkout" later
                 note={
                     totalItems === 0
@@ -81,6 +82,7 @@ export function OrderSummaryLive() {
                         : `Collection: ${state.collectionDate || "—"} • Slot: ${state.timeSlot}`
                 }
                 durationMonth={state.durationMonth}
+                enableButton={state.enableButton}
             />
         </div>
     );

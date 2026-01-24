@@ -18,6 +18,7 @@ export type OrderSummaryProps = {
     onCtaClick?: () => void;        // optional: for client-side actions
     ctaHref?: string;               // optional: for link navigation
     durationMonth: number;
+    enableButton?: boolean;
 };
 
 function money(n: number, currencySymbol: string) {
@@ -37,26 +38,28 @@ export function OrderSummary({
     onCtaClick,
     ctaHref,
     durationMonth,
+    enableButton = false,
 }: OrderSummaryProps) {
     const discountDisplay = discount > 0 ? `−${money(discount, currencySymbol)}` : money(0, currencySymbol);
 
-    const Cta = () => {
-        if (ctaHref) {
-            return (
-                <a
-                    href={ctaHref}
-                    className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition inline-flex items-center justify-center"
-                >
-                    {ctaLabel}
-                </a>
-            );
-        }
+    const Cta = ({enableButton = true}) => {
+        // if (ctaHref) {
+        //     return (
+        //         <a
+        //             href={ctaHref}
+        //             className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition inline-flex items-center justify-center"
+        //         >
+        //             {ctaLabel}
+        //         </a>
+        //     );
+        // }
 
         return (
             <button
                 type="button"
+                disabled={!enableButton}
                 onClick={onCtaClick}
-                className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition"
+                className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center"
             >
                 {ctaLabel}
             </button>
@@ -115,7 +118,7 @@ export function OrderSummary({
             <p className="text-xs text-slate-500">{note}</p>
 
             {/* CTA */}
-            <Cta />
+            <Cta enableButton={enableButton} />
         </section>
     );
 }
