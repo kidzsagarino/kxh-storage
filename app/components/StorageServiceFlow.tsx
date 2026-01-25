@@ -41,7 +41,7 @@ function Stepper({
     allCompleted?: boolean;
 }) {
     return (
-        <ol className="grid grid-cols-5 gap-2">
+        <ol className="grid grid-cols-2 gap-2 sm:grid-cols-5">
             {steps.map((s, idx) => {
                 const isActive = s.id === current;
                 const isCompleted = s.id < maxAllowed || allCompleted;
@@ -55,29 +55,26 @@ function Stepper({
                             onClick={() => !isLocked && onGo(s.id)}
                             disabled={!isEnabled}
                             className={`w-full rounded-xl border px-3 py-2 text-left transition
-                                ${isActive ? "border-[#4CAF50] bg-[#4CAF50]/10" : "border-slate-200 bg-white hover:border-slate-300"}
-                                ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
+            ${isActive ? "border-[#4CAF50] bg-[#4CAF50]/10" : "border-slate-200 bg-white hover:border-slate-300"}
+            ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
                         >
                             <div className="flex items-center gap-2">
                                 <div
                                     className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
-                                        ${
-                                            isActive && isCompleted
-                                                ? "border-[#4CAF50] bg-[#4CAF50] text-white ring-2"
-                                                : isActive
+                ${isActive && isCompleted
+                                            ? "border-[#4CAF50] bg-[#4CAF50] text-white ring-2 ring-[#4CAF50]/30"
+                                            : isActive
                                                 ? "border-[#4CAF50] bg-[#4CAF50]/10 text-[#2e7d32]"
                                                 : isCompleted
-                                                ? "border-[#4CAF50] bg-[#4CAF50] text-white"
-                                                : "border-slate-200 bg-white text-slate-700"
+                                                    ? "border-[#4CAF50] bg-[#4CAF50] text-white"
+                                                    : "border-slate-200 bg-white text-slate-700"
                                         }`}
                                 >
                                     {idx + 1}
                                 </div>
+
                                 <div className="min-w-0">
-                                    <div
-                                        className={`truncate text-sm font-medium ${isActive ? "text-slate-900" : "text-slate-800"
-                                            }`}
-                                    >
+                                    <div className={`truncate text-sm font-medium ${isActive ? "text-slate-900" : "text-slate-800"}`}>
                                         {s.title}
                                     </div>
                                 </div>
@@ -191,7 +188,7 @@ export function StorageForm() {
     return (
         <form
             onSubmit={onSubmit}
-            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6"
+            className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6"
         >
             {/* Stepper */}
             <div className="space-y-2">
@@ -314,15 +311,17 @@ export function StorageForm() {
 
             {/* Step 3: Schedule */}
             {step === 2 && (
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div>
                     <div>
                         <span className="block text-sm font-medium text-slate-700 mb-1">
                             Collection Date
                         </span>
-                        <DatePicker
-                            value={state.collectionDate}
-                            onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
-                        />
+                       <div>
+                         <DatePicker
+                                value={state.collectionDate}
+                                onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
+                            />
+                       </div>
                     </div>
 
                     <div>
@@ -372,7 +371,6 @@ export function StorageForm() {
             {step === 3 && (
                 <div className="space-y-4">
                     <p className="text-sm font-medium text-slate-700">Customer Details</p>
-
                     <div className="grid gap-4 sm:grid-cols-2">
                         <input
                             value={state.postalCode}
