@@ -3,6 +3,7 @@ import { ServicesGrid } from "./components/ServicesGrid";
 import { StorageForm } from "./components/StorageServiceFlow";
 import { OrderSummaryLive } from "./order-summary/OrderSummaryLive";
 import { MovingForm } from "./components/MovingServiceFlow";
+import { MovingOrderSummaryLive } from "./order-summary/MovingOrderSummaryLive";
 
 function JsonLd() {
     // Update phone/address/service area as needed
@@ -278,8 +279,9 @@ export default function HomePage() {
                     <h2 className="text-2xl font-black tracking-tight">Storage Service Quote</h2>
                     <div className="mt-6 grid gap-2 md:grid-cols-[auto_300px]">
                         <div><MovingForm /></div>
+                        <div><MovingOrderSummaryLive /></div>
                         {/* <div><StorageForm /></div> */}
-                        <div><OrderSummaryLive /></div>
+                        {/* <div><OrderSummaryLive /></div> */}
                     </div>
                     
                     {/* <div className="mt-8 grid gap-4 md:grid-cols-3">

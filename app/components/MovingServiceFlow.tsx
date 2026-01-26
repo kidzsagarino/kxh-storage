@@ -131,6 +131,8 @@ function FooterNav({
 export function MovingForm() {
   const router = useRouter();
   const [step, setStep] = useState<StepId>(0);
+
+  // Now it's safe to use the moving hook (serviceType is definitely moving)
   const { state, setState, setMoving } = useMovingCheckout();
 
   const moving = state.moving;

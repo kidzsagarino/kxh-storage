@@ -1,9 +1,10 @@
 import React from "react";
 
 export type OrderItem = {
-    label: string;      // e.g. "Medium Box"
-    qty: number;        // e.g. 1
-    price: number;      // e.g. 8.00  (per month or per unit depending on your model)
+    label: string;
+    qty?: number;        // storage uses this (e.g. 2)
+    subLabel?: string;   // moving uses this (e.g. "4 Bed Flat", "1 Miles")
+    price: number;
 };
 
 export type OrderSummaryProps = {
@@ -42,7 +43,7 @@ export function OrderSummary({
 }: OrderSummaryProps) {
     const discountDisplay = discount > 0 ? `−${money(discount, currencySymbol)}` : money(0, currencySymbol);
 
-    const Cta = ({enableButton = true}) => {
+    const Cta = ({ enableButton = true }) => {
         // if (ctaHref) {
         //     return (
         //         <a
@@ -99,20 +100,41 @@ export function OrderSummary({
             </div>
 
             {/* Items */}
-            <div className="rounded-xl bg-slate-50 p-4 space-y-2">
+            <div className="rounded-xl bg-slate-50 p-4 space-y-3">
                 {items.length === 0 ? (
                     <div className="text-sm text-slate-600">No items added yet.</div>
                 ) : (
-                    items.map((it, idx) => (
-                        <div key={`${it.label}-${idx}`} className="flex items-center justify-between text-sm">
-                            <span className="text-slate-700">
-                                {it.qty} × {it.label}
-                            </span>
-                            <span className="text-slate-900">{money(it.price, currencySymbol)}</span>
-                        </div>
-                    ))
+                    items.map((it, idx) => {
+                        const isMovingItem = Boolean(it.subLabel);
+
+                        return (
+                            <div key={`${it.label}-${it.subLabel ?? idx}`}>
+                                {isMovingItem ? (
+                                    /* MOVING STYLE (2 lines) */
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between text-sm font-medium text-slate-900">
+                                            <span>{it.label}</span>
+                                            <span>{money(it.price, currencySymbol)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm text-slate-600">
+                                            <span>{it.subLabel}</span>
+                                            <span>{money(it.price, currencySymbol)}</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    /* STORAGE STYLE (single line only) */
+                                    <div className="flex justify-between text-sm text-slate-700">
+                                        <span>{it.qty} × {it.label}</span>
+                                        <span className="text-slate-900">{money(it.price, currencySymbol)}</span>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })
                 )}
             </div>
+
+
 
             {/* Note */}
             <p className="text-xs text-slate-500">{note}</p>

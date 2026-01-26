@@ -36,37 +36,32 @@ export type LocationDetails = {
   houseNumber: string;
 };
 
-// --------------------
-// Service payloads
-// --------------------
-export type StoragePayload = {
-  durationMonth: 0 | 3 | 6 | 12;
-  quantities: Record<StorageItemId, number>;
-};
-
-export type MovingPayload = {
-  movingItemId: MovingItemId | "";
-  movingPackageId: MovingPackageId | "";
-  fromLocation: LocationDetails;
-  toLocation: LocationDetails;
-};
-
-// --------------------
-// Common + Union
-// --------------------
-export type CommonCheckout = {
+export type CheckoutState = {
   serviceType: ServiceType;
+
+  // shared fields
   collectionDate: string; // YYYY-MM-DD
   timeSlot: TimeSlotId;
   customerDetails: CustomerDetails;
   enableButton: boolean;
+
+  // storage payload
+  storage: {
+    durationMonth: 0 | 3 | 6 | 12;
+    quantities: Record<StorageItemId, number>;
+  };
+
+  // moving payload
+  moving: {
+    movingItemId: MovingItemId | "";
+    movingPackageId: MovingPackageId | "";
+    fromLocation: LocationDetails;
+    toLocation: LocationDetails;
+  };
 };
 
-export type CheckoutState =
-  | (CommonCheckout & { serviceType: "storage"; storage: StoragePayload })
-  | (CommonCheckout & { serviceType: "moving"; moving: MovingPayload });
-
-const emptyCommon: Omit<CommonCheckout, "serviceType"> = {
+const EMPTY: CheckoutState = {
+  serviceType: "storage",
   collectionDate: "",
   timeSlot: "",
   customerDetails: {
@@ -77,11 +72,7 @@ const emptyCommon: Omit<CommonCheckout, "serviceType"> = {
     postalCode: "",
   },
   enableButton: false,
-};
 
-const emptyStorageState: CheckoutState = {
-  serviceType: "storage",
-  ...emptyCommon,
   storage: {
     durationMonth: 0,
     quantities: {
@@ -94,11 +85,7 @@ const emptyStorageState: CheckoutState = {
       "full-container": 0,
     },
   },
-};
 
-const emptyMovingState: CheckoutState = {
-  serviceType: "moving",
-  ...emptyCommon,
   moving: {
     movingItemId: "",
     movingPackageId: "",
@@ -112,35 +99,41 @@ type CheckoutContextValue = {
   setState: React.Dispatch<React.SetStateAction<CheckoutState>>;
   reset: () => void;
   setServiceType: (t: ServiceType) => void;
+
+  // helpers (optional but nice)
+  setStorage: (updater: (s: CheckoutState["storage"]) => CheckoutState["storage"]) => void;
+  setMoving: (updater: (m: CheckoutState["moving"]) => CheckoutState["moving"]) => void;
 };
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 
 export function CheckoutProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<CheckoutState>(emptyStorageState);
+  const [state, setState] = useState<CheckoutState>(EMPTY);
 
-  const value = useMemo(
-    () => ({
+  const value = useMemo<CheckoutContextValue>(() => {
+    return {
       state,
       setState,
-      reset: () => setState(emptyStorageState),
-      setServiceType: (t: ServiceType) =>
-        setState((prev) => {
-          // keep common fields when switching (optional but nice UX)
-          const common = {
-            collectionDate: prev.collectionDate,
-            timeSlot: prev.timeSlot,
-            customerDetails: prev.customerDetails,
-            enableButton: prev.enableButton,
-          };
+      reset: () => setState(EMPTY),
 
-          return t === "storage"
-            ? { ...emptyStorageState, ...common }
-            : { ...emptyMovingState, ...common };
-        }),
-    }),
-    [state]
-  );
+      // ✅ THIS MUST ACTUALLY UPDATE serviceType
+      setServiceType: (t) => setState((s) => ({ ...s, serviceType: t })),
+
+      setStorage: (updater) =>
+        setState((s) => ({
+          ...s,
+          serviceType: "storage",
+          storage: updater(s.storage),
+        })),
+
+      setMoving: (updater) =>
+        setState((s) => ({
+          ...s,
+          serviceType: "moving",
+          moving: updater(s.moving),
+        })),
+    };
+  }, [state]);
 
   return <CheckoutContext.Provider value={value}>{children}</CheckoutContext.Provider>;
 }
@@ -151,31 +144,13 @@ export function useCheckout() {
   return ctx;
 }
 
-// Strong typed helpers
+// Optional “scoped” hooks that DO NOT THROW
 export function useStorageCheckout() {
-  const { state, setState, ...rest } = useCheckout();
-  if (state.serviceType !== "storage") throw new Error("Storage hook used in non-storage state");
-
-  const setStorage = (updater: (s: StoragePayload) => StoragePayload) => {
-    setState((prev) => {
-      if (prev.serviceType !== "storage") return prev;
-      return { ...prev, storage: updater(prev.storage) };
-    });
-  };
-
-  return { ...rest, state, setState, setStorage };
+  const ctx = useCheckout();
+  return { ...ctx, storage: ctx.state.storage };
 }
 
 export function useMovingCheckout() {
-  const { state, setState, ...rest } = useCheckout();
-  if (state.serviceType !== "moving") throw new Error("Moving hook used in non-moving state");
-
-  const setMoving = (updater: (m: MovingPayload) => MovingPayload) => {
-    setState((prev) => {
-      if (prev.serviceType !== "moving") return prev;
-      return { ...prev, moving: updater(prev.moving) };
-    });
-  };
-
-  return { ...rest, state, setState, setMoving };
+  const ctx = useCheckout();
+  return { ...ctx, moving: ctx.state.moving };
 }
