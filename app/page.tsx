@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ServicesGrid } from "./components/ServicesGrid";
 import { StorageForm } from "./components/StorageServiceFlow";
 import { OrderSummaryLive } from "./order-summary/OrderSummaryLive";
+import { MovingForm } from "./components/MovingServiceFlow";
 
 function JsonLd() {
     // Update phone/address/service area as needed
@@ -223,8 +224,8 @@ export default function HomePage() {
 
                     {/* Hero Image */}
                     <div className="relative">
-                        <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-b from-emerald-50 to-transparent" />
-                        <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
+                        <div className="absolute -inset-6 -z-10 rounded-[1rem] bg-gradient-to-b from-emerald-50 to-transparent" />
+                        <div className="relative overflow-hidden rounded-[1rem] border border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
                             {/* Replace /hero.jpg with your own unique hero image */}
                             <Image
                                 src="/hero.png"
@@ -276,7 +277,8 @@ export default function HomePage() {
                 <div className="mx-auto max-w-6xl px-4 py-12">
                     <h2 className="text-2xl font-black tracking-tight">Storage Service Quote</h2>
                     <div className="mt-6 grid gap-2 md:grid-cols-[auto_300px]">
-                        <div><StorageForm /></div>
+                        <div><MovingForm /></div>
+                        {/* <div><StorageForm /></div> */}
                         <div><OrderSummaryLive /></div>
                     </div>
                     
