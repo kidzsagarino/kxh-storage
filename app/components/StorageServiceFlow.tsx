@@ -133,32 +133,32 @@ function FooterNav({
 
 export function StorageForm() {
   const router = useRouter();
-  const { state, setState, setStorage } = useStorageCheckout();
+  const { state, setState } = useStorageCheckout();
 
   const [step, setStep] = useState<StepId>(0);
 
   const inc = (id: StorageItemId) =>
-    setStorage((st) => ({
+    setState((st) => ({
       ...st,
       quantities: { ...st.quantities, [id]: st.quantities[id] + 1 },
     }));
 
   const dec = (id: StorageItemId) =>
-    setStorage((st) => ({
+    setState((st) => ({
       ...st,
       quantities: { ...st.quantities, [id]: Math.max(0, st.quantities[id] - 1) },
     }));
 
   const totalItems = useMemo(
-    () => Object.values(state.storage.quantities).reduce((a, b) => a + b, 0),
-    [state.storage.quantities]
+    () => Object.values(state.quantities).reduce((a, b) => a + b, 0),
+    [state.quantities]
   );
 
   // Step validation
   const durationOk =
-    state.storage.durationMonth === 3 ||
-    state.storage.durationMonth === 6 ||
-    state.storage.durationMonth === 12;
+    state.durationMonth === 3 ||
+    state.durationMonth === 6 ||
+    state.durationMonth === 12;
 
   const itemsOk = totalItems > 0;
 
@@ -230,7 +230,7 @@ export function StorageForm() {
                 key={m}
                 className={`cursor-pointer rounded-xl border p-3 text-center transition
                 ${
-                  state.storage.durationMonth === m
+                  state.durationMonth === m
                     ? "border-[#4CAF50] bg-[#4CAF50]/10"
                     : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                 }`}
@@ -240,8 +240,8 @@ export function StorageForm() {
                   className="sr-only"
                   name="durationMonths"
                   value={m}
-                  checked={state.storage.durationMonth === m}
-                  onChange={() => setStorage((st) => ({ ...st, durationMonth: m as 3 | 6 | 12 }))}
+                  checked={state.durationMonth === m}
+                  onChange={() => setState((st) => ({ ...st, durationMonth: m as 3 | 6 | 12 }))}
                 />
                 <div className="text-sm font-medium text-slate-900">{m} months</div>
                 <div className="text-xs text-slate-600">
@@ -271,7 +271,7 @@ export function StorageForm() {
 
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {storageItems.map((item) => {
-              const count = state.storage.quantities[item.id];
+              const count = state.quantities[item.id];
 
               return (
                 <div

@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { ServicesGrid } from "./components/ServicesGrid";
 import { StorageForm } from "./components/StorageServiceFlow";
-import { OrderSummaryLive } from "./order-summary/OrderSummaryLive";
 import { MovingForm } from "./components/MovingServiceFlow";
-import { MovingOrderSummaryLive } from "./order-summary/MovingOrderSummaryLive";
+import { MovingOrderSummary } from "./order-summary/MovingOrderSummaryLive";
+import { MobileCheckoutBar } from "./components/MobileCheckoutBar";
+import { StorageOrderSummary } from "./order-summary/OrderSummaryLive";
 
 function JsonLd() {
     // Update phone/address/service area as needed
@@ -53,7 +54,7 @@ const faqs = [
 
 export default function HomePage() {
     return (
-        <main className="min-h-screen bg-white text-slate-900">
+        <main className="min-h-screen bg-white text-slate-900 pb-24 md:pb-0">
             <JsonLd />
 
             {/* Top Bar */}
@@ -279,11 +280,11 @@ export default function HomePage() {
                     <h2 className="text-2xl font-black tracking-tight">Storage Service Quote</h2>
                     <div className="mt-6 grid gap-2 md:grid-cols-[auto_300px]">
                         <div><MovingForm /></div>
-                        <div><MovingOrderSummaryLive /></div>
+                        <div><MovingOrderSummary /></div>
                         {/* <div><StorageForm /></div> */}
-                        {/* <div><OrderSummaryLive /></div> */}
+                        {/* <div><StorageOrderSummary /></div> */}
                     </div>
-                    
+
                     {/* <div className="mt-8 grid gap-4 md:grid-cols-3">
                         {[
                             { t: "Small", p: "£XX / mo", d: "A few boxes, luggage, seasonal items." },
@@ -363,6 +364,10 @@ export default function HomePage() {
                     </div>
                 </div>
             </footer>
+            <div className="pb-24 md:pb-0">
+                {/* your service flow here: StorageForm / MovingForm / etc */}
+                <MobileCheckoutBar />
+            </div>
         </main>
     );
 }

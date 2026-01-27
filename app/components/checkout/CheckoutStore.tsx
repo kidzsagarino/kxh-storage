@@ -36,102 +36,129 @@ export type LocationDetails = {
   houseNumber: string;
 };
 
-export type CheckoutState = {
-  serviceType: ServiceType;
-
-  // shared fields
+export type StorageState = {
+  durationMonth: 0 | 3 | 6 | 12;
+  quantities: Record<StorageItemId, number>;
   collectionDate: string; // YYYY-MM-DD
   timeSlot: TimeSlotId;
   customerDetails: CustomerDetails;
   enableButton: boolean;
-
-  // storage payload
-  storage: {
-    durationMonth: 0 | 3 | 6 | 12;
-    quantities: Record<StorageItemId, number>;
-  };
-
-  // moving payload
-  moving: {
-    movingItemId: MovingItemId | "";
-    movingPackageId: MovingPackageId | "";
-    fromLocation: LocationDetails;
-    toLocation: LocationDetails;
-  };
 };
 
-const EMPTY: CheckoutState = {
-  serviceType: "storage",
+export type MovingState = {
+  movingItemId: MovingItemId | "";
+  movingPackageId: MovingPackageId | "";
+  collectionDate: string; // YYYY-MM-DD
+  timeSlot: TimeSlotId;
+  fromLocation: LocationDetails;
+  toLocation: LocationDetails;
+  customerDetails: CustomerDetails;
+  enableButton: boolean;
+  distanceMiles?: number;
+};
+
+export type CheckoutState = {
+  serviceType: ServiceType;
+  storage: StorageState;
+  moving: MovingState;
+};
+
+/** Helpers */
+const emptyCustomer: CustomerDetails = {
+  name: "",
+  email: "",
+  phone: "",
+  address: "",
+  postalCode: "",
+};
+
+const emptyStorage: StorageState = {
+  durationMonth: 0,
+  quantities: {
+    "small-box": 0,
+    "medium-box": 0,
+    "large-box": 0,
+    "xl-box": 0,
+    suitcase: 0,
+    "half-container": 0,
+    "full-container": 0,
+  },
   collectionDate: "",
   timeSlot: "",
-  customerDetails: {
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    postalCode: "",
-  },
+  customerDetails: { ...emptyCustomer },
   enableButton: false,
+};
 
-  storage: {
-    durationMonth: 0,
-    quantities: {
-      "small-box": 0,
-      "medium-box": 0,
-      "large-box": 0,
-      "xl-box": 0,
-      suitcase: 0,
-      "half-container": 0,
-      "full-container": 0,
-    },
-  },
-
-  moving: {
-    movingItemId: "",
-    movingPackageId: "",
-    fromLocation: { address: "", houseNumber: "" },
-    toLocation: { address: "", houseNumber: "" },
-  },
+const emptyMoving: MovingState = {
+  movingItemId: "",
+  movingPackageId: "",
+  collectionDate: "",
+  timeSlot: "",
+  fromLocation: { address: "", houseNumber: "" },
+  toLocation: { address: "", houseNumber: "" },
+  customerDetails: { ...emptyCustomer },
+  enableButton: false,
+  distanceMiles: 1
 };
 
 type CheckoutContextValue = {
   state: CheckoutState;
   setState: React.Dispatch<React.SetStateAction<CheckoutState>>;
-  reset: () => void;
+
+  // Slice setters (recommended)
   setServiceType: (t: ServiceType) => void;
 
-  // helpers (optional but nice)
-  setStorage: (updater: (s: CheckoutState["storage"]) => CheckoutState["storage"]) => void;
-  setMoving: (updater: (m: CheckoutState["moving"]) => CheckoutState["moving"]) => void;
+  setStorage: React.Dispatch<React.SetStateAction<StorageState>>;
+  resetStorage: () => void;
+
+  setMoving: React.Dispatch<React.SetStateAction<MovingState>>;
+  resetMoving: () => void;
+
+  resetAll: () => void;
 };
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 
 export function CheckoutProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<CheckoutState>(EMPTY);
+  const [state, setState] = useState<CheckoutState>({
+    serviceType: "storage",
+    storage: emptyStorage,
+    moving: emptyMoving,
+  });
 
   const value = useMemo<CheckoutContextValue>(() => {
+    const setServiceType = (t: ServiceType) =>
+      setState((s) => ({ ...s, serviceType: t }));
+
+    const setStorage: React.Dispatch<React.SetStateAction<StorageState>> = (updater) =>
+      setState((s) => ({
+        ...s,
+        storage: typeof updater === "function" ? (updater as any)(s.storage) : updater,
+      }));
+
+    const setMoving: React.Dispatch<React.SetStateAction<MovingState>> = (updater) =>
+      setState((s) => ({
+        ...s,
+        moving: typeof updater === "function" ? (updater as any)(s.moving) : updater,
+      }));
+
     return {
       state,
       setState,
-      reset: () => setState(EMPTY),
+      setServiceType,
 
-      // ✅ THIS MUST ACTUALLY UPDATE serviceType
-      setServiceType: (t) => setState((s) => ({ ...s, serviceType: t })),
+      setStorage,
+      resetStorage: () => setState((s) => ({ ...s, storage: emptyStorage })),
 
-      setStorage: (updater) =>
-        setState((s) => ({
-          ...s,
+      setMoving,
+      resetMoving: () => setState((s) => ({ ...s, moving: emptyMoving })),
+
+      resetAll: () =>
+        setState({
           serviceType: "storage",
-          storage: updater(s.storage),
-        })),
-
-      setMoving: (updater) =>
-        setState((s) => ({
-          ...s,
-          serviceType: "moving",
-          moving: updater(s.moving),
-        })),
+          storage: emptyStorage,
+          moving: emptyMoving,
+        }),
     };
   }, [state]);
 
@@ -144,13 +171,23 @@ export function useCheckout() {
   return ctx;
 }
 
-// Optional “scoped” hooks that DO NOT THROW
+/** ✅ No more throwing. Always available, independent slices. */
 export function useStorageCheckout() {
-  const ctx = useCheckout();
-  return { ...ctx, storage: ctx.state.storage };
+  const { state, setStorage, setServiceType, resetStorage } = useCheckout();
+  return {
+    state: state.storage,
+    setState: setStorage,
+    setServiceType,
+    reset: resetStorage,
+  };
 }
 
 export function useMovingCheckout() {
-  const ctx = useCheckout();
-  return { ...ctx, moving: ctx.state.moving };
+  const { state, setMoving, setServiceType, resetMoving } = useCheckout();
+  return {
+    state: state.moving,
+    setState: setMoving,
+    setServiceType,
+    reset: resetMoving,
+  };
 }

@@ -130,18 +130,16 @@ function FooterNav({
 
 export function MovingForm() {
   const router = useRouter();
+  const { state, setState } = useMovingCheckout();
+
   const [step, setStep] = useState<StepId>(0);
 
-  // Now it's safe to use the moving hook (serviceType is definitely moving)
-  const { state, setState, setMoving } = useMovingCheckout();
+  const originOk = state.fromLocation.address.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
 
-  const moving = state.moving;
-  const originOk = moving.fromLocation.address.trim().length > 0 && moving.fromLocation.houseNumber.trim().length > 0;
+  const destinationOk = state.toLocation.address.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
 
-  const destinationOk = moving.toLocation.address.trim().length > 0 && moving.toLocation.houseNumber.trim().length > 0;
-
-  const itemOk = moving.movingItemId !== "";
-  const packageOk = moving.movingPackageId !== "";
+  const itemOk = state.movingItemId !== "";
+  const packageOk = state.movingPackageId !== "";
   const scheduleOk = !!state.collectionDate && !!state.timeSlot;
 
   const detailsOk =
@@ -205,22 +203,22 @@ export function MovingForm() {
       {step === 0 && (
         <div className="grid gap-3 sm:grid-cols-2">
           <input
-            value={moving.fromLocation.houseNumber}
+            value={state.fromLocation.houseNumber}
             onChange={(e) =>
-              setMoving((m) => ({
-                ...m,
-                fromLocation: { ...m.fromLocation, houseNumber: e.target.value },
+              setState((s) => ({
+                ...s,
+                fromLocation: { ...s.fromLocation, houseNumber: e.target.value },
               }))
             }
             placeholder="From House Number"
             className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
           />
           <input
-            value={moving.fromLocation.address}
+            value={state.fromLocation.address}
             onChange={(e) =>
-              setMoving((m) => ({
-                ...m,
-                fromLocation: { ...m.fromLocation, address: e.target.value },
+              setState((s) => ({
+                ...s,
+                fromLocation: { ...s.fromLocation, address: e.target.value },
               }))
             }
             placeholder="From Address"
@@ -234,22 +232,22 @@ export function MovingForm() {
       {step === 1 && (
         <div className="grid gap-3 sm:grid-cols-2">
           <input
-            value={moving.toLocation.houseNumber}
+            value={state.toLocation.houseNumber}
             onChange={(e) =>
-              setMoving((m) => ({
-                ...m,
-                toLocation: { ...m.toLocation, houseNumber: e.target.value },
+              setState((s) => ({
+                ...s,
+                toLocation: { ...s.toLocation, houseNumber: e.target.value },
               }))
             }
             placeholder="To House Number"
             className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
           />
           <input
-            value={moving.toLocation.address}
+            value={state.toLocation.address}
             onChange={(e) =>
-              setMoving((m) => ({
-                ...m,
-                toLocation: { ...m.toLocation, address: e.target.value },
+              setState((s) => ({
+                ...s,
+                toLocation: { ...s.toLocation, address: e.target.value },
               }))
             }
             placeholder="To Address"
@@ -266,7 +264,7 @@ export function MovingForm() {
             <label
               key={it.id}
               className={`cursor-pointer rounded-xl border p-4 transition ${
-                moving.movingItemId === it.id
+                state.movingItemId === it.id
                   ? "border-[#4CAF50] bg-[#4CAF50]/10"
                   : "border-slate-200 hover:border-slate-300"
               }`}
@@ -276,8 +274,8 @@ export function MovingForm() {
                 type="radio"
                 name="movingItemId"
                 value={it.id}
-                checked={moving.movingItemId === it.id}
-                onChange={() => setMoving((m) => ({ ...m, movingItemId: it.id }))}
+                checked={state.movingItemId === it.id}
+                onChange={() => setState((s) => ({ ...s, movingItemId: it.id }))}
               />
               <div className="text-sm font-medium text-slate-900">{it.name}</div>
               <div className="text-xs text-slate-600">{it.desc}</div>
@@ -294,7 +292,7 @@ export function MovingForm() {
             <label
               key={pk.id}
               className={`cursor-pointer rounded-xl border p-4 transition ${
-                moving.movingPackageId === pk.id
+                state.movingPackageId === pk.id
                   ? "border-[#4CAF50] bg-[#4CAF50]/10"
                   : "border-slate-200 hover:border-slate-300"
               }`}
@@ -304,8 +302,8 @@ export function MovingForm() {
                 type="radio"
                 name="movingPackageId"
                 value={pk.id}
-                checked={moving.movingPackageId === pk.id}
-                onChange={() => setMoving((m) => ({ ...m, movingPackageId: pk.id }))}
+                checked={state.movingPackageId === pk.id}
+                onChange={() => setState((s) => ({ ...s, movingPackageId: pk.id }))}
               />
               <div className="text-sm font-medium text-slate-900">{pk.name}</div>
               <div className="text-xs text-slate-600">{pk.desc}</div>

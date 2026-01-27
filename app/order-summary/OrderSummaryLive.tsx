@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
-import { useCheckout, type StorageItemId } from "../components/checkout/CheckoutStore";
-import { OrderSummary, type OrderItem } from "../components/OrderSummary";
+import React, { useMemo } from "react";
+import { useStorageCheckout, type StorageItemId } from "../components/checkout/CheckoutStore";
 
 const PRICE_PER_MONTH: Record<StorageItemId, number> = {
   "small-box": 5,
@@ -24,81 +23,106 @@ const LABELS: Record<StorageItemId, string> = {
   "full-container": "Full Container",
 };
 
-export function OrderSummaryLive() {
-  const { state } = useCheckout();
+function money(n: number, sym = "£") {
+  return `${sym}${n.toFixed(2)}`;
+}
 
-  // Safe: only storage has quantities/duration
-  const quantities =
-    state.serviceType === "storage"
-      ? state.storage.quantities
-      : ({
-          "small-box": 0,
-          "medium-box": 0,
-          "large-box": 0,
-          "xl-box": 0,
-          suitcase: 0,
-          "half-container": 0,
-          "full-container": 0,
-        } as Record<StorageItemId, number>);
-
-  const durationMonth = state.serviceType === "storage" ? state.storage.durationMonth : 0;
+export function StorageOrderSummary() {
+  const { state } = useStorageCheckout();
 
   const totalItems = useMemo(
-    () => Object.values(quantities).reduce((a, b) => a + b, 0),
-    [quantities]
+    () => Object.values(state.quantities).reduce((a, b) => a + b, 0),
+    [state.quantities]
   );
 
-  const { items, storagePerMonth, discount, totalDueNow, discountRate } = useMemo(() => {
-    const items: OrderItem[] = (Object.keys(quantities) as StorageItemId[])
-      .filter((id) => quantities[id] > 0)
+  const { items, storagePerMonth, discount, totalDueNow } = useMemo(() => {
+    const items = (Object.keys(state.quantities) as StorageItemId[])
+      .filter((id) => state.quantities[id] > 0)
       .map((id) => ({
+        id,
         label: LABELS[id],
-        qty: quantities[id],
-        price: PRICE_PER_MONTH[id] * quantities[id], // monthly line total
+        qty: state.quantities[id],
+        price: PRICE_PER_MONTH[id] * state.quantities[id], // monthly line total
       }));
 
-    // monthly subtotal
     const storagePerMonth = +items.reduce((sum, it) => sum + it.price, 0).toFixed(2);
 
-    // duration discount
-    const months = durationMonth === 0 ? 1 : durationMonth;
+    const months = state.durationMonth === 0 ? 1 : state.durationMonth;
 
     const discountRate =
-      months === 3 ? 0.05 : months === 6 ? 0.10 : months === 12 ? 0.15 : 0;
+      months === 3 ? 0.05 : months === 6 ? 0.1 : months === 12 ? 0.15 : 0;
 
-    // total for entire duration
+    // show discount per month
     const durationSubtotal = +(storagePerMonth * months).toFixed(2);
+    const discount = +((durationSubtotal * discountRate) / months).toFixed(2);
 
-    // discount applied to duration total
-    // (keeping your original behavior: show "discount per month")
-    const discount = +(durationSubtotal * discountRate).toFixed(2) / months;
-
-    // due now (per month amount after discount, per your current UI)
     const totalDueNow = +(storagePerMonth - discount).toFixed(2);
 
-    return { items, storagePerMonth, discount, totalDueNow, discountRate };
-  }, [quantities, durationMonth]);
+    return { items, storagePerMonth, discount, totalDueNow };
+  }, [state.quantities, state.durationMonth]);
 
   return (
-    <div className="md:sticky md:top-24 h-fit">
-      <OrderSummary
-        title="Order Summary"
-        storagePerMonth={storagePerMonth}
-        discount={discount}
-        totalDueNow={totalDueNow}
-        items={items}
-        ctaLabel="Proceed to Payment"
-        ctaHref="/order-summary" // keep or change later
-        note={
-          state.serviceType !== "storage"
-            ? "Select Storage service to see the storage order summary."
-            : totalItems === 0
-            ? "Add items on the left to see your order summary."
-            : `Collection: ${state.collectionDate || "—"} • Slot: ${state.timeSlot}`
-        }
-        durationMonth={durationMonth}
-        enableButton={state.enableButton}
-      />
-    </div>
+    <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+      <h2 className="text-xl font-medium text-slate-900 text-center">Your Order</h2>
+
+      {/* Totals */}
+      <div className="space-y-3">
+        <div className="flex justify-between text-sm text-slate-700">
+          <span>Storage per month</span>
+          <span>{money(storagePerMonth)}</span>
+        </div>
+
+        <div className="flex justify-between text-sm text-slate-700">
+          <span>Duration</span>
+          <span>{state.durationMonth || 0} months</span>
+        </div>
+
+        <div className="flex justify-between text-sm text-slate-700">
+          <span>Discount</span>
+          <span className={discount > 0 ? "text-[#4CAF50]" : "text-slate-700"}>
+            {discount > 0 ? `−${money(discount)}` : money(0)}
+          </span>
+        </div>
+
+        <div className="h-px bg-slate-200" />
+
+        <div className="flex justify-between text-base font-medium text-slate-900">
+          <span>Total due now</span>
+          <span>{money(totalDueNow)}</span>
+        </div>
+      </div>
+
+      {/* Items */}
+      <div className="rounded-xl bg-slate-50 p-4 space-y-3">
+        {items.length === 0 ? (
+          <div className="text-sm text-slate-600">No items added yet.</div>
+        ) : (
+          items.map((it) => (
+            <div key={it.id} className="flex justify-between text-sm text-slate-700">
+              <span>
+                {it.qty} × {it.label}
+              </span>
+              <span className="text-slate-900">{money(it.price)}</span>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Note */}
+      <p className="text-xs text-slate-500">
+        {totalItems === 0
+          ? "Add items on the left to see your order summary."
+          : `Collection: ${state.collectionDate || "—"} • Slot: ${state.timeSlot || "—"}`}
+      </p>
+
+      {/* CTA */}
+      <button
+        type="button"
+        disabled={!state.enableButton}
+        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Proceed to Payment
+      </button>
+    </aside>
   );
 }
