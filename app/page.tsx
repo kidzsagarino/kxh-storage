@@ -1,10 +1,7 @@
 import Image from "next/image";
 import { ServicesGrid } from "./components/ServicesGrid";
-import { StorageForm } from "./components/StorageServiceFlow";
-import { MovingForm } from "./components/MovingServiceFlow";
-import { MovingOrderSummary } from "./order-summary/MovingOrderSummaryLive";
-import { MobileCheckoutBar } from "./components/MobileCheckoutBar";
-import { StorageOrderSummary } from "./order-summary/OrderSummaryLive";
+import HomeClientControls from "./components/HomeClientControls";
+import { HeroQuoteBar } from "./components/HeroQuoteBar";
 
 function JsonLd() {
     // Update phone/address/service area as needed
@@ -110,91 +107,15 @@ export default function HomePage() {
                         </h1>
 
                         <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600">
-                            From local removals to nation-wide relocations, KXH Storage and Removal delivers safe, efficient, and reliable solutions tailored to your needs.
-                        </p>
+                            From local London removals to flexible storage solutions, KXH Storage and Removal delivers safe, efficient, and reliable services tailored to your needs.                        </p>
 
                         {/* CTA Bar (inspired by reference image) */}
                         <div
                             id="quote"
                             className="mt-6 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
                         >
-                            <form
-                                action="/api/quote"
-                                method="post"
-                                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
-                            >
-                                {/* Top label */}
-                                <p className="mb-3 text-sm font-semibold text-slate-700">
-                                    Need help with...
-                                </p>
-
-                                {/* Row 1: select + postcode */}
-                                <div className="grid gap-3 md:grid-cols-2">
-                                    {/* Select with dropdown caret */}
-                                    <div className="relative">
-                                        <label className="sr-only" htmlFor="need">What do you need help with?</label>
-                                        <select
-                                            id="need"
-                                            name="need"
-                                            defaultValue="storage"
-                                            className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white pl-3 pr-11 text-sm font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-200"
-                                        >
-                                            <option value="storage">Storage</option>
-                                            <option value="pickup">Packing and Moving</option>
-                                            <option value="delivery">Shredding</option>
-                                            <option value="business">Small Moves</option>
-                                        </select>
-
-                                        {/* caret */}
-                                        <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
-                                            ▾
-                                        </div>
-
-                                        {/* subtle divider like the image */}
-                                        <div className="pointer-events-none absolute right-10 top-1/2 h-6 w-px -translate-y-1/2 bg-slate-200" />
-                                    </div>
-
-                                    {/* Postcode input with icon button */}
-                                    <div className="relative">
-                                        <label className="sr-only" htmlFor="postcode">Enter Postcode</label>
-                                        <input
-                                            id="postcode"
-                                            name="postcode"
-                                            placeholder="Enter Postcode"
-                                            autoComplete="postal-code"
-                                            className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-3 pr-12 text-sm font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-200"
-                                        />
-
-                                        {/* small icon button at right (like the image) */}
-                                        <button
-                                            type="button"
-                                            aria-label="Use location"
-                                            className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                                        >
-                                            ⦿
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Row 2: buttons */}
-                                <div className="mt-3 grid grid-cols-2 gap-3">
-                                    <button
-                                        type="submit"
-                                        className="h-11 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white"
-                                    >
-                                        Get Quote
-                                    </button>
-
-                                    <a
-                                        href="tel:+441474396663"
-                                        className="h-11 rounded-xl bg-[#4CAF50] px-4 text-sm font-semibold text-white inline-flex items-center justify-center gap-2"
-                                    >
-                                        {/* <span aria-hidden>📞</span> */}
-                                        Call Us
-                                    </a>
-                                </div>
-
-                                {/* Trust row */}
+                            <HeroQuoteBar />
+                            {/* Trust row */}
                                 <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
                                     <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-600">
                                         <span className="font-bold text-slate-900">4.8</span>
@@ -209,7 +130,6 @@ export default function HomePage() {
                                         <span className="font-semibold text-slate-700">Trustpilot</span>
                                     </div>
                                 </a>
-                            </form>
                         </div>
 
                         {/* Trust row */}
@@ -277,35 +197,11 @@ export default function HomePage() {
             {/* Pricing */}
             <section id="pricing" className="border-t border-slate-200/70 bg-white">
                 <div className="mx-auto max-w-6xl px-4 py-12">
-                    <h2 className="text-2xl font-black tracking-tight">Storage Service Quote</h2>
-                    <div className="mt-6 grid gap-2 md:grid-cols-[auto_300px]">
-                        <div><MovingForm /></div>
-                        <div><MovingOrderSummary /></div>
-                        {/* <div><StorageForm /></div> */}
-                        {/* <div><StorageOrderSummary /></div> */}
-                    </div>
-
-                    {/* <div className="mt-8 grid gap-4 md:grid-cols-3">
-                        {[
-                            { t: "Small", p: "£XX / mo", d: "A few boxes, luggage, seasonal items." },
-                            { t: "Medium", p: "£XX / mo", d: "Studio / 1-bed contents, student storage." },
-                            { t: "Business", p: "Custom", d: "Inventory, pallets, regular pickup cycles." },
-                        ].map((plan) => (
-                            <div key={plan.t} className="rounded-2xl border border-slate-200 bg-slate-50/40 p-6">
-                                <div className="flex items-baseline justify-between">
-                                    <div className="text-lg font-black">{plan.t}</div>
-                                    <div className="text-sm font-extrabold text-emerald-700">{plan.p}</div>
-                                </div>
-                                <p className="mt-2 text-slate-600">{plan.d}</p>
-                                <a
-                                    href="#quote"
-                                    className="mt-4 inline-flex w-full justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-                                >
-                                    Get Quote
-                                </a>
-                            </div>
-                        ))}
-                    </div> */}
+                    <h2 className="text-2xl font-black tracking-tight">Get Instant Quote</h2>
+                    <p className="mt-2 max-w-2xl text-slate-600 mb-4">
+                        Select a service, customise your details, and see your price instantly — all in one place.
+                    </p>
+                    <HomeClientControls variant="pricing" />
                 </div>
             </section>
 
@@ -364,10 +260,6 @@ export default function HomePage() {
                     </div>
                 </div>
             </footer>
-            <div className="pb-24 md:pb-0">
-                {/* your service flow here: StorageForm / MovingForm / etc */}
-                <MobileCheckoutBar />
-            </div>
         </main>
     );
 }

@@ -1,0 +1,60 @@
+"use client";
+
+import { useCheckout, type ServiceType } from "./checkout/CheckoutStore";
+import { StorageForm } from "./StorageServiceFlow";
+import { MovingForm } from "./MovingServiceFlow";
+import { ShreddingForm } from "./ShreddingServiceFlow";
+import { StorageOrderSummary } from "../order-summary/OrderSummaryLive";
+import { MovingOrderSummary } from "../order-summary/MovingOrderSummaryLive";
+import { ShreddingOrderSummary } from "../order-summary/ShreddingOrderSummaryLive";
+import { useEffect } from "react";
+
+export default function PricingSwitcher({
+    initialServiceType,
+}: {
+    initialServiceType?: ServiceType;
+}) {
+    const { state, setServiceType } = useCheckout();
+    useEffect(() => {
+        if (state.serviceType !== initialServiceType) {
+            setServiceType(initialServiceType || "storage");
+        }
+    }, [initialServiceType, state.serviceType, setServiceType]);
+    return (
+        <div className="space-y-4">
+            <div className="grid grid-cols-[1fr_auto]
+                    items-center gap-3
+                    rounded-2xl border border-slate-200 bg-white
+                    p-3 sm:p-4">
+                <div>
+                    <div className="text-sm font-medium text-slate-900">Service</div>
+                    <div className="text-xs text-slate-500">Choose a service to continue</div>
+                </div>
+
+                <select
+                    value={state.serviceType}
+                    onChange={(e) => setServiceType(e.target.value as ServiceType)}
+                    className="h-11 w-[190px] rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none"
+                >
+                    <option value="storage">Storage</option>
+                    <option value="moving">Moving</option>
+                    <option value="shredding">Shredding</option>
+                </select>
+            </div>
+
+            <div className="grid gap-6 items-start lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
+                <div>
+                    {state.serviceType === "storage" && <StorageForm />}
+                    {state.serviceType === "moving" && <MovingForm />}
+                    {state.serviceType === "shredding" && <ShreddingForm />}
+                </div>
+
+                <div className="lg:sticky lg:top-6">
+                    {state.serviceType === "storage" && <StorageOrderSummary />}
+                    {state.serviceType === "moving" && <MovingOrderSummary />}
+                    {state.serviceType === "shredding" && <ShreddingOrderSummary />}
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -18,10 +18,12 @@ const STORAGE_PRICE_PER_MONTH: Record<StorageItemId, number> = {
 };
 
 const MOVING_ITEM_PRICE: Record<MovingItemId, number> = {
+    "small-move": 250,
     "1-bedroom-flat": 350,
     "2-bedroom-flat": 500,
     "3-bedroom-flat": 700,
     "4-bedroom-flat": 900,
+    "office-move": 2000,
 };
 
 const MOVING_PACKAGE_ADDON: Record<MovingPackageId, number> = {

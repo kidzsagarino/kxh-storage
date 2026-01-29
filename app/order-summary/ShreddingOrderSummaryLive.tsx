@@ -1,37 +1,10 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useMovingCheckout, type TimeSlotId } from "../components/checkout/CheckoutStore";
+import { useShreddingCheckout, type TimeSlotId } from "../components/checkout/CheckoutStore";
 
-const PRICE_PER_MILE = 0.58;
-
-const HOME_TYPE_PRICE = {
-  "small-move": 250,
-  "1-bedroom-flat": 650,
-  "2-bedroom-flat": 850,
-  "3-bedroom-flat": 1100,
-  "4-bedroom-flat": 1358,
-  "office-move": 2000,
-} as const;
-
-const HOME_TYPE_LABEL = {
-  "small-move": "Small Move",
-  "1-bedroom-flat": "1 Bed Flat",
-  "2-bedroom-flat": "2 Bed Flat",
-  "3-bedroom-flat": "3 Bed Flat",
-  "4-bedroom-flat": "4 Bed Flat",
-  "office-move": "Office Move",
-} as const;
-
-const PACKAGE_PRICE = {
-  "basic-package": 0,
-  "move-and-pack": 295,
-} as const;
-
-const PACKAGE_LABEL = {
-  "basic-package": "Package - Basic",
-  "move-and-pack": "Package - Move & Pack",
-} as const;
+const BAG_PRICE = 7;
+const BOX_PRICE = 9;
 
 const SLOT_LABEL: Record<Exclude<TimeSlotId, "">, string> = {
   morning: "7am - 9am",
@@ -43,47 +16,33 @@ function money(n: number, sym = "£") {
   return `${sym}${n.toFixed(2)}`;
 }
 
-export function MovingOrderSummary() {
-  const { state } = useMovingCheckout();
+export function ShreddingOrderSummary() {
+  const { state } = useShreddingCheckout();
 
   const { items, totalDueNow, note } = useMemo(() => {
-    const miles = Math.max(0, Number(state.distanceMiles ?? 1));
-    const distanceCost = +(miles * PRICE_PER_MILE).toFixed(2);
+    const bagQty = Math.max(0, Number(state.items?.bagQty ?? 0));
+    const boxQty = Math.max(0, Number(state.items?.boxQty ?? 0));
 
-    const homeId = state.movingItemId;
-    const homeCost = homeId ? HOME_TYPE_PRICE[homeId] : 0;
-
-    const pkgId = state.movingPackageId;
-    const pkgCost = pkgId ? PACKAGE_PRICE[pkgId] : 0;
+    const bagCost = +(bagQty * BAG_PRICE).toFixed(2);
+    const boxCost = +(boxQty * BOX_PRICE).toFixed(2);
 
     const items: { key: string; label: string; subLabel: string; price: number }[] = [];
 
     items.push({
-      key: "distance",
-      label: "Distance",
-      subLabel: `${miles} miles`,
-      price: distanceCost,
+      key: "bag",
+      label: "Bag",
+      subLabel: `${bagQty} × (up to 15 lbs)`,
+      price: bagCost,
     });
 
-    if (homeId) {
-      items.push({
-        key: "home",
-        label: "Home Type",
-        subLabel: HOME_TYPE_LABEL[homeId],
-        price: homeCost,
-      });
-    }
+    items.push({
+      key: "archive-box",
+      label: "Archive Box",
+      subLabel: `${boxQty} × (up to 15 lbs)`,
+      price: boxCost,
+    });
 
-    if (pkgId) {
-      items.push({
-        key: "package",
-        label: "Package",
-        subLabel: PACKAGE_LABEL[pkgId],
-        price: pkgCost,
-      });
-    }
-
-    const totalDueNow = +(distanceCost + homeCost + pkgCost).toFixed(2);
+    const totalDueNow = +(bagCost + boxCost).toFixed(2);
 
     const slotText = state.timeSlot ? SLOT_LABEL[state.timeSlot as Exclude<TimeSlotId, "">] : "";
     const note = `Collection: ${state.collectionDate || "—"}${slotText ? ` (${slotText})` : ""}`;
@@ -104,7 +63,7 @@ export function MovingOrderSummary() {
         </div>
       </div>
 
-      {/* Moving Items (2-line rows) */}
+      {/* Shredding Items (2-line rows) */}
       <div className="rounded-xl bg-slate-50 p-4 space-y-4">
         {items.map((it) => (
           <div key={it.key} className="space-y-1">

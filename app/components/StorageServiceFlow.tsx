@@ -3,444 +3,468 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  useStorageCheckout,
-  type StorageItemId,
-  type TimeSlotId,
+    useStorageCheckout,
+    type StorageItemId,
+    type TimeSlotId,
 } from "../components/checkout/CheckoutStore";
 import { DatePicker } from "./DatePicker";
 
 const storageItems: { id: StorageItemId; name: string; desc: string }[] = [
-  { id: "small-box", name: "Small Box", desc: "45 × 30 × 30 cm" },
-  { id: "medium-box", name: "Medium Box", desc: "50 × 40 × 40 cm" },
-  { id: "large-box", name: "Large Box", desc: "50 × 50 × 50 cm" },
-  { id: "xl-box", name: "XL Box", desc: "70 × 45 × 45 cm" },
-  { id: "suitcase", name: "Suitcase", desc: "Hard shelled suitcase" },
-  { id: "half-container", name: "½ Container", desc: "25sqft container" },
-  { id: "full-container", name: "Full Container", desc: "50sqft container" },
+    { id: "small-box", name: "Small Box", desc: "45 × 30 × 30 cm" },
+    { id: "medium-box", name: "Medium Box", desc: "50 × 40 × 40 cm" },
+    { id: "large-box", name: "Large Box", desc: "50 × 50 × 50 cm" },
+    { id: "xl-box", name: "XL Box", desc: "70 × 45 × 45 cm" },
+    { id: "suitcase", name: "Suitcase", desc: "Hard shelled suitcase" },
+    { id: "half-container", name: "½ Container", desc: "25sqft container" },
+    { id: "full-container", name: "Full Container", desc: "50sqft container" },
 ];
 
 type StepId = 0 | 1 | 2 | 3;
 
 const steps = [
-  { id: 0 as StepId, title: "Duration" },
-  { id: 1 as StepId, title: "Items" },
-  { id: 2 as StepId, title: "Schedule" },
-  { id: 3 as StepId, title: "Details" },
+    { id: 0 as StepId, title: "Duration" },
+    { id: 1 as StepId, title: "Items" },
+    { id: 2 as StepId, title: "Schedule" },
+    { id: 3 as StepId, title: "Details" },
 ];
 
+const LAST_STEP: StepId = 3;
+
 function Stepper({
-  current,
-  maxAllowed,
-  onGo,
-  allCompleted,
+    current,
+    maxAllowed,
+    onGo,
+    allCompleted,
 }: {
-  current: StepId;
-  maxAllowed: StepId;
-  onGo: (s: StepId) => void;
-  allCompleted?: boolean;
+    current: StepId;
+    maxAllowed: StepId;
+    onGo: (s: StepId) => void;
+    allCompleted?: boolean;
 }) {
-  return (
-    <ol className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-      {steps.map((s, idx) => {
-        const isActive = s.id === current;
-        const isCompleted = s.id < maxAllowed || allCompleted;
-        const isLocked = !isCompleted && !isActive;
-        const isEnabled = isActive || isCompleted;
+    return (
+        <ol className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+            {steps.map((s, idx) => {
+                const isActive = s.id === current;
+                const isCompleted = s.id < maxAllowed || allCompleted;
+                const isLocked = !isCompleted && !isActive;
+                const isEnabled = isActive || isCompleted;
 
-        return (
-          <li key={s.id} className="min-w-0">
-            <button
-              type="button"
-              onClick={() => !isLocked && onGo(s.id)}
-              disabled={!isEnabled}
-              className={`w-full rounded-xl border px-3 py-2 text-left transition
-            ${
-              isActive
-                ? "border-[#4CAF50] bg-[#4CAF50]/10"
-                : "border-slate-200 bg-white hover:border-slate-300"
-            }
+                return (
+                    <li key={s.id} className="min-w-0">
+                        <button
+                            type="button"
+                            onClick={() => !isLocked && onGo(s.id)}
+                            disabled={!isEnabled}
+                            className={`w-full rounded-xl border px-3 py-2 text-left transition
+            ${isActive
+                                    ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                    : "border-slate-200 bg-white hover:border-slate-300"
+                                }
             ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
-            >
-              <div className="flex items-center gap-2">
-                <div
-                  className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
-                ${
-                  isActive && isCompleted
-                    ? "border-[#4CAF50] bg-[#4CAF50] text-white ring-2 ring-[#4CAF50]/30"
-                    : isActive
-                    ? "border-[#4CAF50] bg-[#4CAF50]/10 text-[#2e7d32]"
-                    : isCompleted
-                    ? "border-[#4CAF50] bg-[#4CAF50] text-white"
-                    : "border-slate-200 bg-white text-slate-700"
-                }`}
-                >
-                  {idx + 1}
-                </div>
+                        >
+                            <div className="flex items-center gap-2">
+                                <div
+                                    className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
+                ${isActive && isCompleted
+                                            ? "border-[#4CAF50] bg-[#4CAF50] text-white ring-2 ring-[#4CAF50]/30"
+                                            : isActive
+                                                ? "border-[#4CAF50] bg-[#4CAF50]/10 text-[#2e7d32]"
+                                                : isCompleted
+                                                    ? "border-[#4CAF50] bg-[#4CAF50] text-white"
+                                                    : "border-slate-200 bg-white text-slate-700"
+                                        }`}
+                                >
+                                    {idx + 1}
+                                </div>
 
-                <div className="min-w-0">
-                  <div
-                    className={`truncate text-sm font-medium ${
-                      isActive ? "text-slate-900" : "text-slate-800"
-                    }`}
-                  >
-                    {s.title}
-                  </div>
-                </div>
-              </div>
-            </button>
-          </li>
-        );
-      })}
-    </ol>
-  );
+                                <div className="min-w-0">
+                                    <div
+                                        className={`truncate text-sm font-medium ${isActive ? "text-slate-900" : "text-slate-800"
+                                            }`}
+                                    >
+                                        {s.title}
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </li>
+                );
+            })}
+        </ol>
+    );
 }
 
 function FooterNav({
-  canBack,
-  canNext,
-  isLast,
-  onBack,
-  onNext,
+    canBack,
+    canNext,
+    isLast,
+    onBack,
+    onNext,
 }: {
-  canBack: boolean;
-  canNext: boolean;
-  isLast: boolean;
-  onBack: () => void;
-  onNext: () => void;
+    canBack: boolean;
+    canNext: boolean;
+    isLast: boolean;
+    onBack: () => void;
+    onNext: () => void;
 }) {
-  return (
-    <div className="flex items-center justify-between gap-3 pt-2">
-      <button
-        type="button"
-        onClick={onBack}
-        disabled={!canBack}
-        className="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50 disabled:opacity-40"
-      >
-        Back
-      </button>
+    return (
+        <div className="flex items-center justify-between gap-3 pt-2">
+            <button
+                type="button"
+                onClick={onBack}
+                disabled={!canBack}
+                className="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50 disabled:opacity-40"
+            >
+                Back
+            </button>
 
-      <button
-        type={isLast ? "submit" : "button"}
-        onClick={isLast ? undefined : onNext}
-        disabled={!canNext}
-        className="h-11 rounded-xl bg-slate-900 px-5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-40"
-      >
-        {isLast ? "Proceed to Payment" : "Continue"}
-      </button>
-    </div>
-  );
+            <button
+                type={isLast ? "submit" : "button"}
+                onClick={isLast ? undefined : onNext}
+                disabled={!canNext}
+                className="h-11 rounded-xl bg-slate-900 px-5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-40"
+            >
+                {isLast ? "Proceed to Payment" : "Continue"}
+            </button>
+        </div>
+    );
 }
 
 export function StorageForm() {
-  const router = useRouter();
-  const { state, setState } = useStorageCheckout();
+    const router = useRouter();
+    const { state, setState } = useStorageCheckout();
 
-  const [step, setStep] = useState<StepId>(0);
+    const [step, setStep] = useState<StepId>(0);
 
-  const inc = (id: StorageItemId) =>
-    setState((st) => ({
-      ...st,
-      quantities: { ...st.quantities, [id]: st.quantities[id] + 1 },
-    }));
+    const inc = (id: StorageItemId) =>
+        setState((st) => ({
+            ...st,
+            quantities: { ...st.quantities, [id]: st.quantities[id] + 1 },
+        }));
 
-  const dec = (id: StorageItemId) =>
-    setState((st) => ({
-      ...st,
-      quantities: { ...st.quantities, [id]: Math.max(0, st.quantities[id] - 1) },
-    }));
+    const dec = (id: StorageItemId) =>
+        setState((st) => ({
+            ...st,
+            quantities: { ...st.quantities, [id]: Math.max(0, st.quantities[id] - 1) },
+        }));
 
-  const totalItems = useMemo(
-    () => Object.values(state.quantities).reduce((a, b) => a + b, 0),
-    [state.quantities]
-  );
+    const totalItems = useMemo(
+        () => Object.values(state.quantities).reduce((a, b) => a + b, 0),
+        [state.quantities]
+    );
 
-  // Step validation
-  const durationOk =
-    state.durationMonth === 3 ||
-    state.durationMonth === 6 ||
-    state.durationMonth === 12;
+    // Step validation
+    const durationOk =
+        state.durationMonth === 1 ||
+        state.durationMonth === 3 ||
+        state.durationMonth === 6 ||
+        state.durationMonth === 12;
 
-  const itemsOk = totalItems > 0;
+    const itemsOk = totalItems > 0;
 
-  const scheduleOk = !!state.collectionDate && !!state.timeSlot;
+    const scheduleOk = !!state.collectionDate && !!state.timeSlot;
 
-  const detailsOk =
-    (state.customerDetails.postalCode ?? "").trim().length > 0 &&
-    (state.customerDetails.phone ?? "").trim().length > 0 &&
-    (state.customerDetails.address ?? "").trim().length > 0;
+    const detailsOk =
+        (state.customerDetails.houseNumber ?? "").trim().length > 0 &&
+        (state.customerDetails.postalCode ?? "").trim().length > 0 &&
+        (state.customerDetails.phone ?? "").trim().length > 0 &&
+        (state.customerDetails.address ?? "").trim().length > 0;
 
-  const canGoNext =
-    (step === 0 && durationOk) ||
-    (step === 1 && itemsOk) ||
-    (step === 2 && scheduleOk) ||
-    (step === 3 && detailsOk);
+    const canGoNext =
+        (step === 0 && durationOk) ||
+        (step === 1 && itemsOk) ||
+        (step === 2 && scheduleOk) ||
+        (step === 3 && detailsOk);
 
-  const maxAllowedStep: StepId = useMemo(() => {
-    if (!durationOk) return 0;
-    if (!itemsOk) return 1;
-    if (!scheduleOk) return 2;
-    if (!detailsOk) return 3;
-    return step;
-  }, [durationOk, itemsOk, scheduleOk, detailsOk, step]);
+    const maxAllowedStep: StepId = useMemo(() => {
+        if (!durationOk) return 0;
+        if (!itemsOk) return 1;
+        if (!scheduleOk) return 2;
+        if (!detailsOk) return 3;
+        return step;
+    }, [durationOk, itemsOk, scheduleOk, detailsOk, step]);
 
-  useEffect(() => {
-    setState((s) => ({ ...s, enableButton: detailsOk }));
-  }, [detailsOk, setState]);
+    useEffect(() => {
+        setState((s) => ({ ...s, enableButton: detailsOk }));
+    }, [detailsOk, setState]);
 
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (maxAllowedStep < 3) return;
-    router.push("/order-summary");
-  }
+    function onSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        if (maxAllowedStep < 3) return;
+        router.push("/order-summary");
+    }
 
-  const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
-  const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
+    const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
+    const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
-  return (
-    <form
-      onSubmit={onSubmit}
-      className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6"
-    >
-      {/* Stepper */}
-      <div className="space-y-2">
-        <Stepper
-          current={step}
-          maxAllowed={maxAllowedStep}
-          onGo={setStep}
-          allCompleted={durationOk && itemsOk && scheduleOk && detailsOk}
-        />
-        <div className="text-xs text-slate-600">
-          {step === 0 && "Choose how long you want to store your items."}
-          {step === 1 && "Select what you’re storing and quantities."}
-          {step === 2 && "Pick a collection date and time slot."}
-          {step === 3 && "Enter your address and contact details."}
-        </div>
-      </div>
-
-      {/* Step 1: Duration */}
-      {step === 0 && (
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Storage Duration
-          </label>
-
-          <div className="grid grid-cols-3 gap-3">
-            {[3, 6, 12].map((m) => (
-              <label
-                key={m}
-                className={`cursor-pointer rounded-xl border p-3 text-center transition
-                ${
-                  state.durationMonth === m
-                    ? "border-[#4CAF50] bg-[#4CAF50]/10"
-                    : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                }`}
-              >
-                <input
-                  type="radio"
-                  className="sr-only"
-                  name="durationMonths"
-                  value={m}
-                  checked={state.durationMonth === m}
-                  onChange={() => setState((st) => ({ ...st, durationMonth: m as 3 | 6 | 12 }))}
+    return (
+        <form
+            onSubmit={onSubmit}
+            className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6"
+        >
+            {/* Stepper */}
+            <div className="space-y-2">
+                <Stepper
+                    current={step}
+                    maxAllowed={maxAllowedStep}
+                    onGo={setStep}
+                    allCompleted={durationOk && itemsOk && scheduleOk && detailsOk}
                 />
-                <div className="text-sm font-medium text-slate-900">{m} months</div>
                 <div className="text-xs text-slate-600">
-                  {m === 3 ? "5% off" : m === 6 ? "10% off" : "15% off"}
+                    {step === 0 && "Choose how long you want to store your items."}
+                    {step === 1 && "Select what you’re storing and quantities."}
+                    {step === 2 && "Pick a collection date and time slot."}
+                    {step === 3 && "Enter your address and contact details."}
                 </div>
-              </label>
-            ))}
-          </div>
-
-          {!durationOk && (
-            <div className="mt-2 text-xs text-rose-600">
-              Please select a storage duration to continue.
             </div>
-          )}
-        </div>
-      )}
 
-      {/* Step 2: Items */}
-      {step === 1 && (
-        <div>
-          <div className="flex items-end justify-between gap-4">
-            <p className="text-sm font-medium text-slate-700">What are you storing?</p>
-            <div className="text-xs text-slate-600">
-              Total items: <span className="font-medium text-slate-900">{totalItems}</span>
-            </div>
-          </div>
+            {/* Step 1: Duration */}
+            {step === 0 && (
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Storage Duration
+                    </label>
 
-          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {storageItems.map((item) => {
-              const count = state.quantities[item.id];
-
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-sm font-medium text-slate-900">{item.name}</div>
-                      <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
+                    <div className="grid grid-cols-3 gap-3">
+                        {[1, 3, 6, 12].map((m) => (
+                            <label
+                                key={m}
+                                className={`cursor-pointer rounded-xl border p-3 text-center transition
+                ${state.durationMonth === m
+                                        ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                    }`}
+                            >
+                                <input
+                                    type="radio"
+                                    className="sr-only"
+                                    name="durationMonths"
+                                    value={m}
+                                    checked={state.durationMonth === m}
+                                    onChange={() => setState((st) => ({ ...st, durationMonth: m as 1 | 3 | 6 | 12 }))}
+                                />
+                                <div className="text-sm font-medium text-slate-900">{m} months</div>
+                                <div className="text-xs text-slate-600">
+                                    {m === 1 ? "0%" : m === 3 ? "5% off" : m === 6 ? "10% off" : "15% off"}
+                                </div>
+                            </label>
+                        ))}
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => dec(item.id)}
-                        disabled={count === 0}
-                        className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white
-                        text-slate-800 hover:bg-slate-50 disabled:opacity-40"
-                        aria-label={`Decrease ${item.name}`}
-                      >
-                        −
-                      </button>
-
-                      <div className="min-w-[28px] text-center text-sm font-medium text-slate-900">
-                        {count}
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => inc(item.id)}
-                        className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
-                        aria-label={`Increase ${item.name}`}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
+                    {!durationOk && (
+                        <div className="mt-2 text-xs text-rose-600">
+                            Please select a storage duration to continue.
+                        </div>
+                    )}
                 </div>
-              );
-            })}
-          </div>
-
-          {!itemsOk && (
-            <div className="mt-2 text-xs text-rose-600">Add at least 1 item to continue.</div>
-          )}
-        </div>
-      )}
-
-      {/* Step 3: Schedule */}
-      {step === 2 && (
-        <div className="space-y-4">
-          <div>
-            <span className="block text-sm font-medium text-slate-700 mb-1">
-              Collection Date
-            </span>
-            <DatePicker
-              value={state.collectionDate}
-              onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {[
-                { id: "morning", label: "Morning", desc: "7am – 10am" },
-                { id: "afternoon", label: "Afternoon", desc: "10am – 3pm" },
-                { id: "evening", label: "Evening", desc: "3pm – 6pm" },
-              ].map((slot) => (
-                <label
-                  key={slot.id}
-                  className={`cursor-pointer rounded-xl border p-3 text-center transition
-                  ${
-                    state.timeSlot === slot.id
-                      ? "border-[#4CAF50] bg-[#4CAF50]/10"
-                      : "border-slate-200 hover:border-slate-300"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    className="sr-only"
-                    name="timeSlot"
-                    value={slot.id}
-                    checked={state.timeSlot === (slot.id as TimeSlotId)}
-                    onChange={() =>
-                      setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
-                    }
-                  />
-                  <div className="text-sm font-medium text-slate-900">{slot.label}</div>
-                  <div className="text-xs text-slate-600">{slot.desc}</div>
-                </label>
-              ))}
-            </div>
-
-            {!scheduleOk && (
-              <div className="mt-2 text-xs text-rose-600">
-                Select a date and a time slot to continue.
-              </div>
             )}
-          </div>
-        </div>
-      )}
 
-      {/* Step 4: Details */}
-      {step === 3 && (
-        <div className="space-y-4">
-          <p className="text-sm font-medium text-slate-700">Customer Details</p>
+            {/* Step 2: Items */}
+            {step === 1 && (
+                <div>
+                    <div className="flex items-end justify-between gap-4">
+                        <p className="text-sm font-medium text-slate-700">What are you storing?</p>
+                        <div className="text-xs text-slate-600">
+                            Total items: <span className="font-medium text-slate-900">{totalItems}</span>
+                        </div>
+                    </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <input
-              value={state.customerDetails.postalCode}
-              onChange={(e) =>
-                setState((s) => ({
-                  ...s,
-                  customerDetails: { ...s.customerDetails, postalCode: e.target.value },
-                }))
-              }
-              type="text"
-              placeholder="Postal Code"
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {storageItems.map((item) => {
+                            const count = state.quantities[item.id];
+
+                            return (
+                                <div
+                                    key={item.id}
+                                    className="rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition"
+                                >
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <div className="text-sm font-medium text-slate-900">{item.name}</div>
+                                            <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => dec(item.id)}
+                                                disabled={count === 0}
+                                                className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white
+                        text-slate-800 hover:bg-slate-50 disabled:opacity-40"
+                                                aria-label={`Decrease ${item.name}`}
+                                            >
+                                                −
+                                            </button>
+
+                                            <div className="min-w-[28px] text-center text-sm font-medium text-slate-900">
+                                                {count}
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => inc(item.id)}
+                                                className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
+                                                aria-label={`Increase ${item.name}`}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {!itemsOk && (
+                        <div className="mt-2 text-xs text-rose-600">Add at least 1 item to continue.</div>
+                    )}
+                </div>
+            )}
+
+            {/* Step 3: Schedule */}
+            {step === 2 && (
+                <div className="space-y-4">
+                    <div>
+                        <span className="block text-sm font-medium text-slate-700 mb-1">
+                            Collection Date
+                        </span>
+                        <DatePicker
+                            value={state.collectionDate}
+                            onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            {[
+                                { id: "morning", label: "Morning", desc: "7am – 10am" },
+                                { id: "afternoon", label: "Afternoon", desc: "10am – 3pm" },
+                                { id: "evening", label: "Evening", desc: "3pm – 6pm" },
+                            ].map((slot) => (
+                                <label
+                                    key={slot.id}
+                                    className={`cursor-pointer rounded-xl border p-3 text-center transition
+                  ${state.timeSlot === slot.id
+                                            ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                            : "border-slate-200 hover:border-slate-300"
+                                        }`}
+                                >
+                                    <input
+                                        type="radio"
+                                        className="sr-only"
+                                        name="timeSlot"
+                                        value={slot.id}
+                                        checked={state.timeSlot === (slot.id as TimeSlotId)}
+                                        onChange={() =>
+                                            setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
+                                        }
+                                    />
+                                    <div className="text-sm font-medium text-slate-900">{slot.label}</div>
+                                    <div className="text-xs text-slate-600">{slot.desc}</div>
+                                </label>
+                            ))}
+                        </div>
+
+                        {!scheduleOk && (
+                            <div className="mt-2 text-xs text-rose-600">
+                                Select a date and a time slot to continue.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Step 4: Details */}
+            {step === 3 && (
+                <div className="space-y-4">
+                    <p className="text-sm font-medium text-slate-700">Customer Details</p>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <input
+                            value={state.customerDetails.postalCode}
+                            onChange={(e) =>
+                                setState((s) => ({
+                                    ...s,
+                                    customerDetails: {
+                                        ...s.customerDetails,
+                                        postalCode: e.target.value,
+                                    },
+                                }))
+                            }
+                            type="text"
+                            placeholder="Postal Code"
+                            className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+
+                        <input
+                            value={state.customerDetails.phone}
+                            onChange={(e) =>
+                                setState((s) => ({
+                                    ...s,
+                                    customerDetails: {
+                                        ...s.customerDetails,
+                                        phone: e.target.value,
+                                    },
+                                }))
+                            }
+                            type="tel"
+                            placeholder="Phone Number"
+                            className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+                        <input
+                            value={state.customerDetails.houseNumber}
+                            onChange={(e) =>
+                                setState((s) => ({
+                                    ...s,
+                                    customerDetails: {
+                                        ...s.customerDetails,
+                                        houseNumber: e.target.value,
+                                    },
+                                }))
+                            }
+                            type="text"
+                            placeholder="House/Flat Number"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+                        <input
+                            value={state.customerDetails.address}
+                            onChange={(e) =>
+                                setState((s) => ({
+                                    ...s,
+                                    customerDetails: {
+                                        ...s.customerDetails,
+                                        address: e.target.value,
+                                    },
+                                }))
+                            }
+                            type="text"
+                            placeholder="Street Address"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+                    </div>
+
+
+
+                    {!detailsOk && (
+                        <div className="text-xs text-rose-600">
+                            Fill in postal code, phone number, house/flat number and street address to continue.
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Footer navigation */}
+            <FooterNav
+                canBack={step > 0}
+                canNext={canGoNext && step <= maxAllowedStep}
+                isLast={step === LAST_STEP}
+                onBack={goBack}
+                onNext={() => {
+                    if (!canGoNext) return;
+                    goNext();
+                }}
             />
-
-            <input
-              value={state.customerDetails.phone}
-              onChange={(e) =>
-                setState((s) => ({
-                  ...s,
-                  customerDetails: { ...s.customerDetails, phone: e.target.value },
-                }))
-              }
-              type="tel"
-              placeholder="Phone Number"
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-            />
-          </div>
-
-          <input
-            value={state.customerDetails.address}
-            onChange={(e) =>
-              setState((s) => ({
-                ...s,
-                customerDetails: { ...s.customerDetails, address: e.target.value },
-              }))
-            }
-            type="text"
-            placeholder="Street Address"
-            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-          />
-
-          {!detailsOk && (
-            <div className="text-xs text-rose-600">
-              Fill in postal code, phone number, and street address to continue.
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Footer navigation */}
-      <FooterNav
-        canBack={step > 0}
-        canNext={canGoNext && step <= maxAllowedStep}
-        isLast={step === 3}
-        onBack={goBack}
-        onNext={() => {
-          if (!canGoNext) return;
-          goNext();
-        }}
-      />
-    </form>
-  );
+        </form>
+    );
 }

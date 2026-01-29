@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useMemo, useState } from "react";
 
-export type ServiceType = "storage" | "moving";
+export type ServiceType = "storage" | "moving" | "shredding";
 
 export type StorageItemId =
   | "small-box"
@@ -14,16 +14,26 @@ export type StorageItemId =
   | "full-container";
 
 export type MovingItemId =
+  | "small-move"
   | "1-bedroom-flat"
   | "2-bedroom-flat"
   | "3-bedroom-flat"
-  | "4-bedroom-flat";
+  | "4-bedroom-flat"
+  | "office-move";
+
+export type ShreddingItemId = "bag" | "archive-box";
 
 export type MovingPackageId = "basic-package" | "move-and-pack";
 
 export type TimeSlotId = "morning" | "afternoon" | "evening" | "";
 
+export type ShreddingItems = {
+  bagQty: number;
+  boxQty: number;
+};
+
 export type CustomerDetails = {
+  houseNumber?: string;
   name: string;
   email: string;
   phone: string;
@@ -37,7 +47,7 @@ export type LocationDetails = {
 };
 
 export type StorageState = {
-  durationMonth: 0 | 3 | 6 | 12;
+  durationMonth: 0 | 1 | 3 | 6 | 12;
   quantities: Record<StorageItemId, number>;
   collectionDate: string; // YYYY-MM-DD
   timeSlot: TimeSlotId;
@@ -55,12 +65,14 @@ export type MovingState = {
   customerDetails: CustomerDetails;
   enableButton: boolean;
   distanceMiles?: number;
+  packingAssistance?: "yes" | "no";
 };
 
 export type CheckoutState = {
   serviceType: ServiceType;
   storage: StorageState;
   moving: MovingState;
+  shredding: ShreddingState;
 };
 
 /** Helpers */
@@ -101,6 +113,23 @@ const emptyMoving: MovingState = {
   distanceMiles: 1
 };
 
+const emptyShredding: ShreddingState = {
+  items: { bagQty: 0, boxQty: 0 },
+  collectionDate: "",
+  timeSlot: "",
+  customerDetails: { ...emptyCustomer },
+  enableButton: false,
+};
+
+
+export type ShreddingState = {
+  items: ShreddingItems;
+  collectionDate: string;
+  timeSlot: TimeSlotId;
+  customerDetails: CustomerDetails;
+  enableButton: boolean;
+};
+
 type CheckoutContextValue = {
   state: CheckoutState;
   setState: React.Dispatch<React.SetStateAction<CheckoutState>>;
@@ -113,6 +142,8 @@ type CheckoutContextValue = {
 
   setMoving: React.Dispatch<React.SetStateAction<MovingState>>;
   resetMoving: () => void;
+  setShredding: React.Dispatch<React.SetStateAction<ShreddingState>>;
+  resetShredding: () => void;
 
   resetAll: () => void;
 };
@@ -124,6 +155,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
     serviceType: "storage",
     storage: emptyStorage,
     moving: emptyMoving,
+    shredding: emptyShredding,
   });
 
   const value = useMemo<CheckoutContextValue>(() => {
@@ -141,6 +173,11 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
         ...s,
         moving: typeof updater === "function" ? (updater as any)(s.moving) : updater,
       }));
+    const setShredding: React.Dispatch<React.SetStateAction<ShreddingState>> = (updater) =>
+      setState((s) => ({
+        ...s,
+        shredding: typeof updater === "function" ? (updater as any)(s.shredding) : updater,
+      }));
 
     return {
       state,
@@ -152,12 +189,15 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
 
       setMoving,
       resetMoving: () => setState((s) => ({ ...s, moving: emptyMoving })),
+      setShredding,
+      resetShredding: () => setState((s) => ({ ...s, shredding: emptyShredding })),
 
       resetAll: () =>
         setState({
           serviceType: "storage",
           storage: emptyStorage,
           moving: emptyMoving,
+          shredding: emptyShredding,
         }),
     };
   }, [state]);
@@ -190,4 +230,9 @@ export function useMovingCheckout() {
     setServiceType,
     reset: resetMoving,
   };
+}
+
+export function useShreddingCheckout() {
+  const { state, setShredding, setServiceType, resetShredding } = useCheckout();
+  return { state: state.shredding, setState: setShredding, setServiceType, reset: resetShredding };
 }
