@@ -5,16 +5,16 @@ import Image from "next/image";
 function AdminNav() {
   const links = [
     // { href: "/admin/dashboard", label: "Dashboard" },
-    { href: "/admin/orders", label: "Orders", key: "orders" },
-    { href: "#", label: "Payments", key: "payments" },
-    { href: "#", label: "Settings", key: "settings" },
+    { href: "/admin/orders", label: "Orders" },
+    { href: "/admin/payments", label: "Payments" },
+    { href: "/admin/settings", label: "Settings" },
   ];
 
   return (
     <nav className="space-y-1">
       {links.map((l) => (
         <Link
-          key={l.key}
+          key={l.href}
           href={l.href}
           className="block rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900"
         >

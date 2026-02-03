@@ -273,6 +273,8 @@ export default function AdminPaymentsPage() {
     };
   }, [filtered]);
 
+  return null;
+
   return (
     <main className="space-y-4">
       {/* Header / stats */}
