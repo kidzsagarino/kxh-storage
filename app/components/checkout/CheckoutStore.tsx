@@ -73,6 +73,7 @@ export type CheckoutState = {
   storage: StorageState;
   moving: MovingState;
   shredding: ShreddingState;
+  settings: CheckoutSettings;
 };
 
 /** Helpers */
@@ -144,9 +145,18 @@ type CheckoutContextValue = {
   resetMoving: () => void;
   setShredding: React.Dispatch<React.SetStateAction<ShreddingState>>;
   resetShredding: () => void;
+  setSettings: React.Dispatch<React.SetStateAction<CheckoutSettings>>;
 
   resetAll: () => void;
 };
+export type CheckoutSettings = {
+  disableAutoBlockSchedule: boolean; // true = DO NOT auto-disable dates/slots
+};
+
+const defaultSettings: CheckoutSettings = {
+  disableAutoBlockSchedule: false,
+};
+
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 
@@ -156,6 +166,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
     storage: emptyStorage,
     moving: emptyMoving,
     shredding: emptyShredding,
+    settings: defaultSettings,
   });
 
   const value = useMemo<CheckoutContextValue>(() => {
@@ -179,6 +190,13 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
         shredding: typeof updater === "function" ? (updater as any)(s.shredding) : updater,
       }));
 
+    const setSettings: React.Dispatch<React.SetStateAction<CheckoutSettings>> = (updater) =>
+      setState((s) => ({
+        ...s,
+        settings: typeof updater === "function" ? (updater as any)(s.settings) : updater,
+      }));
+
+
     return {
       state,
       setState,
@@ -191,6 +209,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
       resetMoving: () => setState((s) => ({ ...s, moving: emptyMoving })),
       setShredding,
       resetShredding: () => setState((s) => ({ ...s, shredding: emptyShredding })),
+      setSettings,
 
       resetAll: () =>
         setState({
@@ -198,6 +217,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
           storage: emptyStorage,
           moving: emptyMoving,
           shredding: emptyShredding,
+          settings: defaultSettings,
         }),
     };
   }, [state]);
@@ -236,3 +256,9 @@ export function useShreddingCheckout() {
   const { state, setShredding, setServiceType, resetShredding } = useCheckout();
   return { state: state.shredding, setState: setShredding, setServiceType, reset: resetShredding };
 }
+
+export function useCheckoutSettings() {
+  const { state, setSettings } = useCheckout();
+  return { settings: state.settings, setSettings };
+}
+

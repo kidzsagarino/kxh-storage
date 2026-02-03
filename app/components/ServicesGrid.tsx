@@ -9,7 +9,7 @@ const services = [
   {
     key: "removals",
     title: "Removals",
-    desc: "Local and nationwide removal services designed for speed and security.",
+    desc: "Local London removal services designed for speed and security.",   
   },
   {
     key: "storage",
