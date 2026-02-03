@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
-  return NextResponse.json({ message: `Order ID: ${id}` });
-}
+type Ctx = { params: Promise<{ id: string }> };
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
-  return NextResponse.json({ message: `Delete Order ID: ${id}` });
+export async function GET(_req: NextRequest, ctx: Ctx) {
+  const { id } = await ctx.params;
+
+  return NextResponse.json({ message: "ok", id });
 }
