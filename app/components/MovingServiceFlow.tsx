@@ -10,6 +10,8 @@ import {
     useMovingCheckout,
 } from "./checkout/CheckoutStore";
 import { DatePicker } from "./DatePicker";
+import { useAdminSettings } from "../admin/useAdminSettings";
+import { isDayFull, isSlotFull } from "./scheduling/capacityLogic";
 
 const movingItems: { id: MovingItemId; name: string; desc: string }[] = [
     { id: "small-move", name: "Small moves", desc: "Move for few items" },
@@ -37,6 +39,25 @@ const steps = [
 ];
 
 const LAST_STEP: StepId = 4;
+
+const ADMIN_DEFAULT = {
+    scheduling: {
+        disableAutoBlockSchedule: false,
+        capacityEnabled: true,
+        capacityPerService: {
+            storage: { morning: 6, afternoon: 8, evening: 6 },
+            moving: { morning: 3, afternoon: 3, evening: 2 },
+            shredding: { morning: 10, afternoon: 12, evening: 10 },
+        },
+    },
+};
+
+function toLocalISODate(d: Date) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+}
 
 function Stepper({
     current,
@@ -137,6 +158,12 @@ export function MovingForm() {
 
     const [step, setStep] = useState<StepId>(0);
 
+    const admin = useAdminSettings(ADMIN_DEFAULT);
+
+    const disableAuto = admin.scheduling.disableAutoBlockSchedule;
+    const capacityEnabled = admin.scheduling.capacityEnabled;
+    const caps = admin.scheduling.capacityPerService.storage;
+
     const originOk = state.fromLocation.address.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
 
     const destinationOk = state.toLocation.address.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
@@ -173,6 +200,28 @@ export function MovingForm() {
     useEffect(() => {
         setState((s) => ({ ...s, enableButton: scheduleOk }));
     }, [scheduleOk, setState]);
+
+    useEffect(() => {
+        if (disableAuto) return;
+        if (!state.collectionDate) return;
+        if (!state.timeSlot) return; // protects against ""
+
+        const slotIsFull = isSlotFull({
+            enabled: capacityEnabled,
+            caps,
+            service: "storage",
+            dateISO: state.collectionDate,
+            slot: state.timeSlot, // now it's safe
+        });
+
+        if (slotIsFull) {
+            setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
+        }
+    }, [disableAuto, capacityEnabled, caps, state.collectionDate, state.timeSlot, setState]);
+
+    useEffect(() => {
+        setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
+    }, [state.collectionDate]);
 
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -267,8 +316,8 @@ export function MovingForm() {
                         <label
                             key={it.id}
                             className={`cursor-pointer rounded-xl border p-4 transition ${state.movingItemId === it.id
-                                    ? "border-[#4CAF50] bg-[#4CAF50]/10"
-                                    : "border-slate-200 hover:border-slate-300"
+                                ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                : "border-slate-200 hover:border-slate-300"
                                 }`}
                         >
                             <input
@@ -294,8 +343,8 @@ export function MovingForm() {
                         <label
                             key={pk.id}
                             className={`cursor-pointer rounded-xl border p-4 transition ${state.movingPackageId === pk.id
-                                    ? "border-[#4CAF50] bg-[#4CAF50]/10"
-                                    : "border-slate-200 hover:border-slate-300"
+                                ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                : "border-slate-200 hover:border-slate-300"
                                 }`}
                         >
                             <input
@@ -322,6 +371,25 @@ export function MovingForm() {
                         <DatePicker
                             value={state.collectionDate}
                             onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
+                            disabled={(day: Date) => {
+                                if (disableAuto) return false;
+
+                                // disable past dates
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                const d = new Date(day);
+                                d.setHours(0, 0, 0, 0);
+                                if (d < today) return true;
+
+                                // disable full days by volume
+                                const iso = toLocalISODate(d);
+                                return isDayFull({
+                                    enabled: capacityEnabled,
+                                    caps,
+                                    service: "storage",
+                                    dateISO: iso,
+                                });
+                            }}
                         />
                     </div>
 
@@ -332,27 +400,46 @@ export function MovingForm() {
                                 { id: "morning", label: "Morning", desc: "7am – 10am" },
                                 { id: "afternoon", label: "Afternoon", desc: "10am – 3pm" },
                                 { id: "evening", label: "Evening", desc: "3pm – 6pm" },
-                            ].map((slot) => (
-                                <label
-                                    key={slot.id}
-                                    className={`cursor-pointer rounded-xl border p-3 text-center transition
-                    ${state.timeSlot === slot.id
-                                            ? "border-[#4CAF50] bg-[#4CAF50]/10"
-                                            : "border-slate-200 hover:border-slate-300"
-                                        }`}
-                                >
-                                    <input
-                                        type="radio"
-                                        className="sr-only"
-                                        name="timeSlot"
-                                        value={slot.id}
-                                        checked={state.timeSlot === (slot.id as TimeSlotId)}
-                                        onChange={() => setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))}
-                                    />
-                                    <div className="text-sm font-medium text-slate-900">{slot.label}</div>
-                                    <div className="text-xs text-slate-600">{slot.desc}</div>
-                                </label>
-                            ))}
+                            ].map((slot) => {
+                                const dateISO = state.collectionDate;
+
+                                const slotIsFull =
+                                    !disableAuto &&
+                                    !!dateISO &&
+                                    isSlotFull({
+                                        enabled: capacityEnabled,
+                                        caps,
+                                        service: "moving",
+                                        dateISO,
+                                        slot: slot.id as Exclude<TimeSlotId, "">,
+                                    });
+
+                                return (
+                                    <label
+                                        key={slot.id}
+                                        className={`rounded-xl border p-3 text-center transition
+                                                                        ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                                                                        ${state.timeSlot === slot.id ? "border-[#4CAF50] bg-[#4CAF50]/10" : "border-slate-200 hover:border-slate-300"}
+                                                                    `}
+                                    >
+                                        <input
+                                            type="radio"
+                                            className="sr-only"
+                                            name="timeSlot"
+                                            value={slot.id}
+                                            disabled={slotIsFull}
+                                            checked={state.timeSlot === (slot.id as TimeSlotId)}
+                                            onChange={() =>
+                                                setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
+                                            }
+                                        />
+                                        <div className="text-sm font-medium text-slate-900">
+                                            {slot.label} {slotIsFull ? "(Full)" : ""}
+                                        </div>
+                                        <div className="text-xs text-slate-600">{slot.desc}</div>
+                                    </label>
+                                );
+                            })}
                         </div>
                     </div>
                     <div>

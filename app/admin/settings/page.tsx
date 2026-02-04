@@ -47,6 +47,16 @@ type PricingSettings = {
     moving: boolean;
     shredding: boolean;
   };
+  scheduling: {
+    disableAutoBlockSchedule: boolean; // true = don't auto-disable
+    // optional: volume-based caps (per service, per slot)
+    capacityEnabled: boolean;
+    capacityPerService: {
+      storage: { morning: number; afternoon: number; evening: number };
+      moving: { morning: number; afternoon: number; evening: number };
+      shredding: { morning: number; afternoon: number; evening: number };
+    };
+  }
 };
 
 const STORAGE_DEFAULT: PricingSettings = {
@@ -89,6 +99,16 @@ const STORAGE_DEFAULT: PricingSettings = {
   ],
 
   serviceEnabled: { storage: true, moving: true, shredding: true },
+  scheduling: {
+    disableAutoBlockSchedule: false,
+    capacityEnabled: true,
+    capacityPerService: {
+      storage: { morning: 6, afternoon: 8, evening: 6 },
+      moving: { morning: 3, afternoon: 3, evening: 2 },
+      shredding: { morning: 10, afternoon: 12, evening: 10 },
+    },
+  },
+
 };
 
 const LS_KEY = "kxh_admin_settings_v1";
@@ -211,8 +231,8 @@ export default function AdminSettingsPage() {
         <div className="mt-2 flex items-center gap-2 text-xs">
           <span
             className={`inline-flex rounded-full border px-2 py-1 font-semibold ${hasChanges
-                ? "bg-amber-50 text-amber-800 border-amber-200"
-                : "bg-emerald-50 text-emerald-800 border-emerald-200"
+              ? "bg-amber-50 text-amber-800 border-amber-200"
+              : "bg-emerald-50 text-emerald-800 border-emerald-200"
               }`}
           >
             {hasChanges ? "Unsaved changes" : "All saved"}
@@ -443,41 +463,139 @@ export default function AdminSettingsPage() {
           ))}
         </div>
       </div>
+      {/* Scheduling */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+        <SectionTitle
+          title="Scheduling"
+          desc="Control auto-disabling dates/time slots and volume-based capacity limits."
+        />
+
+        <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <input
+            type="checkbox"
+            className="mt-1 h-4 w-4"
+            checked={settings.scheduling.disableAutoBlockSchedule}
+            onChange={(e) =>
+              setSettings((s) => ({
+                ...s,
+                scheduling: { ...s.scheduling, disableAutoBlockSchedule: e.target.checked },
+              }))
+            }
+          />
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-slate-900">
+              Disable auto-blocking for Date & Time Slot
+            </div>
+            <div className="text-xs text-slate-600">
+              When enabled, your booking flow will not automatically disable dates or time slots.
+            </div>
+          </div>
+        </label>
+
+        <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <input
+            type="checkbox"
+            className="mt-1 h-4 w-4"
+            checked={settings.scheduling.capacityEnabled}
+            onChange={(e) =>
+              setSettings((s) => ({
+                ...s,
+                scheduling: { ...s.scheduling, capacityEnabled: e.target.checked },
+              }))
+            }
+          />
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-slate-900">
+              Enable volume-based capacity limits
+            </div>
+            <div className="text-xs text-slate-600">
+              Auto-disable specific days/time slots once order volume reaches the limit.
+            </div>
+          </div>
+        </label>
+
+        {/* Capacity grid */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="text-sm font-semibold text-slate-900">Capacity per slot</div>
+          <p className="mt-1 text-xs text-slate-500">
+            Orders allowed per service per time slot (morning/afternoon/evening).
+          </p>
+
+          <div className="mt-3 grid gap-3 lg:grid-cols-3">
+            {(["storage", "moving", "shredding"] as const).map((svc) => (
+              <div key={svc} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                <div className="text-sm font-semibold capitalize text-slate-900">{svc}</div>
+
+                <div className="grid gap-3">
+                  {(["morning", "afternoon", "evening"] as const).map((slot) => (
+                    <label key={slot} className="grid gap-1">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {slot} cap
+                      </span>
+                      <input
+                        inputMode="numeric"
+                        value={String(settings.scheduling.capacityPerService[svc][slot])}
+                        onChange={(e) => {
+                          const v = Math.max(0, num(e.target.value));
+                          setSettings((s) => ({
+                            ...s,
+                            scheduling: {
+                              ...s.scheduling,
+                              capacityPerService: {
+                                ...s.scheduling.capacityPerService,
+                                [svc]: {
+                                  ...s.scheduling.capacityPerService[svc],
+                                  [slot]: v,
+                                },
+                              },
+                            },
+                          }));
+                        }}
+                        className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
 
-export function ScheduleSettings() {
-  const { settings, setSettings } = useCheckoutSettings();
+// export function ScheduleSettings() {
+//   const { settings, setSettings } = useCheckoutSettings();
 
-  return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-      <div>
-        <h2 className="text-sm font-semibold text-slate-900">Scheduling</h2>
-        <p className="text-xs text-slate-500">
-          Control whether dates and time slots are automatically disabled.
-        </p>
-      </div>
+//   return (
+//     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
+//       <div>
+//         <h2 className="text-sm font-semibold text-slate-900">Scheduling</h2>
+//         <p className="text-xs text-slate-500">
+//           Control whether dates and time slots are automatically disabled.
+//         </p>
+//       </div>
 
-      <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-        <input
-          type="checkbox"
-          className="mt-1 h-4 w-4"
-          checked={settings.disableAutoBlockSchedule}
-          onChange={(e) =>
-            setSettings((s) => ({ ...s, disableAutoBlockSchedule: e.target.checked }))
-          }
-        />
-        <div className="min-w-0">
-          <div className="text-sm font-semibold text-slate-900">
-            Disable auto-blocking for Date & Time Slot
-          </div>
-          <div className="text-xs text-slate-600">
-            When enabled, the calendar and time slots will not be auto-disabled (e.g. past
-            dates / unavailable slots).
-          </div>
-        </div>
-      </label>
-    </section>
-  );
-}
+//       <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+//         <input
+//           type="checkbox"
+//           className="mt-1 h-4 w-4"
+//           checked={settings.disableAutoBlockSchedule}
+//           onChange={(e) =>
+//             setSettings((s) => ({ ...s, disableAutoBlockSchedule: e.target.checked }))
+//           }
+//         />
+//         <div className="min-w-0">
+//           <div className="text-sm font-semibold text-slate-900">
+//             Disable auto-blocking for Date & Time Slot
+//           </div>
+//           <div className="text-xs text-slate-600">
+//             When enabled, the calendar and time slots will not be auto-disabled (e.g. past
+//             dates / unavailable slots).
+//           </div>
+//         </div>
+//       </label>
+//     </section>
+//   );
+// }

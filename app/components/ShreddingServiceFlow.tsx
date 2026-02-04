@@ -7,6 +7,8 @@ import {
   type TimeSlotId,
 } from "../components/checkout/CheckoutStore";
 import { DatePicker } from "./DatePicker";
+import { useAdminSettings } from "../admin/useAdminSettings";
+import { isDayFull, isSlotFull } from "./scheduling/capacityLogic";
 
 type StepId = 0 | 1 | 2;
 
@@ -17,6 +19,25 @@ const steps = [
 ];
 
 const LAST_STEP: StepId = 2;
+
+const ADMIN_DEFAULT = {
+  scheduling: {
+    disableAutoBlockSchedule: false,
+    capacityEnabled: true,
+    capacityPerService: {
+      storage: { morning: 6, afternoon: 8, evening: 6 },
+      moving: { morning: 3, afternoon: 3, evening: 2 },
+      shredding: { morning: 10, afternoon: 12, evening: 10 },
+    },
+  },
+};
+
+function toLocalISODate(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 
 function Stepper({
   current,
@@ -44,36 +65,32 @@ function Stepper({
               onClick={() => !isLocked && onGo(s.id)}
               disabled={!isEnabled}
               className={`w-full rounded-xl border px-3 py-2 text-left transition
-              ${
-                isActive
+              ${isActive
                   ? "border-[#4CAF50] bg-[#4CAF50]/10"
                   : "border-slate-200 bg-white hover:border-slate-300"
-              }
-              ${
-                !isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""
-              }`}
+                }
+              ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""
+                }`}
             >
               <div className="flex items-center gap-2">
                 <div
                   className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
-                  ${
-                    isActive && isCompleted
+                  ${isActive && isCompleted
                       ? "border-[#4CAF50] bg-[#4CAF50] text-white ring-2 ring-[#4CAF50]/30"
                       : isActive
-                      ? "border-[#4CAF50] bg-[#4CAF50]/10 text-[#2e7d32]"
-                      : isCompleted
-                      ? "border-[#4CAF50] bg-[#4CAF50] text-white"
-                      : "border-slate-200 bg-white text-slate-700"
-                  }`}
+                        ? "border-[#4CAF50] bg-[#4CAF50]/10 text-[#2e7d32]"
+                        : isCompleted
+                          ? "border-[#4CAF50] bg-[#4CAF50] text-white"
+                          : "border-slate-200 bg-white text-slate-700"
+                    }`}
                 >
                   {idx + 1}
                 </div>
 
                 <div className="min-w-0">
                   <div
-                    className={`truncate text-sm font-medium ${
-                      isActive ? "text-slate-900" : "text-slate-800"
-                    }`}
+                    className={`truncate text-sm font-medium ${isActive ? "text-slate-900" : "text-slate-800"
+                      }`}
                   >
                     {s.title}
                   </div>
@@ -129,6 +146,12 @@ export function ShreddingForm() {
 
   const [step, setStep] = useState<StepId>(0);
 
+  const admin = useAdminSettings(ADMIN_DEFAULT);
+
+  const disableAuto = admin.scheduling.disableAutoBlockSchedule;
+  const capacityEnabled = admin.scheduling.capacityEnabled;
+  const caps = admin.scheduling.capacityPerService.storage;
+
   const totalQty = useMemo(() => {
     const bag = Number(state.items?.bagQty ?? 0);
     const box = Number(state.items?.boxQty ?? 0);
@@ -159,6 +182,29 @@ export function ShreddingForm() {
   useEffect(() => {
     setState((s) => ({ ...s, enableButton: step === 2 && itemsOk && scheduleOk && detailsOk }));
   }, [detailsOk, itemsOk, scheduleOk, step, setState]);
+
+  useEffect(() => {
+    if (disableAuto) return;
+    if (!state.collectionDate) return;
+    if (!state.timeSlot) return; // protects against ""
+
+    const slotIsFull = isSlotFull({
+      enabled: capacityEnabled,
+      caps,
+      service: "storage",
+      dateISO: state.collectionDate,
+      slot: state.timeSlot, // now it's safe
+    });
+
+    if (slotIsFull) {
+      setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
+    }
+  }, [disableAuto, capacityEnabled, caps, state.collectionDate, state.timeSlot, setState]);
+
+  useEffect(() => {
+    setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
+  }, [state.collectionDate]);
+
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -296,6 +342,25 @@ export function ShreddingForm() {
             <DatePicker
               value={state.collectionDate}
               onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
+              disabled={(day: Date) => {
+                if (disableAuto) return false;
+
+                // disable past dates
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const d = new Date(day);
+                d.setHours(0, 0, 0, 0);
+                if (d < today) return true;
+
+                // disable full days by volume
+                const iso = toLocalISODate(d);
+                return isDayFull({
+                  enabled: capacityEnabled,
+                  caps,
+                  service: "storage",
+                  dateISO: iso,
+                });
+              }}
             />
           </div>
 
@@ -306,30 +371,46 @@ export function ShreddingForm() {
                 { id: "morning", label: "Morning", desc: "7am – 10am" },
                 { id: "afternoon", label: "Afternoon", desc: "10am – 3pm" },
                 { id: "evening", label: "Evening", desc: "3pm – 6pm" },
-              ].map((slot) => (
-                <label
-                  key={slot.id}
-                  className={`cursor-pointer rounded-xl border p-3 text-center transition
-                  ${
-                    state.timeSlot === slot.id
-                      ? "border-[#4CAF50] bg-[#4CAF50]/10"
-                      : "border-slate-200 hover:border-slate-300"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    className="sr-only"
-                    name="timeSlot"
-                    value={slot.id}
-                    checked={state.timeSlot === (slot.id as TimeSlotId)}
-                    onChange={() =>
-                      setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
-                    }
-                  />
-                  <div className="text-sm font-medium text-slate-900">{slot.label}</div>
-                  <div className="text-xs text-slate-600">{slot.desc}</div>
-                </label>
-              ))}
+              ].map((slot) => {
+                const dateISO = state.collectionDate;
+
+                const slotIsFull =
+                  !disableAuto &&
+                  !!dateISO &&
+                  isSlotFull({
+                    enabled: capacityEnabled,
+                    caps,
+                    service: "shredding",
+                    dateISO,
+                    slot: slot.id as Exclude<TimeSlotId, "">,
+                  });
+
+                return (
+                  <label
+                    key={slot.id}
+                    className={`rounded-xl border p-3 text-center transition
+                                ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                                ${state.timeSlot === slot.id ? "border-[#4CAF50] bg-[#4CAF50]/10" : "border-slate-200 hover:border-slate-300"}
+                            `}
+                  >
+                    <input
+                      type="radio"
+                      className="sr-only"
+                      name="timeSlot"
+                      value={slot.id}
+                      disabled={slotIsFull}
+                      checked={state.timeSlot === (slot.id as TimeSlotId)}
+                      onChange={() =>
+                        setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
+                      }
+                    />
+                    <div className="text-sm font-medium text-slate-900">
+                      {slot.label} {slotIsFull ? "(Full)" : ""}
+                    </div>
+                    <div className="text-xs text-slate-600">{slot.desc}</div>
+                  </label>
+                );
+              })}
             </div>
 
             {!scheduleOk && (
