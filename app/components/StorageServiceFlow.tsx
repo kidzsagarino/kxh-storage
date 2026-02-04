@@ -40,8 +40,19 @@ const ADMIN_DEFAULT = {
             moving: { morning: 3, afternoon: 3, evening: 2 },
             shredding: { morning: 10, afternoon: 12, evening: 10 },
         },
+        weekdaysByService: {
+            storage: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false },
+            moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
+            shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
+        },
     },
 };
+
+type WeekdayKey = "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
+
+function weekdayKey(d: Date): WeekdayKey {
+    return (["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const)[d.getDay()];
+}
 
 function toLocalISODate(d: Date) {
     const y = d.getFullYear();
@@ -235,6 +246,18 @@ export function StorageForm() {
         setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
     }, [state.collectionDate]);
 
+    useEffect(() => {
+        if (disableAuto) return;
+        if (!state.collectionDate) return;
+
+        const d = new Date(`${state.collectionDate}T00:00:00`);
+        const wk = weekdayKey(d);
+
+        if (!admin.scheduling.weekdaysByService.storage[wk]) {
+            setState((s) => ({ ...s, collectionDate: "", timeSlot: "" as TimeSlotId }));
+        }
+    }, [disableAuto, admin.scheduling.weekdaysByService.storage, state.collectionDate, setState]);
+
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (maxAllowedStep < 3) return;
@@ -387,6 +410,10 @@ export function StorageForm() {
                                 const d = new Date(day);
                                 d.setHours(0, 0, 0, 0);
                                 if (d < today) return true;
+
+                                // ✅ weekday per service (storage)
+                                const wk = weekdayKey(d);
+                                if (!admin.scheduling.weekdaysByService.storage[wk]) return true;
 
                                 // disable full days by volume
                                 const iso = toLocalISODate(d);

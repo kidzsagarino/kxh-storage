@@ -3,6 +3,11 @@
 import { useCheckoutSettings } from "@/app/components/checkout/CheckoutStore";
 import React, { useEffect, useMemo, useState } from "react";
 
+type WeekdayKey = "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
+type WeekdayMap = Record<WeekdayKey, boolean>;
+type ServiceWeekdays = Record<"storage" | "moving" | "shredding", WeekdayMap>;
+
+
 type TimeSlot = {
   id: "morning" | "afternoon" | "evening";
   label: string;
@@ -56,7 +61,8 @@ type PricingSettings = {
       moving: { morning: number; afternoon: number; evening: number };
       shredding: { morning: number; afternoon: number; evening: number };
     };
-  }
+    weekdaysByService: ServiceWeekdays;
+  };
 };
 
 const STORAGE_DEFAULT: PricingSettings = {
@@ -107,8 +113,12 @@ const STORAGE_DEFAULT: PricingSettings = {
       moving: { morning: 3, afternoon: 3, evening: 2 },
       shredding: { morning: 10, afternoon: 12, evening: 10 },
     },
+    weekdaysByService: {
+      storage: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false },
+      moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
+      shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
+    },
   },
-
 };
 
 const LS_KEY = "kxh_admin_settings_v1";
@@ -163,6 +173,18 @@ function Field({
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<PricingSettings>(STORAGE_DEFAULT);
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
+
+  const WEEKDAYS: { key: WeekdayKey; label: string }[] = [
+    { key: "mon", label: "Mon" },
+    { key: "tue", label: "Tue" },
+    { key: "wed", label: "Wed" },
+    { key: "thu", label: "Thu" },
+    { key: "fri", label: "Fri" },
+    { key: "sat", label: "Sat" },
+    { key: "sun", label: "Sun" },
+  ];
+
+  const SERVICES = ["storage", "moving", "shredding"] as const;
 
   // Load from localStorage
   useEffect(() => {
@@ -463,6 +485,54 @@ export default function AdminSettingsPage() {
           ))}
         </div>
       </div>
+
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+        <SectionTitle
+          title="Weekday availability (per service)"
+          desc="Choose which weekdays can be booked for each service."
+        />
+
+        <div className="grid gap-3 lg:grid-cols-3">
+          {SERVICES.map((svc) => (
+            <div key={svc} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+              <div className="text-sm font-semibold capitalize text-slate-900">{svc}</div>
+
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
+                {WEEKDAYS.map((w) => (
+                  <label
+                    key={w.key}
+                    className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2"
+                  >
+                    <span className="text-xs font-semibold text-slate-800">{w.label}</span>
+                    <input
+                      type="checkbox"
+                      checked={settings.scheduling.weekdaysByService[svc][w.key]}
+                      onChange={(e) =>
+                        setSettings((s) => ({
+                          ...s,
+                          scheduling: {
+                            ...s.scheduling,
+                            weekdaysByService: {
+                              ...s.scheduling.weekdaysByService,
+                              [svc]: {
+                                ...s.scheduling.weekdaysByService[svc],
+                                [w.key]: e.target.checked,
+                              },
+                            },
+                          },
+                        }))
+                      }
+                      className="h-4 w-4"
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Scheduling */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
         <SectionTitle
