@@ -300,7 +300,8 @@ export default function AdminPaymentByIdPage() {
               </span>
             </div>
             <p className="mt-1 text-xs text-slate-500">
-              Created: {niceDate(payment.createdAt)} • Updated: {niceDate(payment.updatedAt)}
+              {/* Created: {niceDate(payment.createdAt)} • Updated: {niceDate(payment.updatedAt)} */}
+               Created: {niceDate(payment.createdAt)}
             </p>
           </div>
 
@@ -312,7 +313,7 @@ export default function AdminPaymentByIdPage() {
               Back
             </Link>
 
-            <select
+            {/* <select
               value={payment.status}
               onChange={(e) =>
                 setPayment((p) =>
@@ -334,7 +335,7 @@ export default function AdminPaymentByIdPage() {
               className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800"
             >
               Save
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -519,7 +520,7 @@ export default function AdminPaymentByIdPage() {
                 Refund payment
               </button>
 
-              <div className="grid grid-cols-2 gap-2">
+              {/* <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={dummyMarkPaid}
@@ -534,7 +535,7 @@ export default function AdminPaymentByIdPage() {
                 >
                   Mark unpaid
                 </button>
-              </div>
+              </div> */}
 
               <button
                 type="button"

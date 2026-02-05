@@ -273,8 +273,6 @@ export default function AdminPaymentsPage() {
     };
   }, [filtered]);
 
-  return null;
-
   return (
     <main className="space-y-4">
       {/* Header / stats */}
@@ -444,7 +442,7 @@ export default function AdminPaymentsPage() {
 
                     <td className="p-3">
                       <div className="flex items-center gap-2">
-                        <button
+                        {/* <button
                           type="button"
                           onClick={() => markAsPaid(p.id)}
                           className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-800 hover:bg-slate-50"
@@ -457,7 +455,7 @@ export default function AdminPaymentsPage() {
                           className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-800 hover:bg-slate-50"
                         >
                           Mark unpaid
-                        </button>
+                        </button> */}
 
                         <button
                           type="button"
