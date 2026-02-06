@@ -19,9 +19,9 @@ type Order = {
 };
 
 const DUMMY_ORDERS: Order[] = [
-  { id: "ord_001", serviceType: "storage", status: "new", name: "John Smith", email: "john@example.com", phone: "07123 456789", address: "12 Baker Street, London", postalCode: "NW1 6XE", collectionDate: "2026-02-12", timeSlot: "morning", totalDueNow: 120, createdAt: "2026-02-01T10:22:00Z" },
-  { id: "ord_002", serviceType: "moving", status: "confirmed", name: "Sarah Jones", email: "sarah@example.com", phone: "07999 123456", address: "45 Camden Road, London", postalCode: "N7 0AB", collectionDate: "2026-01-29", timeSlot: "afternoon", totalDueNow: 685, createdAt: "2026-01-29T14:05:00Z" },
-  { id: "ord_003", serviceType: "shredding", status: "completed", name: "ACME Ltd", email: "ops@acme.co.uk", phone: "020 7123 4567", address: "Unit 5, Stratford, London", postalCode: "E15 2PX", collectionDate: "2025-12-10", timeSlot: "evening", totalDueNow: 95, createdAt: "2025-12-10T09:40:00Z" },
+  { id: "ord_001", serviceType: "storage", status: "new", name: "John Smith", email: "john@example.com", phone: "07123 456789", address: "12 Baker Street, London", postalCode: "NW1 6XE", collectionDate: "2026-02-12", timeSlot: "(7:00 AM to 10:00 AM) morning", totalDueNow: 120, createdAt: "2026-02-01T10:22:00Z" },
+  { id: "ord_002", serviceType: "moving", status: "confirmed", name: "Sarah Jones", email: "sarah@example.com", phone: "07999 123456", address: "45 Camden Road, London", postalCode: "N7 0AB", collectionDate: "2026-01-29", timeSlot: "(10:00 AM to 3:00 PM) afternoon", totalDueNow: 685, createdAt: "2026-01-29T14:05:00Z" },
+  { id: "ord_003", serviceType: "shredding", status: "completed", name: "ACME Ltd", email: "ops@acme.co.uk", phone: "020 7123 4567", address: "Unit 5, Stratford, London", postalCode: "E15 2PX", collectionDate: "2025-12-10", timeSlot: "(3:00 PM to 6:00 PM) evening", totalDueNow: 95, createdAt: "2025-12-10T09:40:00Z" },
 ];
 
 const STATUS_OPTIONS: Order["status"][] = ["new", "confirmed", "collected", "completed", "cancelled"];
@@ -269,7 +269,8 @@ export default function AdminOrdersPage() {
                 <th className="p-3 text-left">Status</th>
                 <th className="p-3 text-left">Customer</th>
                 <th className="p-3 text-left">Postcode</th>
-                <th className="p-3 text-left">Schedule</th>
+                <th className="p-3 text-left">Collection Date</th>
+                <th className="p-3 text-left">Time Slot</th>
                 <th className="p-3 text-right">Total</th>
                 <th className="p-3 text-left">Created</th>
               </tr>
@@ -329,9 +330,9 @@ export default function AdminOrdersPage() {
 
                     <td className="p-3">
                       {o.collectionDate}{" "}
-                      <span className="text-slate-500">({o.timeSlot})</span>
+                      
                     </td>
-
+                    <td className="p-3 text-slate-500">{o.timeSlot}</td>
                     <td className="p-3 text-right font-semibold">
                       {money(o.totalDueNow)}
                     </td>

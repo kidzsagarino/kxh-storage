@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "react-day-picker/dist/style.css";
 
+html,
+body {
+  overflow-x: hidden;
+}
 /* ---- DayPicker theme override ---- */
 :root {
   /* Your brand color (edit this) */

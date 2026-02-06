@@ -51,14 +51,14 @@ const faqs = [
 
 export default function HomePage() {
     return (
-        <main className="min-h-screen bg-white text-slate-900 pb-24 md:pb-0">
+        <main className="min-h-screen overflow-x-hidden bg-white text-slate-900 pb-24 md:pb-0">
             <JsonLd />
 
             {/* Top Bar */}
             <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
-                <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+                <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
                     <a href="#top" className="text-lg font-black text-emerald-700">
-                        <Image src="/logo.png" alt="KXH Logo" width={100} height={200} />
+                        <Image src="/logo_new.png" alt="KXH Logo" width={150} height={50} />
                     </a>
 
                     <nav className="hidden items-center gap-6 md:flex">
@@ -79,13 +79,13 @@ export default function HomePage() {
                     <div className="flex items-center gap-2">
                         <a
                             href="tel:+441474396663"
-                            className="hidden rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50 md:inline-flex"
+                            className="hidden rounded-xl border border-slate-200 px-3 sm:px-4 py-2 text-sm font-semibold hover:bg-slate-50 md:inline-flex"
                         >
                             Call
                         </a>
                         <a
                             href="#quote"
-                            className="inline-flex rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm"
+                            className="inline-flex rounded-xl bg-slate-900 px-3 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm"
                         >
                             Get Quote
                         </a>
@@ -95,41 +95,41 @@ export default function HomePage() {
 
             {/* Hero */}
             <section id="top" className="relative overflow-hidden">
-                <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 md:grid-cols-2 md:py-10">
+                <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-4 sm:px-6 lg:px-8 py-10 md:grid-cols-2">
                     <div>
                         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
                             <span className="h-2 w-2 rounded-full bg-emerald-600" />
                             Door-to-door convenience
                         </div>
 
-                        <h1 className="mt-4 text-4xl font-normal tracking-tight text-slate-900">
+                        <h1 className="mt-4 text-4xl md:text-5xl font-semibold tracking-tight leading-[1.05] text-slate-900">
                             Our Fleet Is Ready to Move You Forward
                         </h1>
 
-                        <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600">
+                        <p className="mt-4 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">
                             From local London removals to flexible storage solutions, KXH Storage and Removal delivers safe, efficient, and reliable services tailored to your needs.                        </p>
 
                         {/* CTA Bar (inspired by reference image) */}
                         <div
                             id="quote"
-                            className="mt-6 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
+                            className="mt-6"
                         >
                             <HeroQuoteBar />
                             {/* Trust row */}
-                                <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
-                                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-600">
-                                        <span className="font-bold text-slate-900">4.8</span>
-                                        <span>Excellent</span>
-                                        <span className="inline-flex items-center gap-0.5" aria-label="5 star rating">
-                                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                                        </span>
-                                        <span className="font-semibold text-slate-700">Trustpilot</span>
-                                    </div>
-                                </a>
+                            <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
+                                <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-600">
+                                    <span className="font-bold text-slate-900">4.8</span>
+                                    <span>Excellent</span>
+                                    <span className="inline-flex items-center gap-0.5" aria-label="5 star rating">
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                    </span>
+                                    <span className="font-semibold text-slate-700">Trustpilot</span>
+                                </div>
+                            </a>
                         </div>
 
                         {/* Trust row */}
@@ -146,16 +146,14 @@ export default function HomePage() {
 
                     {/* Hero Image */}
                     <div className="relative">
-                        <div className="absolute -inset-6 -z-10 rounded-[1rem] bg-gradient-to-b from-emerald-50 to-transparent" />
                         <div className="relative overflow-hidden rounded-[1rem] border border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
-                            {/* Replace /hero.jpg with your own unique hero image */}
                             <Image
-                                src="/hero.png"
-                                alt="Two KXH staff handling boxes beside a delivery van"
+                                src="/hero_new.png"
+                                alt="KXH staff handling boxes beside a delivery van"
                                 width={1200}
                                 height={900}
                                 priority
-                                className="h-auto w-full object-cover"
+                                className="block h-[420px] w-full object-cover md:h-[520px]"
                             />
                         </div>
                     </div>
@@ -186,9 +184,9 @@ export default function HomePage() {
                 </div>
             </section> */}
             <section id="services" className="border-t border-slate-200/70 bg-slate-50/40">
-                <div className="mx-auto max-w-6xl px-4 py-12">
+                <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                     <h2 className="text-2xl font-black tracking-tight">What we offer</h2>
-                    <p className="mt-2 max-w-2xl text-slate-600">
+                    <p className="mt-4 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">
                         We Offer The Best For You.
                     </p>
                     <ServicesGrid />
@@ -196,9 +194,9 @@ export default function HomePage() {
             </section>
             {/* Pricing */}
             <section id="pricing" className="border-t border-slate-200/70 bg-white">
-                <div className="mx-auto max-w-6xl px-4 py-12">
+                <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                     <h2 className="text-2xl font-black tracking-tight">Get Instant Quote</h2>
-                    <p className="mt-2 max-w-2xl text-slate-600 mb-4">
+                    <p className="mt-4 max-w-full text-base md:text-lg leading-relaxed text-slate-600 mb-4">
                         Select a service, customise your details, and see your price instantly — all in one place.
                     </p>
                     <HomeClientControls variant="pricing" />
@@ -207,7 +205,7 @@ export default function HomePage() {
 
             {/* FAQ */}
             <section id="faq" className="border-t border-slate-200/70 bg-slate-50/40">
-                <div className="mx-auto max-w-6xl px-4 py-12">
+                <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                     <h2 className="text-2xl font-black tracking-tight">FAQ</h2>
 
                     <div className="mt-6 grid gap-3">
@@ -216,7 +214,9 @@ export default function HomePage() {
                                 <summary className="cursor-pointer text-sm font-bold text-slate-900">
                                     {f.q}
                                 </summary>
-                                <p className="mt-2 text-sm text-slate-600">{f.a}</p>
+                                <p className="mt-4 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">
+                                    {f.a}
+                                </p>
                             </details>
                         ))}
                     </div>
@@ -225,9 +225,9 @@ export default function HomePage() {
 
             {/* Contact */}
             <section id="contact" className="border-t border-slate-200/70 bg-white">
-                <div className="mx-auto max-w-6xl px-4 py-12">
+                <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                     <h2 className="text-2xl font-black tracking-tight">Contact</h2>
-                    <p className="mt-2 text-slate-600">
+                    <p className="mt-4 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">
                         Prefer messaging? Add WhatsApp or a contact form here.
                     </p>
 
@@ -249,7 +249,7 @@ export default function HomePage() {
             </section>
 
             <footer className="border-t border-slate-200/70 bg-white">
-                <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-500">
+                <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8 text-sm text-slate-500">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <span>© 2026 KXH Storage & Logistics</span>
                         <div className="flex gap-4">

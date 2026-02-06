@@ -54,6 +54,7 @@ const ADMIN_DEFAULT = {
             moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: true },
             shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
         },
+        blackoutDates: [""],
     },
 };
 
@@ -174,6 +175,7 @@ export function MovingForm() {
     const disableAuto = admin.scheduling.disableAutoBlockSchedule;
     const capacityEnabled = admin.scheduling.capacityEnabled;
     const caps = admin.scheduling.capacityPerService.storage;
+    const blackout = new Set(admin.scheduling.blackoutDates);
 
     const originOk = state.fromLocation.address.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
 
@@ -410,6 +412,8 @@ export function MovingForm() {
 
                                 // disable full days by volume
                                 const iso = toLocalISODate(d);
+                                if (blackout.has(iso)) return true;
+
                                 return isDayFull({
                                     enabled: capacityEnabled,
                                     caps,

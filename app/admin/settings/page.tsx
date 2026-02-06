@@ -62,6 +62,7 @@ type PricingSettings = {
       shredding: { morning: number; afternoon: number; evening: number };
     };
     weekdaysByService: ServiceWeekdays;
+    blackoutDates: string[];
   };
 };
 
@@ -118,6 +119,7 @@ const STORAGE_DEFAULT: PricingSettings = {
       moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
       shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
     },
+    blackoutDates: [],
   },
 };
 
@@ -173,6 +175,7 @@ function Field({
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<PricingSettings>(STORAGE_DEFAULT);
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
+  const [newBlackoutDate, setNewBlackoutDate] = useState("");
 
   const WEEKDAYS: { key: WeekdayKey; label: string }[] = [
     { key: "mon", label: "Mon" },
@@ -218,8 +221,9 @@ export default function AdminSettingsPage() {
     setSavedMsg("Reset to defaults.");
     window.setTimeout(() => setSavedMsg(null), 1500);
   }
+  
   return null;
-
+  
   return (
     <main className="space-y-4">
       {/* Header */}
@@ -539,8 +543,91 @@ export default function AdminSettingsPage() {
           title="Scheduling"
           desc="Control auto-disabling dates/time slots and volume-based capacity limits."
         />
+        {/* Blackout dates */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold text-slate-900">Blackout dates</div>
+              <p className="mt-1 text-xs text-slate-500">
+                Disable booking for specific dates (YYYY-MM-DD).
+              </p>
+            </div>
+          </div>
 
-        <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          {/* Add date */}
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+            <input
+              type="date"
+              value={newBlackoutDate}
+              onChange={(e) => setNewBlackoutDate(e.target.value)}
+              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const d = newBlackoutDate;
+                if (!d) return;
+
+                // Basic YYYY-MM-DD check
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+
+                setSettings((s) => {
+                  const existing = new Set(s.scheduling.blackoutDates);
+                  existing.add(d);
+                  return {
+                    ...s,
+                    scheduling: {
+                      ...s.scheduling,
+                      blackoutDates: Array.from(existing).sort(),
+                    },
+                  };
+                });
+
+                setNewBlackoutDate("");
+              }}
+              className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Add date
+            </button>
+          </div>
+
+          {/* List */}
+          <div className="mt-3 space-y-2">
+            {settings.scheduling.blackoutDates.length === 0 ? (
+              <div className="text-xs text-slate-500">No blackout dates.</div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {settings.scheduling.blackoutDates.map((d) => (
+                  <span
+                    key={d}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-800"
+                  >
+                    {d}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSettings((s) => ({
+                          ...s,
+                          scheduling: {
+                            ...s.scheduling,
+                            blackoutDates: s.scheduling.blackoutDates.filter((x) => x !== d),
+                          },
+                        }))
+                      }
+                      className="grid h-5 w-5 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                      aria-label={`Remove ${d}`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+
+        {/* <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
           <input
             type="checkbox"
             className="mt-1 h-4 w-4"
@@ -582,7 +669,7 @@ export default function AdminSettingsPage() {
               Auto-disable specific days/time slots once order volume reaches the limit.
             </div>
           </div>
-        </label>
+        </label> */}
 
         {/* Capacity grid */}
         <div className="rounded-2xl border border-slate-200 bg-white p-4">

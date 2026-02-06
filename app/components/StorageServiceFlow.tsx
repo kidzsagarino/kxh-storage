@@ -45,6 +45,7 @@ const ADMIN_DEFAULT = {
             moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
             shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
         },
+        blackoutDates: ["2026-02-11", "2026-02-12"],
     },
 };
 
@@ -171,6 +172,7 @@ export function StorageForm() {
     const disableAuto = admin.scheduling.disableAutoBlockSchedule;
     const capacityEnabled = admin.scheduling.capacityEnabled;
     const caps = admin.scheduling.capacityPerService.storage;
+    const blackout = new Set(admin.scheduling.blackoutDates);
 
     const inc = (id: StorageItemId) =>
         setState((st) => ({
@@ -410,6 +412,7 @@ export function StorageForm() {
                                 const d = new Date(day);
                                 d.setHours(0, 0, 0, 0);
                                 if (d < today) return true;
+                                
 
                                 // ✅ weekday per service (storage)
                                 const wk = weekdayKey(d);
@@ -417,6 +420,8 @@ export function StorageForm() {
 
                                 // disable full days by volume
                                 const iso = toLocalISODate(d);
+                                if (blackout.has(iso)) return true;
+
                                 return isDayFull({
                                     enabled: capacityEnabled,
                                     caps,
