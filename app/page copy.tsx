@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { ServicesGrid } from "./components/ServicesGrid";
 import HomeClientControls from "./components/HomeClientControls";
-import { HeroQuoteBar } from "./components/hero/HeroQuoteBar";
-import { HeroServiceImage } from "./components/hero/HeroServiceImage";
 
 function JsonLd() {
     // Update phone/address/service area as needed
@@ -95,34 +93,69 @@ export default function HomePage() {
             </header>
 
             {/* Hero */}
-            <section id="top" className="relative bg-slate-50">
+            <section id="top" className="relative overflow-hidden">
                 <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-4 sm:px-6 lg:px-8 py-10 md:grid-cols-2">
+                    <div>
+                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                            <span className="h-2 w-2 rounded-full bg-emerald-600" />
+                            Door-to-door convenience
+                        </div>
 
-                    {/* TOP: Description (full width) */}
-                    {/* <div className="text-center">
-                        <h1 className="whitespace-nowrap text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
-                            Storage, Removals & Shredding —
-                            <span className="ml-2 text-slate-500">quoted in minutes</span>
+                        <h1 className="mt-4 text-4xl md:text-5xl font-semibold tracking-tight leading-[1.05] text-slate-900">
+                            Our Fleet Is Ready to Move You Forward
                         </h1>
 
-                        <p className="mt-3 text-lg font-medium text-slate-600">
-                            Choose a service • Enter your postcode • Get a fast quote
-                        </p>
-                    </div> */}
+                        <p className="mt-4 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">
+                            From local London removals to flexible storage solutions, KXH Storage and Removal delivers safe, efficient, and reliable services tailored to your needs.                        </p>
 
-                    {/* BOTTOM: Image left, Quote bar right */}
-                    <div className="relative z-10">
-                        {/* Micro-hint */}
-                        <p className="absolute -top-6 left-0 text-[11px] font-medium uppercase tracking-wide text-slate-400">
-                            Choose a service
-                        </p>
-                        <HeroQuoteBar />
+                        {/* CTA Bar (inspired by reference image) */}
+                        <div
+                            id="quote"
+                            className="mt-6"
+                        >
+                            {/* <HeroQuoteBar /> */}
+                            {/* Trust row */}
+                            <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
+                                <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-600">
+                                    <span className="font-bold text-slate-900">4.8</span>
+                                    <span>Excellent</span>
+                                    <span className="inline-flex items-center gap-0.5" aria-label="5 star rating">
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                        <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
+                                    </span>
+                                    <span className="font-semibold text-slate-700">Trustpilot</span>
+                                </div>
+                            </a>
+                        </div>
+
+                        {/* Trust row */}
+                        <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+                            <span className="inline-flex items-center gap-2">
+                                <span className="font-black text-slate-900">4.8</span> Excellent
+                            </span>
+                            <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                            <span>Pickup slots available weekly</span>
+                            <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                            <span>Inventory tracking</span>
+                        </div>
                     </div>
+
+                    {/* Hero Image */}
                     <div className="relative">
-                        <div className="absolute -inset-4 rounded-[32px] bg-gradient-to-tr from-emerald-100/40 to-transparent" />
-                        <HeroServiceImage/>
+                        <div className="relative overflow-hidden rounded-[1rem] border border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
+                            <Image
+                                src="/hero_new.png"
+                                alt="KXH staff handling boxes beside a delivery van"
+                                width={1200}
+                                height={900}
+                                priority
+                                className="block h-[420px] w-full object-cover md:h-[520px]"
+                            />
+                        </div>
                     </div>
-
                 </div>
             </section>
 

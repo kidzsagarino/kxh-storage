@@ -3,7 +3,7 @@ import { Icon } from "./Icons";
 const services = [
   {
     key: "packaging",
-    title: "Packaging and Moving",
+    title: "Moving",
     desc: "Careful packing, safe transport, and smooth relocation for homes and businesses.",
   },
   {
