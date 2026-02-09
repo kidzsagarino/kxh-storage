@@ -3,9 +3,9 @@
 import React from "react";
 import { useCheckout, type ServiceType } from "./checkout/CheckoutStore";
 
-import { StorageForm } from "./StorageServiceFlow";
-import { MovingForm } from "./MovingServiceFlow";
-import { ShreddingForm } from "./ShreddingServiceFlow";
+import { StorageForm } from "./ServicesForm/StorageServiceFlow";
+import { MovingForm } from "./ServicesForm/MovingServiceFlow";
+import { ShreddingForm } from "./ServicesForm/ShreddingServiceFlow";
 
 import { StorageOrderSummary } from "../order-summary/OrderSummaryLive";
 import { MovingOrderSummary } from "../order-summary/MovingOrderSummaryLive";
@@ -67,17 +67,61 @@ export default function HomeClientControls({
         <div>
             <div className="space-y-4">
                 {/* Dropdown trigger */}
-                <div className=" grid grid-cols-1 sm:grid-cols-[1fr_1fr] items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4">
-                    <div>
-                        <div className="text-sm font-medium text-slate-900">Service</div>
-                        <div className="text-xs text-slate-500">Choose a service to continue</div>
-                    </div>
+                <div>
+                    <div className="text-sm font-medium text-slate-900">Service</div>
+                    <div className="text-xs text-slate-500">Choose a service to continue</div>
+                </div>
+                <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
+                    {[
+                        {
+                            id: "storage",
+                            title: "Storage",
+                            desc: "Collection + monthly storage",
+                        },
+                        {
+                            id: "moving",
+                            title: "Packing and Moving",
+                            desc: "Same-day moves across London",
+                        },
+                        {
+                            id: "shredding",
+                            title: "Shredding",
+                            desc: "Secure document disposal",
+                        },
+                    ].map((item) => {
+                        const selected = state.serviceType === item.id;
 
-                    <ServiceSelect
-                        value={state.serviceType}
-                        onChange={handleChange}
-                        className="h-11 w-[190px] rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none"
-                    />
+                        return (
+                            <button
+                                key={item.id}
+                                type="button"
+                                onClick={() => setServiceType(item.id as any)}
+                                className={`
+                                            flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition
+                                            ${selected
+                                        ? "border-slate-200 bg-emerald-50"
+                                        : "border-slate-200 bg-white hover:bg-slate-50"
+                                    }
+                                        `}
+                            >
+                                <div>
+                                    <div className="text-sm font-semibold text-slate-900">
+                                        {item.title}
+                                    </div>
+                                    <div className="text-xs text-slate-600">{item.desc}</div>
+                                </div>
+
+                                <span
+                                    className={`rounded-full px-3 py-1 text-xs font-semibold ${selected
+                                        ? "bg-emerald-600 text-white"
+                                        : "bg-slate-100 text-slate-600"
+                                        }`}
+                                >
+                                    {selected ? "Selected" : "Select"}
+                                </span>
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {/* Switchable form + summary */}

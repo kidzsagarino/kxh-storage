@@ -52,14 +52,15 @@ const faqs = [
 
 export default function HomePage() {
     return (
-        <main className="min-h-screen overflow-x-hidden bg-white text-slate-900 pb-24 md:pb-0">
+        <main className="min-h-screen bg-white text-slate-900 pb-24 md:pb-0">
             <JsonLd />
 
             {/* Top Bar */}
+            <div id="top" className="h-0 scroll-mt-24" />
             <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
                 <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
                     <a href="#top" className="text-lg font-black text-emerald-700">
-                        <Image src="/logo_new.png" alt="KXH Logo" width={150} height={50} />
+                        <Image src="/logo.png" alt="KXH Logo" width={150} height={50} />
                     </a>
 
                     <nav className="hidden items-center gap-6 md:flex">
@@ -95,20 +96,8 @@ export default function HomePage() {
             </header>
 
             {/* Hero */}
-            <section id="top" className="relative bg-slate-50">
+            <section className="relative bg-slate-50">
                 <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-4 sm:px-6 lg:px-8 py-10 md:grid-cols-2">
-
-                    {/* TOP: Description (full width) */}
-                    {/* <div className="text-center">
-                        <h1 className="whitespace-nowrap text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
-                            Storage, Removals & Shredding —
-                            <span className="ml-2 text-slate-500">quoted in minutes</span>
-                        </h1>
-
-                        <p className="mt-3 text-lg font-medium text-slate-600">
-                            Choose a service • Enter your postcode • Get a fast quote
-                        </p>
-                    </div> */}
 
                     {/* BOTTOM: Image left, Quote bar right */}
                     <div className="relative z-10">
@@ -118,37 +107,13 @@ export default function HomePage() {
                         </p>
                         <HeroQuoteBar />
                     </div>
-                    <div className="relative">
-                        <div className="absolute -inset-4 rounded-[32px] bg-gradient-to-tr from-emerald-100/40 to-transparent" />
-                        <HeroServiceImage/>
+                    <div className="relative overflow-x-clip">
+                        <div className="absolute inset-0 scale-[1.05] rounded-[32px] bg-gradient-to-tr from-emerald-100/40 to-transparent" />
+                        <HeroServiceImage />
                     </div>
 
                 </div>
             </section>
-
-            {/* Services */}
-            {/* <section id="services" className="border-t border-slate-200/70 bg-slate-50/40">
-                <div className="mx-auto max-w-6xl px-4 py-12">
-                    <h2 className="text-2xl font-black tracking-tight">What we offer</h2>
-                    <p className="mt-2 max-w-2xl text-slate-600">
-                        We Offer The Best For You.
-                    </p>
-
-                    <div className="mt-8 grid gap-4 md:grid-cols-4">
-                        {[
-                            { t: "Packaging and Moving", d: "Careful packing, safe transport, and smooth relocation for homes and businesses." },
-                            { t: "Removals", d: "Local and nationwide removal services designed for speed and security." },
-                            { t: "Storage Solutions", d: "Flexible, secure, and accessible storage facilities tailored to your needs." },
-                            { t: "Shredding Solutions", d: "Eco-friendly clearance and secure document disposal services." },
-                        ].map((c) => (
-                            <div key={c.t} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                                <div className="text-sm font-bold text-emerald-700">{c.t}</div>
-                                <div className="mt-2 text-slate-700">{c.d}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section> */}
             <section id="services" className="border-t border-slate-200/70 bg-slate-50/40">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                     <h2 className="text-2xl font-black tracking-tight">What we offer</h2>

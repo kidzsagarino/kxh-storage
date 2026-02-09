@@ -8,10 +8,10 @@ import {
     type TimeSlotId,
     useCheckout,
     useMovingCheckout,
-} from "./checkout/CheckoutStore";
-import { DatePicker } from "./DatePicker";
-import { useAdminSettings } from "../admin/useAdminSettings";
-import { isDayFull, isSlotFull } from "./scheduling/capacityLogic";
+} from "../checkout/CheckoutStore";
+import { DatePicker } from "../DatePicker";
+import { useAdminSettings } from "../../admin/useAdminSettings";
+import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 
 const movingItems: { id: MovingItemId; name: string; desc: string }[] = [
     { id: "small-move", name: "Small moves", desc: "Move for few items" },
@@ -97,20 +97,19 @@ function Stepper({
                             onClick={() => !isLocked && onGo(s.id)}
                             disabled={!isEnabled}
                             className={`w-full rounded-xl border px-3 py-2 text-left transition
-                ${isActive ? "border-[#4CAF50] bg-[#4CAF50]/10" : "border-slate-200 bg-white hover:border-slate-300"}
-                ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
+                            ${isActive ? "border-emerald-200 bg-emerald-50" : "border-slate-200 bg-white hover:border-slate-300"}
+                            ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
                         >
                             <div className="flex items-center gap-2">
                                 <div
                                     className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
-                    ${isActive && isCompleted
-                                            ? "border-[#4CAF50] bg-[#4CAF50] text-white ring-2 ring-[#4CAF50]/30"
+                                    ${isCompleted
+                                            ? "border-emerald-600 bg-emerald-600 text-white"
                                             : isActive
-                                                ? "border-[#4CAF50] bg-[#4CAF50]/10 text-[#2e7d32]"
-                                                : isCompleted
-                                                    ? "border-[#4CAF50] bg-[#4CAF50] text-white"
-                                                    : "border-slate-200 bg-white text-slate-700"
-                                        }`}
+                                                ? "border-emerald-600 bg-emerald-600 text-white"
+                                                : "border-slate-200 bg-white text-slate-700"
+                                        }
+                                    ${isActive ? "ring-2 ring-emerald-200" : ""}`}
                                 >
                                     {idx + 1}
                                 </div>
@@ -174,7 +173,7 @@ export function MovingForm() {
 
     const disableAuto = admin.scheduling.disableAutoBlockSchedule;
     const capacityEnabled = admin.scheduling.capacityEnabled;
-    const caps = admin.scheduling.capacityPerService.storage;
+    const caps = admin.scheduling.capacityPerService.moving;
     const blackout = new Set(admin.scheduling.blackoutDates);
 
     const originOk = state.fromLocation.address.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
@@ -222,7 +221,7 @@ export function MovingForm() {
         const slotIsFull = isSlotFull({
             enabled: capacityEnabled,
             caps,
-            service: "storage",
+            service: "moving",
             dateISO: state.collectionDate,
             slot: state.timeSlot, // now it's safe
         });
@@ -243,10 +242,10 @@ export function MovingForm() {
         const d = new Date(`${state.collectionDate}T00:00:00`);
         const wk = weekdayKey(d);
 
-        if (!admin.scheduling.weekdaysByService.storage[wk]) {
+        if (!admin.scheduling.weekdaysByService.moving[wk]) {
             setState((s) => ({ ...s, collectionDate: "", timeSlot: "" as TimeSlotId }));
         }
-    }, [disableAuto, admin.scheduling.weekdaysByService.storage, state.collectionDate, setState]);
+    }, [disableAuto, admin.scheduling.weekdaysByService.moving, state.collectionDate, setState]);
 
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -341,7 +340,7 @@ export function MovingForm() {
                         <label
                             key={it.id}
                             className={`cursor-pointer rounded-xl border p-4 transition ${state.movingItemId === it.id
-                                ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                ? "border-emerald-600 bg-emerald-50"
                                 : "border-slate-200 hover:border-slate-300"
                                 }`}
                         >
@@ -368,7 +367,7 @@ export function MovingForm() {
                         <label
                             key={pk.id}
                             className={`cursor-pointer rounded-xl border p-4 transition ${state.movingPackageId === pk.id
-                                ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                ? "border-emerald-600 bg-emerald-50"
                                 : "border-slate-200 hover:border-slate-300"
                                 }`}
                         >
@@ -449,9 +448,9 @@ export function MovingForm() {
                                     <label
                                         key={slot.id}
                                         className={`rounded-xl border p-3 text-center transition
-                                                                        ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
-                                                                        ${state.timeSlot === slot.id ? "border-[#4CAF50] bg-[#4CAF50]/10" : "border-slate-200 hover:border-slate-300"}
-                                                                    `}
+                                        ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                                        ${state.timeSlot === slot.id ? "border-emerald-600 bg-emerald-50" : "border-slate-200 hover:border-slate-300"}
+                                        `}
                                     >
                                         <input
                                             type="radio"

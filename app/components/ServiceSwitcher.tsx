@@ -1,9 +1,9 @@
 "use client";
 
 import { useCheckout, type ServiceType } from "./checkout/CheckoutStore";
-import { StorageForm } from "./StorageServiceFlow";
-import { MovingForm } from "./MovingServiceFlow";
-import { ShreddingForm } from "./ShreddingServiceFlow";
+import { StorageForm } from "./ServicesForm/StorageServiceFlow";
+import { MovingForm } from "./ServicesForm/MovingServiceFlow";
+import { ShreddingForm } from "./ServicesForm/ShreddingServiceFlow";
 import { StorageOrderSummary } from "../order-summary/OrderSummaryLive";
 import { MovingOrderSummary } from "../order-summary/MovingOrderSummaryLive";
 import { ShreddingOrderSummary } from "../order-summary/ShreddingOrderSummaryLive";

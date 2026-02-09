@@ -3,7 +3,6 @@
 
 html,
 body {
-  overflow-x: hidden;
   font-family: theme("fontFamily.sans");
 }
 /* ---- DayPicker theme override ---- */
@@ -259,11 +258,4 @@ img {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
-}
-
-.selected {
-  border-left: 4px solid #4CAF50;
-}
-.unselected {
-  opacity: 0.75;
 }

@@ -126,14 +126,10 @@ export function HeroQuoteBar() {
 
     function onGetQuote() {
         const postcode = (postcodeRef.current?.value ?? "").trim();
-        if (!postcode) {
-            postcodeRef.current?.focus();
-            return;
-        }
-
         const service = state.serviceType;
-
-        applyPostcode(service, postcode);
+        if (postcode) {
+            applyPostcode(service, postcode);
+        }
 
         document.getElementById("pricing")?.scrollIntoView({
             behavior: "smooth",
@@ -241,7 +237,7 @@ export function HeroQuoteBar() {
                     Call Us
                 </a>
             </div>
-            <div className="mb-4 flex justify-center">
+            <div className="flex justify-center">
                 {/* Trust row */}
                 <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
                     <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-600">

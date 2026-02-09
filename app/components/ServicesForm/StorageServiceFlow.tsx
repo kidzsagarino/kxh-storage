@@ -6,10 +6,10 @@ import {
     useStorageCheckout,
     type StorageItemId,
     type TimeSlotId,
-} from "../components/checkout/CheckoutStore";
-import { DatePicker } from "./DatePicker";
-import { isDayFull, isSlotFull } from "./scheduling/capacityLogic";
-import { useAdminSettings } from "../admin/useAdminSettings";
+} from "../checkout/CheckoutStore";
+import { DatePicker } from "../DatePicker";
+import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
+import { useAdminSettings } from "../../admin/useAdminSettings";
 
 const storageItems: { id: StorageItemId; name: string; desc: string }[] = [
     { id: "small-box", name: "Small Box", desc: "45 × 30 × 30 cm" },
@@ -88,23 +88,24 @@ function Stepper({
                             onClick={() => !isLocked && onGo(s.id)}
                             disabled={!isEnabled}
                             className={`w-full rounded-xl border px-3 py-2 text-left transition
-            ${isActive
-                                    ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                            ${isActive
+                                    ? "border-emerald-200 bg-emerald-50"
                                     : "border-slate-200 bg-white hover:border-slate-300"
                                 }
-            ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
+                            ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
                         >
                             <div className="flex items-center gap-2">
                                 <div
                                     className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
-                ${isActive && isCompleted
-                                            ? "border-[#4CAF50] bg-[#4CAF50] text-white ring-2 ring-[#4CAF50]/30"
+                                        ${isActive && isCompleted
+                                            ? "border-emerald-600 bg-emerald-600 text-white ring-2 ring-emerald-200"
                                             : isActive
-                                                ? "border-[#4CAF50] bg-[#4CAF50]/10 text-[#2e7d32]"
+                                                ? "border-emerald-600 bg-emerald-600 text-white"
                                                 : isCompleted
-                                                    ? "border-[#4CAF50] bg-[#4CAF50] text-white"
+                                                    ? "border-emerald-600 bg-emerald-600 text-white"
                                                     : "border-slate-200 bg-white text-slate-700"
-                                        }`}
+                                        }
+`}
                                 >
                                     {idx + 1}
                                 </div>
@@ -302,8 +303,8 @@ export function StorageForm() {
                             <label
                                 key={m}
                                 className={`cursor-pointer rounded-xl border p-3 text-center transition
-                ${state.durationMonth === m
-                                        ? "border-[#4CAF50] bg-[#4CAF50]/10"
+                                ${state.durationMonth === m
+                                        ? "border-emerald-600 bg-emerald-50"
                                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                     }`}
                             >
@@ -412,7 +413,7 @@ export function StorageForm() {
                                 const d = new Date(day);
                                 d.setHours(0, 0, 0, 0);
                                 if (d < today) return true;
-                                
+
 
                                 // ✅ weekday per service (storage)
                                 const wk = weekdayKey(d);
@@ -458,7 +459,10 @@ export function StorageForm() {
                                         key={slot.id}
                                         className={`rounded-xl border p-3 text-center transition
                                             ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
-                                            ${state.timeSlot === slot.id ? "border-[#4CAF50] bg-[#4CAF50]/10" : "border-slate-200 hover:border-slate-300"}
+                                            ${state.timeSlot === slot.id
+                                                ? "border-emerald-600 bg-emerald-50"
+                                                : "border-slate-200 hover:border-slate-300"
+                                            }
                                         `}
                                     >
                                         <input
