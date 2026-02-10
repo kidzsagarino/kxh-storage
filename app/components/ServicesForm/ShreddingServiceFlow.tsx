@@ -413,12 +413,32 @@ export function ShreddingForm() {
                   });
 
                 return (
-                  <label
+                  <div
                     key={slot.id}
-                    className={`rounded-xl border p-3 text-center transition
-                                ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
-                                ${state.timeSlot === slot.id ? "border-emerald-600 bg-emerald-50" : "border-slate-200 hover:border-slate-300"}
-                            `}
+                    className={`relative min-w-0 w-full rounded-xl border p-3 text-center transition
+    ${slotIsFull
+                        ? "cursor-not-allowed bg-slate-50 opacity-50 border-slate-200"
+                        : "cursor-pointer bg-white hover:border-slate-300"
+                      }
+    ${state.timeSlot === slot.id
+                        ? "border-emerald-600 bg-emerald-50"
+                        : "border-slate-200"
+                      }
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200`}
+                    onClick={() => {
+                      if (slotIsFull) return;
+                      setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }));
+                    }}
+                    role="radio"
+                    aria-checked={state.timeSlot === slot.id}
+                    tabIndex={slotIsFull ? -1 : 0}
+                    onKeyDown={(e) => {
+                      if (slotIsFull) return;
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }));
+                      }
+                    }}
                   >
                     <input
                       type="radio"
@@ -427,15 +447,17 @@ export function ShreddingForm() {
                       value={slot.id}
                       disabled={slotIsFull}
                       checked={state.timeSlot === (slot.id as TimeSlotId)}
-                      onChange={() =>
-                        setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
-                      }
+                      readOnly
                     />
-                    <div className="text-sm font-medium text-slate-900">
+
+                    <div className="text-sm font-semibold text-slate-900 truncate">
                       {slot.label} {slotIsFull ? "(Full)" : ""}
                     </div>
-                    <div className="text-xs text-slate-600">{slot.desc}</div>
-                  </label>
+
+                    <div className="text-xs text-slate-600 truncate">
+                      {slot.desc}
+                    </div>
+                  </div>
                 );
               })}
             </div>

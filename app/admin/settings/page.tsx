@@ -222,8 +222,6 @@ export default function AdminSettingsPage() {
     window.setTimeout(() => setSavedMsg(null), 1500);
   }
   
-  return null;
-  
   return (
     <main className="space-y-4">
       {/* Header */}

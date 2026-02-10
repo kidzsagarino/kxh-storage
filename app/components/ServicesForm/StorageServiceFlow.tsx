@@ -291,22 +291,36 @@ export function StorageForm() {
                 </div>
             </div>
 
-            {/* Step 1: Duration */}
+            {/* Step 0: Duration */}
             {step === 0 && (
-                <div>
+                <div className="space-y-2 max-w-full">
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                         Storage Duration
                     </label>
 
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
                         {[1, 3, 6, 12].map((m) => (
-                            <label
+                            <div
                                 key={m}
-                                className={`cursor-pointer rounded-xl border p-3 text-center transition
-                                ${state.durationMonth === m
+                                className={`relative min-w-0 w-full flex flex-col items-center justify-center
+                                    rounded-xl border p-2 py-3 text-center transition
+                                    ${state.durationMonth === m
                                         ? "border-emerald-600 bg-emerald-50"
-                                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                                    }`}
+                                        : "border-slate-200 bg-white hover:border-slate-300"
+                                    }
+                                    cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200`}
+                                role="radio"
+                                aria-checked={state.durationMonth === m}
+                                tabIndex={0}
+                                onClick={() =>
+                                    setState((st) => ({ ...st, durationMonth: m as 1 | 3 | 6 | 12 }))
+                                }
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                        e.preventDefault();
+                                        setState((st) => ({ ...st, durationMonth: m as 1 | 3 | 6 | 12 }));
+                                    }
+                                }}
                             >
                                 <input
                                     type="radio"
@@ -314,21 +328,20 @@ export function StorageForm() {
                                     name="durationMonths"
                                     value={m}
                                     checked={state.durationMonth === m}
-                                    onChange={() => setState((st) => ({ ...st, durationMonth: m as 1 | 3 | 6 | 12 }))}
+                                    readOnly
                                 />
-                                <div className="text-sm font-medium text-slate-900">{m} months</div>
-                                <div className="text-xs text-slate-600">
-                                    {m === 1 ? "0%" : m === 3 ? "5% off" : m === 6 ? "10% off" : "15% off"}
+
+                                <div className="text-sm font-bold text-slate-900 truncate">
+                                    {m} <span className="">months</span>
                                 </div>
-                            </label>
+
+                                <div className="mt-1 text-[10px] text-slate-500 truncate">
+                                    {m === 1 ? "Standard" : m === 3 ? "5% off" : m === 6 ? "10% off" : "15% off"}
+                                </div>
+                            </div>
+
                         ))}
                     </div>
-
-                    {!durationOk && (
-                        <div className="mt-2 text-xs text-rose-600">
-                            Please select a storage duration to continue.
-                        </div>
-                    )}
                 </div>
             )}
 
@@ -432,38 +445,44 @@ export function StorageForm() {
                             }}
                         />
                     </div>
-
-                    <div>
+                    <div className="w-full max-w-full">
                         <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full">
                             {[
                                 { id: "morning", label: "Morning", desc: "7am – 10am" },
                                 { id: "afternoon", label: "Afternoon", desc: "10am – 3pm" },
                                 { id: "evening", label: "Evening", desc: "3pm – 6pm" },
                             ].map((slot) => {
                                 const dateISO = state.collectionDate;
-
-                                const slotIsFull =
-                                    !disableAuto &&
-                                    !!dateISO &&
-                                    isSlotFull({
-                                        enabled: capacityEnabled,
-                                        caps,
-                                        service: "storage",
-                                        dateISO,
-                                        slot: slot.id as Exclude<TimeSlotId, "">,
-                                    });
+                                const slotIsFull = !disableAuto && !!dateISO && isSlotFull({
+                                    enabled: capacityEnabled,
+                                    caps,
+                                    service: "storage",
+                                    dateISO,
+                                    slot: slot.id as Exclude<TimeSlotId, "">,
+                                });
 
                                 return (
-                                    <label
+                                    <div
                                         key={slot.id}
-                                        className={`rounded-xl border p-3 text-center transition
-                                            ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
-                                            ${state.timeSlot === slot.id
-                                                ? "border-emerald-600 bg-emerald-50"
-                                                : "border-slate-200 hover:border-slate-300"
+                                        className={`relative min-w-0 rounded-xl border p-3 text-center transition
+                                                    ${slotIsFull
+                                                ? "cursor-not-allowed bg-slate-50 opacity-50 border-slate-200"
+                                                : "cursor-pointer bg-white hover:border-slate-300"
                                             }
-                                        `}
+                                                    ${state.timeSlot === slot.id
+                                                ? "border-emerald-600 bg-emerald-50"
+                                                : "border-slate-200"
+                                            }
+                                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200`}
+                                        onClick={() => {
+                                            if (slotIsFull) return;
+                                            setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }));
+                                        }}
+                                        role="radio"
+                                        aria-checked={state.timeSlot === slot.id}
+                                        tabIndex={slotIsFull ? -1 : 0}
                                     >
                                         <input
                                             type="radio"
@@ -472,19 +491,18 @@ export function StorageForm() {
                                             value={slot.id}
                                             disabled={slotIsFull}
                                             checked={state.timeSlot === (slot.id as TimeSlotId)}
-                                            onChange={() =>
-                                                setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
-                                            }
+                                            readOnly
                                         />
-                                        <div className="text-sm font-medium text-slate-900">
+                                        <div className="text-sm font-bold text-slate-900 truncate">
                                             {slot.label} {slotIsFull ? "(Full)" : ""}
                                         </div>
-                                        <div className="text-xs text-slate-600">{slot.desc}</div>
-                                    </label>
+                                        <div className="text-[11px] text-slate-500 whitespace-nowrap">
+                                            {slot.desc}
+                                        </div>
+                                    </div>
                                 );
                             })}
                         </div>
-
                         {!scheduleOk && (
                             <div className="mt-2 text-xs text-rose-600">
                                 Select a date and a time slot to continue.

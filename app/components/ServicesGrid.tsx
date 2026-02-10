@@ -9,7 +9,7 @@ const services = [
   {
     key: "removals",
     title: "Removals",
-    desc: "Local London removal services designed for speed and security.",   
+    desc: "Local London removal services designed for speed and security.",
   },
   {
     key: "storage",
@@ -25,28 +25,36 @@ const services = [
 
 export function ServicesGrid() {
   return (
-    <div className="mt-8 grid gap-4 md:grid-cols-4">
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {services.map((s) => (
         <div
           key={s.key}
-          className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition"
+          className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm
+                 transition hover:-translate-y-0.5 hover:shadow-md"
         >
           {/* Icon */}
-          <div className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl
-                          bg-slate-50 text-slate-900">
+          <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl
+                      bg-emerald-50 ring-1 ring-emerald-100 transition
+                      group-hover:bg-emerald-100">
             <Icon
               name={s.key}
               set="lucide"
-              size={24}
-              className="text-[#4CAF50]"
+              size={22}
+              className="text-emerald-600"
               title={s.title}
             />
           </div>
 
-          <h3 className="text-base font-medium text-slate-900">{s.title}</h3>
-          <p className="mt-2 text-sm text-slate-600">{s.desc}</p>
+          <h3 className="text-base font-semibold text-slate-900">{s.title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{s.desc}</p>
+
+          {/* Optional: subtle affordance */}
+          {/* <div className="mt-4 text-xs font-semibold text-slate-500 transition group-hover:text-slate-700">
+            Learn more →
+          </div> */}
         </div>
       ))}
     </div>
+
   );
 }

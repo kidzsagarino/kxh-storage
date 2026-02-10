@@ -335,28 +335,49 @@ export function MovingForm() {
 
             {/* Step 2: Items */}
             {step === 2 && (
-                <div className="grid gap-3 sm:grid-cols-2">
-                    {movingItems.map((it) => (
-                        <label
-                            key={it.id}
-                            className={`cursor-pointer rounded-xl border p-4 transition ${state.movingItemId === it.id
-                                ? "border-emerald-600 bg-emerald-50"
-                                : "border-slate-200 hover:border-slate-300"
-                                }`}
-                        >
-                            <input
-                                className="sr-only"
-                                type="radio"
-                                name="movingItemId"
-                                value={it.id}
-                                checked={state.movingItemId === it.id}
-                                onChange={() => setState((s) => ({ ...s, movingItemId: it.id }))}
-                            />
-                            <div className="text-sm font-medium text-slate-900">{it.name}</div>
-                            <div className="text-xs text-slate-600">{it.desc}</div>
-                        </label>
-                    ))}
-                    {!itemOk && <div className="sm:col-span-2 text-xs text-rose-600">Select a move size.</div>}
+                <div className="min-w-0">
+                    <div className="grid gap-3 sm:[grid-template-columns:repeat(2,minmax(0,1fr))]">
+                        {movingItems.map((it) => (
+                            <div
+                                key={it.id}
+                                className={`relative min-w-0 w-full cursor-pointer rounded-xl border p-4 transition
+    ${state.movingItemId === it.id
+                                        ? "border-emerald-600 bg-emerald-50"
+                                        : "border-slate-200 hover:border-slate-300 bg-white"
+                                    }`}
+                                role="radio"
+                                aria-checked={state.movingItemId === it.id}
+                                tabIndex={0}
+                                onClick={() => setState((s) => ({ ...s, movingItemId: it.id }))}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                        e.preventDefault();
+                                        setState((s) => ({ ...s, movingItemId: it.id }));
+                                    }
+                                }}
+                            >
+                                <input
+                                    className="sr-only"
+                                    type="radio"
+                                    name="movingItemId"
+                                    value={it.id}
+                                    checked={state.movingItemId === it.id}
+                                    readOnly
+                                />
+
+                                <div className="min-w-0">
+                                    <div className="text-sm font-medium text-slate-900 truncate">
+                                        {it.name}
+                                    </div>
+                                    <div className="text-xs text-slate-600 break-words">
+                                        {it.desc}
+                                    </div>
+                                </div>
+                            </div>
+
+                        ))}
+                        {!itemOk && <div className="sm:col-span-2 text-xs text-rose-600">Select a move size.</div>}
+                    </div>
                 </div>
             )}
 
@@ -364,12 +385,25 @@ export function MovingForm() {
             {step === 3 && (
                 <div className="grid gap-3 sm:grid-cols-2">
                     {movingPackages.map((pk) => (
-                        <label
+                        <div
                             key={pk.id}
-                            className={`cursor-pointer rounded-xl border p-4 transition ${state.movingPackageId === pk.id
-                                ? "border-emerald-600 bg-emerald-50"
-                                : "border-slate-200 hover:border-slate-300"
+                            className={`relative min-w-0 w-full cursor-pointer rounded-xl border p-4 transition
+                                ${state.movingPackageId === pk.id
+                                    ? "border-emerald-600 bg-emerald-50"
+                                    : "border-slate-200 hover:border-slate-300 bg-white"
                                 }`}
+                            role="radio"
+                            aria-checked={state.movingPackageId === pk.id}
+                            tabIndex={0}
+                            onClick={() =>
+                                setState((s) => ({ ...s, movingPackageId: pk.id }))
+                            }
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    setState((s) => ({ ...s, movingPackageId: pk.id }));
+                                }
+                            }}
                         >
                             <input
                                 className="sr-only"
@@ -377,11 +411,18 @@ export function MovingForm() {
                                 name="movingPackageId"
                                 value={pk.id}
                                 checked={state.movingPackageId === pk.id}
-                                onChange={() => setState((s) => ({ ...s, movingPackageId: pk.id }))}
+                                readOnly
                             />
-                            <div className="text-sm font-medium text-slate-900">{pk.name}</div>
-                            <div className="text-xs text-slate-600">{pk.desc}</div>
-                        </label>
+
+                            <div className="min-w-0">
+                                <div className="text-sm font-medium text-slate-900 truncate">
+                                    {pk.name}
+                                </div>
+                                <div className="text-xs text-slate-600 break-words">
+                                    {pk.desc}
+                                </div>
+                            </div>
+                        </div>
                     ))}
                     {!packageOk && <div className="sm:col-span-2 text-xs text-rose-600">Select a package.</div>}
                 </div>
@@ -445,12 +486,32 @@ export function MovingForm() {
                                     });
 
                                 return (
-                                    <label
+                                    <div
                                         key={slot.id}
-                                        className={`rounded-xl border p-3 text-center transition
-                                        ${slotIsFull ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
-                                        ${state.timeSlot === slot.id ? "border-emerald-600 bg-emerald-50" : "border-slate-200 hover:border-slate-300"}
-                                        `}
+                                        className={`relative min-w-0 w-full rounded-xl border p-3 text-center transition
+    ${slotIsFull
+                                                ? "cursor-not-allowed bg-slate-50 opacity-50 border-slate-200"
+                                                : "cursor-pointer bg-white hover:border-slate-300"
+                                            }
+    ${state.timeSlot === slot.id
+                                                ? "border-emerald-600 bg-emerald-50"
+                                                : "border-slate-200"
+                                            }
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200`}
+                                        onClick={() => {
+                                            if (slotIsFull) return;
+                                            setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }));
+                                        }}
+                                        role="radio"
+                                        aria-checked={state.timeSlot === slot.id}
+                                        tabIndex={slotIsFull ? -1 : 0}
+                                        onKeyDown={(e) => {
+                                            if (slotIsFull) return;
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }));
+                                            }
+                                        }}
                                     >
                                         <input
                                             type="radio"
@@ -459,15 +520,16 @@ export function MovingForm() {
                                             value={slot.id}
                                             disabled={slotIsFull}
                                             checked={state.timeSlot === (slot.id as TimeSlotId)}
-                                            onChange={() =>
-                                                setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }))
-                                            }
+                                            readOnly
                                         />
-                                        <div className="text-sm font-medium text-slate-900">
+
+                                        <div className="text-sm font-semibold text-slate-900 truncate">
                                             {slot.label} {slotIsFull ? "(Full)" : ""}
                                         </div>
-                                        <div className="text-xs text-slate-600">{slot.desc}</div>
-                                    </label>
+                                        <div className="text-xs text-slate-600 truncate">
+                                            {slot.desc}
+                                        </div>
+                                    </div>
                                 );
                             })}
                         </div>

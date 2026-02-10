@@ -71,7 +71,7 @@ export default function HomePage() {
                             Pricing
                         </a>
                         <a className="text-sm font-semibold text-slate-700 hover:text-slate-900" href="#faq">
-                            FAQ
+                            FAQs
                         </a>
                         <a className="text-sm font-semibold text-slate-700 hover:text-slate-900" href="#contact">
                             Contact
@@ -107,7 +107,7 @@ export default function HomePage() {
                         </p>
                         <HeroQuoteBar />
                     </div>
-                    <div className="relative overflow-x-clip">
+                    <div className="relative">
                         <div className="absolute inset-0 scale-[1.05] rounded-[32px] bg-gradient-to-tr from-emerald-100/40 to-transparent" />
                         <HeroServiceImage />
                     </div>
@@ -116,28 +116,92 @@ export default function HomePage() {
             </section>
             <section id="services" className="border-t border-slate-200/70 bg-slate-50/40">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
-                    <h2 className="text-2xl font-black tracking-tight">What we offer</h2>
-                    <p className="mt-4 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">
-                        We Offer The Best For You.
-                    </p>
-                    <ServicesGrid />
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                            <span className="h-2 w-2 rounded-full bg-emerald-600" />
+                            Services
+                        </div>
+
+                        <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
+                            What we offer
+                        </h2>
+
+                        <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
+                            Pick the service you need — storage, moving, or secure shredding — with clear pricing and flexible scheduling.
+                        </p>
+                    </div>
+
+                    <div className="mt-8">
+                        <ServicesGrid />
+                    </div>
                 </div>
             </section>
             {/* Pricing */}
             <section id="pricing" className="border-t border-slate-200/70 bg-white">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
-                    <h2 className="text-2xl font-black tracking-tight">Get Instant Quote</h2>
-                    <p className="mt-4 max-w-full text-base md:text-lg leading-relaxed text-slate-600 mb-4">
-                        Select a service, customise your details, and see your price instantly — all in one place.
-                    </p>
-                    <HomeClientControls variant="pricing" />
+                    <div className="max-w-3xl">
+                        <h2 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
+                            Get an instant quote
+                        </h2>
+
+                        <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
+                            Choose a service, customise your details, and see your price instantly — all in one seamless flow.
+                        </p>
+                        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+                            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+                                {/* Trustpilot */}
+                                <a
+                                    href="https://uk.trustpilot.com/review/kxhlogistics.co.uk"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group inline-flex items-center gap-2 rounded-lg px-1 py-0.5 hover:bg-slate-50"
+                                    aria-label="View our Trustpilot reviews"
+                                >
+                                    <span className="font-bold text-slate-900">4.8</span>
+
+                                    <span className="font-medium text-slate-700">Excellent</span>
+
+                                    <span className="inline-flex items-center gap-0.5" aria-label="5 star rating">
+                                        {Array.from({ length: 5 }).map((_, i) => (
+                                            <span
+                                                key={i}
+                                                className="inline-flex h-4 w-4 items-center justify-center rounded-sm bg-[#00B67A] text-[10px] font-bold text-white"
+                                            >
+                                                ★
+                                            </span>
+                                        ))}
+                                    </span>
+
+                                    <span className="font-semibold text-slate-700 group-hover:underline">
+                                        Trustpilot
+                                    </span>
+                                </a>
+
+                                <span className="h-1 w-1 rounded-full bg-slate-300" />
+
+                                <span className="inline-flex items-center gap-1 font-medium">
+                                    No hidden fees
+                                </span>
+
+                                <span className="h-1 w-1 rounded-full bg-slate-300" />
+
+                                <span className="inline-flex items-center gap-1 font-medium">
+                                    Cancel anytime
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 min-w-0">
+                        <HomeClientControls variant="pricing" />
+                    </div>
                 </div>
             </section>
 
             {/* FAQ */}
             <section id="faq" className="border-t border-slate-200/70 bg-slate-50/40">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
-                    <h2 className="text-2xl font-black tracking-tight">FAQ</h2>
+                    <h2 className="text-2xl font-black tracking-tight">FAQs</h2>
 
                     <div className="mt-6 grid gap-3">
                         {faqs.map((f) => (

@@ -81,7 +81,7 @@ export default function HomeClientControls({
                         {
                             id: "moving",
                             title: "Packing and Moving",
-                            desc: "Same-day moves across London",
+                            desc: "Same-day moves within London",
                         },
                         {
                             id: "shredding",
@@ -124,15 +124,14 @@ export default function HomeClientControls({
                     })}
                 </div>
 
-                {/* Switchable form + summary */}
-                <div className="grid gap-6 items-start lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
-                    <div>
+                <div className="grid gap-6 items-start lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
+                    <div className="min-w-0">
                         {state.serviceType === "storage" && <StorageForm />}
                         {state.serviceType === "moving" && <MovingForm />}
                         {state.serviceType === "shredding" && <ShreddingForm />}
                     </div>
 
-                    <div className="lg:sticky lg:top-6">
+                    <div className="min-w-0 lg:sticky lg:top-6">
                         {state.serviceType === "storage" && <StorageOrderSummary />}
                         {state.serviceType === "moving" && <MovingOrderSummary />}
                         {state.serviceType === "shredding" && <ShreddingOrderSummary />}
