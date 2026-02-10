@@ -11,14 +11,14 @@ import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { useAdminSettings } from "../../admin/useAdminSettings";
 
-const storageItems: { id: StorageItemId; name: string; desc: string }[] = [
-    { id: "small-box", name: "Small Box", desc: "45 × 30 × 30 cm" },
-    { id: "medium-box", name: "Medium Box", desc: "50 × 40 × 40 cm" },
-    { id: "large-box", name: "Large Box", desc: "50 × 50 × 50 cm" },
-    { id: "xl-box", name: "XL Box", desc: "70 × 45 × 45 cm" },
-    { id: "suitcase", name: "Suitcase", desc: "Hard shelled suitcase" },
-    { id: "half-container", name: "½ Container", desc: "25sqft container" },
-    { id: "full-container", name: "Full Container", desc: "50sqft container" },
+const storageItems: { id: StorageItemId; name: string; desc: string; price: string }[] = [
+    { id: "small-box", name: "Small Box", desc: "45 × 30 × 30 cm", price: "£5" },
+    { id: "medium-box", name: "Medium Box", desc: "50 × 40 × 40 cm", price: "£8" },
+    { id: "large-box", name: "Large Box", desc: "50 × 50 × 50 cm", price: "£12" },
+    { id: "xl-box", name: "XL Box", desc: "70 × 45 × 45 cm", price: "£15" },
+    { id: "suitcase", name: "Suitcase", desc: "Hard shelled suitcase", price: "£10" },
+    { id: "half-container", name: "½ Container", desc: "25sqft container", price: "£75" },
+    { id: "full-container", name: "Full Container", desc: "50sqft container", price: "£150" },
 ];
 
 type StepId = 0 | 1 | 2 | 3;
@@ -368,6 +368,7 @@ export function StorageForm() {
                                         <div>
                                             <div className="text-sm font-medium text-slate-900">{item.name}</div>
                                             <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
+                                            <div className="mt-1 text-xs text-slate-600">{item.price}</div>
                                         </div>
 
                                         <div className="flex items-center gap-2">

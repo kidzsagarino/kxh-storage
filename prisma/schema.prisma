@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -54,6 +48,38 @@ enum AddressType {
   BILLING
 }
 
+/**
+ * Your canonical catalog IDs.
+ * These match the TypeScript union types you provided.
+ */
+enum CatalogItemId {
+  // STORAGE
+  small_box
+  medium_box
+  large_box
+  xl_box
+  suitcase
+  half_container
+  full_container
+
+  // MOVING
+  small_move
+  one_bedroom_flat
+  two_bedroom_flat
+  three_bedroom_flat
+  four_bedroom_flat
+  office_move
+
+  // SHREDDING
+  bag
+  archive_box
+}
+
+enum MovingPackageId {
+  basic_package
+  move_and_pack
+}
+
 model Customer {
   id        String   @id @default(cuid())
   email     String?  @unique
@@ -66,53 +92,133 @@ model Customer {
 }
 
 model AdminUser {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  // Store a hashed password if you do credentials auth.
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
   passwordHash String?
-  role      String   @default("admin")
-  isActive  Boolean  @default(true)
+  role         String   @default("admin")
+  isActive     Boolean  @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Order {
-  id            String      @id @default(cuid())
-  orderNumber   String      @unique
-  serviceType   ServiceType
-  status        OrderStatus @default(DRAFT)
+/**
+ * Catalog of items for all services, using stable ids and skus.
+ * - id: enum (safe, no typos)
+ * - sku: string (matches your TS IDs exactly, e.g. "small-box")
+ */
+model ServiceItem {
+  id          CatalogItemId @id
+  serviceType ServiceType
+  sku         String        @unique
+  name        String
+  description String?
+  isActive    Boolean       @default(true)
 
-  customerId    String
-  customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  prices      ServiceItemPrice[]
+  orderItems  OrderItem[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([serviceType])
+  @@index([isActive])
+}
+
+model ServiceItemPrice {
+  id             String      @id @default(cuid())
+  serviceItemId  CatalogItemId
+  serviceItem    ServiceItem @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
+
+  currency       String      @default("GBP")
+  unitPriceMinor Int
+
+  // Optional price window
+  effectiveFrom  DateTime?
+  effectiveTo    DateTime?
+  isActive       Boolean     @default(true)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([serviceItemId, currency])
+  @@index([currency])
+  @@index([isActive])
+}
+
+/**
+ * Moving Packages
+ */
+model MovingPackage {
+  id          MovingPackageId @id
+  sku         String          @unique // e.g. "basic-package"
+  name        String
+  description String?
+  isActive    Boolean         @default(true)
+
+  prices      MovingPackagePrice[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model MovingPackagePrice {
+  id              String        @id @default(cuid())
+  packageId       MovingPackageId
+  movingPackage   MovingPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  currency        String @default("GBP")
+  priceMinor      Int
+
+  effectiveFrom   DateTime?
+  effectiveTo     DateTime?
+  isActive        Boolean @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([packageId, currency])
+  @@index([currency])
+  @@index([isActive])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  serviceType ServiceType
+  status      OrderStatus @default(DRAFT)
+
+  customerId  String
+  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
 
   // Booking / schedule
-  serviceDate   DateTime?
-  timeSlotId    String?
-  timeSlot      TimeSlot?   @relation(fields: [timeSlotId], references: [id], onDelete: SetNull)
+  serviceDate DateTime?
+  timeSlotId  String?
+  timeSlot    TimeSlot?   @relation(fields: [timeSlotId], references: [id], onDelete: SetNull)
 
   // Options / add-ons
   packingAssistance Boolean @default(false)
-  notes         String?
+  notes             String?
 
   // Money fields (store in minor units e.g. pence)
-  currency      String   @default("GBP")
-  subtotalMinor Int      @default(0)
-  discountMinor Int      @default(0)
-  taxMinor      Int      @default(0)
-  totalMinor    Int      @default(0)
+  currency      String @default("GBP")
+  subtotalMinor Int    @default(0)
+  discountMinor Int    @default(0)
+  taxMinor      Int    @default(0)
+  totalMinor    Int    @default(0)
 
-  // Stripe (or other provider) helpful ids
-  externalRef   String?  // e.g. Stripe Checkout Session id
-  metadata      Json?
+  externalRef String?
+  metadata    Json?
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  items         OrderItem[]
-  addresses     Address[]
-  payments      Payment[]
+  items     OrderItem[]
+  addresses Address[]
+  payments  Payment[]
 
   @@index([customerId])
   @@index([status])
@@ -121,44 +227,44 @@ model Order {
 }
 
 model OrderItem {
-  id        String   @id @default(cuid())
-  orderId   String
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  // Generic item lines for both STORAGE and MOVING
-  sku       String?  // your internal id like "small-box" or "1-bedroom-flat"
-  name      String
-  quantity  Int      @default(1)
+  // Optional link to catalog item
+  serviceItemId CatalogItemId?
+  serviceItem   ServiceItem? @relation(fields: [serviceItemId], references: [id], onDelete: SetNull)
 
-  // pricing in minor unit
+  sku      String?
+  name     String
+  quantity Int @default(1)
+
   unitPriceMinor Int @default(0)
   lineTotalMinor Int @default(0)
 
-  // For storage, you may want duration
-  months    Int?
-
-  // Extra details
-  details   Json?
+  months  Int?
+  details Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([orderId])
+  @@index([serviceItemId])
 }
 
 model Address {
-  id        String      @id @default(cuid())
-  orderId   String
-  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  type      AddressType
-  label     String?     // "Home", "Office", etc.
-  line1     String
-  line2     String?
-  city      String
-  region    String?     // county/state
+  type       AddressType
+  label      String?
+  line1      String
+  line2      String?
+  city       String
+  region     String?
   postalCode String
-  country   String      @default("GB")
+  country    String @default("GB")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -167,23 +273,22 @@ model Address {
 }
 
 model Payment {
-  id          String          @id @default(cuid())
-  orderId     String
-  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  provider    PaymentProvider @default(STRIPE)
-  status      PaymentStatus   @default(REQUIRES_PAYMENT_METHOD)
+  provider PaymentProvider @default(STRIPE)
+  status   PaymentStatus   @default(REQUIRES_PAYMENT_METHOD)
 
-  currency    String          @default("GBP")
+  currency    String @default("GBP")
   amountMinor Int
 
-  // Provider refs (Stripe: payment_intent, charge, session)
   providerRef String?
   receiptUrl  String?
   raw         Json?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([orderId])
   @@index([status])
@@ -191,19 +296,19 @@ model Payment {
 }
 
 model TimeSlot {
-  id        String   @id @default(cuid())
-  name      String   // e.g. "AM", "PM", "9:00-12:00"
-  startTime String?  // "09:00" (optional)
-  endTime   String?  // "12:00"
-  isActive  Boolean  @default(true)
+  id        String  @id @default(cuid())
+  name      String
+  startTime String?
+  endTime   String?
+  isActive  Boolean @default(true)
 
-  orders    Order[]
+  orders Order[]
 
   @@unique([name])
 }
 
 model Setting {
-  key       String   @id
+  key       String @id
   value     Json
   updatedAt DateTime @updatedAt
 }
