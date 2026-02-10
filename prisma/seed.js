@@ -1,17 +1,9 @@
-const { PrismaClient, ServiceType } = require("@prisma/client");
+const { PrismaClient, ServiceType, BillingUnit, DiscountScope } = require("@prisma/client");
 
 const prisma = new PrismaClient();
-
 const GBP = "GBP";
 
-function item(id, serviceType, sku, name, unitPriceMinor) {
-  return { id, serviceType, sku, name, unitPriceMinor };
-}
-
-async function main() {
-  console.log("🌱 Seeding catalog + defaults...");
-
-  // ---- Time slots ----
+async function seedTimeSlots() {
   const slots = [
     { name: "Morning", startTime: "09:00", endTime: "12:00" },
     { name: "Afternoon", startTime: "12:00", endTime: "17:00" },
@@ -25,29 +17,30 @@ async function main() {
       update: {},
     });
   }
+}
 
-  // ---- Service items (your IDs) ----
+async function seedServiceItemsAndPrices() {
   const items = [
-    // STORAGE
-    item("small_box", ServiceType.STORAGE, "small-box", "Small Box", 500),
-    item("medium_box", ServiceType.STORAGE, "medium-box", "Medium Box", 800),
-    item("large_box", ServiceType.STORAGE, "large-box", "Large Box", 1200),
-    item("xl_box", ServiceType.STORAGE, "xl-box", "XL Box", 1500),
-    item("suitcase", ServiceType.STORAGE, "suitcase", "Suitcase", 1000),
-    item("half_container", ServiceType.STORAGE, "half-container", "Half Container", 7500),
-    item("full_container", ServiceType.STORAGE, "full-container", "Full Container", 15000),
+    // STORAGE (monthly)
+    { id: "small_box", serviceType: ServiceType.STORAGE, sku: "small-box", name: "Small Box", unit: BillingUnit.PER_MONTH, price: 500 },
+    { id: "medium_box", serviceType: ServiceType.STORAGE, sku: "medium-box", name: "Medium Box", unit: BillingUnit.PER_MONTH, price: 800 },
+    { id: "large_box", serviceType: ServiceType.STORAGE, sku: "large-box", name: "Large Box", unit: BillingUnit.PER_MONTH, price: 1200 },
+    { id: "xl_box", serviceType: ServiceType.STORAGE, sku: "xl-box", name: "XL Box", unit: BillingUnit.PER_MONTH, price: 1500 },
+    { id: "suitcase", serviceType: ServiceType.STORAGE, sku: "suitcase", name: "Suitcase", unit: BillingUnit.PER_MONTH, price: 1000 },
+    { id: "half_container", serviceType: ServiceType.STORAGE, sku: "half-container", name: "Half Container", unit: BillingUnit.PER_MONTH, price: 7500 },
+    { id: "full_container", serviceType: ServiceType.STORAGE, sku: "full-container", name: "Full Container", unit: BillingUnit.PER_MONTH, price: 15000 },
 
-    // MOVING
-    item("small_move", ServiceType.MOVING, "small-move", "Small Move", 15000),
-    item("one_bedroom_flat", ServiceType.MOVING, "1-bedroom-flat", "1 Bedroom Flat", 25000),
-    item("two_bedroom_flat", ServiceType.MOVING, "2-bedroom-flat", "2 Bedroom Flat", 35000),
-    item("three_bedroom_flat", ServiceType.MOVING, "3-bedroom-flat", "3 Bedroom Flat", 45000),
-    item("four_bedroom_flat", ServiceType.MOVING, "4-bedroom-flat", "4 Bedroom Flat", 60000),
-    item("office_move", ServiceType.MOVING, "office-move", "Office Move", 90000),
+    // MOVING (flat)
+    { id: "small_move", serviceType: ServiceType.MOVING, sku: "small-move", name: "Small Move", unit: BillingUnit.FLAT, price: 15000 },
+    { id: "one_bedroom_flat", serviceType: ServiceType.MOVING, sku: "1-bedroom-flat", name: "1 Bedroom Flat", unit: BillingUnit.FLAT, price: 25000 },
+    { id: "two_bedroom_flat", serviceType: ServiceType.MOVING, sku: "2-bedroom-flat", name: "2 Bedroom Flat", unit: BillingUnit.FLAT, price: 35000 },
+    { id: "three_bedroom_flat", serviceType: ServiceType.MOVING, sku: "3-bedroom-flat", name: "3 Bedroom Flat", unit: BillingUnit.FLAT, price: 45000 },
+    { id: "four_bedroom_flat", serviceType: ServiceType.MOVING, sku: "4-bedroom-flat", name: "4 Bedroom Flat", unit: BillingUnit.FLAT, price: 60000 },
+    { id: "office_move", serviceType: ServiceType.MOVING, sku: "office-move", name: "Office Move", unit: BillingUnit.FLAT, price: 90000 },
 
-    // SHREDDING
-    item("bag", ServiceType.SHREDDING, "bag", "Shredding Bag", 1000),
-    item("archive_box", ServiceType.SHREDDING, "archive-box", "Archive Box", 1500),
+    // SHREDDING (per item)
+    { id: "bag", serviceType: ServiceType.SHREDDING, sku: "bag", name: "Bag", unit: BillingUnit.PER_ITEM, price: 1000 },
+    { id: "archive_box", serviceType: ServiceType.SHREDDING, sku: "archive-box", name: "Archive Box", unit: BillingUnit.PER_ITEM, price: 1500 },
   ];
 
   for (const it of items) {
@@ -77,17 +70,20 @@ async function main() {
       create: {
         serviceItemId: it.id,
         currency: GBP,
-        unitPriceMinor: it.unitPriceMinor,
+        unitPriceMinor: it.price,
+        billingUnit: it.unit,
         isActive: true,
       },
       update: {
-        unitPriceMinor: it.unitPriceMinor,
+        unitPriceMinor: it.price,
+        billingUnit: it.unit,
         isActive: true,
       },
     });
   }
+}
 
-  // ---- Moving packages ----
+async function seedMovingPackages() {
   const packages = [
     { id: "basic_package", sku: "basic-package", name: "Basic Package", priceMinor: 0 },
     { id: "move_and_pack", sku: "move-and-pack", name: "Move & Pack", priceMinor: 25000 },
@@ -96,16 +92,8 @@ async function main() {
   for (const p of packages) {
     await prisma.movingPackage.upsert({
       where: { sku: p.sku },
-      create: {
-        id: p.id,
-        sku: p.sku,
-        name: p.name,
-        isActive: true,
-      },
-      update: {
-        name: p.name,
-        isActive: true,
-      },
+      create: { id: p.id, sku: p.sku, name: p.name, isActive: true },
+      update: { name: p.name, isActive: true },
     });
 
     await prisma.movingPackagePrice.upsert({
@@ -115,27 +103,61 @@ async function main() {
           currency: GBP,
         },
       },
+      create: { packageId: p.id, currency: GBP, priceMinor: p.priceMinor, isActive: true },
+      update: { priceMinor: p.priceMinor, isActive: true },
+    });
+  }
+}
+
+async function seedStorageDiscountTiers() {
+  // Your rules:
+  // 1 month: 0%
+  // 3 months: 5%
+  // 6 months: 10%
+  // 12 months: 15%
+  const tiers = [
+    { minMonths: 1, percentOff: 0 },
+    { minMonths: 3, percentOff: 5 },
+    { minMonths: 6, percentOff: 10 },
+    { minMonths: 12, percentOff: 15 },
+  ];
+
+  for (const t of tiers) {
+    await prisma.storageDiscountTier.upsert({
+      where: {
+        global_storage_discount_tier: {
+          currency: "GBP",
+          minMonths: t.minMonths,
+        },
+      },
       create: {
-        packageId: p.id,
-        currency: GBP,
-        priceMinor: p.priceMinor,
+        scope: "GLOBAL",
+        currency: "GBP",
+        minMonths: t.minMonths,
+        percentOff: t.percentOff,
         isActive: true,
       },
       update: {
-        priceMinor: p.priceMinor,
+        percentOff: t.percentOff,
         isActive: true,
       },
     });
-  }
 
-  console.log("✅ Seed complete");
+  }
+}
+
+async function main() {
+  console.log("🌱 Seeding...");
+  await seedTimeSlots();
+  await seedServiceItemsAndPrices();
+  await seedMovingPackages();
+  await seedStorageDiscountTiers();
+  console.log("✅ Done");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seed failed:", e);
+    console.error(e);
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .finally(() => prisma.$disconnect());

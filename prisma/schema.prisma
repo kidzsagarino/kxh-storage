@@ -80,6 +80,17 @@ enum MovingPackageId {
   move_and_pack
 }
 
+enum BillingUnit {
+  PER_MONTH
+  PER_ITEM
+  FLAT
+}
+
+enum DiscountScope {
+  GLOBAL
+  PER_ITEM
+}
+
 model Customer {
   id        String   @id @default(cuid())
   email     String?  @unique
@@ -88,16 +99,16 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders    Order[]
+  orders Order[]
 }
 
 model AdminUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String  @id @default(cuid())
+  email        String  @unique
   name         String
   passwordHash String?
-  role         String   @default("admin")
-  isActive     Boolean  @default(true)
+  role         String  @default("admin")
+  isActive     Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -116,35 +127,35 @@ model ServiceItem {
   description String?
   isActive    Boolean       @default(true)
 
-  prices      ServiceItemPrice[]
-  orderItems  OrderItem[]
+  prices     ServiceItemPrice[]
+  orderItems OrderItem[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  storageDiscountTiers StorageDiscountTier[] // Opposite relation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([serviceType])
   @@index([isActive])
 }
 
 model ServiceItemPrice {
-  id             String      @id @default(cuid())
-  serviceItemId  CatalogItemId
-  serviceItem    ServiceItem @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
+  id            String        @id @default(cuid())
+  serviceItemId CatalogItemId
+  serviceItem   ServiceItem   @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
 
   currency       String      @default("GBP")
   unitPriceMinor Int
+  billingUnit    BillingUnit @default(PER_ITEM)
 
-  // Optional price window
-  effectiveFrom  DateTime?
-  effectiveTo    DateTime?
-  isActive       Boolean     @default(true)
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  isActive      Boolean   @default(true)
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([serviceItemId, currency])
-  @@index([currency])
-  @@index([isActive])
 }
 
 /**
@@ -157,28 +168,28 @@ model MovingPackage {
   description String?
   isActive    Boolean         @default(true)
 
-  prices      MovingPackagePrice[]
+  prices MovingPackagePrice[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([isActive])
 }
 
 model MovingPackagePrice {
-  id              String        @id @default(cuid())
-  packageId       MovingPackageId
-  movingPackage   MovingPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  id            String          @id @default(cuid())
+  packageId     MovingPackageId
+  movingPackage MovingPackage   @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
-  currency        String @default("GBP")
-  priceMinor      Int
+  currency   String @default("GBP")
+  priceMinor Int
 
-  effectiveFrom   DateTime?
-  effectiveTo     DateTime?
-  isActive        Boolean @default(true)
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  isActive      Boolean   @default(true)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([packageId, currency])
   @@index([currency])
@@ -186,24 +197,22 @@ model MovingPackagePrice {
 }
 
 model Order {
-  id          String      @id @default(cuid())
-  orderNumber String      @unique
+  id          String @id @default(cuid())
+  orderNumber String @unique @default(cuid()) // ✅ add default
+
   serviceType ServiceType
   status      OrderStatus @default(DRAFT)
 
-  customerId  String
-  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
 
-  // Booking / schedule
   serviceDate DateTime?
   timeSlotId  String?
-  timeSlot    TimeSlot?   @relation(fields: [timeSlotId], references: [id], onDelete: SetNull)
+  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id], onDelete: SetNull)
 
-  // Options / add-ons
   packingAssistance Boolean @default(false)
   notes             String?
 
-  // Money fields (store in minor units e.g. pence)
   currency      String @default("GBP")
   subtotalMinor Int    @default(0)
   discountMinor Int    @default(0)
@@ -231,25 +240,24 @@ model OrderItem {
   orderId String
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  // Optional link to catalog item
   serviceItemId CatalogItemId?
-  serviceItem   ServiceItem? @relation(fields: [serviceItemId], references: [id], onDelete: SetNull)
+  serviceItem   ServiceItem?   @relation(fields: [serviceItemId], references: [id], onDelete: SetNull)
 
   sku      String?
   name     String
-  quantity Int @default(1)
+  quantity Int     @default(1)
 
-  unitPriceMinor Int @default(0)
-  lineTotalMinor Int @default(0)
+  unitPriceMinor Int  @default(0)
+  lineTotalMinor Int  @default(0)
+  months         Int?
 
-  months  Int?
   details Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([orderId])
-  @@index([serviceItemId])
+  @@index([orderId]) // ✅ add
+  @@index([serviceItemId]) // ✅ add
 }
 
 model Address {
@@ -264,7 +272,7 @@ model Address {
   city       String
   region     String?
   postalCode String
-  country    String @default("GB")
+  country    String      @default("GB")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -308,7 +316,29 @@ model TimeSlot {
 }
 
 model Setting {
-  key       String @id
+  key       String   @id
   value     Json
   updatedAt DateTime @updatedAt
+}
+
+model StorageDiscountTier {
+  id String @id @default(cuid())
+
+  // If you want, keep this as informational only
+  scope DiscountScope @default(GLOBAL)
+
+  serviceItemId CatalogItemId?
+  serviceItem   ServiceItem?   @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
+
+  currency   String @default("GBP")
+  minMonths  Int
+  percentOff Int
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([currency, minMonths], name: "global_storage_discount_tier")
+  @@unique([serviceItemId, currency, minMonths], name: "per_item_storage_discount_tier")
+  @@index([serviceItemId, currency, isActive])
 }
