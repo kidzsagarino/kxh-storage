@@ -78,7 +78,7 @@ async function loadServiceItems(currency: string) {
       price: price
         ? {
             currency: price.currency,
-            unitPriceMinor: price.unitPriceMinor,
+            price: minorToMoney(price.unitPriceMinor),
             billingUnit: price.billingUnit,
           }
         : null,
@@ -114,7 +114,7 @@ async function loadMovingPackages(currency: string) {
       sku: p.sku,
       name: p.name,
       description: p.description,
-      price: price ? { currency: price.currency, priceMinor: price.priceMinor } : null,
+      price: price ? { currency: price.currency, price: minorToMoney(price.priceMinor) } : null,
     };
   });
 }
@@ -215,6 +215,11 @@ function mapSlotKeyEnumToKey(k: TimeSlotKey) {
   }
 }
 
+function minorToMoney(minor: number | null | undefined): number | null {
+  if (minor == null) return null;
+  return Number((minor / 100).toFixed(2));
+}
+
 function isoDateOnly(d: Date) {
   // YYYY-MM-DD
   const y = d.getUTCFullYear();
@@ -283,8 +288,8 @@ function buildSettingsForClient(settings: Awaited<ReturnType<typeof loadAdminSet
 
     // store in minor units, frontend can display GBP
     moving: {
-      pricePerMileMinor: settings.movingPricePerMileMinor,
-      packingAssistanceMinor: settings.packingAssistanceMinor,
+      pricePerMile: minorToMoney(settings.movingPricePerMileMinor),
+      packingAssistance: minorToMoney(settings.packingAssistanceMinor),
     },
 
     scheduling: {
