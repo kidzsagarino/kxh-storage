@@ -146,12 +146,100 @@ async function seedStorageDiscountTiers() {
   }
 }
 
+async function seedWeekdayRule() {
+  
+}
+
+async function seedAdminSettings() {
+  // Create or find the single settings row
+  const settings = await prisma.adminSettings.findFirst() ??
+    await prisma.adminSettings.create({ data: {} });
+
+  // Time slot settings
+  const slotDefaults = [
+    { key: "MORNING", label: "Morning", range: "7am – 10am", enabled: true },
+    { key: "AFTERNOON", label: "Afternoon", range: "10am – 3pm", enabled: true },
+    { key: "EVENING", label: "Evening", range: "3pm – 6pm", enabled: true },
+  ];
+
+  for (const s of slotDefaults) {
+    await prisma.timeSlotSetting.upsert({
+      where: { key: s.key },
+      create: { settingsId: settings.id, ...s },
+      update: { label: s.label, range: s.range, enabled: s.enabled },
+    });
+  }
+
+  // Capacity defaults (same as your UI)
+  const caps = [
+    ["STORAGE", "MORNING", 6],
+    ["STORAGE", "AFTERNOON", 8],
+    ["STORAGE", "EVENING", 6],
+    ["MOVING", "MORNING", 3],
+    ["MOVING", "AFTERNOON", 3],
+    ["MOVING", "EVENING", 2],
+    ["SHREDDING", "MORNING", 10],
+    ["SHREDDING", "AFTERNOON", 12],
+    ["SHREDDING", "EVENING", 10],
+  ];
+
+  for (const [serviceType, slotKey, capacity] of caps) {
+    await prisma.capacitySetting.upsert({
+      where: {
+        settingsId_serviceType_slotKey: {
+          settingsId: settings.id,
+          serviceType,
+          slotKey,
+        },
+      },
+      create: { settingsId: settings.id, serviceType, slotKey, capacity },
+      update: { capacity },
+    });
+  }
+
+  const weekdayKeys = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+
+  function isWeekend(day) {
+    return day === "SAT" || day === "SUN";
+  }
+
+  const services = ["STORAGE", "MOVING", "SHREDDING"];
+
+  for (const serviceType of services) {
+    for (const weekday of weekdayKeys) {
+      const enabled =
+        serviceType === "MOVING"
+          ? true // ✅ moving open all week (including weekends)
+          : !isWeekend(weekday); // ✅ storage/shredding closed weekends
+
+      await prisma.weekdayRule.upsert({
+        where: {
+          settingsId_serviceType_weekday: {
+            settingsId: settings.id,
+            serviceType,
+            weekday,
+          },
+        },
+        create: {
+          settingsId: settings.id,
+          serviceType,
+          weekday,
+          enabled,
+        },
+        update: { enabled },
+      });
+    }
+  }
+}
+
 async function main() {
   console.log("🌱 Seeding...");
   await seedTimeSlots();
   await seedServiceItemsAndPrices();
   await seedMovingPackages();
   await seedStorageDiscountTiers();
+  await seedAdminSettings();
+
   console.log("✅ Done");
 }
 

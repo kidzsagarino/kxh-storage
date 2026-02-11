@@ -91,6 +91,23 @@ enum DiscountScope {
   PER_ITEM
 }
 
+enum Weekday {
+  SUN
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+}
+
+enum TimeSlotKey {
+  MORNING
+  AFTERNOON
+  EVENING
+}
+
+
 model Customer {
   id        String   @id @default(cuid())
   email     String?  @unique
@@ -341,4 +358,82 @@ model StorageDiscountTier {
   @@unique([currency, minMonths], name: "global_storage_discount_tier")
   @@unique([serviceItemId, currency, minMonths], name: "per_item_storage_discount_tier")
   @@index([serviceItemId, currency, isActive])
+}
+
+model TimeSlotSetting {
+  id        String      @id @default(cuid())
+  settingsId String
+  settings  AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+
+  key     TimeSlotKey @unique
+  label   String
+  range   String
+  enabled Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CapacitySetting {
+  id         String @id @default(cuid())
+  settingsId String
+  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+
+  serviceType ServiceType
+  slotKey     TimeSlotKey
+  capacity    Int @default(0)
+
+  @@unique([settingsId, serviceType, slotKey])
+  @@index([serviceType])
+}
+
+model WeekdayRule {
+  id         String @id @default(cuid())
+  settingsId String
+  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+
+  serviceType ServiceType
+  weekday     Weekday
+  enabled     Boolean @default(true)
+
+  @@unique([settingsId, serviceType, weekday])
+  @@index([serviceType])
+}
+
+model BlackoutDate {
+  id         String   @id @default(cuid())
+  settingsId String
+  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+
+  date       DateTime
+  reason     String?
+
+  @@unique([settingsId, date])
+  @@index([date])
+}
+
+model AdminSettings {
+  id String @id @default(cuid())
+
+  // UI toggles
+  storageEnabled   Boolean @default(true)
+  movingEnabled    Boolean @default(true)
+  shreddingEnabled Boolean @default(true)
+
+  // Moving rules
+  movingPricePerMileMinor Int @default(58)
+  packingAssistanceMinor  Int @default(29500)
+
+  // Scheduling behavior
+  disableAutoBlockSchedule Boolean @default(false)
+  capacityEnabled          Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  timeSlotSettings   TimeSlotSetting[]
+  capacities         CapacitySetting[]
+  weekdayRules       WeekdayRule[]
+  blackoutDates      BlackoutDate[]
 }
