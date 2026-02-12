@@ -11,16 +11,6 @@ import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { useAdminSettings } from "../../admin/useAdminSettings";
 
-const storageItems: { id: StorageItemId; name: string; desc: string; price: string }[] = [
-    { id: "small-box", name: "Small Box", desc: "45 × 30 × 30 cm", price: "£5" },
-    { id: "medium-box", name: "Medium Box", desc: "50 × 40 × 40 cm", price: "£8" },
-    { id: "large-box", name: "Large Box", desc: "50 × 50 × 50 cm", price: "£12" },
-    { id: "xl-box", name: "XL Box", desc: "70 × 45 × 45 cm", price: "£15" },
-    { id: "suitcase", name: "Suitcase", desc: "Hard shelled suitcase", price: "£10" },
-    { id: "half-container", name: "½ Container", desc: "25sqft container", price: "£75" },
-    { id: "full-container", name: "Full Container", desc: "50sqft container", price: "£150" },
-];
-
 type StepId = 0 | 1 | 2 | 3;
 
 const steps = [
@@ -178,24 +168,42 @@ export function StorageForm() {
     const storageItems = orderFlow && orderFlow.catalog.storage.items;
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
 
-    const inc = (id: StorageItemId) =>
-        setState((st) => ({
-            ...st,
-            quantities: { ...st.quantities, [id]: st.quantities[id] + 1 },
-        }));
+    const inc = (id: StorageItemId) => {
+        if (!orderFlow) return;
 
-    const dec = (id: StorageItemId) =>
+        const item = orderFlow.catalog.storage.itemsBySku?.[id];
+        if (!item) return;
+
+        if (!item.price) return;
+
         setState((st) => ({
             ...st,
-            quantities: { ...st.quantities, [id]: Math.max(0, st.quantities[id] - 1) },
+            quantities: {
+                ...st.quantities,
+                [id]: (st.quantities[id] ?? 0) + 1,
+            },
         }));
+    };
+
+    const dec = (id: StorageItemId) => {
+        setState((st) => ({
+            ...st,
+            quantities: {
+                ...st.quantities,
+                [id]: Math.max(0, (st.quantities[id] ?? 0) - 1),
+            },
+        }));
+    };
 
     const totalItems = useMemo(
-        () => Object.values(state.quantities).reduce((a, b) => a + b, 0),
+        () =>
+            Object.values(state.quantities).reduce(
+                (acc, val) => acc + (Number(val) || 0),
+                0
+            ),
         [state.quantities]
     );
 
-    // Step validation
     const durationOk =
         state.durationMonth === 1 ||
         state.durationMonth === 3 ||
@@ -240,7 +248,7 @@ export function StorageForm() {
             caps,
             service: "storage",
             dateISO: state.collectionDate,
-            slot: state.timeSlot, // now it's safe
+            slot: state.timeSlot,
         });
 
         if (slotIsFull) {
@@ -278,7 +286,6 @@ export function StorageForm() {
             onSubmit={onSubmit}
             className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6"
         >
-            {/* Stepper */}
             <div className="space-y-2">
                 <Stepper
                     current={step}
@@ -293,8 +300,6 @@ export function StorageForm() {
                     {step === 3 && "Enter your address and contact details."}
                 </div>
             </div>
-
-            {/* Step 0: Duration */}
             {step === 0 && (
                 <div className="space-y-2 max-w-full">
                     <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -302,7 +307,7 @@ export function StorageForm() {
                     </label>
 
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-                        {duration.map((m:any) => (
+                        {duration.map((m: any) => (
                             <div
                                 key={m.minMonths}
                                 className={`relative min-w-0 w-full flex flex-col items-center justify-center
@@ -339,7 +344,7 @@ export function StorageForm() {
                                 </div>
 
                                 <div className="mt-1 text-[10px] text-slate-600">
-                                    {m.percentOff == 0 ? "Standard" : `%`}{ m.percentOff > 0 && `${m.percentOff} off`}
+                                    {m.percentOff == 0 ? "Standard" : `%`}{m.percentOff > 0 && `${m.percentOff} off`}
                                 </div>
                             </div>
 
@@ -347,8 +352,6 @@ export function StorageForm() {
                     </div>
                 </div>
             )}
-
-            {/* Step 2: Items */}
             {step === 1 && (
                 <div>
                     <div className="flex items-end justify-between gap-4">
@@ -360,8 +363,8 @@ export function StorageForm() {
 
                     <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {storageItems.map((item: any) => {
-                            const id = item.id as StorageItemId;
-                            const count = state.quantities[id];
+                            const id = item.sku as StorageItemId;
+                            const count = state.quantities[id] ?? 0;
                             const price = item.price?.price ?? 0;
 
                             return (
@@ -379,10 +382,10 @@ export function StorageForm() {
                                         <div className="flex items-center gap-2">
                                             <button
                                                 type="button"
-                                                onClick={() => dec(item.id)}
+                                                onClick={() => dec(item.sku)}
                                                 disabled={count === 0}
                                                 className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white
-                                                text-slate-800 hover:bg-slate-50 disabled:opacity-40"
+                                                text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                                                 aria-label={`Decrease ${item.name}`}
                                             >
                                                 −
@@ -394,8 +397,12 @@ export function StorageForm() {
 
                                             <button
                                                 type="button"
-                                                onClick={() => inc(item.id)}
-                                                className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
+                                                onClick={() => inc(item.sku)}
+                                                disabled={
+                                                    false
+                                                }
+                                                className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white 
+                                                    text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                                                 aria-label={`Increase ${item.name}`}
                                             >
                                                 +
@@ -413,7 +420,6 @@ export function StorageForm() {
                 </div>
             )}
 
-            {/* Step 3: Schedule */}
             {step === 2 && (
                 <div className="space-y-4">
                     <div>
@@ -518,7 +524,6 @@ export function StorageForm() {
                 </div>
             )}
 
-            {/* Step 4: Details */}
             {step === 3 && (
                 <div className="space-y-4">
                     <p className="text-sm font-medium text-slate-700">Customer Details</p>
@@ -597,7 +602,6 @@ export function StorageForm() {
                 </div>
             )}
 
-            {/* Footer navigation */}
             <FooterNav
                 canBack={step > 0}
                 canNext={canGoNext && step <= maxAllowedStep}

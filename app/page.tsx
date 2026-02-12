@@ -61,11 +61,8 @@ export default async function HomePage() {
 
     return (
         <CheckoutProvider initialOrderFlow={initialData}>
-            {/* <ClientLanding initialData={initialData}></ClientLanding> */}
             <main className="min-h-screen bg-white text-slate-900 pb-24 md:pb-0">
                 <JsonLd />
-
-                {/* Top Bar */}
                 <div id="top" className="h-0 scroll-mt-24" />
                 <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
                     <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
@@ -105,13 +102,10 @@ export default async function HomePage() {
                     </div>
                 </header>
 
-                {/* Hero */}
                 <section className="relative bg-slate-50">
                     <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-4 sm:px-6 lg:px-8 py-10 md:grid-cols-2">
 
-                        {/* BOTTOM: Image left, Quote bar right */}
                         <div className="relative z-10">
-                            {/* Micro-hint */}
                             <p className="absolute -top-6 left-0 text-[11px] font-medium uppercase tracking-wide text-slate-400">
                                 Choose a service
                             </p>
@@ -146,7 +140,6 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
-                {/* Pricing */}
                 <section id="pricing" className="border-t border-slate-200/70 bg-white">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                         <div className="max-w-3xl">
@@ -159,7 +152,6 @@ export default async function HomePage() {
                             </p>
                             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
                                 <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
-                                    {/* Trustpilot */}
                                     <a
                                         href="https://uk.trustpilot.com/review/kxhlogistics.co.uk"
                                         target="_blank"
@@ -207,8 +199,6 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
-
-                {/* FAQ */}
                 <section id="faq" className="border-t border-slate-200/70 bg-slate-50/40">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                         <h2 className="text-2xl font-black tracking-tight">FAQs</h2>
@@ -227,8 +217,6 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
-
-                {/* Contact */}
                 <section id="contact" className="border-t border-slate-200/70 bg-white">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-12">
                         <h2 className="text-2xl font-black tracking-tight">Contact</h2>
