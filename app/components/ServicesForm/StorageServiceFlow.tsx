@@ -165,7 +165,9 @@ function FooterNav({
 
 export function StorageForm() {
     const router = useRouter();
-    const { state, setState } = useStorageCheckout();
+    const { state, setState, orderFlow } = useStorageCheckout();
+
+    if (!orderFlow) return <div className="text-center">Loading...</div>;
 
     const [step, setStep] = useState<StepId>(0);
     const admin = useAdminSettings(ADMIN_DEFAULT);
@@ -174,6 +176,9 @@ export function StorageForm() {
     const capacityEnabled = admin.scheduling.capacityEnabled;
     const caps = admin.scheduling.capacityPerService.storage;
     const blackout = new Set(admin.scheduling.blackoutDates);
+
+    const storageItems = orderFlow.catalog.storage.items;
+    const duration = orderFlow.catalog.storage.discountTiers;
 
     const inc = (id: StorageItemId) =>
         setState((st) => ({
@@ -299,26 +304,26 @@ export function StorageForm() {
                     </label>
 
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-                        {[1, 3, 6, 12].map((m) => (
+                        {duration.map((m:any) => (
                             <div
-                                key={m}
+                                key={m.minMonths}
                                 className={`relative min-w-0 w-full flex flex-col items-center justify-center
                                     rounded-xl border p-2 py-3 text-center transition
-                                    ${state.durationMonth === m
+                                    ${state.durationMonth === m.minMonths
                                         ? "border-emerald-600 bg-emerald-50"
                                         : "border-slate-200 bg-white hover:border-slate-300"
                                     }
                                     cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200`}
                                 role="radio"
-                                aria-checked={state.durationMonth === m}
+                                aria-checked={state.durationMonth === m.minMonths}
                                 tabIndex={0}
                                 onClick={() =>
-                                    setState((st) => ({ ...st, durationMonth: m as 1 | 3 | 6 | 12 }))
+                                    setState((st) => ({ ...st, durationMonth: m.minMonths }))
                                 }
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter" || e.key === " ") {
                                         e.preventDefault();
-                                        setState((st) => ({ ...st, durationMonth: m as 1 | 3 | 6 | 12 }));
+                                        setState((st) => ({ ...st, durationMonth: m.minMonths }));
                                     }
                                 }}
                             >
@@ -326,17 +331,17 @@ export function StorageForm() {
                                     type="radio"
                                     className="sr-only"
                                     name="durationMonths"
-                                    value={m}
-                                    checked={state.durationMonth === m}
+                                    value={m.minMonths}
+                                    checked={state.durationMonth === m.minMonths}
                                     readOnly
                                 />
 
-                                <div className="text-sm font-bold text-slate-900 truncate">
-                                    {m} <span className="">months</span>
+                                <div className="text-sm font-bold text-slate-900">
+                                    {m.minMonths} <span className="">months</span>
                                 </div>
 
-                                <div className="mt-1 text-[10px] text-slate-500 truncate">
-                                    {m === 1 ? "Standard" : m === 3 ? "5% off" : m === 6 ? "10% off" : "15% off"}
+                                <div className="mt-1 text-[10px] text-slate-600">
+                                    {m.percentOff == 0 ? "Standard" : `%`}{ m.percentOff > 0 && `${m.percentOff} off`}
                                 </div>
                             </div>
 
@@ -356,8 +361,10 @@ export function StorageForm() {
                     </div>
 
                     <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {storageItems.map((item) => {
-                            const count = state.quantities[item.id];
+                        {storageItems.map((item: any) => {
+                            const id = item.id as StorageItemId;
+                            const count = state.quantities[id];
+                            const price = item.price?.price ?? 0;
 
                             return (
                                 <div
@@ -368,7 +375,7 @@ export function StorageForm() {
                                         <div>
                                             <div className="text-sm font-medium text-slate-900">{item.name}</div>
                                             <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
-                                            <div className="mt-1 text-xs text-slate-600">{item.price}</div>
+                                            <div className="mt-1 text-xs text-slate-600">{price}</div>
                                         </div>
 
                                         <div className="flex items-center gap-2">
@@ -377,7 +384,7 @@ export function StorageForm() {
                                                 onClick={() => dec(item.id)}
                                                 disabled={count === 0}
                                                 className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white
-                        text-slate-800 hover:bg-slate-50 disabled:opacity-40"
+                                                text-slate-800 hover:bg-slate-50 disabled:opacity-40"
                                                 aria-label={`Decrease ${item.name}`}
                                             >
                                                 −

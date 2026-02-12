@@ -68,12 +68,30 @@ export type MovingState = {
   packingAssistance?: "yes" | "no";
 };
 
+export type ShreddingState = {
+  items: ShreddingItems;
+  collectionDate: string;
+  timeSlot: TimeSlotId;
+  customerDetails: CustomerDetails;
+  enableButton: boolean;
+};
+
+/** ✅ Server-loaded payload for catalog/settings/availability bootstrapping */
+export type OrderFlowData = any; // later we can type this properly
+
+export type CheckoutSettings = {
+  disableAutoBlockSchedule: boolean; // true = DO NOT auto-disable dates/slots
+};
+
 export type CheckoutState = {
   serviceType: ServiceType;
   storage: StorageState;
   moving: MovingState;
   shredding: ShreddingState;
   settings: CheckoutSettings;
+
+  /** ✅ Loaded once from server (SSR) and reused by all forms */
+  orderFlow: OrderFlowData | null;
 };
 
 /** Helpers */
@@ -111,7 +129,7 @@ const emptyMoving: MovingState = {
   toLocation: { address: "", houseNumber: "" },
   customerDetails: { ...emptyCustomer },
   enableButton: false,
-  distanceMiles: 1
+  distanceMiles: 1,
 };
 
 const emptyShredding: ShreddingState = {
@@ -122,13 +140,8 @@ const emptyShredding: ShreddingState = {
   enableButton: false,
 };
 
-
-export type ShreddingState = {
-  items: ShreddingItems;
-  collectionDate: string;
-  timeSlot: TimeSlotId;
-  customerDetails: CustomerDetails;
-  enableButton: boolean;
+const defaultSettings: CheckoutSettings = {
+  disableAutoBlockSchedule: false,
 };
 
 type CheckoutContextValue = {
@@ -143,20 +156,17 @@ type CheckoutContextValue = {
 
   setMoving: React.Dispatch<React.SetStateAction<MovingState>>;
   resetMoving: () => void;
+
   setShredding: React.Dispatch<React.SetStateAction<ShreddingState>>;
   resetShredding: () => void;
+
   setSettings: React.Dispatch<React.SetStateAction<CheckoutSettings>>;
+
+  /** ✅ hydrate order-flow response (catalog/settings) */
+  setOrderFlow: (data: OrderFlowData) => void;
 
   resetAll: () => void;
 };
-export type CheckoutSettings = {
-  disableAutoBlockSchedule: boolean; // true = DO NOT auto-disable dates/slots
-};
-
-const defaultSettings: CheckoutSettings = {
-  disableAutoBlockSchedule: false,
-};
-
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 
@@ -167,11 +177,15 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
     moving: emptyMoving,
     shredding: emptyShredding,
     settings: defaultSettings,
+    orderFlow: null, // ✅
   });
 
   const value = useMemo<CheckoutContextValue>(() => {
     const setServiceType = (t: ServiceType) =>
       setState((s) => ({ ...s, serviceType: t }));
+
+    const setOrderFlow = (data: OrderFlowData) =>
+      setState((s) => ({ ...s, orderFlow: data }));
 
     const setStorage: React.Dispatch<React.SetStateAction<StorageState>> = (updater) =>
       setState((s) => ({
@@ -184,6 +198,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
         ...s,
         moving: typeof updater === "function" ? (updater as any)(s.moving) : updater,
       }));
+
     const setShredding: React.Dispatch<React.SetStateAction<ShreddingState>> = (updater) =>
       setState((s) => ({
         ...s,
@@ -196,19 +211,22 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
         settings: typeof updater === "function" ? (updater as any)(s.settings) : updater,
       }));
 
-
     return {
       state,
       setState,
       setServiceType,
+
+      setOrderFlow, // ✅
 
       setStorage,
       resetStorage: () => setState((s) => ({ ...s, storage: emptyStorage })),
 
       setMoving,
       resetMoving: () => setState((s) => ({ ...s, moving: emptyMoving })),
+
       setShredding,
       resetShredding: () => setState((s) => ({ ...s, shredding: emptyShredding })),
+
       setSettings,
 
       resetAll: () =>
@@ -218,6 +236,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
           moving: emptyMoving,
           shredding: emptyShredding,
           settings: defaultSettings,
+          orderFlow: null, // ✅
         }),
     };
   }, [state]);
@@ -231,7 +250,7 @@ export function useCheckout() {
   return ctx;
 }
 
-/** ✅ No more throwing. Always available, independent slices. */
+/** ✅ Service slice hooks now also expose orderFlow */
 export function useStorageCheckout() {
   const { state, setStorage, setServiceType, resetStorage } = useCheckout();
   return {
@@ -239,6 +258,7 @@ export function useStorageCheckout() {
     setState: setStorage,
     setServiceType,
     reset: resetStorage,
+    orderFlow: state.orderFlow, // ✅
   };
 }
 
@@ -249,16 +269,22 @@ export function useMovingCheckout() {
     setState: setMoving,
     setServiceType,
     reset: resetMoving,
+    orderFlow: state.orderFlow, // ✅
   };
 }
 
 export function useShreddingCheckout() {
   const { state, setShredding, setServiceType, resetShredding } = useCheckout();
-  return { state: state.shredding, setState: setShredding, setServiceType, reset: resetShredding };
+  return {
+    state: state.shredding,
+    setState: setShredding,
+    setServiceType,
+    reset: resetShredding,
+    orderFlow: state.orderFlow, // ✅
+  };
 }
 
 export function useCheckoutSettings() {
   const { state, setSettings } = useCheckout();
   return { settings: state.settings, setSettings };
 }
-

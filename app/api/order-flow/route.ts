@@ -286,7 +286,6 @@ function buildSettingsForClient(settings: Awaited<ReturnType<typeof loadAdminSet
       shredding: settings.shreddingEnabled,
     },
 
-    // store in minor units, frontend can display GBP
     moving: {
       pricePerMile: minorToMoney(settings.movingPricePerMileMinor),
       packingAssistance: minorToMoney(settings.packingAssistanceMinor),
@@ -300,7 +299,7 @@ function buildSettingsForClient(settings: Awaited<ReturnType<typeof loadAdminSet
       blackoutDates,
     },
 
-    timeSlots, // UI config for slot label/range/enabled
+    timeSlots,
   };
 }
 
@@ -319,23 +318,17 @@ export async function GET(req: Request) {
       loadAdminSettingsBundle(),
     ]);
 
-  // Split catalog by service
   const storageItems = normalizedItems.filter((x) => x.serviceType === ServiceType.STORAGE);
   const movingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.MOVING);
   const shreddingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.SHREDDING);
 
-  // Build settings payload for UI
   const settings = buildSettingsForClient(adminSettings);
 
   return NextResponse.json(
     {
       ok: true,
       currency,
-
-      // Settings bundle for order flow + admin UI
       settings,
-
-      // Catalog bundle
       catalog: {
         storage: {
           items: storageItems,
