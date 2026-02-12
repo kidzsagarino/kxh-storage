@@ -1,8 +1,8 @@
 import type { ServiceType, TimeSlotId } from "@/app/components/checkout/CheckoutStore";
 import { getSlotVolume } from "./volume";
 
-type Slot = Exclude<TimeSlotId, "">;
-type Caps = Record<Slot, number>;
+export type Slot = Exclude<TimeSlotId, "">;
+export type Caps = Record<Slot, number>;
 
 export function isSlotFull(args: {
   enabled: boolean;

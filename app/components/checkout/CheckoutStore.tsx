@@ -50,7 +50,7 @@ export type StorageState = {
   durationMonth: 0 | 1 | 3 | 6 | 12;
   quantities: Record<StorageItemId, number>;
   collectionDate: string; // YYYY-MM-DD
-  timeSlot: TimeSlotId;
+  timeSlot: "";
   customerDetails: CustomerDetails;
   enableButton: boolean;
 };
@@ -216,7 +216,7 @@ export function CheckoutProvider({ children, initialOrderFlow }: { children: Rea
       setState,
       setServiceType,
 
-      setOrderFlow, // ✅
+      setOrderFlow,
 
       setStorage,
       resetStorage: () => setState((s) => ({ ...s, storage: emptyStorage })),

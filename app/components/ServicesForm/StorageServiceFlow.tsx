@@ -8,8 +8,8 @@ import {
     type TimeSlotId,
 } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
-import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
-import { useAdminSettings } from "../../admin/useAdminSettings";
+import { Caps, isDayFull, isSlotFull, Slot } from "../scheduling/capacityLogic";
+import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
 
 type StepId = 0 | 1 | 2 | 3;
 
@@ -21,36 +21,6 @@ const steps = [
 ];
 
 const LAST_STEP: StepId = 3;
-const ADMIN_DEFAULT = {
-    scheduling: {
-        disableAutoBlockSchedule: false,
-        capacityEnabled: true,
-        capacityPerService: {
-            storage: { morning: 6, afternoon: 8, evening: 6 },
-            moving: { morning: 3, afternoon: 3, evening: 2 },
-            shredding: { morning: 10, afternoon: 12, evening: 10 },
-        },
-        weekdaysByService: {
-            storage: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false },
-            moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
-            shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
-        },
-        blackoutDates: ["2026-02-11", "2026-02-12"],
-    },
-};
-
-type WeekdayKey = "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
-
-function weekdayKey(d: Date): WeekdayKey {
-    return (["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const)[d.getDay()];
-}
-
-function toLocalISODate(d: Date) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-}
 
 function Stepper({
     current,
@@ -158,15 +128,25 @@ export function StorageForm() {
     const { state, setState, orderFlow } = useStorageCheckout();
 
     const [step, setStep] = useState<StepId>(0);
-    const admin = useAdminSettings(ADMIN_DEFAULT);
 
-    const disableAuto = admin.scheduling.disableAutoBlockSchedule;
-    const capacityEnabled = admin.scheduling.capacityEnabled;
-    const caps = admin.scheduling.capacityPerService.storage;
-    const blackout = new Set(admin.scheduling.blackoutDates);
+    const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
+
+    const capacityEnabled = orderFlow && orderFlow.settings.scheduling.capacityEnabled;
+    const caps: Caps = {
+        ...orderFlow?.settings.scheduling.capacities
+            ?.filter((c: any) => c.serviceType === "STORAGE")
+            ?.reduce((acc: Partial<Caps>, c: any) => {
+            acc[c.slotKey as Slot] = c.capacity;
+            return acc;
+            }, {}),
+        };
+        
+    const blackout = new Set(orderFlow && orderFlow.settings.scheduling.blackoutDates);
 
     const storageItems = orderFlow && orderFlow.catalog.storage.items;
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
+    const weekdays = new Set(orderFlow && orderFlow.settings.scheduling.weekdayRules.filter((s: any) => s.serviceType === "STORAGE" && s.enabled).map((r: any) => r.weekday.toLowerCase()));
+    const timeSlots = orderFlow && orderFlow.timeSlots;
 
     const inc = (id: StorageItemId) => {
         if (!orderFlow) return;
@@ -204,11 +184,7 @@ export function StorageForm() {
         [state.quantities]
     );
 
-    const durationOk =
-        state.durationMonth === 1 ||
-        state.durationMonth === 3 ||
-        state.durationMonth === 6 ||
-        state.durationMonth === 12;
+    const durationOk = duration.some((d: any) => d.minMonths === state.durationMonth);
 
     const itemsOk = totalItems > 0;
 
@@ -252,12 +228,12 @@ export function StorageForm() {
         });
 
         if (slotIsFull) {
-            setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
+            setState((s) => ({ ...s, timeSlot: "" }));
         }
     }, [disableAuto, capacityEnabled, caps, state.collectionDate, state.timeSlot, setState]);
 
     useEffect(() => {
-        setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
+        setState((s) => ({ ...s, timeSlot: "" }));
     }, [state.collectionDate]);
 
     useEffect(() => {
@@ -267,10 +243,10 @@ export function StorageForm() {
         const d = new Date(`${state.collectionDate}T00:00:00`);
         const wk = weekdayKey(d);
 
-        if (!admin.scheduling.weekdaysByService.storage[wk]) {
-            setState((s) => ({ ...s, collectionDate: "", timeSlot: "" as TimeSlotId }));
+        if (!weekdays.has(wk)) {
+            setState((s) => ({ ...s, collectionDate: "", timeSlot: ""}));
         }
-    }, [disableAuto, admin.scheduling.weekdaysByService.storage, state.collectionDate, setState]);
+    }, [disableAuto, weekdays, state.collectionDate, setState]);
 
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -442,7 +418,7 @@ export function StorageForm() {
 
                                 // ✅ weekday per service (storage)
                                 const wk = weekdayKey(d);
-                                if (!admin.scheduling.weekdaysByService.storage[wk]) return true;
+                                if (!weekdays.has(wk)) return true;
 
                                 // disable full days by volume
                                 const iso = toLocalISODate(d);
@@ -461,11 +437,7 @@ export function StorageForm() {
                         <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full">
-                            {[
-                                { id: "morning", label: "Morning", desc: "7am – 10am" },
-                                { id: "afternoon", label: "Afternoon", desc: "10am – 3pm" },
-                                { id: "evening", label: "Evening", desc: "3pm – 6pm" },
-                            ].map((slot) => {
+                            {timeSlots.map((slot: any) => {
                                 const dateISO = state.collectionDate;
                                 const slotIsFull = !disableAuto && !!dateISO && isSlotFull({
                                     enabled: capacityEnabled,
@@ -483,17 +455,17 @@ export function StorageForm() {
                                                 ? "cursor-not-allowed bg-slate-50 opacity-50 border-slate-200"
                                                 : "cursor-pointer bg-white hover:border-slate-300"
                                             }
-                                                    ${state.timeSlot === slot.id
+                                                    ${state.timeSlot === `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`
                                                 ? "border-emerald-600 bg-emerald-50"
                                                 : "border-slate-200"
                                             }
                                                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200`}
                                         onClick={() => {
                                             if (slotIsFull) return;
-                                            setState((s) => ({ ...s, timeSlot: slot.id as TimeSlotId }));
+                                            setState((s: any) => ({ ...s, timeSlot: `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}` }));
                                         }}
                                         role="radio"
-                                        aria-checked={state.timeSlot === slot.id}
+                                        aria-checked={state.timeSlot === (`${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`)}
                                         tabIndex={slotIsFull ? -1 : 0}
                                     >
                                         <input
@@ -502,14 +474,14 @@ export function StorageForm() {
                                             name="timeSlot"
                                             value={slot.id}
                                             disabled={slotIsFull}
-                                            checked={state.timeSlot === (slot.id as TimeSlotId)}
+                                            checked={state.timeSlot === (`${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`)}
                                             readOnly
                                         />
                                         <div className="text-sm font-bold text-slate-900 truncate">
-                                            {slot.label} {slotIsFull ? "(Full)" : ""}
+                                            {slot.name} {slotIsFull ? "(Full)" : ""}
                                         </div>
                                         <div className="text-[11px] text-slate-500 whitespace-nowrap">
-                                            {slot.desc}
+                                            {to12Hour(slot.startTime)} - {to12Hour(slot.endTime)}
                                         </div>
                                     </div>
                                 );

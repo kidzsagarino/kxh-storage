@@ -5,9 +5,9 @@ const GBP = "GBP";
 
 async function seedTimeSlots() {
   const slots = [
-    { name: "Morning", startTime: "09:00", endTime: "12:00" },
-    { name: "Afternoon", startTime: "12:00", endTime: "17:00" },
-    { name: "Evening", startTime: "17:00", endTime: "20:00" },
+    { name: "Morning", startTime: "07:00", endTime: "10:00" },
+    { name: "Afternoon", startTime: "10:00", endTime: "15:00" },
+    { name: "Evening", startTime: "15:00", endTime: "18:00" },
   ];
 
   for (const s of slots) {
