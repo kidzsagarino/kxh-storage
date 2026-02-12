@@ -167,8 +167,6 @@ export function StorageForm() {
     const router = useRouter();
     const { state, setState, orderFlow } = useStorageCheckout();
 
-    if (!orderFlow) return <div className="text-center">Loading...</div>;
-
     const [step, setStep] = useState<StepId>(0);
     const admin = useAdminSettings(ADMIN_DEFAULT);
 
@@ -176,6 +174,8 @@ export function StorageForm() {
     const capacityEnabled = admin.scheduling.capacityEnabled;
     const caps = admin.scheduling.capacityPerService.storage;
     const blackout = new Set(admin.scheduling.blackoutDates);
+
+    if (!orderFlow) return <div className="text-center">Loading...</div>;
 
     const storageItems = orderFlow.catalog.storage.items;
     const duration = orderFlow.catalog.storage.discountTiers;
