@@ -175,10 +175,8 @@ export function StorageForm() {
     const caps = admin.scheduling.capacityPerService.storage;
     const blackout = new Set(admin.scheduling.blackoutDates);
 
-    if (!orderFlow) return <div className="text-center">Loading...</div>;
-
-    const storageItems = orderFlow.catalog.storage.items;
-    const duration = orderFlow.catalog.storage.discountTiers;
+    const storageItems = orderFlow && orderFlow.catalog.storage.items;
+    const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
 
     const inc = (id: StorageItemId) =>
         setState((st) => ({

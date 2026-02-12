@@ -170,14 +170,14 @@ type CheckoutContextValue = {
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 
-export function CheckoutProvider({ children }: { children: React.ReactNode }) {
+export function CheckoutProvider({ children, initialOrderFlow }: { children: React.ReactNode, initialOrderFlow: any | null }) {
   const [state, setState] = useState<CheckoutState>({
     serviceType: "storage",
     storage: emptyStorage,
     moving: emptyMoving,
     shredding: emptyShredding,
     settings: defaultSettings,
-    orderFlow: null, // ✅
+    orderFlow: initialOrderFlow ?? null,
   });
 
   const value = useMemo<CheckoutContextValue>(() => {

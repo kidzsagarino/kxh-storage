@@ -60,8 +60,8 @@ export default async function HomePage() {
     const initialData = await loadOrderFlow("GBP");
 
     return (
-        <CheckoutProvider>
-            <ClientLanding initialData={initialData}></ClientLanding>
+        <CheckoutProvider initialOrderFlow={initialData}>
+            {/* <ClientLanding initialData={initialData}></ClientLanding> */}
             <main className="min-h-screen bg-white text-slate-900 pb-24 md:pb-0">
                 <JsonLd />
 
