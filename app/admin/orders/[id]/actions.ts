@@ -13,6 +13,7 @@ export async function getOrderById(id: string) {
       addresses: true,
       timeSlot: true,
       payments: true,
+      storageDiscountTier: true
     },
   });
 }

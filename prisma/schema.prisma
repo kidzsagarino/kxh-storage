@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// --- ENUMS ---
+
 enum ServiceType {
   STORAGE
   MOVING
@@ -48,10 +50,6 @@ enum AddressType {
   BILLING
 }
 
-/**
- * Your canonical catalog IDs.
- * These match the TypeScript union types you provided.
- */
 enum CatalogItemId {
   // STORAGE
   small_box
@@ -61,7 +59,6 @@ enum CatalogItemId {
   suitcase
   half_container
   full_container
-
   // MOVING
   small_move
   one_bedroom_flat
@@ -69,7 +66,6 @@ enum CatalogItemId {
   three_bedroom_flat
   four_bedroom_flat
   office_move
-
   // SHREDDING
   bag
   archive_box
@@ -107,6 +103,7 @@ enum TimeSlotKey {
   EVENING
 }
 
+// --- MODELS ---
 
 model Customer {
   id        String   @id @default(cuid())
@@ -131,11 +128,6 @@ model AdminUser {
   updatedAt DateTime @updatedAt
 }
 
-/**
- * Catalog of items for all services, using stable ids and skus.
- * - id: enum (safe, no typos)
- * - sku: string (matches your TS IDs exactly, e.g. "small-box")
- */
 model ServiceItem {
   id          CatalogItemId @id
   serviceType ServiceType
@@ -144,10 +136,8 @@ model ServiceItem {
   description String?
   isActive    Boolean       @default(true)
 
-  prices     ServiceItemPrice[]
-  orderItems OrderItem[]
-
-  storageDiscountTiers StorageDiscountTier[] // Opposite relation
+  prices      ServiceItemPrice[]
+  orderItems  OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -157,30 +147,24 @@ model ServiceItem {
 }
 
 model ServiceItemPrice {
-  id            String        @id @default(cuid())
+  id            String      @id @default(cuid())
   serviceItemId CatalogItemId
-  serviceItem   ServiceItem   @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
+  serviceItem   ServiceItem @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
 
   currency       String      @default("GBP")
   unitPriceMinor Int
   billingUnit    BillingUnit @default(PER_ITEM)
 
-  effectiveFrom DateTime?
-  effectiveTo   DateTime?
-  isActive      Boolean   @default(true)
-
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([serviceItemId, currency])
 }
 
-/**
- * Moving Packages
- */
 model MovingPackage {
   id          MovingPackageId @id
-  sku         String          @unique // e.g. "basic-package"
+  sku         String          @unique
   name        String
   description String?
   isActive    Boolean         @default(true)
@@ -189,8 +173,6 @@ model MovingPackage {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([isActive])
 }
 
 model MovingPackagePrice {
@@ -201,22 +183,16 @@ model MovingPackagePrice {
   currency   String @default("GBP")
   priceMinor Int
 
-  effectiveFrom DateTime?
-  effectiveTo   DateTime?
-  isActive      Boolean   @default(true)
-
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([packageId, currency])
-  @@index([currency])
-  @@index([isActive])
 }
 
 model Order {
-  id          String @id @default(cuid())
-  orderNumber String @unique @default(cuid()) // ✅ add default
-
+  id          String      @id @default(cuid())
+  orderNumber String      @unique @default(cuid()) 
   serviceType ServiceType
   status      OrderStatus @default(DRAFT)
 
@@ -225,7 +201,7 @@ model Order {
 
   serviceDate DateTime?
   timeSlotId  String?
-  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id], onDelete: SetNull)
+  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
 
   packingAssistance Boolean @default(false)
   notes             String?
@@ -236,8 +212,9 @@ model Order {
   taxMinor      Int    @default(0)
   totalMinor    Int    @default(0)
 
-  externalRef String?
-  metadata    Json?
+  // Link to the Tier for auditing
+  discountTierId      String?
+  storageDiscountTier StorageDiscountTier? @relation(fields: [discountTierId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -248,7 +225,6 @@ model Order {
 
   @@index([customerId])
   @@index([status])
-  @@index([serviceType])
   @@index([serviceDate])
 }
 
@@ -258,7 +234,7 @@ model OrderItem {
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   serviceItemId CatalogItemId?
-  serviceItem   ServiceItem?   @relation(fields: [serviceItemId], references: [id], onDelete: SetNull)
+  serviceItem   ServiceItem?   @relation(fields: [serviceItemId], references: [id])
 
   sku      String?
   name     String
@@ -266,30 +242,24 @@ model OrderItem {
 
   unitPriceMinor Int  @default(0)
   lineTotalMinor Int  @default(0)
-  months         Int?
-
-  details Json?
+  months         Int? // Used for storage duration
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([orderId]) // ✅ add
-  @@index([serviceItemId]) // ✅ add
+  @@index([orderId])
 }
 
 model Address {
-  id      String @id @default(cuid())
+  id      String      @id @default(cuid())
   orderId String
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  type       AddressType
-  label      String?
-  line1      String
-  line2      String?
-  city       String
-  region     String?
+  order   Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type    AddressType
+  line1   String
+  line2   String?
+  city    String
   postalCode String
-  country    String      @default("GB")
+  country String      @default("GB")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -298,142 +268,95 @@ model Address {
 }
 
 model Payment {
-  id      String @id @default(cuid())
+  id      String          @id @default(cuid())
   orderId String
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
+  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   provider PaymentProvider @default(STRIPE)
-  status   PaymentStatus   @default(REQUIRES_PAYMENT_METHOD)
-
-  currency    String @default("GBP")
+  status   PaymentStatus   @default(PROCESSING)
   amountMinor Int
-
-  providerRef String?
-  receiptUrl  String?
-  raw         Json?
+  providerRef String?      // Stripe Session ID / PI ID
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([orderId])
-  @@index([status])
-  @@index([provider])
 }
 
 model TimeSlot {
   id        String  @id @default(cuid())
-  name      String
+  name      String  @unique
   startTime String?
   endTime   String?
   isActive  Boolean @default(true)
 
   orders Order[]
-
-  @@unique([name])
-}
-
-model Setting {
-  key       String   @id
-  value     Json
-  updatedAt DateTime @updatedAt
 }
 
 model StorageDiscountTier {
-  id String @id @default(cuid())
+  id            String         @id @default(cuid())
+  name          String?         
+  minMonths     Int            @unique 
+  percentOff    Int
+  isActive      Boolean        @default(true)
 
-  // If you want, keep this as informational only
-  scope DiscountScope @default(GLOBAL)
-
-  serviceItemId CatalogItemId?
-  serviceItem   ServiceItem?   @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
-
-  currency   String @default("GBP")
-  minMonths  Int
-  percentOff Int
-
-  isActive  Boolean  @default(true)
+  orders Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
-  @@unique([currency, minMonths], name: "global_storage_discount_tier")
-  @@unique([serviceItemId, currency, minMonths], name: "per_item_storage_discount_tier")
-  @@index([serviceItemId, currency, isActive])
+model AdminSettings {
+  id String @id @default("global_settings") // Ensures only one row exists
+
+  storageEnabled  Boolean @default(true)
+  movingEnabled   Boolean @default(true)
+  shreddingEnabled Boolean @default(true)
+
+  movingPricePerMileMinor Int @default(58)
+  packingAssistanceMinor  Int @default(29500)
+
+  timeSlotSettings TimeSlotSetting[]
+  capacities      CapacitySetting[]
+  weekdayRules    WeekdayRule[]
+  blackoutDates   BlackoutDate[]
+
+  updatedAt DateTime @updatedAt
 }
 
 model TimeSlotSetting {
-  id        String      @id @default(cuid())
+  id         String      @id @default(cuid())
   settingsId String
-  settings  AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
-
-  key     TimeSlotKey @unique
-  label   String
-  range   String
-  enabled Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  key        TimeSlotKey @unique
+  label      String
+  enabled    Boolean     @default(true)
 }
 
 model CapacitySetting {
-  id         String @id @default(cuid())
+  id         String      @id @default(cuid())
   settingsId String
   settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
-
   serviceType ServiceType
-  slotKey     TimeSlotKey
-  capacity    Int @default(0)
+  slotKey    TimeSlotKey
+  capacity   Int         @default(5)
 
   @@unique([settingsId, serviceType, slotKey])
-  @@index([serviceType])
 }
 
 model WeekdayRule {
-  id         String @id @default(cuid())
-  settingsId String
+  id         String      @id @default(cuid())
+  settingsId String      
   settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
-
   serviceType ServiceType
-  weekday     Weekday
-  enabled     Boolean @default(true)
+  weekday    Weekday
+  enabled    Boolean     @default(true)
 
   @@unique([settingsId, serviceType, weekday])
-  @@index([serviceType])
 }
 
 model BlackoutDate {
-  id         String   @id @default(cuid())
+  id         String      @id @default(cuid())
   settingsId String
   settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
-
   date       DateTime
   reason     String?
 
   @@unique([settingsId, date])
-  @@index([date])
-}
-
-model AdminSettings {
-  id String @id @default(cuid())
-
-  // UI toggles
-  storageEnabled   Boolean @default(true)
-  movingEnabled    Boolean @default(true)
-  shreddingEnabled Boolean @default(true)
-
-  // Moving rules
-  movingPricePerMileMinor Int @default(58)
-  packingAssistanceMinor  Int @default(29500)
-
-  // Scheduling behavior
-  disableAutoBlockSchedule Boolean @default(false)
-  capacityEnabled          Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  timeSlotSettings   TimeSlotSetting[]
-  capacities         CapacitySetting[]
-  weekdayRules       WeekdayRule[]
-  blackoutDates      BlackoutDate[]
 }

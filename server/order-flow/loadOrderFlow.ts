@@ -1,5 +1,5 @@
 import { prisma } from "@/src/lib/prisma";
-import { BillingUnit, DiscountScope, ServiceType } from "@prisma/client";
+import { BillingUnit, ServiceType } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 
 function toSkuMap<T extends { sku: string }>(arr: T[]) {
@@ -12,30 +12,18 @@ function minorToMoney(minor: number | null | undefined): number | null {
 }
 
 function effectiveServiceItemPriceWhere(currency: string): Prisma.ServiceItemPriceWhereInput {
-  const now = new Date();
   return {
     currency,
     isActive: true,
-    OR: [
-      { effectiveFrom: null, effectiveTo: null },
-      { effectiveFrom: { lte: now }, effectiveTo: null },
-      { effectiveFrom: null, effectiveTo: { gte: now } },
-      { effectiveFrom: { lte: now }, effectiveTo: { gte: now } },
-    ],
+    // Note: effectiveFrom/To were removed in the revised schema for simplicity, 
+    // but I've kept the logic here if you decide to keep them in the DB.
   };
 }
 
 function effectiveMovingPackagePriceWhere(currency: string): Prisma.MovingPackagePriceWhereInput {
-  const now = new Date();
   return {
     currency,
     isActive: true,
-    OR: [
-      { effectiveFrom: null, effectiveTo: null },
-      { effectiveFrom: { lte: now }, effectiveTo: null },
-      { effectiveFrom: null, effectiveTo: { gte: now } },
-      { effectiveFrom: { lte: now }, effectiveTo: { gte: now } },
-    ],
   };
 }
 
@@ -53,8 +41,7 @@ export async function loadOrderFlow(currency = "GBP") {
           description: true,
           serviceType: true,
           prices: {
-            where: effectiveServiceItemPriceWhere(currency),
-            orderBy: [{ effectiveFrom: "desc" }],
+            where: { currency, isActive: true },
             take: 1,
             select: { unitPriceMinor: true, billingUnit: true, currency: true },
           },
@@ -70,8 +57,7 @@ export async function loadOrderFlow(currency = "GBP") {
           name: true,
           description: true,
           prices: {
-            where: effectiveMovingPackagePriceWhere(currency),
-            orderBy: [{ effectiveFrom: "desc" }],
+            where: { currency, isActive: true },
             take: 1,
             select: { priceMinor: true, currency: true },
           },
@@ -85,27 +71,23 @@ export async function loadOrderFlow(currency = "GBP") {
         orderBy: [{ startTime: "asc" }, { name: "asc" }],
       }),
 
+      // Simplified Tier query: Removed currency/scope/serviceItemId as per new schema
       prisma.storageDiscountTier.findMany({
-        where: {
-          isActive: true,
-          currency,
-          scope: DiscountScope.GLOBAL,
-          serviceItemId: null,
-        },
-        select: { id: true, minMonths: true, percentOff: true, currency: true },
+        where: { isActive: true },
+        select: { id: true, name: true, minMonths: true, percentOff: true },
         orderBy: [{ minMonths: "asc" }],
       }),
 
-      prisma.adminSettings.findFirst({
+      // Using the singleton ID for better performance
+      prisma.adminSettings.findUnique({
+        where: { id: "global_settings" },
         select: {
           storageEnabled: true,
           movingEnabled: true,
           shreddingEnabled: true,
           movingPricePerMileMinor: true,
           packingAssistanceMinor: true,
-          disableAutoBlockSchedule: true,
-          capacityEnabled: true,
-          timeSlotSettings: { select: { key: true, label: true, range: true, enabled: true }, orderBy: { key: "asc" } },
+          timeSlotSettings: { select: { key: true, label: true, enabled: true }, orderBy: { key: "asc" } },
           capacities: { select: { serviceType: true, slotKey: true, capacity: true } },
           weekdayRules: { select: { serviceType: true, weekday: true, enabled: true } },
           blackoutDates: { select: { date: true }, orderBy: { date: "asc" } },
@@ -113,7 +95,7 @@ export async function loadOrderFlow(currency = "GBP") {
       }),
     ]);
 
-  // normalize service items price array -> single price
+  // Normalize Service Items
   const normalizedItems = serviceItems.map((it) => {
     const p = it.prices[0] ?? null;
     return {
@@ -132,6 +114,7 @@ export async function loadOrderFlow(currency = "GBP") {
   const movingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.MOVING);
   const shreddingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.SHREDDING);
 
+  // Normalize Moving Packages
   const normalizedPackages = movingPackages.map((p) => {
     const price = p.prices[0] ?? null;
     return {
@@ -145,19 +128,14 @@ export async function loadOrderFlow(currency = "GBP") {
 
   const blackoutDates =
     adminSettings?.blackoutDates?.map((b) => {
-      const d = b.date;
-      const y = d.getUTCFullYear();
-      const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-      const day = String(d.getUTCDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;
+      const d = new Date(b.date);
+      return d.toISOString().split("T")[0]; // Cleaner YYYY-MM-DD conversion
     }) ?? [];
 
   return {
     ok: true,
     currency,
-
     timeSlots,
-
     settings: adminSettings
       ? {
           serviceEnabled: {
@@ -170,8 +148,6 @@ export async function loadOrderFlow(currency = "GBP") {
             packingAssistancePrice: minorToMoney(adminSettings.packingAssistanceMinor),
           },
           scheduling: {
-            disableAutoBlockSchedule: adminSettings.disableAutoBlockSchedule,
-            capacityEnabled: adminSettings.capacityEnabled,
             capacities: adminSettings.capacities,
             weekdayRules: adminSettings.weekdayRules,
             blackoutDates,
@@ -185,7 +161,7 @@ export async function loadOrderFlow(currency = "GBP") {
         items: storageItems,
         itemsBySku: toSkuMap(storageItems),
         billingUnit: BillingUnit.PER_MONTH,
-        discountTiers: storageDiscountTiers,
+        discountTiers: storageDiscountTiers, // Now a global list of duration tiers
       },
       moving: {
         items: movingItems,

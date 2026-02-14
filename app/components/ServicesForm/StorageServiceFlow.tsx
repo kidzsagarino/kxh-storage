@@ -250,23 +250,6 @@ export function StorageForm() {
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-
-    useEffect(() => {
-        setState((s) => ({ ...s, timeSlot: "" }));
-    }, [state.collectionDate]);
-
-    useEffect(() => {
-        if (disableAuto) return;
-        if (!state.collectionDate) return;
-
-        const d = new Date(`${state.collectionDate}T00:00:00`);
-        const wk = weekdayKey(d);
-
-        if (!weekdays.has(wk)) {
-            setState((s) => ({ ...s, collectionDate: "", timeSlot: "" }));
-        }
-    }, [disableAuto, weekdays, state.collectionDate, setState]);
-
     const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
@@ -416,12 +399,12 @@ export function StorageForm() {
                             Collection Date
                         </span>
                         <DatePicker
-                            value={state.collectionDate}
+                            value={state.collectionDate ?? ""}
                             onChange={(val) =>
                                 setState((s) => ({
                                     ...s,
                                     collectionDate: val,
-                                    timeSlotId: "", // reset slot when date changes
+                                    
                                 }))
                             }
                             disabled={(day: Date) => {

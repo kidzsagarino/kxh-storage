@@ -10,7 +10,17 @@ const prisma = new PrismaClient();
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { customer, serviceType, items, addresses, serviceDate, timeSlotId, discountId } = body;
+        const { 
+            customer, 
+            serviceType, 
+            items, 
+            addresses, 
+            serviceDate, 
+            timeSlotId, 
+            discountTierId, // Updated from generic discountId
+            packingAssistance,
+            notes 
+        } = body;
 
         const result = await prisma.$transaction(async (tx) => {
             // 1. Availability & Rules Validation
@@ -24,49 +34,50 @@ export async function POST(req: Request) {
                 }
             }
 
-            // 2. Data Fetching
+            // 2. Data Fetching (Prices & the specific Tier selected)
             const [dbPrices, discountTiers] = await Promise.all([
                 tx.serviceItemPrice.findMany({
                     where: {
                         serviceItemId: { in: items.map((i: any) => i.serviceItemId) },
                         isActive: true
                     },
-                    include: { serviceItem: true },
                 }),
                 tx.storageDiscountTier.findMany({
-                    where: { isActive: true, currency: 'GBP' },
+                    where: { isActive: true },
                     orderBy: { minMonths: 'desc' },
                 }),
             ]);
 
-            // 3. Pricing Logic
-            const { mappedItems, subtotal, totalDiscount } = processOrderItems(
+            // 3. Pricing Logic 
+            // processOrderItems should now return the specific Tier used if discountTierId was passed
+            const { mappedItems, subtotal, totalDiscount, finalTierId } = processOrderItems(
                 items,
                 dbPrices,
                 discountTiers,
-                discountId
+                discountTierId
             );
 
-            // 4. Customer & Order Persistence
+            // 4. Customer Persistence
+            // Logic: Upsert based on email, fallback to a timestamped draft email to avoid constraint collisions
+            const customerEmail = customer.email?.toLowerCase().trim();
             const dbCustomer = await tx.customer.upsert({
                 where: {
-                    // If email is empty, we use a temporary placeholder to avoid unique constraint errors
-                    email: customer.email && customer.email !== ""
-                        ? customer.email.toLowerCase()
-                        : `draft-${Date.now()}@temp.com`
+                    email: customerEmail && customerEmail !== "" 
+                        ? customerEmail 
+                        : `draft-${Date.now()}@placeholder.com`
                 },
                 update: {
-                    // If FE sends "", we don't overwrite existing data with empty strings
                     fullName: customer.fullName || "Valued Customer",
                     phone: customer.phone || null
                 },
                 create: {
-                    email: customer.email || `draft-${Date.now()}@temp.com`,
+                    email: customerEmail || `draft-${Date.now()}@placeholder.com`,
                     fullName: customer.fullName || "Valued Customer",
                     phone: customer.phone || null,
                 },
             });
 
+            // 5. Order Creation
             return tx.order.create({
                 data: {
                     orderNumber: generateOrderNumber(),
@@ -75,32 +86,48 @@ export async function POST(req: Request) {
                     customerId: dbCustomer.id,
                     serviceDate: serviceDate ? new Date(serviceDate) : null,
                     timeSlotId: timeSlotId || null,
+                    
+                    // Moving Specifics
+                    packingAssistance: !!packingAssistance,
+                    notes: notes || null,
+
+                    // Pricing
                     subtotalMinor: subtotal,
                     discountMinor: totalDiscount,
                     totalMinor: subtotal - totalDiscount,
+                    
+                    // Dynamic Tier Linkage
+                    discountTierId: finalTierId || null,
+
                     items: { create: mappedItems },
                     addresses: {
                         create: addresses.map((addr: any) => ({
                             type: addr.type as AddressType,
-                            // Use fallback empty strings if the FE hasn't provided them yet
                             line1: addr.line1 || "",
-                            line2: addr.line2 || null, // Optional in schema, so null is fine
+                            line2: addr.line2 || "",
                             city: addr.city || "",
                             postalCode: addr.postalCode || "",
                             country: addr.country || "GB",
                         })),
                     },
                 },
+                include: {
+                    items: true,
+                    addresses: true,
+                    customer: true,
+                    storageDiscountTier: true // Return tier info to the FE
+                }
             });
         }, {
-            timeout: 10000 // Extended timeout for multi-step transaction
+            timeout: 10000 
         });
 
         return NextResponse.json(result, { status: 201 });
     } catch (error: any) {
+        console.error("[ORDER_POST_ERROR]", error);
         return NextResponse.json(
             { error: error.message || 'Failed to process order' },
-            { status: 400 } // Using 400 for validation/business logic errors
+            { status: 400 }
         );
     }
 }

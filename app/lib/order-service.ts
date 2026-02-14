@@ -1,71 +1,71 @@
-import { Prisma, CatalogItemId, StorageDiscountTier } from '@prisma/client';
+import { ServiceItemPrice, StorageDiscountTier } from "@prisma/client";
 
-/**
- * Calculates the best discount for an item based on duration.
- * Priority: Item-specific discount > Global discount
- */
-export function calculateBestDiscount(
-  itemId: CatalogItemId,
-  months: number,
-  tiers: StorageDiscountTier[],
-  baseLineTotal: number,
-  discountId?: string
-) {
-  const applicableTier = tiers.find(
-    (tier) =>
-      (tier.id === discountId || tier.scope === 'GLOBAL') &&
-      months >= tier.minMonths
-  );
-
-  if (!applicableTier) return { discountMinor: 0, rate: 0 };
-
-  const discountMinor = Math.floor((baseLineTotal * applicableTier.percentOff) / 100);
-  return { discountMinor, rate: applicableTier.percentOff };
+interface InputItem {
+  serviceItemId: string;
+  quantity: number;
+  months?: number;
 }
 
-/**
- * Validates prices and maps items with correct currency math.
- */
 export function processOrderItems(
-  requestedItems: any[],
-  dbPrices: any[],
+  items: InputItem[],
+  dbPrices: ServiceItemPrice[],
   discountTiers: StorageDiscountTier[],
-  discountId?: string
+  requestedTierId?: string
 ) {
   let subtotal = 0;
   let totalDiscount = 0;
+  let finalTierId: string | null = null;
 
-  const mappedItems = requestedItems.map((item) => {
-    const priceRecord = dbPrices.find((p) => p.serviceItemId === item.serviceItemId);
-    if (!priceRecord) throw new Error(`Price not found for ${item.serviceItemId}`);
-
-    const quantity = item.quantity || 1;
-    const months = item.months || 1;
-    const unitPrice = priceRecord.unitPriceMinor;
-    const baseLineTotal = unitPrice * quantity * months;
-
-    const { discountMinor, rate } = calculateBestDiscount(
-      item.serviceItemId,
-      months,
-      discountTiers,
-      baseLineTotal,
-      discountId
+  // 1. Map items to their DB prices and calculate line totals
+  const mappedItems = items.map((inputItem) => {
+    const priceRecord = dbPrices.find(
+      (p) => p.serviceItemId === inputItem.serviceItemId
     );
 
-    subtotal += baseLineTotal;
-    totalDiscount += discountMinor;
+    if (!priceRecord) {
+      throw new Error(`Price not found for item: ${inputItem.serviceItemId}`);
+    }
+
+    const quantity = inputItem.quantity || 1;
+    const months = inputItem.months || 1;
+    
+    // Line Total = Price * Qty * Months (if applicable)
+    const lineTotal = priceRecord.unitPriceMinor * quantity * months;
+    subtotal += lineTotal;
 
     return {
-      serviceItemId: item.serviceItemId as CatalogItemId,
-      sku: priceRecord.serviceItem.sku,
-      name: priceRecord.serviceItem.name,
+      serviceItemId: inputItem.serviceItemId,
+      name: (priceRecord as any).serviceItem?.name || "Service Item", // Ensuring name carries over
+      sku: (priceRecord as any).serviceItem?.sku || "",
       quantity,
-      unitPriceMinor: unitPrice,
-      lineTotalMinor: baseLineTotal - discountMinor,
-      months: item.months || null,
-      details: rate > 0 ? { discountRate: `${rate}%` } : {},
+      months,
+      unitPriceMinor: priceRecord.unitPriceMinor,
+      lineTotalMinor: lineTotal,
     };
   });
 
-  return { mappedItems, subtotal, totalDiscount };
+  // 2. Determine the Discount Tier
+  // We prioritize the Tier selected by the user/admin in the UI (requestedTierId)
+  let activeTier = discountTiers.find((t) => t.id === requestedTierId);
+
+  // Fallback: If no ID was sent, find the best matching tier based on the maximum months found in items
+  if (!activeTier) {
+    const maxMonths = Math.max(...items.map((i) => i.months || 0));
+    activeTier = discountTiers
+      .filter((t) => maxMonths >= t.minMonths)
+      .sort((a, b) => b.minMonths - a.minMonths)[0];
+  }
+
+  // 3. Apply Discount
+  if (activeTier) {
+    totalDiscount = Math.round((subtotal * activeTier.percentOff) / 100);
+    finalTierId = activeTier.id;
+  }
+
+  return {
+    mappedItems,
+    subtotal,
+    totalDiscount,
+    finalTierId,
+  };
 }

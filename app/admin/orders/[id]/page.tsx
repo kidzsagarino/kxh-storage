@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { getOrderById, updateOrderStatus } from "./actions"; // Your Server Actions
+import { getOrderById, updateOrderStatus } from "./actions"; 
 import { money, to12Hour } from "@/app/utils/utils";
 
 // ---- UI Helpers ----
@@ -53,7 +53,6 @@ export default function AdminOrderByIdPage() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Load Real Data
   useEffect(() => {
     async function loadOrder() {
       if (!params?.id) return;
@@ -93,7 +92,6 @@ export default function AdminOrderByIdPage() {
     );
   }
 
-  // --- Map DB fields to UI display ---
   const pickupAddress = order.addresses?.find((a: any) => a.type === "PICKUP");
   const deliveryAddress = order.addresses?.find((a: any) => a.type === "DELIVERY");
   const stripePayment = order.payments?.find((p: any) => p.provider === "STRIPE");
@@ -101,8 +99,10 @@ export default function AdminOrderByIdPage() {
 
   const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
   const isMoving = order.serviceType?.toUpperCase() === "MOVING";
-  const delivery = order.addresses?.find((a: any) => a.type === "DELIVERY");
-  // Google Maps URL
+  
+  const discountPercent = order.storageDiscountTier?.percentOff || 0;
+  const durationMonths = order.items?.[0]?.months || 0;
+
   const getMapUrl = (addr: any) =>
     addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${addr.line1} ${addr.postalCode}`)}` : "#";
 
@@ -213,7 +213,7 @@ export default function AdminOrderByIdPage() {
           </section>
 
           {/* Delivery Address (If Moving) */}
-          {deliveryAddress && (
+          {isMoving && deliveryAddress && (
             <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex justify-between items-center">
                 <h2 className="text-sm font-semibold text-blue-700">Delivery Details</h2>
@@ -231,14 +231,15 @@ export default function AdminOrderByIdPage() {
               </div>
             </section>
           )}
-          {/* DYNAMIC PACKING CHECKLIST */}
+
+          {/* Packing Checklist */}
           {hasPacking && (
             <section className="bg-emerald-900 rounded-3xl p-6 text-white shadow-lg">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <h3 className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Packing Service Required</h3>
               </div>
-              <p className="text-sm text-emerald-50 font-medium mb-4">The customer has requested packing assistance. Ensure the crew has sufficient boxes, tape, and bubble wrap.</p>
+              <p className="text-sm text-emerald-50 font-medium mb-4">The customer has requested packing assistance.</p>
               <div className="grid grid-cols-2 gap-3">
                 {['Large Boxes', 'Bubble Wrap', 'Packing Tape', 'Marker Pens'].map(tool => (
                   <div key={tool} className="flex items-center gap-2 text-xs text-emerald-200">
@@ -249,30 +250,14 @@ export default function AdminOrderByIdPage() {
               </div>
             </section>
           )}
-          {/* Delivery Address (Only if Moving) */}
-          {isMoving && (
-            <div className="p-6 bg-slate-50/50">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Destination (Delivery)</h3>
-                <a href={getMapUrl(delivery)} target="_blank" className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded-lg">MAP</a>
-              </div>
-              <p className="font-bold text-slate-900 text-lg leading-tight">{delivery?.line1 || "TBD"}</p>
-              <p className="text-slate-500 text-sm font-medium">{delivery?.city} {delivery?.postalCode}</p>
 
-              {order.distanceMiles && (
-                <div className="mt-6 text-[11px] font-bold text-slate-400">
-                  Estimated Route: <span className="text-slate-900">{order.distanceMiles} Miles</span>
-                </div>
-              )}
-            </div>
-          )}
           {/* Notes */}
-          <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+          {/* <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
             <h2 className="text-sm font-semibold text-amber-900 tracking-tight">Driver Instructions / Notes</h2>
             <p className="mt-2 text-sm text-amber-800 leading-relaxed italic">
               {order.notes || "No special instructions provided."}
             </p>
-          </section>
+          </section> */}
 
           {/* Items Table */}
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -312,20 +297,18 @@ export default function AdminOrderByIdPage() {
                 <span className="text-slate-500">Subtotal</span>
                 <span className="font-medium text-slate-900">{money(order.subtotalMinor / 100)}</span>
               </div>
-             <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-emerald-800 font-semibold">
-                      Discount Applied
-                    </span>
-                    <span className="font-bold text-emerald-900">
-                      − {money(order.discountMinor / 100)}
-                    </span>
-                  </div>
 
-                  <div className="text-xs text-emerald-700">
-                    {order.durationMonths} month plan • {order.discountPercent}% off
-                  </div>
+              {/* Green Discount Card */}
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span className="text-emerald-800 font-semibold">Discount Applied</span>
+                  <span className="font-bold text-emerald-900">− {money(order.discountMinor / 100)}</span>
                 </div>
+                <div className="text-xs text-emerald-700">
+                  {durationMonths} month plan • {discountPercent}% off
+                </div>
+              </div>
+
               <div className="pt-2 border-t border-slate-100 flex justify-between items-baseline">
                 <span className="font-bold text-slate-900">Total</span>
                 <span className="font-bold text-xl text-slate-900">{money(order.totalMinor / 100)}</span>
@@ -334,7 +317,7 @@ export default function AdminOrderByIdPage() {
 
             <div className="flex items-center justify-between text-sm pt-2">
               <span className="text-slate-600">Payment status</span>
-              <span className={payBadge(order.paymentStatus || "unpaid")}>{order.paymentStatus || "unpaid"}</span>
+              <span className={payBadge(order.payments?.[0]?.status || "unpaid")}>{order.payments?.[0]?.status || "unpaid"}</span>
             </div>
 
             {stripePayment && (

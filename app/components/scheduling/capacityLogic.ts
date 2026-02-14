@@ -87,34 +87,32 @@ export function isSlotFull(args: {
   return used >= cap;
 }
 
-export function isDayFull(args: {
-  orderFlow: OrderFlow;
-  service: ServiceType;
-  dateISO: string; // YYYY-MM-DD
-  volumesByTimeSlotId?: Record<string, number>;
+export function isDayFull({
+  orderFlow,
+  service,
+  dateISO,
+  volumesByTimeSlotId,
+}: {
+  orderFlow: any;
+  service: "storage" | "moving" | "shredding";
+  dateISO: string;
+  volumesByTimeSlotId?: Record<string, number>; // timeSlotId -> volume
 }) {
-  const { orderFlow, service, dateISO, volumesByTimeSlotId } = args;
-  const scheduling = orderFlow.settings.scheduling;
+  // ✅ No volumes data yet => can't determine fullness => treat as NOT full
+  if (!volumesByTimeSlotId) return false;
 
-  if (scheduling.disableAutoBlockSchedule) return false;
-  if (!scheduling.capacityEnabled) return false;
+  const caps = orderFlow.settings.scheduling.capacities
+    .filter((c: any) => c.serviceType === service.toUpperCase());
 
-  if (scheduling.blackoutDates?.includes(dateISO)) return true;
+  // any slot still has capacity -> day not full
+  for (const cap of caps) {
+    const slotKey = cap.slotKey; // MORNING/AFTERNOON/EVENING (if you use these)
+    const slot = orderFlow.timeSlots.find((t: any) => t.key === slotKey);
+    if (!slot) continue;
 
-  // Active slots only
-  const active = orderFlow.timeSlots.filter((s) => s.isActive);
+    const used = volumesByTimeSlotId[slot.id] ?? 0;
+    if (used < cap.capacity) return false;
+  }
 
-  // If no active slots, treat day as blocked
-  if (active.length === 0) return true;
-
-  // Day is full if *all* active slots are full
-  return active.every((slot) =>
-    isSlotFull({
-      orderFlow,
-      service,
-      dateISO,
-      timeSlotId: slot.id,
-      volumesByTimeSlotId,
-    })
-  );
+  return true;
 }
