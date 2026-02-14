@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useMemo, useState, useEffect } from "react";
 import { getAdminOrders, updateOrderStatus } from "./action";
-import { money } from "@/app/utils/utils"; // Assuming money helper exists, or use local logic
+import { money, to12Hour } from "@/app/utils/utils"; // Assuming money helper exists, or use local logic
 
 type OrderWithCustomer = any;
 
@@ -199,7 +199,7 @@ export default function AdminOrdersPage() {
                           {o.serviceDate ? new Date(o.serviceDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : "—"}
                         </div>
                         <div className="text-[10px] text-slate-500 uppercase">
-                          {o.timeSlot ? `${o.timeSlot.startTime} - ${o.timeSlot.endTime}` : "—"}
+                          {o.timeSlot ? `${ to12Hour(o.timeSlot.startTime)} - ${to12Hour(o.timeSlot.endTime)}` : "—"}
                         </div>
                       </td>
                       <td className="px-4 py-4">
