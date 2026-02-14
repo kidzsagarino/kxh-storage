@@ -34,3 +34,7 @@ export function to12Hour(time24: string): string {
 
   return `${hour12}:${minuteStr.padStart(2, "0")} ${period}`;
 }
+
+export function money(n: number, sym = "£") {
+  return `${sym}${n.toFixed(2)}`;
+}

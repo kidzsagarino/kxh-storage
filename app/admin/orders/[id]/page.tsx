@@ -1,148 +1,18 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { getOrderById, updateOrderStatus } from "./actions"; // Your Server Actions
+import { money, to12Hour } from "@/app/utils/utils";
 
-type ServiceType = "storage" | "moving" | "shredding";
-type OrderStatus = "new" | "confirmed" | "collected" | "completed" | "cancelled";
-type PaymentStatus = "paid" | "unpaid" | "refunded" | "failed";
+// ---- UI Helpers ----
 
-type OrderItem = {
-  key: string;
-  label: string;
-  subLabel?: string;
-  qty?: number;
-  price?: number;
-};
-
-type Order = {
-  id: string;
-  serviceType: ServiceType;
-  status: OrderStatus;
-  createdAt: string; // ISO
-
-  customer: {
-    name: string;
-    email: string;
-    phone: string;
-  };
-
-  address: {
-    line1: string;
-    city?: string;
-    postalCode: string;
-  };
-
-  schedule: {
-    collectionDate: string; // YYYY-MM-DD
-    timeSlot: "morning" | "afternoon" | "evening" | "";
-  };
-
-  // service-specific (optional)
-  moving?: {
-    fromAddress: string;
-    toAddress: string;
-    distanceMiles: number;
-    packingAssistance: boolean;
-  };
-
-  storage?: {
-    durationMonths: 3 | 6 | 12;
-  };
-
-  shredding?: {
-    notes?: string;
-  };
-
-  items: OrderItem[];
-
-  totals: {
-    subtotal: number;
-    discount: number; // positive number
-    totalDueNow: number;
-  };
-
-  payment: {
-    status: PaymentStatus;
-    method: "stripe" | "cash" | "bank_transfer";
-    stripeSessionId?: string;
-    receiptUrl?: string;
-  };
-};
-
-// ---- Dummy data ----
-const DUMMY_ORDERS: Order[] = [
-  {
-    id: "ord_001",
-    serviceType: "storage",
-    status: "new",
-    createdAt: "2026-02-01T10:22:00Z",
-    customer: { name: "John Smith", email: "john@example.com", phone: "07123 456789" },
-    address: { line1: "12 Baker Street, London", postalCode: "NW1 6XE" },
-    schedule: { collectionDate: "2026-02-12", timeSlot: "morning" },
-    storage: { durationMonths: 6 },
-    items: [
-      { key: "duration", label: "Duration", subLabel: "6 months" },
-      { key: "small-box", label: "Small Box", qty: 2, price: 8 },
-      { key: "suitcase", label: "Suitcase", qty: 1, price: 10 },
-    ],
-    totals: { subtotal: 126, discount: 6, totalDueNow: 120 },
-    payment: { status: "unpaid", method: "stripe", stripeSessionId: "cs_test_d4e5f6" },
-  },
-  {
-    id: "ord_002",
-    serviceType: "moving",
-    status: "confirmed",
-    createdAt: "2026-02-02T14:06:00Z",
-    customer: { name: "Sarah Jones", email: "sarah@example.com", phone: "07999 123456" },
-    address: { line1: "45 Camden Road, London", postalCode: "N7 0AB" },
-    schedule: { collectionDate: "2026-02-14", timeSlot: "afternoon" },
-    moving: {
-      fromAddress: "Camden, London N7",
-      toAddress: "Islington, London N1",
-      distanceMiles: 8,
-      packingAssistance: true,
-    },
-    items: [
-      { key: "distance", label: "Distance", subLabel: "8 miles", price: 4.64 },
-      { key: "home", label: "Home Type", subLabel: "2 Bed Flat", price: 850 },
-      { key: "pack", label: "Packing Assistance", subLabel: "Yes", price: 295 },
-    ],
-    totals: { subtotal: 1149.64, discount: 0, totalDueNow: 1149.64 },
-    payment: { status: "paid", method: "stripe", stripeSessionId: "cs_test_a1b2c3" },
-  },
-  {
-    id: "ord_003",
-    serviceType: "shredding",
-    status: "completed",
-    createdAt: "2025-12-10T09:40:00Z",
-    customer: { name: "ACME Ltd", email: "ops@acme.co.uk", phone: "020 7123 4567" },
-    address: { line1: "Unit 5, Stratford, London", postalCode: "E15 2PX" },
-    schedule: { collectionDate: "2025-12-12", timeSlot: "evening" },
-    shredding: { notes: "Call on arrival. Reception closes at 5pm." },
-    items: [
-      { key: "bag", label: "Bag (up to 15 lbs)", qty: 1, price: 12 },
-      { key: "archive", label: "Archive Box (up to 15 lbs)", qty: 1, price: 18 },
-    ],
-    totals: { subtotal: 30, discount: 0, totalDueNow: 30 },
-    payment: { status: "refunded", method: "stripe", stripeSessionId: "cs_test_g7h8i9" },
-  },
-];
-
-function money(n: number) {
-  return `£${n.toFixed(2)}`;
-}
-
-function niceDate(iso: string) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleString();
-}
-
-function statusBadge(status: OrderStatus) {
-  const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold";
-  switch (status) {
+function statusBadge(status: string) {
+  const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold uppercase";
+  const s = status?.toLowerCase();
+  switch (s) {
+    case "draft":
     case "new":
       return `${base} bg-slate-100 text-slate-700 border-slate-200`;
     case "confirmed":
@@ -153,71 +23,88 @@ function statusBadge(status: OrderStatus) {
       return `${base} bg-emerald-50 text-emerald-800 border-emerald-200`;
     case "cancelled":
       return `${base} bg-rose-50 text-rose-800 border-rose-200`;
+    default:
+      return `${base} bg-slate-50 text-slate-400 border-slate-200`;
   }
 }
 
-function payBadge(status: PaymentStatus) {
-  const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold";
-  switch (status) {
+function payBadge(status: string) {
+  const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold uppercase";
+  const s = status?.toLowerCase();
+  switch (s) {
     case "paid":
+    case "succeeded":
       return `${base} bg-emerald-50 text-emerald-800 border-emerald-200`;
     case "unpaid":
+    case "pending":
       return `${base} bg-amber-50 text-amber-800 border-amber-200`;
     case "failed":
       return `${base} bg-rose-50 text-rose-800 border-rose-200`;
     case "refunded":
       return `${base} bg-slate-100 text-slate-700 border-slate-200`;
+    default:
+      return `${base} bg-slate-50 text-slate-400 border-slate-200`;
   }
 }
 
-const SLOT_LABEL: Record<Exclude<Order["schedule"]["timeSlot"], "">, string> = {
-  morning: "7am – 10am",
-  afternoon: "10am – 3pm",
-  evening: "3pm – 6pm",
-};
-
-const ORDER_STATUS_OPTIONS: OrderStatus[] = [
-  "new",
-  "confirmed",
-  "collected",
-  "completed",
-  "cancelled",
-];
-
 export default function AdminOrderByIdPage() {
   const params = useParams<{ id: string }>();
-  const orderId = params?.id;
+  const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const initial = useMemo(
-    () => DUMMY_ORDERS.find((o) => o.id === orderId) ?? null,
-    [orderId]
-  );
+  // Load Real Data
+  useEffect(() => {
+    async function loadOrder() {
+      if (!params?.id) return;
+      try {
+        const data = await getOrderById(params.id);
+        setOrder(data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadOrder();
+  }, [params?.id]);
 
-  // Local state so you can update status in UI (dummy)
-  const [order, setOrder] = useState<Order | null>(initial);
+  async function handleSaveStatus() {
+    if (!order) return;
+    setIsSaving(true);
+    try {
+      await updateOrderStatus(order.id, order.status);
+      alert("Status updated successfully!");
+    } catch (err) {
+      alert("Failed to update status");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  if (loading) return <div className="p-10 text-center text-slate-500">Loading Order...</div>;
 
   if (!order) {
     return (
-      <main className="space-y-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="text-sm font-semibold text-slate-900">Order not found</div>
-          <p className="mt-2 text-sm text-slate-600">
-            No dummy order matches <span className="font-mono">{String(orderId)}</span>.
-          </p>
-          <div className="mt-4">
-            <Link
-              href="/admin/orders"
-              className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-            >
-              Back to Orders
-            </Link>
-          </div>
-        </div>
+      <main className="p-10 text-center">
+        <h1 className="text-xl font-bold">Order not found</h1>
+        <Link href="/admin/orders" className="text-emerald-600 hover:underline">Back to list</Link>
       </main>
     );
   }
 
-  const slotText = order.schedule.timeSlot ? SLOT_LABEL[order.schedule.timeSlot] : "—";
+  // --- Map DB fields to UI display ---
+  const pickupAddress = order.addresses?.find((a: any) => a.type === "PICKUP");
+  const deliveryAddress = order.addresses?.find((a: any) => a.type === "DELIVERY");
+  const stripePayment = order.payments?.find((p: any) => p.provider === "STRIPE");
+  const slot = order.timeSlot;
+
+  const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
+  const isMoving = order.serviceType?.toUpperCase() === "MOVING";
+  const delivery = order.addresses?.find((a: any) => a.type === "DELIVERY");
+  // Google Maps URL
+  const getMapUrl = (addr: any) =>
+    addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${addr.line1} ${addr.postalCode}`)}` : "#";
 
   return (
     <main className="space-y-4">
@@ -227,14 +114,14 @@ export default function AdminOrderByIdPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-semibold text-slate-900">Order</h1>
-              <span className="font-mono text-xs text-slate-600">{order.id}</span>
+              <span className="font-mono text-xs text-slate-600">{order.orderNumber}</span>
               <span className={statusBadge(order.status)}>{order.status}</span>
               <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 capitalize">
-                {order.serviceType}
+                {order.serviceType?.toLowerCase()}
               </span>
             </div>
             <p className="mt-1 text-xs text-slate-500">
-              Created: {niceDate(order.createdAt)}
+              Created: {new Date(order.createdAt).toLocaleString()}
             </p>
           </div>
 
@@ -248,162 +135,164 @@ export default function AdminOrderByIdPage() {
 
             <select
               value={order.status}
-              onChange={(e) =>
-                setOrder((o) => (o ? { ...o, status: e.target.value as OrderStatus } : o))
-              }
+              onChange={(e) => setOrder({ ...order, status: e.target.value })}
               className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none"
             >
-              {ORDER_STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>
-                  Set: {s}
-                </option>
-              ))}
+              <option value="DRAFT">DRAFT</option>
+              <option value="CONFIRMED">CONFIRMED</option>
+              <option value="COLLECTED">COLLECTED</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="CANCELLED">CANCELLED</option>
             </select>
 
             <button
-              type="button"
-              className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800"
-              title="Wire to real API later"
-              onClick={() => alert("Dummy: saved (wire to API later)")}
+              onClick={handleSaveStatus}
+              disabled={isSaving}
+              className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
             >
-              Save
+              {isSaving ? "Saving..." : "Save"}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Content grid */}
       <div className="grid gap-4 lg:grid-cols-[1fr_380px] items-start">
-        {/* Left column */}
         <div className="space-y-4">
+
           {/* Customer */}
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <h2 className="text-sm font-semibold text-slate-900">Customer</h2>
-
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="text-xs font-semibold text-slate-500">Name</div>
-                <div className="mt-1 text-sm font-medium text-slate-900">{order.customer.name}</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">{order.customer?.fullName}</div>
               </div>
-
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="text-xs font-semibold text-slate-500">Phone</div>
-                <div className="mt-1 text-sm font-medium text-slate-900">{order.customer.phone}</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">{order.customer?.phone || "N/A"}</div>
               </div>
-
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
                 <div className="text-xs font-semibold text-slate-500">Email</div>
-                <div className="mt-1 text-sm font-medium text-slate-900">{order.customer.email}</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">{order.customer?.email}</div>
               </div>
             </div>
           </section>
 
-          {/* Address + Schedule */}
+          {/* Collection Address & Schedule */}
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="text-sm font-semibold text-slate-900">Collection</h2>
-
+            <div className="flex justify-between items-center">
+              <h2 className="text-sm font-semibold text-slate-900">Collection Details</h2>
+              <a href={getMapUrl(pickupAddress)} target="_blank" className="text-xs text-emerald-600 font-bold hover:underline">VIEW MAP</a>
+            </div>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                <div className="text-xs font-semibold text-slate-500">Address</div>
-                <div className="mt-1 text-sm font-medium text-slate-900">{order.address.line1}</div>
+                <div className="text-xs font-semibold text-slate-500">House Number</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.line1}</div>
               </div>
-
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="text-xs font-semibold text-slate-500">Street Address</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.line2}</div>
+              </div>
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="text-xs font-semibold text-slate-500">Postcode</div>
-                <div className="mt-1 text-sm font-medium text-slate-900">{order.address.postalCode}</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.postalCode}</div>
               </div>
-
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="text-xs font-semibold text-slate-500">Date</div>
-                <div className="mt-1 text-sm font-medium text-slate-900">{order.schedule.collectionDate || "—"}</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">
+                  {order.serviceDate ? new Date(order.serviceDate).toLocaleDateString('en-GB', { dateStyle: 'long' }) : "—"}
+                </div>
               </div>
-
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="text-xs font-semibold text-slate-500">Time slot</div>
-                <div className="mt-1 text-sm font-medium text-slate-900">{slotText}</div>
+                <div className="mt-1 text-sm font-medium text-slate-900">
+                  {slot ? `${to12Hour(slot.startTime)} – ${to12Hour(slot.endTime)}` : "—"}
+                </div>
               </div>
             </div>
           </section>
 
-          {/* Service-specific details */}
-          {order.serviceType === "moving" && order.moving && (
+          {/* Delivery Address (If Moving) */}
+          {deliveryAddress && (
             <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <h2 className="text-sm font-semibold text-slate-900">Moving details</h2>
-
+              <div className="flex justify-between items-center">
+                <h2 className="text-sm font-semibold text-blue-700">Delivery Details</h2>
+                <a href={getMapUrl(deliveryAddress)} target="_blank" className="text-xs text-blue-600 font-bold hover:underline">VIEW MAP</a>
+              </div>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
-                  <div className="text-xs font-semibold text-slate-500">From</div>
-                  <div className="mt-1 text-sm font-medium text-slate-900">{order.moving.fromAddress}</div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-1">
+                  <div className="text-xs font-semibold text-slate-500">Address</div>
+                  <div className="mt-1 text-sm font-medium text-slate-900">{deliveryAddress.line1}</div>
                 </div>
-
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
-                  <div className="text-xs font-semibold text-slate-500">To</div>
-                  <div className="mt-1 text-sm font-medium text-slate-900">{order.moving.toAddress}</div>
-                </div>
-
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-xs font-semibold text-slate-500">Distance</div>
-                  <div className="mt-1 text-sm font-medium text-slate-900">
-                    {order.moving.distanceMiles} miles
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-xs font-semibold text-slate-500">Packing assistance</div>
-                  <div className="mt-1 text-sm font-medium text-slate-900">
-                    {order.moving.packingAssistance ? "Yes" : "No"}
-                  </div>
+                  <div className="text-xs font-semibold text-slate-500">Postcode</div>
+                  <div className="mt-1 text-sm font-medium text-slate-900">{deliveryAddress.postalCode}</div>
                 </div>
               </div>
             </section>
           )}
-
-          {order.serviceType === "storage" && order.storage && (
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <h2 className="text-sm font-semibold text-slate-900">Storage details</h2>
-
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-xs font-semibold text-slate-500">Duration</div>
-                  <div className="mt-1 text-sm font-medium text-slate-900">
-                    {order.storage.durationMonths} months
+          {/* DYNAMIC PACKING CHECKLIST */}
+          {hasPacking && (
+            <section className="bg-emerald-900 rounded-3xl p-6 text-white shadow-lg">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <h3 className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Packing Service Required</h3>
+              </div>
+              <p className="text-sm text-emerald-50 font-medium mb-4">The customer has requested packing assistance. Ensure the crew has sufficient boxes, tape, and bubble wrap.</p>
+              <div className="grid grid-cols-2 gap-3">
+                {['Large Boxes', 'Bubble Wrap', 'Packing Tape', 'Marker Pens'].map(tool => (
+                  <div key={tool} className="flex items-center gap-2 text-xs text-emerald-200">
+                    <div className="w-4 h-4 rounded border border-emerald-700 flex items-center justify-center text-[8px]">✓</div>
+                    {tool}
                   </div>
-                </div>
+                ))}
               </div>
             </section>
           )}
+          {/* Delivery Address (Only if Moving) */}
+          {isMoving && (
+            <div className="p-6 bg-slate-50/50">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Destination (Delivery)</h3>
+                <a href={getMapUrl(delivery)} target="_blank" className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded-lg">MAP</a>
+              </div>
+              <p className="font-bold text-slate-900 text-lg leading-tight">{delivery?.line1 || "TBD"}</p>
+              <p className="text-slate-500 text-sm font-medium">{delivery?.city} {delivery?.postalCode}</p>
 
-          {order.serviceType === "shredding" && order.shredding && (
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <h2 className="text-sm font-semibold text-slate-900">Shredding notes</h2>
-              <p className="mt-2 text-sm text-slate-700">
-                {order.shredding.notes || "—"}
-              </p>
-            </section>
+              {order.distanceMiles && (
+                <div className="mt-6 text-[11px] font-bold text-slate-400">
+                  Estimated Route: <span className="text-slate-900">{order.distanceMiles} Miles</span>
+                </div>
+              )}
+            </div>
           )}
+          {/* Notes */}
+          <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+            <h2 className="text-sm font-semibold text-amber-900 tracking-tight">Driver Instructions / Notes</h2>
+            <p className="mt-2 text-sm text-amber-800 leading-relaxed italic">
+              {order.notes || "No special instructions provided."}
+            </p>
+          </section>
 
-          {/* Items */}
+          {/* Items Table */}
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="text-sm font-semibold text-slate-900">Items</h2>
-
+            <h2 className="text-sm font-semibold text-slate-900">Manifest / Inventory</h2>
             <div className="mt-3 overflow-auto rounded-xl border border-slate-200">
-              <table className="min-w-[700px] w-full text-sm">
+              <table className="w-full text-sm">
                 <thead className="bg-slate-50 text-slate-700">
                   <tr>
                     <th className="p-3 text-left">Item</th>
-                    <th className="p-3 text-left">Details</th>
                     <th className="p-3 text-right">Qty</th>
                     <th className="p-3 text-right">Price</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {order.items.map((it) => (
-                    <tr key={it.key} className="border-t border-slate-200">
-                      <td className="p-3 font-medium text-slate-900">{it.label}</td>
-                      <td className="p-3 text-slate-600">{it.subLabel || "—"}</td>
-                      <td className="p-3 text-right text-slate-900">{it.qty ?? "—"}</td>
+                <tbody className="divide-y divide-slate-200">
+                  {order.items?.map((it: any) => (
+                    <tr key={it.id}>
+                      <td className="p-3 font-medium text-slate-900">{it.name}</td>
+                      <td className="p-3 text-right text-slate-600">{it.quantity}</td>
                       <td className="p-3 text-right font-semibold text-slate-900">
-                        {typeof it.price === "number" ? money(it.price) : "—"}
+                        {money(it.lineTotalMinor / 100)}
                       </td>
                     </tr>
                   ))}
@@ -415,90 +304,60 @@ export default function AdminOrderByIdPage() {
 
         {/* Right column */}
         <aside className="space-y-4 lg:sticky lg:top-6">
-          {/* Totals */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-            <h2 className="text-sm font-semibold text-slate-900">Payment summary</h2>
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+            <h2 className="text-sm font-semibold text-slate-900 tracking-tight">Payment Summary</h2>
 
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Subtotal</span>
-              <span className="font-semibold text-slate-900">{money(order.totals.subtotal)}</span>
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Discount</span>
-              <span className="font-semibold text-slate-900">
-                − {money(order.totals.discount)}
-              </span>
-            </div>
-
-            <div className="h-px bg-slate-200" />
-
-            <div className="flex items-center justify-between text-base">
-              <span className="font-semibold text-slate-900">Total due now</span>
-              <span className="font-bold text-slate-900">{money(order.totals.totalDueNow)}</span>
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Payment status</span>
-              <span className={payBadge(order.payment.status)}>{order.payment.status}</span>
-            </div>
-
-            <div className="text-xs text-slate-500">
-              Method: <span className="font-semibold text-slate-700">{order.payment.method.replace("_", " ")}</span>
-            </div>
-
-            {order.payment.stripeSessionId ? (
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-                Stripe session:
-                <div className="mt-1 font-mono">{order.payment.stripeSessionId}</div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Subtotal</span>
+                <span className="font-medium text-slate-900">{money(order.subtotalMinor / 100)}</span>
               </div>
-            ) : null}
+             <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-emerald-800 font-semibold">
+                      Discount Applied
+                    </span>
+                    <span className="font-bold text-emerald-900">
+                      − {money(order.discountMinor / 100)}
+                    </span>
+                  </div>
 
-            <div className="grid gap-2">
-              <button
-                type="button"
-                onClick={() => alert("Dummy: open Stripe (wire later)")}
-                disabled={!order.payment.stripeSessionId}
-                className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-40"
-              >
-                Open Stripe
-              </button>
+                  <div className="text-xs text-emerald-700">
+                    {order.durationMonths} month plan • {order.discountPercent}% off
+                  </div>
+                </div>
+              <div className="pt-2 border-t border-slate-100 flex justify-between items-baseline">
+                <span className="font-bold text-slate-900">Total</span>
+                <span className="font-bold text-xl text-slate-900">{money(order.totalMinor / 100)}</span>
+              </div>
+            </div>
 
-              <button
-                type="button"
-                onClick={() => alert("Dummy: refund (wire later)")}
-                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-              >
-                Refund payment
-              </button>
+            <div className="flex items-center justify-between text-sm pt-2">
+              <span className="text-slate-600">Payment status</span>
+              <span className={payBadge(order.paymentStatus || "unpaid")}>{order.paymentStatus || "unpaid"}</span>
+            </div>
 
+            {stripePayment && (
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+                <div className="font-bold text-slate-500 uppercase text-[10px]">Stripe Reference</div>
+                <div className="mt-1 font-mono break-all">{stripePayment.providerRef}</div>
+              </div>
+            )}
+
+            <div className="grid gap-2 pt-2">
               <button
-                type="button"
                 onClick={() => window.print()}
                 className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
               >
-                Print
+                Print Manifest
+              </button>
+              <button
+                onClick={() => alert("Email functionality wire-up required")}
+                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              >
+                Email Customer
               </button>
             </div>
-          </div>
-
-          {/* Quick actions */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-2">
-            <div className="text-sm font-semibold text-slate-900">Quick actions</div>
-            <button
-              type="button"
-              onClick={() => alert("Dummy: send email (wire later)")}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-            >
-              Email customer
-            </button>
-            <button
-              type="button"
-              onClick={() => alert("Dummy: create invoice (wire later)")}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-            >
-              Create invoice
-            </button>
           </div>
         </aside>
       </div>

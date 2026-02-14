@@ -4,12 +4,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
     useStorageCheckout,
-    type StorageItemId,
-    type TimeSlotId,
 } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
-import { Caps, isDayFull, isSlotFull, Slot } from "../scheduling/capacityLogic";
+import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
+import { submitOrderAction } from "@/app/services/order";
 
 type StepId = 0 | 1 | 2 | 3;
 
@@ -131,24 +130,16 @@ export function StorageForm() {
 
     const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
 
-    const capacityEnabled = orderFlow && orderFlow.settings.scheduling.capacityEnabled;
-    const caps: Caps = {
-        ...orderFlow?.settings.scheduling.capacities
-            ?.filter((c: any) => c.serviceType === "STORAGE")
-            ?.reduce((acc: Partial<Caps>, c: any) => {
-            acc[c.slotKey as Slot] = c.capacity;
-            return acc;
-            }, {}),
-        };
-        
-    const blackout = new Set(orderFlow && orderFlow.settings.scheduling.blackoutDates);
-
     const storageItems = orderFlow && orderFlow.catalog.storage.items;
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
     const weekdays = new Set(orderFlow && orderFlow.settings.scheduling.weekdayRules.filter((s: any) => s.serviceType === "STORAGE" && s.enabled).map((r: any) => r.weekday.toLowerCase()));
     const timeSlots = orderFlow && orderFlow.timeSlots;
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const inc = (id: StorageItemId) => {
+    console.log("Duration", duration);
+
+    const inc = (id: string) => {
         if (!orderFlow) return;
 
         const item = orderFlow.catalog.storage.itemsBySku?.[id];
@@ -165,7 +156,7 @@ export function StorageForm() {
         }));
     };
 
-    const dec = (id: StorageItemId) => {
+    const dec = (id: string) => {
         setState((st) => ({
             ...st,
             quantities: {
@@ -188,7 +179,7 @@ export function StorageForm() {
 
     const itemsOk = totalItems > 0;
 
-    const scheduleOk = !!state.collectionDate && !!state.timeSlot;
+    const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
     const detailsOk =
         (state.customerDetails.houseNumber ?? "").trim().length > 0 &&
@@ -210,27 +201,55 @@ export function StorageForm() {
         return step;
     }, [durationOk, itemsOk, scheduleOk, detailsOk, step]);
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!detailsOk || isSubmitting) return;
+
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            const data = await submitOrderAction(state);
+            console.log("Order created:", data);
+            setIsSubmitting(false);
+
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || "An unexpected error occurred.");
+            setIsSubmitting(false); // Only reset on error so the user can try again
+        }
+    };
+
     useEffect(() => {
         setState((s) => ({ ...s, enableButton: detailsOk }));
     }, [detailsOk, setState]);
 
     useEffect(() => {
-        if (disableAuto) return;
+        if (!orderFlow?.ok) return;
+
+        const scheduling = orderFlow.settings.scheduling;
+
+        // if admin disabled auto-blocking, don't auto-clear
+        if (scheduling.disableAutoBlockSchedule) return;
+
+        // need both date + selected slot
         if (!state.collectionDate) return;
-        if (!state.timeSlot) return; // protects against ""
+        if (!state.timeSlotId) return;
 
         const slotIsFull = isSlotFull({
-            enabled: capacityEnabled,
-            caps,
+            orderFlow,
             service: "storage",
             dateISO: state.collectionDate,
-            slot: state.timeSlot,
+            timeSlotId: state.timeSlotId,
+            // volumesByTimeSlotId: optional for now (defaults to 0)
+            // volumesByTimeSlotId,
         });
 
         if (slotIsFull) {
-            setState((s) => ({ ...s, timeSlot: "" }));
+            setState((s) => ({ ...s, timeSlotId: "" }));
         }
-    }, [disableAuto, capacityEnabled, caps, state.collectionDate, state.timeSlot, setState]);
+    }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
+
 
     useEffect(() => {
         setState((s) => ({ ...s, timeSlot: "" }));
@@ -244,22 +263,16 @@ export function StorageForm() {
         const wk = weekdayKey(d);
 
         if (!weekdays.has(wk)) {
-            setState((s) => ({ ...s, collectionDate: "", timeSlot: ""}));
+            setState((s) => ({ ...s, collectionDate: "", timeSlot: "" }));
         }
     }, [disableAuto, weekdays, state.collectionDate, setState]);
-
-    function onSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        if (maxAllowedStep < 3) return;
-        router.push("/order-summary");
-    }
 
     const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
     return (
         <form
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit}
             className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6"
         >
             <div className="space-y-2">
@@ -297,12 +310,12 @@ export function StorageForm() {
                                 aria-checked={state.durationMonth === m.minMonths}
                                 tabIndex={0}
                                 onClick={() =>
-                                    setState((st) => ({ ...st, durationMonth: m.minMonths }))
+                                    setState((st) => ({ ...st, durationMonth: m.minMonths, discountId: m.id }) )
                                 }
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter" || e.key === " ") {
                                         e.preventDefault();
-                                        setState((st) => ({ ...st, durationMonth: m.minMonths }));
+                                        setState((st) => ({ ...st, durationMonth: m.minMonths, discountId: m.id }) );
                                     }
                                 }}
                             >
@@ -339,7 +352,7 @@ export function StorageForm() {
 
                     <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {storageItems.map((item: any) => {
-                            const id = item.sku as StorageItemId;
+                            const id = item.sku as string;
                             const count = state.quantities[id] ?? 0;
                             const price = item.price?.price ?? 0;
 
@@ -404,34 +417,55 @@ export function StorageForm() {
                         </span>
                         <DatePicker
                             value={state.collectionDate}
-                            onChange={(val) => setState((s) => ({ ...s, collectionDate: val }))}
+                            onChange={(val) =>
+                                setState((s) => ({
+                                    ...s,
+                                    collectionDate: val,
+                                    timeSlotId: "", // reset slot when date changes
+                                }))
+                            }
                             disabled={(day: Date) => {
-                                if (disableAuto) return false;
+                                if (!orderFlow?.ok) return false;
 
-                                // disable past dates
+                                const scheduling = orderFlow.settings.scheduling;
+
+                                if (scheduling.disableAutoBlockSchedule) return false;
+
+                                // normalize dates
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
+
                                 const d = new Date(day);
                                 d.setHours(0, 0, 0, 0);
+
+                                // ❌ disable past dates
                                 if (d < today) return true;
 
-
-                                // ✅ weekday per service (storage)
-                                const wk = weekdayKey(d);
-                                if (!weekdays.has(wk)) return true;
-
-                                // disable full days by volume
                                 const iso = toLocalISODate(d);
-                                if (blackout.has(iso)) return true;
 
+                                // ❌ blackout dates (from DB)
+                                if (scheduling.blackoutDates.includes(iso)) return true;
+
+                                // ❌ weekday rules (from DB)
+                                const wk = weekdayKey(d).toUpperCase(); // MON, TUE, etc.
+
+                                const weekdayRule = scheduling.weekdayRules.find(
+                                    (r: any) =>
+                                        r.serviceType === "STORAGE" && r.weekday === wk
+                                );
+
+                                if (weekdayRule && !weekdayRule.enabled) return true;
+
+                                // ❌ full capacity day
                                 return isDayFull({
-                                    enabled: capacityEnabled,
-                                    caps,
+                                    orderFlow,
                                     service: "storage",
                                     dateISO: iso,
+                                    // volumesByTimeSlotId optional when you add volumes endpoint
                                 });
                             }}
                         />
+
                     </div>
                     <div className="w-full max-w-full">
                         <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
@@ -439,53 +473,77 @@ export function StorageForm() {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full">
                             {timeSlots.map((slot: any) => {
                                 const dateISO = state.collectionDate;
-                                const slotIsFull = !disableAuto && !!dateISO && isSlotFull({
-                                    enabled: capacityEnabled,
-                                    caps,
-                                    service: "storage",
-                                    dateISO,
-                                    slot: slot.id as Exclude<TimeSlotId, "">,
-                                });
+
+                                const slotIsFull =
+                                    !disableAuto &&
+                                    !!dateISO &&
+                                    isSlotFull({
+                                        orderFlow,                 // ✅ use orderFlow-based capacity rules
+                                        service: "storage",
+                                        dateISO,
+                                        timeSlotId: slot.id,       // ✅ id (not "morning/afternoon/evening")
+                                        // volumesByTimeSlotId,     // optional later when you have volumes endpoint
+                                    });
+
+                                const selected = state.timeSlotId === slot.id;
+
+                                const rangeLabel = `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`;
+
+                                function selectSlot() {
+                                    if (slotIsFull) return;
+                                    setState((s: any) => ({
+                                        ...s,
+                                        timeSlotId: slot.id,
+                                        // optional: store label too if you want to show it elsewhere
+                                        timeSlot: rangeLabel,
+                                    }));
+                                }
 
                                 return (
                                     <div
                                         key={slot.id}
-                                        className={`relative min-w-0 rounded-xl border p-3 text-center transition
-                                                    ${slotIsFull
+                                        className={`relative min-w-0 rounded-xl border p-3 text-center transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200
+                                        ${slotIsFull
                                                 ? "cursor-not-allowed bg-slate-50 opacity-50 border-slate-200"
                                                 : "cursor-pointer bg-white hover:border-slate-300"
                                             }
-                                                    ${state.timeSlot === `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`
-                                                ? "border-emerald-600 bg-emerald-50"
+                                        ${selected
+                                                ? "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600"
                                                 : "border-slate-200"
-                                            }
-                                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200`}
-                                        onClick={() => {
+                                            }`}
+                                        onClick={selectSlot}
+                                        onKeyDown={(e) => {
                                             if (slotIsFull) return;
-                                            setState((s: any) => ({ ...s, timeSlot: `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}` }));
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                selectSlot();
+                                            }
                                         }}
                                         role="radio"
-                                        aria-checked={state.timeSlot === (`${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`)}
+                                        aria-checked={selected}
+                                        aria-disabled={slotIsFull}
                                         tabIndex={slotIsFull ? -1 : 0}
                                     >
                                         <input
                                             type="radio"
                                             className="sr-only"
-                                            name="timeSlot"
+                                            name="timeSlotId"
                                             value={slot.id}
                                             disabled={slotIsFull}
-                                            checked={state.timeSlot === (`${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`)}
+                                            checked={selected}
                                             readOnly
                                         />
+
                                         <div className="text-sm font-bold text-slate-900 truncate">
                                             {slot.name} {slotIsFull ? "(Full)" : ""}
                                         </div>
                                         <div className="text-[11px] text-slate-500 whitespace-nowrap">
-                                            {to12Hour(slot.startTime)} - {to12Hour(slot.endTime)}
+                                            {rangeLabel}
                                         </div>
                                     </div>
                                 );
                             })}
+
                         </div>
                         {!scheduleOk && (
                             <div className="mt-2 text-xs text-rose-600">
@@ -584,6 +642,10 @@ export function StorageForm() {
                     goNext();
                 }}
             />
+            {error && <div className="text-red-500 mb-4">{error}</div>}
+
+            {isSubmitting ? 'Processing...' : 'Submitted'}
         </form>
+
     );
 }

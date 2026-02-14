@@ -1,54 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { getAdminOrders, updateOrderStatus } from "./action";
 
-type Order = {
-  id: string;
-  serviceType: "storage" | "moving" | "shredding";
-  status: "new" | "confirmed" | "collected" | "completed" | "cancelled";
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  postalCode: string;
-  collectionDate: string;
-  timeSlot: string;
-  totalDueNow: number;
-  createdAt: string; // ISO
-};
-
-const DUMMY_ORDERS: Order[] = [
-  { id: "ord_001", serviceType: "storage", status: "new", name: "John Smith", email: "john@example.com", phone: "07123 456789", address: "12 Baker Street, London", postalCode: "NW1 6XE", collectionDate: "2026-02-12", timeSlot: "(7:00 AM to 10:00 AM) morning", totalDueNow: 120, createdAt: "2026-02-01T10:22:00Z" },
-  { id: "ord_002", serviceType: "moving", status: "confirmed", name: "Sarah Jones", email: "sarah@example.com", phone: "07999 123456", address: "45 Camden Road, London", postalCode: "N7 0AB", collectionDate: "2026-01-29", timeSlot: "(10:00 AM to 3:00 PM) afternoon", totalDueNow: 685, createdAt: "2026-01-29T14:05:00Z" },
-  { id: "ord_003", serviceType: "shredding", status: "completed", name: "ACME Ltd", email: "ops@acme.co.uk", phone: "020 7123 4567", address: "Unit 5, Stratford, London", postalCode: "E15 2PX", collectionDate: "2025-12-10", timeSlot: "(3:00 PM to 6:00 PM) evening", totalDueNow: 95, createdAt: "2025-12-10T09:40:00Z" },
-];
-
-const STATUS_OPTIONS: Order["status"][] = ["new", "confirmed", "collected", "completed", "cancelled"];
-
-type FilterMode = "all" | "week" | "month" | "year";
-
-type RangeOption = {
-  key: string;
-  label: string;
-  from: Date;
-  toExclusive: Date;
-};
-
-function money(n: number) {
-  return `£${n.toFixed(2)}`;
-}
-
-function badge(status: Order["status"]) {
-  const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold";
-  switch (status) {
-    case "new": return `${base} bg-slate-100 text-slate-700 border-slate-200`;
-    case "confirmed": return `${base} bg-amber-50 text-amber-800 border-amber-200`;
-    case "collected": return `${base} bg-sky-50 text-sky-800 border-sky-200`;
-    case "completed": return `${base} bg-emerald-50 text-emerald-800 border-emerald-200`;
-    case "cancelled": return `${base} bg-rose-50 text-rose-800 border-rose-200`;
-  }
-}
+// Types from your actual Prisma schema
+type OrderWithCustomer = any; // You can import the generated Prisma type here
 
 function startOfDay(d: Date) {
   const x = new Date(d);
@@ -64,21 +21,15 @@ function startOfWeekMonday(d: Date) {
   return x;
 }
 
-function inRange(iso: string, from: Date, toExclusive: Date) {
-  const t = new Date(iso);
-  if (Number.isNaN(t.getTime())) return false;
-  return t >= from && t < toExclusive;
-}
-
 function monthLabel(d: Date) {
   return d.toLocaleString(undefined, { month: "long", year: "numeric" });
 }
 
-function buildWeekOptions(weeksBack = 8): RangeOption[] {
+export function buildWeekOptions(weeksBack = 10) {
   const now = new Date();
   const thisWeekStart = startOfWeekMonday(now);
+  const out = [];
 
-  const out: RangeOption[] = [];
   for (let i = 0; i < weeksBack; i++) {
     const from = new Date(thisWeekStart);
     from.setDate(from.getDate() - i * 7);
@@ -86,8 +37,7 @@ function buildWeekOptions(weeksBack = 8): RangeOption[] {
     const toExclusive = new Date(from);
     toExclusive.setDate(toExclusive.getDate() + 7);
 
-    const label =
-      i === 0 ? "This week" : i === 1 ? "Last week" : `${i} weeks ago`;
+    const label = i === 0 ? "This week" : i === 1 ? "Last week" : `${i} weeks ago`;
 
     out.push({
       key: `w-${i}`,
@@ -99,9 +49,9 @@ function buildWeekOptions(weeksBack = 8): RangeOption[] {
   return out;
 }
 
-function buildMonthOptions(monthsBack = 12): RangeOption[] {
+export function buildMonthOptions(monthsBack = 18) {
   const now = new Date();
-  const out: RangeOption[] = [];
+  const out = [];
 
   for (let i = 0; i < monthsBack; i++) {
     const from = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -114,13 +64,12 @@ function buildMonthOptions(monthsBack = 12): RangeOption[] {
       toExclusive,
     });
   }
-
   return out;
 }
 
-function buildYearOptions(yearsBack = 5): RangeOption[] {
+export function buildYearOptions(yearsBack = 6) {
   const now = new Date();
-  const out: RangeOption[] = [];
+  const out = [];
 
   for (let i = 0; i < yearsBack; i++) {
     const y = now.getFullYear() - i;
@@ -134,92 +83,67 @@ function buildYearOptions(yearsBack = 5): RangeOption[] {
       toExclusive,
     });
   }
-
   return out;
 }
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>(DUMMY_ORDERS);
-
+  const [orders, setOrders] = useState<OrderWithCustomer[]>([]);
+  const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
-  const [mode, setMode] = useState<FilterMode>("all");
+  const [mode, setMode] = useState<"all" | "week" | "month" | "year">("all");
 
-  // second dropdown: dynamic range option
-  const weekOptions = useMemo(() => buildWeekOptions(10), []);
-  const monthOptions = useMemo(() => buildMonthOptions(18), []);
-  const yearOptions = useMemo(() => buildYearOptions(6), []);
-
-  const options = mode === "week" ? weekOptions : mode === "month" ? monthOptions : mode === "year" ? yearOptions : [];
-  const [rangeKey, setRangeKey] = useState<string>(""); // selected option key
-
-  // keep rangeKey valid when switching mode
-  React.useEffect(() => {
-    if (mode === "all") {
-      setRangeKey("");
-      return;
-    }
-    const first = options[0]?.key ?? "";
-    setRangeKey(first);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Reuse your dynamic range builders
+  const options = useMemo(() => {
+    if (mode === "week") return buildWeekOptions(10);
+    if (mode === "month") return buildMonthOptions(18);
+    if (mode === "year") return buildYearOptions(6);
+    return [];
   }, [mode]);
 
-  function updateStatus(id: string, status: Order["status"]) {
-    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
-  }
+  const [rangeKey, setRangeKey] = useState<string>("");
 
-  const selectedRange = useMemo(() => {
-    if (mode === "all") return null;
-    const list = options;
-    return list.find((x) => x.key === rangeKey) ?? list[0] ?? null;
-  }, [mode, options, rangeKey]);
+  // Fetch Logic
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const selectedRange = options.find((x) => x.key === rangeKey);
 
-  const filtered = useMemo(() => {
-    const term = q.trim().toLowerCase();
-
-    return orders.filter((o) => {
-      // dynamic date filter
-      if (selectedRange && !inRange(o.createdAt, selectedRange.from, selectedRange.toExclusive)) {
-        return false;
+      try {
+        const data = await getAdminOrders({
+          q: q,
+          from: selectedRange?.from,
+          to: selectedRange?.toExclusive,
+        });
+        setOrders(data);
+      } catch (err) {
+        console.error("Failed to fetch orders", err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      // search filter
-      if (!term) return true;
+    const timer = setTimeout(fetchData, 300); // Debounce search
+    return () => clearTimeout(timer);
+  }, [q, rangeKey, options]);
 
-      const hay = [
-        o.id,
-        o.serviceType,
-        o.status,
-        o.name,
-        o.email,
-        o.phone,
-        o.postalCode,
-        o.collectionDate,
-        o.timeSlot,
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return hay.includes(term);
-    });
-  }, [orders, q, selectedRange]);
+  // Handle Status Update in DB
+  async function handleStatusChange(id: string, status: string) {
+    try {
+      await updateOrderStatus(id, status);
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+    } catch (err) {
+      alert("Failed to update status");
+    }
+  }
 
   return (
     <main className="space-y-4">
-      {/* Header */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-lg font-semibold text-slate-900">Orders</h1>
-            <p className="text-xs text-slate-500">Dummy data — dynamic filters</p>
-          </div>
+          <h1 className="text-lg font-semibold text-slate-900">Live Orders</h1>
 
-          {/* Filters */}
           <div className="flex flex-wrap items-center gap-2">
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value as FilterMode)}
-              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none"
-            >
+            <select value={mode} onChange={(e) => setMode(e.target.value as any)} className="...">
               <option value="all">All time</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
@@ -227,128 +151,81 @@ export default function AdminOrdersPage() {
             </select>
 
             {mode !== "all" && (
-              <select
-                value={rangeKey || options[0]?.key || ""}
-                onChange={(e) => setRangeKey(e.target.value)}
-                className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none"
-              >
+              <select value={rangeKey} onChange={(e) => setRangeKey(e.target.value)} className="...">
                 {options.map((o) => (
-                  <option key={o.key} value={o.key}>
-                    {o.label}
-                  </option>
+                  <option key={o.key} value={o.key}>{o.label}</option>
                 ))}
               </select>
             )}
           </div>
         </div>
 
-        <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search orders…"
-            className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
-          />
-          <div className="text-xs text-slate-600 sm:text-right">
-            Showing{" "}
-            <span className="font-semibold text-slate-900">{filtered.length}</span>{" "}
-            of{" "}
-            <span className="font-semibold text-slate-900">{orders.length}</span>
-          </div>
-        </div>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search by name, email, or ORD#..."
+          className="..."
+        />
       </div>
 
-      {/* Table */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-auto">
-          <table className="min-w-[980px] w-full text-sm">
-            <thead className="bg-slate-50">
-              <tr>
-                <th className="p-3 text-left">Order</th>
-                <th className="p-3 text-left">Service</th>
-                <th className="p-3 text-left">Status</th>
-                <th className="p-3 text-left">Customer</th>
-                <th className="p-3 text-left">Postcode</th>
-                <th className="p-3 text-left">Collection Date</th>
-                <th className="p-3 text-left">Time Slot</th>
-                <th className="p-3 text-right">Total</th>
-                <th className="p-3 text-left">Created</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filtered.length === 0 ? (
+          {loading ? (
+            <div className="p-10 text-center">Loading orders...</div>
+          ) : (
+            <table className="min-w-[980px] w-full text-sm">
+              <thead className="bg-slate-50">
                 <tr>
-                  <td colSpan={8} className="p-6 text-center text-slate-500">
-                    No orders match your filters.
-                  </td>
+                  <th className="...">Order #</th>
+                  <th className="...">Customer</th>
+                  <th className="...">Status</th>
+                  <th className="...">Total</th>
+                  <th className="...">Date</th>
                 </tr>
-              ) : (
-                filtered.map((o) => (
-                  <tr key={o.id} className="border-t">
-                    <td className="p-3 font-mono text-xs">
-                      <Link
-                        href={`/admin/orders/${o.id}`}
-                        className="font-mono text-xs text-emerald-700 hover:underline"
-                      >
-                        {o.id}
-                      </Link>
-                    </td>
-                    <td className="p-3 capitalize">{o.serviceType}</td>
-
-                    <td className="p-3">
-                      <div className="flex items-center gap-2">
-                        <span className={badge(o.status)}>{o.status}</span>
+              </thead>
+              <tbody>
+                {orders.map((o) => {
+                  const pickupAddr = o.addresses.find((a: any) => a.type === "PICKUP");
+                  return (
+                    <tr key={o.id} className="border-t">
+                      <td className="p-3 font-mono text-emerald-700">
+                        <Link href={`/admin/orders/${o.id}`}>{o.orderNumber}</Link>
+                      </td>
+                      <td className="p-3">
+                        <div>{o.customer.fullName}</div>
+                        <div className="text-xs text-slate-400">{o.customer.email}</div>
+                      </td>
+                      <td className="p-3">
                         <select
                           value={o.status}
-                          onChange={(e) =>
-                            setOrders((prev) =>
-                              prev.map((x) =>
-                                x.id === o.id
-                                  ? { ...x, status: e.target.value as Order["status"] }
-                                  : x
-                              )
-                            )
-                          }
+                          onChange={(e) => handleStatusChange(o.id, e.target.value)}
                           className="h-9 rounded-xl border border-slate-200 bg-white px-2 text-xs"
                         >
-                          {STATUS_OPTIONS.map((s) => (
-                            <option key={s} value={s}>
-                              {s}
-                            </option>
-                          ))}
+                          <option value="DRAFT">Draft</option>
+                          <option value="CONFIRMED">Confirmed</option>
+                          <option value="COMPLETED">Completed</option>
+                          <option value="CANCELLED">Cancelled</option>
                         </select>
-                      </div>
-                    </td>
-
-                    <td className="p-3">
-                      <div className="font-medium">{o.name}</div>
-                      <div className="text-xs text-slate-500">{o.email}</div>
-                    </td>
-
-                    <td className="p-3 font-semibold">{o.postalCode}</td>
-
-                    <td className="p-3">
-                      {o.collectionDate}{" "}
-                      
-                    </td>
-                    <td className="p-3 text-slate-500">{o.timeSlot}</td>
-                    <td className="p-3 text-right font-semibold">
-                      {money(o.totalDueNow)}
-                    </td>
-
-                    <td className="p-3 text-slate-700">
-                      {new Date(o.createdAt).toLocaleString()}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="border-t bg-slate-50 px-4 py-3 text-xs text-slate-600">
-          Week/month/year options are generated dynamically from today.
+                      </td>
+                      <td className="p-3 font-semibold">{pickupAddr?.postalCode || "—"}</td>
+                      <td className="p-3">
+                        {o.serviceDate ? new Date(o.serviceDate).toLocaleDateString() : "—"}
+                      </td>
+                      <td className="p-3 text-slate-500">
+                        {o.timeSlot ? `${o.timeSlot.startTime} - ${o.timeSlot.endTime}` : "—"}
+                      </td>
+                      <td className="p-3 text-right font-semibold">
+                        £{(o.totalMinor / 100).toFixed(2)}
+                      </td>
+                      <td className="p-3 text-slate-500">
+                        {new Date(o.createdAt).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </main>

@@ -4,15 +4,6 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 
 export type ServiceType = "storage" | "moving" | "shredding";
 
-export type StorageItemId =
-  | "small-box"
-  | "medium-box"
-  | "large-box"
-  | "xl-box"
-  | "suitcase"
-  | "half-container"
-  | "full-container";
-
 export type MovingItemId =
   | "small-move"
   | "1-bedroom-flat"
@@ -33,7 +24,7 @@ export type ShreddingItems = {
 };
 
 export type CustomerDetails = {
-  houseNumber?: string;
+  houseNumber: string;
   name: string;
   email: string;
   phone: string;
@@ -48,18 +39,19 @@ export type LocationDetails = {
 
 export type StorageState = {
   durationMonth: 0 | 1 | 3 | 6 | 12;
-  quantities: Record<StorageItemId, number>;
+  quantities: Record<string, number>;
   collectionDate: string; // YYYY-MM-DD
-  timeSlot: "";
+  timeSlotId: string;
   customerDetails: CustomerDetails;
   enableButton: boolean;
+  discountId: string | null;
 };
 
 export type MovingState = {
   movingItemId: MovingItemId | "";
   movingPackageId: MovingPackageId | "";
   collectionDate: string; // YYYY-MM-DD
-  timeSlot: TimeSlotId;
+  timeSlotId: string;
   fromLocation: LocationDetails;
   toLocation: LocationDetails;
   customerDetails: CustomerDetails;
@@ -71,7 +63,7 @@ export type MovingState = {
 export type ShreddingState = {
   items: ShreddingItems;
   collectionDate: string;
-  timeSlot: TimeSlotId;
+  timeSlotId: string;
   customerDetails: CustomerDetails;
   enableButton: boolean;
 };
@@ -96,6 +88,7 @@ export type CheckoutState = {
 
 /** Helpers */
 const emptyCustomer: CustomerDetails = {
+  houseNumber: "",
   name: "",
   email: "",
   phone: "",
@@ -115,16 +108,17 @@ const emptyStorage: StorageState = {
     "full-container": 0,
   },
   collectionDate: "",
-  timeSlot: "",
+  timeSlotId: "",
   customerDetails: { ...emptyCustomer },
   enableButton: false,
+  discountId: "",
 };
 
 const emptyMoving: MovingState = {
   movingItemId: "",
   movingPackageId: "",
   collectionDate: "",
-  timeSlot: "",
+  timeSlotId: "",
   fromLocation: { address: "", houseNumber: "" },
   toLocation: { address: "", houseNumber: "" },
   customerDetails: { ...emptyCustomer },
@@ -135,7 +129,7 @@ const emptyMoving: MovingState = {
 const emptyShredding: ShreddingState = {
   items: { bagQty: 0, boxQty: 0 },
   collectionDate: "",
-  timeSlot: "",
+  timeSlotId: "",
   customerDetails: { ...emptyCustomer },
   enableButton: false,
 };

@@ -1,13 +1,12 @@
 import type {
     CheckoutState,
-    StorageItemId,
     MovingItemId,
     MovingPackageId,
 } from "./CheckoutStore";
 
 const GBP = (n: number) => n.toFixed(2);
 
-const STORAGE_PRICE_PER_MONTH: Record<StorageItemId, number> = {
+const STORAGE_PRICE_PER_MONTH: Record<string, number> = {
     "small-box": 5,
     "medium-box": 8,
     "large-box": 12,
@@ -17,7 +16,7 @@ const STORAGE_PRICE_PER_MONTH: Record<StorageItemId, number> = {
     "full-container": 150,
 };
 
-const MOVING_ITEM_PRICE: Record<MovingItemId, number> = {
+const MOVING_ITEM_PRICE: Record<string, number> = {
     "small-move": 250,
     "1-bedroom-flat": 350,
     "2-bedroom-flat": 500,
@@ -26,7 +25,7 @@ const MOVING_ITEM_PRICE: Record<MovingItemId, number> = {
     "office-move": 2000,
 };
 
-const MOVING_PACKAGE_ADDON: Record<MovingPackageId, number> = {
+const MOVING_PACKAGE_ADDON: Record<string, number> = {
     "basic-package": 0,
     "move-and-pack": 180,
 };
@@ -49,7 +48,7 @@ export function selectCheckoutTotals(state: CheckoutState): CheckoutTotals {
     if (state.serviceType === "storage") {
         const s = state.storage;
 
-        const monthly = +(Object.keys(s.quantities) as StorageItemId[]).reduce(
+        const monthly = +(Object.keys(s.quantities) as string[]).reduce(
             (sum, id) => sum + s.quantities[id] * STORAGE_PRICE_PER_MONTH[id],
             0
         ).toFixed(2);
@@ -84,7 +83,7 @@ export function selectCheckoutTotals(state: CheckoutState): CheckoutTotals {
         !!m.movingItemId &&
         !!m.movingPackageId &&
         !!m.collectionDate &&
-        !!m.timeSlot &&
+        !!m.timeSlotId &&
         m.fromLocation.address.trim().length > 0 &&
         m.fromLocation.houseNumber.trim().length > 0 &&
         m.toLocation.address.trim().length > 0 &&

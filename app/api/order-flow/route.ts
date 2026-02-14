@@ -130,7 +130,7 @@ async function loadStorageDiscountTiers(currency: string) {
       scope: DiscountScope.GLOBAL,
       serviceItemId: null,
     },
-    select: { minMonths: true, percentOff: true, currency: true },
+    select: { id: true, minMonths: true, percentOff: true, currency: true },
     orderBy: [{ minMonths: "asc" }],
   });
 }
@@ -317,6 +317,8 @@ export async function GET(req: Request) {
       loadStorageDiscountTiers(currency),
       loadAdminSettingsBundle(),
     ]);
+
+    console.log("Discount Tiers", storageDiscountTiers);
 
   const storageItems = normalizedItems.filter((x) => x.serviceType === ServiceType.STORAGE);
   const movingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.MOVING);

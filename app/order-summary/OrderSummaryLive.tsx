@@ -1,86 +1,88 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useStorageCheckout, type StorageItemId } from "../components/checkout/CheckoutStore";
-
-const PRICE_PER_MONTH: Record<StorageItemId, number> = {
-  "small-box": 5,
-  "medium-box": 8,
-  "large-box": 12,
-  "xl-box": 15,
-  suitcase: 10,
-  "half-container": 75,
-  "full-container": 150,
-};
-
-const LABELS: Record<StorageItemId, string> = {
-  "small-box": "Small Box",
-  "medium-box": "Medium Box",
-  "large-box": "Large Box",
-  "xl-box": "XL Box",
-  suitcase: "Suitcase",
-  "half-container": "½ Container",
-  "full-container": "Full Container",
-};
-
-function money(n: number, sym = "£") {
-  return `${sym}${n.toFixed(2)}`;
-}
+import { useStorageCheckout } from "../components/checkout/CheckoutStore";
+import { money, to12Hour } from "../utils/utils";
 
 export function StorageOrderSummary() {
-  const { state } = useStorageCheckout();
+  const { state, orderFlow } = useStorageCheckout();
 
-  const totalItems = useMemo(
-    () => Object.values(state.quantities).reduce((a, b) => a + b, 0),
-    [state.quantities]
-  );
+  const itemsBySku = orderFlow?.catalog?.storage?.itemsBySku ?? {};
+  const discountTiers = orderFlow?.catalog?.storage?.discountTiers ?? [];
 
-  const { items, storagePerMonth, discount, totalDueNow } = useMemo(() => {
-    const items = (Object.keys(state.quantities) as StorageItemId[])
-      .filter((id) => state.quantities[id] > 0)
-      .map((id) => ({
-        id,
-        label: LABELS[id],
-        qty: state.quantities[id],
-        price: PRICE_PER_MONTH[id] * state.quantities[id], // monthly line total
-      }));
+  const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
 
-    const storagePerMonth = +items.reduce((sum, it) => sum + it.price, 0).toFixed(2);
+  console.log(state);
 
-    const months = state.durationMonth === 0 ? 1 : state.durationMonth;
+  const { items, storagePerMonth, months, discountPerMonth, totalDueNow } =
+    useMemo(() => {
+      const months = state.durationMonth > 0 ? state.durationMonth : 1;
 
-    const discountRate =
-      months === 3 ? 0.05 : months === 6 ? 0.1 : months === 12 ? 0.15 : 0;
+      const items = Object.entries(state.quantities)
+        .filter(([_, qty]) => (qty ?? 0) > 0)
+        .map(([sku, qty]) => {
+          const catalogItem = itemsBySku[sku];
 
-    // show discount per month
-    const durationSubtotal = +(storagePerMonth * months).toFixed(2);
-    const discount = +((durationSubtotal * discountRate) / months).toFixed(2);
+          const unitPrice = Number(catalogItem?.price?.price ?? 0);
+          const lineMonthly = +(unitPrice * (qty ?? 0)).toFixed(2);
 
-    const totalDueNow = +(storagePerMonth - discount).toFixed(2);
+          return {
+            sku,
+            label: catalogItem?.name ?? sku,
+            qty: qty ?? 0,
+            unitPrice,
+            lineMonthly,
+          };
+        });
 
-    return { items, storagePerMonth, discount, totalDueNow };
-  }, [state.quantities, state.durationMonth]);
+      const storagePerMonth = +items
+        .reduce((sum, it) => sum + it.lineMonthly, 0)
+        .toFixed(2);
+
+      const tier = [...discountTiers]
+        .sort((a, b) => b.minMonths - a.minMonths)
+        .find((t) => months >= t.minMonths);
+
+      const percentOff = tier?.percentOff ?? 0;
+      const discountRate = percentOff / 100;
+
+      const discountPerMonth = +(storagePerMonth * discountRate).toFixed(2);
+      const totalDueNow = +(storagePerMonth - discountPerMonth).toFixed(2);
+
+      console.log(state, orderFlow);
+
+      return {
+        items,
+        storagePerMonth,
+        months,
+        discountPerMonth,
+        totalDueNow,
+      };
+    }, [state.quantities, state.durationMonth, itemsBySku, discountTiers]);
 
   return (
     <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
-      <h2 className="text-xl font-medium text-slate-900 text-center">Your Order</h2>
+      <h2 className="text-xl font-medium text-slate-900 text-center">
+        Your Order
+      </h2>
 
-      {/* Totals */}
       <div className="space-y-3">
         <div className="flex justify-between text-sm text-slate-700">
           <span>Storage per month</span>
-          <span>{money(storagePerMonth)}</span>
+          <span>{money(storagePerMonth, currencySymbol)}</span>
         </div>
 
         <div className="flex justify-between text-sm text-slate-700">
           <span>Duration</span>
-          <span>{state.durationMonth || 0} months</span>
+          <span>{months} months</span>
         </div>
 
         <div className="flex justify-between text-sm text-slate-700">
           <span>Discount</span>
-          <span className={discount > 0 ? "text-[#4CAF50]" : "text-slate-700"}>
-            {discount > 0 ? `−${money(discount)}` : money(0)}
+          <span className={discountPerMonth > 0 ? "text-emerald-600" : ""}>
+            {discountPerMonth > 0
+              ? `−${money(discountPerMonth, currencySymbol)}`
+              : money(0, currencySymbol)}
           </span>
         </div>
 
@@ -88,34 +90,50 @@ export function StorageOrderSummary() {
 
         <div className="flex justify-between text-base font-medium text-slate-900">
           <span>Total due now</span>
-          <span>{money(totalDueNow)}</span>
+          <span>{money(totalDueNow, currencySymbol)}</span>
         </div>
       </div>
 
-      {/* Items */}
       <div className="rounded-xl bg-slate-50 p-4 space-y-3">
         {items.length === 0 ? (
-          <div className="text-sm text-slate-600">No items added yet.</div>
+          <div className="text-sm text-slate-600">
+            No items added yet.
+          </div>
         ) : (
           items.map((it) => (
-            <div key={it.id} className="flex justify-between text-sm text-slate-700">
+            <div
+              key={it.sku}
+              className="flex justify-between text-sm text-slate-700"
+            >
               <span>
                 {it.qty} × {it.label}
               </span>
-              <span className="text-slate-900">{money(it.price)}</span>
+              <span className="text-slate-900">
+                {money(it.lineMonthly, currencySymbol)}
+              </span>
             </div>
           ))
         )}
       </div>
 
-      {/* Note */}
       <p className="text-xs text-slate-500">
-        {totalItems === 0
-          ? "Add items on the left to see your order summary."
-          : `Collection: ${state.collectionDate || "—"} • Slot: ${state.timeSlot || "—"}`}
+        {
+          items.length === 0
+            ? "Add items on the left to see your order summary."
+            : (() => {
+              const slot = orderFlow?.timeSlots?.find(
+                (s: any) => s.id === state.timeSlotId
+              );
+
+              const slotLabel = slot
+                ? `${slot.name} (${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)})`
+                : "—";
+
+              return `Collection: ${state.collectionDate || "—"} • Slot: ${slotLabel}`;
+            })()
+        }
       </p>
 
-      {/* CTA */}
       <button
         type="button"
         disabled={!state.enableButton}

@@ -92,7 +92,7 @@ export async function loadOrderFlow(currency = "GBP") {
           scope: DiscountScope.GLOBAL,
           serviceItemId: null,
         },
-        select: { minMonths: true, percentOff: true, currency: true },
+        select: { id: true, minMonths: true, percentOff: true, currency: true },
         orderBy: [{ minMonths: "asc" }],
       }),
 
