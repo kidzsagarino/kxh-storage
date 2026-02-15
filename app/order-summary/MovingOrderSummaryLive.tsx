@@ -85,7 +85,7 @@ export function MovingOrderSummary() {
 
     const totalDueNow = +(distanceCost + homeCost + pkgCost).toFixed(2);
 
-    const slotText = state.timeSlot ? SLOT_LABEL[state.timeSlot as Exclude<TimeSlotId, "">] : "";
+    const slotText = state.timeSlotId ? SLOT_LABEL[state.timeSlotId as Exclude<TimeSlotId, "">] : "";
     const note = `Collection: ${state.collectionDate || "—"}${slotText ? ` (${slotText})` : ""}`;
 
     return { items, totalDueNow, note };
