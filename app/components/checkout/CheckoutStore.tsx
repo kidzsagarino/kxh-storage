@@ -84,6 +84,7 @@ export type CheckoutState = {
 
   /** ✅ Loaded once from server (SSR) and reused by all forms */
   orderFlow: OrderFlowData | null;
+  enableProceedButton: boolean;
 };
 
 /** Helpers */
@@ -172,6 +173,7 @@ export function CheckoutProvider({ children, initialOrderFlow }: { children: Rea
     shredding: emptyShredding,
     settings: defaultSettings,
     orderFlow: initialOrderFlow ?? null,
+    enableProceedButton: false
   });
 
   const value = useMemo<CheckoutContextValue>(() => {
@@ -231,6 +233,7 @@ export function CheckoutProvider({ children, initialOrderFlow }: { children: Rea
           shredding: emptyShredding,
           settings: defaultSettings,
           orderFlow: null, // ✅
+          enableProceedButton: false
         }),
     };
   }, [state]);

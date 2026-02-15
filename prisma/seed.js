@@ -196,7 +196,7 @@ async function seedCapacityAndRules() {
           settingsId: globalSettings.id,
           serviceType: service,
           slotKey: slot,
-          capacity: 5, // Defaulting to 5 for all slots
+          capacity: 100, // Defaulting to 5 for all slots
         },
       });
     }

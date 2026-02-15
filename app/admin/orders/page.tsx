@@ -202,7 +202,7 @@ export default function AdminOrdersPage() {
                           {o.timeSlot ? `${ to12Hour(o.timeSlot.startTime)} - ${to12Hour(o.timeSlot.endTime)}` : "—"}
                         </div>
                       </td>
-                      <td className="px-4 py-4">
+                      {/* <td className="px-4 py-4">
                         <select
                           value={o.status}
                           onChange={(e) => handleStatusChange(o.id, e.target.value)}
@@ -214,6 +214,9 @@ export default function AdminOrdersPage() {
                           <option value="COMPLETED">Completed</option>
                           <option value="CANCELLED">Cancelled</option>
                         </select>
+                      </td> */}
+                      <td className="px-4 py-4">
+                        {o.status}
                       </td>
                       <td className="px-4 py-4 text-right">
                         <div className="font-bold text-slate-900">

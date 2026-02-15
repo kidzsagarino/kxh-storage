@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.19.2",
+    "@stripe/react-stripe-js": "^5.6.0",
+    "@stripe/stripe-js": "^8.7.0",
     "date-fns": "^4.1.0",
     "decimal.js": "^10.6.0",
     "lucide-react": "^0.562.0",
@@ -18,7 +20,8 @@
     "prisma": "^6.19.2",
     "react": "19.2.3",
     "react-day-picker": "^9.13.0",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "stripe": "^20.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",

@@ -4,15 +4,18 @@ import React, { useMemo } from "react";
 import { useStorageCheckout } from "../components/checkout/CheckoutStore";
 import { money, to12Hour } from "../utils/utils";
 
-export function StorageOrderSummary() {
+type Props = {
+  onProceed: () => void;
+  busy?: boolean;
+  error?: string | null;
+};
+
+export function StorageOrderSummary({ onProceed, busy, error }: Props) {
   const { state, orderFlow } = useStorageCheckout();
 
   const itemsBySku = orderFlow?.catalog?.storage?.itemsBySku ?? {};
   const discountTiers = orderFlow?.catalog?.storage?.discountTiers ?? [];
-
   const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
-
-  console.log(state);
 
   const { items, storagePerMonth, months, discountPerMonth, totalDueNow } =
     useMemo(() => {
@@ -49,16 +52,10 @@ export function StorageOrderSummary() {
       const discountPerMonth = +(storagePerMonth * discountRate).toFixed(2);
       const totalDueNow = +(storagePerMonth - discountPerMonth).toFixed(2);
 
-      console.log(state, orderFlow);
-
-      return {
-        items,
-        storagePerMonth,
-        months,
-        discountPerMonth,
-        totalDueNow,
-      };
+      return { items, storagePerMonth, months, discountPerMonth, totalDueNow };
     }, [state.quantities, state.durationMonth, itemsBySku, discountTiers]);
+
+  const canProceed = !!state.enableButton && !busy;
 
   return (
     <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
@@ -96,15 +93,10 @@ export function StorageOrderSummary() {
 
       <div className="rounded-xl bg-slate-50 p-4 space-y-3">
         {items.length === 0 ? (
-          <div className="text-sm text-slate-600">
-            No items added yet.
-          </div>
+          <div className="text-sm text-slate-600">No items added yet.</div>
         ) : (
           items.map((it) => (
-            <div
-              key={it.sku}
-              className="flex justify-between text-sm text-slate-700"
-            >
+            <div key={it.sku} className="flex justify-between text-sm text-slate-700">
               <span>
                 {it.qty} × {it.label}
               </span>
@@ -117,29 +109,24 @@ export function StorageOrderSummary() {
       </div>
 
       <p className="text-xs text-slate-500">
-        {
-          items.length === 0
-            ? "Add items on the left to see your order summary."
-            : (() => {
-              const slot = orderFlow?.timeSlots?.find(
-                (s: any) => s.id === state.timeSlotId
-              );
-
-              const slotLabel = slot
-                ? `${slot.name} (${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)})`
-                : "—";
-
-              return `Collection: ${state.collectionDate || "—"} • Slot: ${slotLabel}`;
-            })()
-        }
+        {items.length === 0
+          ? "Add items on the left to see your order summary."
+          : (() => {
+            const slot = orderFlow?.timeSlots?.find((s: any) => s.id === state.timeSlotId);
+            const slotLabel = slot
+              ? `${slot.name} (${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)})`
+              : "—";
+            return `Collection: ${state.collectionDate || "—"} • Slot: ${slotLabel}`;
+          })()}
       </p>
 
       <button
         type="button"
-        disabled={!state.enableButton}
+        onClick={onProceed}
+        disabled={!state.enableButton || !!busy}
         className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Proceed to Payment
+        {busy ? "Processing…" : "Proceed to Payment"}
       </button>
     </aside>
   );

@@ -12,6 +12,10 @@ import { MovingOrderSummary } from "../order-summary/MovingOrderSummaryLive";
 import { ShreddingOrderSummary } from "../order-summary/ShreddingOrderSummaryLive";
 
 import { MobileCheckoutBar } from "./MobileCheckoutBar";
+import { proceedToPayment } from "@/app/lib/proceed-to-payment";
+import { createEmbeddedSession } from "@/app/services/stripe";
+import { submitOrderAction } from "@/app/services/order";
+
 
 function ServiceSelect({
     value,
@@ -40,8 +44,38 @@ export default function HomeClientControls({
 }: {
     variant: "hero" | "pricing";
 }) {
-    const { state, setServiceType } = useCheckout();
+    const { state, setServiceType, setState } = useCheckout();
+    const [orderId, setOrderId] = React.useState<string | null>(null);
+    const [clientSecret, setClientSecret] = React.useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
 
+    const handleProceedToPayment = async () => {
+        // prevent duplicates
+        if (isSubmitting || clientSecret) return;
+
+        // this is what you already use to enable the summary button
+        if (!state.enableProceedButton) return;
+
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            await proceedToPayment({
+                state,
+                submitOrder: submitOrderAction,
+                createEmbeddedSession,
+                setOrderId: (id) => setOrderId(id),
+                setClientSecret: (secret) => setClientSecret(secret),
+                setEnableButton: (enabled) =>
+                    setState((st: any) => ({ ...st, enableProceedButton: enabled })),
+            });
+        } catch (e: any) {
+            setError(e?.message ?? "Failed to proceed to payment");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     const handleChange = (v: ServiceType) => {
         setServiceType(v);
 
@@ -126,13 +160,13 @@ export default function HomeClientControls({
 
                 <div className="grid gap-6 items-start lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
                     <div className="min-w-0">
-                        {state.serviceType === "storage" && <StorageForm />}
+                        {state.serviceType === "storage" && <StorageForm onProceed={handleProceedToPayment} busy={isSubmitting} error={error} />}
                         {state.serviceType === "moving" && <MovingForm />}
                         {state.serviceType === "shredding" && <ShreddingForm />}
                     </div>
 
                     <div className="min-w-0 lg:sticky lg:top-6">
-                        {state.serviceType === "storage" && <StorageOrderSummary />}
+                        {state.serviceType === "storage" && <StorageOrderSummary onProceed={handleProceedToPayment} busy={isSubmitting} error={error} />}
                         {state.serviceType === "moving" && <MovingOrderSummary />}
                         {state.serviceType === "shredding" && <ShreddingOrderSummary />}
                     </div>

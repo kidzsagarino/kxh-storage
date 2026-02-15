@@ -256,7 +256,7 @@ model Address {
   order   Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
   type    AddressType
   line1   String
-  line2   String?
+  line2   String
   city    String
   postalCode String
   country String      @default("GB")

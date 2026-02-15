@@ -9,6 +9,9 @@ import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
 import { submitOrderAction } from "@/app/services/order";
+import { EmbeddedCheckout } from "../stripe/EmbeddedCheckout";
+import { proceedToPayment } from "@/app/lib/proceed-to-payment";
+import { createEmbeddedSession } from "@/app/services/stripe";
 
 type StepId = 0 | 1 | 2 | 3;
 
@@ -122,7 +125,15 @@ function FooterNav({
     );
 }
 
-export function StorageForm() {
+export function StorageForm({
+    onProceed,
+    busy,
+    error
+}: {
+    onProceed: () => void;
+    busy?: boolean;
+    error?: string | null;
+}) {
     const router = useRouter();
     const { state, setState, orderFlow } = useStorageCheckout();
 
@@ -135,9 +146,8 @@ export function StorageForm() {
     const weekdays = new Set(orderFlow && orderFlow.settings.scheduling.weekdayRules.filter((s: any) => s.serviceType === "STORAGE" && s.enabled).map((r: any) => r.weekday.toLowerCase()));
     const timeSlots = orderFlow && orderFlow.timeSlots;
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    console.log("Duration", duration);
+    const [orderId, setOrderId] = useState<string | null>(null);
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
 
     const inc = (id: string) => {
         if (!orderFlow) return;
@@ -206,19 +216,24 @@ export function StorageForm() {
         if (!detailsOk || isSubmitting) return;
 
         setIsSubmitting(true);
-        setError(null);
 
         try {
-            const data = await submitOrderAction(state);
-            console.log("Order created:", data);
-            setIsSubmitting(false);
+            await proceedToPayment({
+                state,
+                submitOrder: submitOrderAction, // you can keep this for now
+                createEmbeddedSession,
+                setOrderId,
+                setClientSecret,
+                setEnableButton: (enabled) =>
+                    setState((st) => ({ ...st, enableButton: enabled })),
+            });
 
+            setIsSubmitting(false);
         } catch (err: any) {
-            console.error(err);
-            setError(err.message || "An unexpected error occurred.");
-            setIsSubmitting(false); // Only reset on error so the user can try again
+            setIsSubmitting(false);
         }
     };
+
 
     useEffect(() => {
         setState((s) => ({ ...s, enableButton: detailsOk }));
@@ -293,12 +308,12 @@ export function StorageForm() {
                                 aria-checked={state.durationMonth === m.minMonths}
                                 tabIndex={0}
                                 onClick={() =>
-                                    setState((st) => ({ ...st, durationMonth: m.minMonths, discountId: m.id }) )
+                                    setState((st) => ({ ...st, durationMonth: m.minMonths, discountId: m.id }))
                                 }
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter" || e.key === " ") {
                                         e.preventDefault();
-                                        setState((st) => ({ ...st, durationMonth: m.minMonths, discountId: m.id }) );
+                                        setState((st) => ({ ...st, durationMonth: m.minMonths, discountId: m.id }));
                                     }
                                 }}
                             >
@@ -404,7 +419,7 @@ export function StorageForm() {
                                 setState((s) => ({
                                     ...s,
                                     collectionDate: val,
-                                    
+
                                 }))
                             }
                             disabled={(day: Date) => {
@@ -616,18 +631,24 @@ export function StorageForm() {
             )}
 
             <FooterNav
-                canBack={step > 0}
-                canNext={canGoNext && step <= maxAllowedStep}
+                canBack={step > 0 && !orderId}
+                canNext={!orderId && canGoNext && step <= maxAllowedStep}
                 isLast={step === LAST_STEP}
                 onBack={goBack}
                 onNext={() => {
                     if (!canGoNext) return;
-                    goNext();
+                    if (step === LAST_STEP) onProceed();
+                    else goNext();
                 }}
             />
+            {orderId && (
+                <EmbeddedCheckout
+                    orderId={orderId}
+                />
+            )}
             {error && <div className="text-red-500 mb-4">{error}</div>}
-
-            {isSubmitting ? 'Processing...' : 'Submitted'}
+            {/* 
+            {isSubmitting ? 'Processing...' : 'Submitted'} */}
         </form>
 
     );
