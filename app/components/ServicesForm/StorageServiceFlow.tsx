@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+    useCheckout,
     useStorageCheckout,
 } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
@@ -135,7 +136,7 @@ export function StorageForm({
     error?: string | null;
 }) {
     const router = useRouter();
-    const { state, setState, orderFlow } = useStorageCheckout();
+    const { state, setState, orderFlow, resetNonce } = useStorageCheckout();
 
     const [step, setStep] = useState<StepId>(0);
 
@@ -148,7 +149,7 @@ export function StorageForm({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderId, setOrderId] = useState<string | null>(null);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
-
+    
     const inc = (id: string) => {
         if (!orderFlow) return;
 
@@ -244,10 +245,8 @@ export function StorageForm({
 
         const scheduling = orderFlow.settings.scheduling;
 
-        // if admin disabled auto-blocking, don't auto-clear
         if (scheduling.disableAutoBlockSchedule) return;
 
-        // need both date + selected slot
         if (!state.collectionDate) return;
         if (!state.timeSlotId) return;
 
@@ -264,6 +263,12 @@ export function StorageForm({
             setState((s) => ({ ...s, timeSlotId: "" }));
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
+
+    useEffect(()=>{
+        setStep(0);
+        setClientSecret(null);
+        setOrderId("");
+    },[resetNonce])
 
     const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
@@ -644,6 +649,7 @@ export function StorageForm({
             {orderId && (
                 <EmbeddedCheckout
                     orderId={orderId}
+                    onDone={()=> setOrderId(null)}
                 />
             )}
             {error && <div className="text-red-500 mb-4">{error}</div>}

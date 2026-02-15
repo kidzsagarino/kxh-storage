@@ -85,6 +85,7 @@ export type CheckoutState = {
   /** ✅ Loaded once from server (SSR) and reused by all forms */
   orderFlow: OrderFlowData | null;
   enableProceedButton: boolean;
+  resetNonce: number;
 };
 
 /** Helpers */
@@ -173,7 +174,8 @@ export function CheckoutProvider({ children, initialOrderFlow }: { children: Rea
     shredding: emptyShredding,
     settings: defaultSettings,
     orderFlow: initialOrderFlow ?? null,
-    enableProceedButton: false
+    enableProceedButton: false,
+    resetNonce: 0
   });
 
   const value = useMemo<CheckoutContextValue>(() => {
@@ -226,15 +228,16 @@ export function CheckoutProvider({ children, initialOrderFlow }: { children: Rea
       setSettings,
 
       resetAll: () =>
-        setState({
+        setState((prev)=>({
           serviceType: "storage",
           storage: emptyStorage,
           moving: emptyMoving,
           shredding: emptyShredding,
           settings: defaultSettings,
-          orderFlow: null, // ✅
-          enableProceedButton: false
-        }),
+          orderFlow: prev.orderFlow,
+          enableProceedButton: false,
+          resetNonce: prev.resetNonce + 1,
+        })),
     };
   }, [state]);
 
@@ -256,6 +259,7 @@ export function useStorageCheckout() {
     setServiceType,
     reset: resetStorage,
     orderFlow: state.orderFlow, // ✅
+    resetNonce: state.resetNonce
   };
 }
 
