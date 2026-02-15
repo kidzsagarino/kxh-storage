@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const form = await req.formData();
   const need = String(form.get("need") || "");
   const postcode = String(form.get("postcode") || "");

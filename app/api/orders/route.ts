@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { PrismaClient, OrderStatus, AddressType } from "@prisma/client";
 import { processOrderItems } from "@/app/lib/order-service";
 import { validateServiceAvailability } from "@/app/lib/validation-service";
@@ -7,7 +7,7 @@ import { generateOrderNumber } from "@/app/lib/order-utils";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {

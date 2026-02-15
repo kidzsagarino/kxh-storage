@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { PaymentProvider, PaymentStatus, OrderStatus } from "@prisma/client";
 
@@ -18,7 +18,7 @@ function getBaseUrl() {
   return url.replace(/\/$/, "");
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as Body;
     if (!body.orderId) {

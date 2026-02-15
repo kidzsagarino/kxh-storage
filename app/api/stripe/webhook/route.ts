@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { PaymentStatus, OrderStatus } from "@prisma/client";
 
@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // apiVersion: "2025-01-27.acacia",
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     const sig = (await headers()).get("stripe-signature");
     if (!sig) return NextResponse.json({ error: "Missing signature" }, { status: 400 });
 

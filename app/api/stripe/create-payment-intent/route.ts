@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@/src/lib/prisma"; // adjust path
 import { PaymentProvider, PaymentStatus, OrderStatus } from "@prisma/client";
 
@@ -22,7 +22,7 @@ function calcAmountMinor(totalMinor: number, mode: "DEPOSIT" | "FULL") {
     return Math.min(20000, Math.max(1000, raw));
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
         const body = (await req.json()) as Body;
 
