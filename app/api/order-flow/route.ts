@@ -353,3 +353,9 @@
 //     { status: 200 }
 //   );
 // }
+
+
+export async function GET(req: Request) {
+  /**to do */
+  return {}
+}
