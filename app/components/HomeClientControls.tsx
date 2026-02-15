@@ -52,6 +52,7 @@ export default function HomeClientControls({
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [isPaying, setIsPaying] = React.useState(false); // ✅ add
     const [error, setError] = React.useState<string | null>(null);
+    const checkoutRef = React.useRef<HTMLDivElement | null>(null);
 
     // Call this when embedded checkout is done (success/cancel)
     const handlePaymentDone = React.useCallback(() => {
@@ -106,6 +107,14 @@ export default function HomeClientControls({
             />
         );
     }
+    React.useEffect(() => {
+        if (orderId && checkoutRef.current) {
+            checkoutRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
+    }, [orderId]);
 
     // variant === "pricing"
     return (
@@ -185,13 +194,15 @@ export default function HomeClientControls({
                         {state.serviceType === "shredding" && <ShreddingOrderSummary />}
                     </div>
                     {orderId && (
-                    <EmbeddedCheckout
-                        orderId={orderId}
-                        onDone={handlePaymentDone}
-                    />
-                )}
+                        <div ref={checkoutRef} className="mt-8 animate-fadeIn">
+                            <EmbeddedCheckout
+                                orderId={orderId}
+                                onDone={handlePaymentDone}
+                            />
+                        </div>
+                    )}
                 </div>
-                
+
                 {/* <div className="pb-24 md:pb-0">
                     <MobileCheckoutBar />
                 </div> */}
