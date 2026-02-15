@@ -1,12 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@/src/lib/prisma";
+type Ctx = { params: Promise<{ id: string }> };
 
 export async function GET(
   _req: NextRequest,
-  ctx : { params: { id: string } }
+  ctx: Ctx
 ) {
+  const { id } = await ctx.params;
   const order = await prisma.order.findUnique({
-    where: { id: ctx.params.id },
+    where: { id: id },
     select: {
       id: true,
       status: true,
