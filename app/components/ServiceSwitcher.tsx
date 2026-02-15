@@ -44,7 +44,7 @@ export default function PricingSwitcher({
 
             <div className="grid gap-6 items-start lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
                 <div>
-                    {state.serviceType === "storage" && <StorageForm onProceed={()=>{}} error={''} busy={false} />}
+                    {state.serviceType === "storage" && <StorageForm onProceed={async()=>{}} error={''} busy={false} />}
                     {state.serviceType === "moving" && <MovingForm />}
                     {state.serviceType === "shredding" && <ShreddingForm />}
                 </div>

@@ -55,7 +55,22 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
       return { items, storagePerMonth, months, discountPerMonth, totalDueNow };
     }, [state.quantities, state.durationMonth, itemsBySku, discountTiers]);
 
-  const canProceed = !!state.enableButton && !busy;
+  const durationOk = (orderFlow?.catalog?.storage?.discountTiers ?? []).some(
+    (d: any) => d.minMonths === state.durationMonth
+  );
+
+  const itemsOk = Object.values(state.quantities ?? {}).some((n) => (Number(n) || 0) > 0);
+
+  const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
+
+  // Match your StorageForm rule (Step 3) — note: you currently don't require name/email in the form
+  const detailsOk =
+    (state.customerDetails.houseNumber ?? "").trim().length > 0 &&
+    (state.customerDetails.postalCode ?? "").trim().length > 0 &&
+    (state.customerDetails.phone ?? "").trim().length > 0 &&
+    (state.customerDetails.address ?? "").trim().length > 0;
+
+  const canProceed = !!orderFlow?.ok && durationOk && itemsOk && scheduleOk && detailsOk && !busy;
 
   return (
     <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
@@ -123,10 +138,13 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
       <button
         type="button"
         onClick={onProceed}
-        disabled={!state.enableButton || !!busy}
-        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={!canProceed}
+        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
       >
-        {busy ? "Processing…" : "Proceed to Payment"}
+        {busy && (
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        )}
+        {busy ? "Opening payment..." : "Proceed to Payment"}
       </button>
     </aside>
   );

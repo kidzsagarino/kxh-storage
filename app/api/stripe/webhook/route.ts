@@ -29,37 +29,67 @@ export async function POST(req: NextRequest) {
         switch (event.type) {
             case "checkout.session.completed": {
                 const session = event.data.object as Stripe.Checkout.Session;
+                const email = session.customer_details?.email?.trim().toLowerCase();
 
-                // Map to your Payment using session.id saved in providerRef
                 const payment = await prisma.payment.findFirst({
                     where: { providerRef: session.id },
-                    select: { id: true, orderId: true, order: { select: {customerId: true}} },
+                    include: { order: true },
                 });
 
-                const email = session.customer_details?.email ?? null;
-                const fullName = session.customer_details?.name ?? null;
+                if (!payment || !email) break;
 
-                if (!payment) break;
+                const temporaryCustomerId = payment.order.customerId;
 
-                await prisma.payment.update({
-                    where: { id: payment.id },
-                    data: { status: PaymentStatus.SUCCEEDED },
-                });
-
-                await prisma.order.update({
-                    where: { id: payment.orderId },
-                    data: { status: OrderStatus.PAID },
-                });
-
-                if (email || fullName) {
-                    await prisma.customer.update({
-                        where: { id: payment.order.customerId },
-                        data: {
-                            ...(email ? { email } : {}),
-                            ...(fullName ? { fullName } : {}),
-                        },
+                await prisma.$transaction(async (tx) => {
+                    // 1. Find the REAL owner of this email
+                    const existingCustomer = await tx.customer.findUnique({
+                        where: { email },
+                        select: { id: true }
                     });
-                }
+
+                    let finalCustomerId = temporaryCustomerId;
+
+                    if (existingCustomer) {
+                        // 2. The customer exists! Assign the ID to the order
+                        finalCustomerId = existingCustomer.id;
+
+                        await tx.order.update({
+                            where: { id: payment.orderId },
+                            data: { customerId: finalCustomerId },
+                        });
+
+                        // 3. Cleanup the temporary guest record if it's no longer used
+                        // We do this safely by checking for other orders first
+                        const otherOrders = await tx.order.count({
+                            where: { customerId: temporaryCustomerId }
+                        });
+
+                        if (otherOrders === 0 && temporaryCustomerId !== existingCustomer.id) {
+                            await tx.customer.delete({ where: { id: temporaryCustomerId } }).catch(() => { });
+                        }
+                    } else {
+                        // 4. No one owns this email yet. Attach it to the guest we created earlier.
+                        await tx.customer.update({
+                            where: { id: temporaryCustomerId },
+                            data: {
+                                email,
+                                fullName: session.customer_details?.name || undefined
+                            },
+                        });
+                    }
+
+                    // 5. Finalize payment/order status
+                    await tx.payment.update({
+                        where: { id: payment.id },
+                        data: { status: 'SUCCEEDED' },
+                    });
+
+                    await tx.order.update({
+                        where: { id: payment.orderId },
+                        data: { status: 'PAID' },
+                    });
+                });
+
                 break;
             }
             case "checkout.session.async_payment_failed": {

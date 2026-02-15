@@ -107,7 +107,8 @@ enum TimeSlotKey {
 
 model Customer {
   id        String   @id @default(cuid())
-  email     String?  @unique
+
+  email     String?
   phone     String?
   fullName  String
   createdAt DateTime @default(now())

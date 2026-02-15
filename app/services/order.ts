@@ -1,35 +1,37 @@
+export async function submitOrderAction(checkoutState: any) {
+  const storage = checkoutState?.storage ?? checkoutState ?? {};
+  const quantities = storage?.quantities ?? {};
 
-export async function submitOrderAction(state: any) {
-
-  const items = Object.entries(state.quantities)
-    .filter(([_, qty]) => (qty as number) > 0)
+  const items = Object.entries(quantities)
+    .filter(([_, qty]) => (Number(qty) || 0) > 0)
     .map(([id, qty]) => ({
-      serviceItemId: id.replace(/-/g, '_'),
-      quantity: qty,
-      months: state.durationMonth || 1,
+      serviceItemId: id.replace(/-/g, "_"),
+      quantity: Number(qty) || 0,
+      months: Number(storage?.durationMonth) || 1,
     }));
 
+  const customerDetails = storage?.customerDetails ?? {};
+  const pickupAddress = {
+    type: "PICKUP",
+    line1: customerDetails.houseNumber ?? "",
+    line2: customerDetails.address ?? "",
+    city: customerDetails.city ?? "", // if you don't have city, remove this field
+    postalCode: customerDetails.postalCode ?? "",
+    country: "GB",
+  };
+
   const payload = {
-    serviceType: "STORAGE", 
-    serviceDate: state.collectionDate,
-    timeSlotId: state.timeSlotId,
+    serviceType: "STORAGE",
+    serviceDate: storage?.collectionDate ?? "",
+    timeSlotId: storage?.timeSlotId ?? "",
     customer: {
-      email: state.customerDetails.email,
-      fullName: state.customerDetails.fullName,
-      phone: state.customerDetails.phone,
+      email: customerDetails.email ?? "", // you currently don't collect email in your StorageForm step 3
+      fullName: customerDetails.name ?? "Valued Customer", // store field is `name`
+      phone: customerDetails.phone ?? "",
     },
     items,
-    addresses: [
-      {
-        type: "PICKUP",
-        line1: state.customerDetails.houseNumber,
-        line2: state.customerDetails.address,
-        city: state.customerDetails.city,
-        postalCode: state.customerDetails.postalCode,
-        country: "GB",
-      },
-    ],
-    discountId: state.discountId || null,
+    addresses: [pickupAddress],
+    discountId: storage?.discountId || null,
   };
 
   const res = await fetch("/api/orders", {

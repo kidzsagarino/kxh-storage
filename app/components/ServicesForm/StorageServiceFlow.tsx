@@ -96,31 +96,40 @@ function FooterNav({
     isLast,
     onBack,
     onNext,
+    isPaying,
 }: {
     canBack: boolean;
     canNext: boolean;
     isLast: boolean;
     onBack: () => void;
     onNext: () => void;
+    isPaying: boolean;
 }) {
     return (
         <div className="flex items-center justify-between gap-3 pt-2">
             <button
                 type="button"
                 onClick={onBack}
-                disabled={!canBack}
+                disabled={!canBack || isPaying}
                 className="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50 disabled:opacity-40"
             >
                 Back
             </button>
 
             <button
-                type={isLast ? "submit" : "button"}
-                onClick={isLast ? undefined : onNext}
-                disabled={!canNext}
-                className="h-11 rounded-xl bg-slate-900 px-5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-40"
+                type="button"
+                onClick={onNext}
+                disabled={!canNext || isPaying}
+                className="h-11 rounded-xl bg-slate-900 px-5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-40 inline-flex items-center justify-center gap-2"
             >
-                {isLast ? "Proceed to Payment" : "Continue"}
+                {isPaying && (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                )}
+                {isLast
+                    ? isPaying
+                        ? "Opening payment..."
+                        : "Proceed to Payment"
+                    : "Continue"}
             </button>
         </div>
     );
@@ -146,10 +155,10 @@ export function StorageForm({
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
     const weekdays = new Set(orderFlow && orderFlow.settings.scheduling.weekdayRules.filter((s: any) => s.serviceType === "STORAGE" && s.enabled).map((r: any) => r.weekday.toLowerCase()));
     const timeSlots = orderFlow && orderFlow.timeSlots;
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderId, setOrderId] = useState<string | null>(null);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
-    
+    const [isPaying, setIsPaying] = useState(false);
+
     const inc = (id: string) => {
         if (!orderFlow) return;
 
@@ -212,30 +221,6 @@ export function StorageForm({
         return step;
     }, [durationOk, itemsOk, scheduleOk, detailsOk, step]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!detailsOk || isSubmitting) return;
-
-        setIsSubmitting(true);
-
-        try {
-            await proceedToPayment({
-                state,
-                submitOrder: submitOrderAction, // you can keep this for now
-                createEmbeddedSession,
-                setOrderId,
-                setClientSecret,
-                setEnableButton: (enabled) =>
-                    setState((st) => ({ ...st, enableButton: enabled })),
-            });
-
-            setIsSubmitting(false);
-        } catch (err: any) {
-            setIsSubmitting(false);
-        }
-    };
-
-
     useEffect(() => {
         setState((s) => ({ ...s, enableButton: detailsOk }));
     }, [detailsOk, setState]);
@@ -264,18 +249,17 @@ export function StorageForm({
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setStep(0);
         setClientSecret(null);
         setOrderId("");
-    },[resetNonce])
+    }, [resetNonce])
 
     const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
     return (
         <form
-            onSubmit={handleSubmit}
             className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6"
         >
             <div className="space-y-2">
@@ -434,22 +418,18 @@ export function StorageForm({
 
                                 if (scheduling.disableAutoBlockSchedule) return false;
 
-                                // normalize dates
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
 
                                 const d = new Date(day);
                                 d.setHours(0, 0, 0, 0);
 
-                                // ❌ disable past dates
                                 if (d < today) return true;
 
                                 const iso = toLocalISODate(d);
 
-                                // ❌ blackout dates (from DB)
                                 if (scheduling.blackoutDates.includes(iso)) return true;
 
-                                // ❌ weekday rules (from DB)
                                 const wk = weekdayKey(d).toUpperCase(); // MON, TUE, etc.
 
                                 const weekdayRule = scheduling.weekdayRules.find(
@@ -459,7 +439,6 @@ export function StorageForm({
 
                                 if (weekdayRule && !weekdayRule.enabled) return true;
 
-                                // ❌ full capacity day
                                 return isDayFull({
                                     orderFlow,
                                     service: "storage",
@@ -481,10 +460,10 @@ export function StorageForm({
                                     !disableAuto &&
                                     !!dateISO &&
                                     isSlotFull({
-                                        orderFlow,                 // ✅ use orderFlow-based capacity rules
+                                        orderFlow,
                                         service: "storage",
                                         dateISO,
-                                        timeSlotId: slot.id,       // ✅ id (not "morning/afternoon/evening")
+                                        timeSlotId: slot.id,
                                         // volumesByTimeSlotId,     // optional later when you have volumes endpoint
                                     });
 
@@ -497,7 +476,6 @@ export function StorageForm({
                                     setState((s: any) => ({
                                         ...s,
                                         timeSlotId: slot.id,
-                                        // optional: store label too if you want to show it elsewhere
                                         timeSlot: rangeLabel,
                                     }));
                                 }
@@ -642,16 +620,16 @@ export function StorageForm({
                 onBack={goBack}
                 onNext={() => {
                     if (!canGoNext) return;
-                    if (step === LAST_STEP) onProceed();
-                    else goNext();
+
+                    if (step === LAST_STEP) {
+                        onProceed();
+                    } else {
+                        goNext();
+                    }
                 }}
+                isPaying={!!busy}
             />
-            {orderId && (
-                <EmbeddedCheckout
-                    orderId={orderId}
-                    onDone={()=> setOrderId(null)}
-                />
-            )}
+            
             {error && <div className="text-red-500 mb-4">{error}</div>}
             {/* 
             {isSubmitting ? 'Processing...' : 'Submitted'} */}

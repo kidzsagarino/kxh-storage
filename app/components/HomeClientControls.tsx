@@ -15,6 +15,7 @@ import { MobileCheckoutBar } from "./MobileCheckoutBar";
 import { proceedToPayment } from "@/app/lib/proceed-to-payment";
 import { createEmbeddedSession } from "@/app/services/stripe";
 import { submitOrderAction } from "@/app/services/order";
+import { EmbeddedCheckout } from "./stripe/EmbeddedCheckout";
 
 
 function ServiceSelect({
@@ -45,19 +46,26 @@ export default function HomeClientControls({
     variant: "hero" | "pricing";
 }) {
     const { state, setServiceType, setState } = useCheckout();
+
     const [orderId, setOrderId] = React.useState<string | null>(null);
     const [clientSecret, setClientSecret] = React.useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [isPaying, setIsPaying] = React.useState(false); // ✅ add
     const [error, setError] = React.useState<string | null>(null);
 
-    const handleProceedToPayment = async () => {
-        // prevent duplicates
-        if (isSubmitting || clientSecret) return;
+    // Call this when embedded checkout is done (success/cancel)
+    const handlePaymentDone = React.useCallback(() => {
+        setOrderId(null);
+        setClientSecret(null);
+        setIsPaying(false);
+    }, []);
 
-        // this is what you already use to enable the summary button
-        if (!state.enableProceedButton) return;
+    const handleProceedToPayment = React.useCallback(async () => {
+        // ✅ don’t allow duplicates while paying/submitting
+        if (isSubmitting || isPaying || orderId) return;
 
         setIsSubmitting(true);
+        setIsPaying(true);
         setError(null);
 
         try {
@@ -65,17 +73,20 @@ export default function HomeClientControls({
                 state,
                 submitOrder: submitOrderAction,
                 createEmbeddedSession,
-                setOrderId: (id) => setOrderId(id),
-                setClientSecret: (secret) => setClientSecret(secret),
+                setOrderId,        // ✅ pass setter directly
+                setClientSecret,   // ✅ pass setter directly
                 setEnableButton: (enabled) =>
                     setState((st: any) => ({ ...st, enableProceedButton: enabled })),
             });
+            // ✅ keep isPaying true while embedded is shown
         } catch (e: any) {
+            setIsPaying(false); // ✅ stop loader if it failed to start
             setError(e?.message ?? "Failed to proceed to payment");
         } finally {
             setIsSubmitting(false);
         }
-    };
+    }, [isSubmitting, isPaying, orderId, state, setState]);
+
     const handleChange = (v: ServiceType) => {
         setServiceType(v);
 
@@ -160,18 +171,27 @@ export default function HomeClientControls({
 
                 <div className="grid gap-6 items-start lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
                     <div className="min-w-0">
-                        {state.serviceType === "storage" && <StorageForm onProceed={handleProceedToPayment} busy={isSubmitting} error={error} />}
+                        {state.serviceType === "storage" && <StorageForm
+                            busy={isPaying || isSubmitting}
+                            error={error}
+                            onProceed={handleProceedToPayment} />}
                         {state.serviceType === "moving" && <MovingForm />}
                         {state.serviceType === "shredding" && <ShreddingForm />}
                     </div>
 
                     <div className="min-w-0 lg:sticky lg:top-6">
-                        {state.serviceType === "storage" && <StorageOrderSummary onProceed={handleProceedToPayment} busy={isSubmitting} error={error} />}
+                        {state.serviceType === "storage" && <StorageOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
                         {state.serviceType === "moving" && <MovingOrderSummary />}
                         {state.serviceType === "shredding" && <ShreddingOrderSummary />}
                     </div>
+                    {orderId && (
+                    <EmbeddedCheckout
+                        orderId={orderId}
+                        onDone={handlePaymentDone}
+                    />
+                )}
                 </div>
-
+                
                 {/* <div className="pb-24 md:pb-0">
                     <MobileCheckoutBar />
                 </div> */}
