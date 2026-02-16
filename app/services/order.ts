@@ -1,50 +1,79 @@
 export async function submitOrderAction(checkoutState: any) {
-  const storage = checkoutState?.storage ?? checkoutState ?? {};
-  const quantities = storage?.quantities ?? {};
+    let state = checkoutState ?? {};
 
-  const items = Object.entries(quantities)
-    .filter(([_, qty]) => (Number(qty) || 0) > 0)
-    .map(([id, qty]) => ({
-      serviceItemId: id.replace(/-/g, "_"),
-      quantity: Number(qty) || 0,
-      months: Number(storage?.durationMonth) || 1,
-    }));
+    // LOG THIS: This is the most important line for debugging right now
+    console.log("🛠 Mapping state to payload. Current State:", state);
 
-  const customerDetails = storage?.customerDetails ?? {};
-  const pickupAddress = {
-    type: "PICKUP",
-    line1: customerDetails.houseNumber ?? "",
-    line2: customerDetails.address ?? "",
-    city: customerDetails.city ?? "", // if you don't have city, remove this field
-    postalCode: customerDetails.postalCode ?? "",
-    country: "GB",
-  };
+    let serviceType = state.serviceType;
 
-  const payload = {
-    serviceType: "STORAGE",
-    serviceDate: storage?.collectionDate ?? "",
-    timeSlotId: storage?.timeSlotId ?? "",
-    customer: {
-      email: customerDetails.email ?? "", // you currently don't collect email in your StorageForm step 3
-      fullName: customerDetails.name ?? "Valued Customer", // store field is `name`
-      phone: customerDetails.phone ?? "",
-    },
-    items,
-    addresses: [pickupAddress],
-    discountId: storage?.discountId || null,
-  };
+    let items:any = [];
+    
+    if (serviceType== "moving") {
+        state = state.moving ?? state;
+        items = [{
+            // Use optional chaining and fallbacks to avoid crashes
+            serviceItemId: (state.movingItemId || "").replace(/-/g, "_"),
+            quantity: 1,
+            packageId: state.movingPackageId,
+        }];
+    } else if(serviceType == "storage") {
+        state = state.storage ?? state;
+        // If quantities is undefined, items will be []
+        const quantities = state.quantities || {};
+        items = Object.entries(quantities)
+            .filter(([_, qty]) => (Number(qty) || 0) > 0)
+            .map(([id, qty]) => ({
+                serviceItemId: id.replace(/-/g, "_"),
+                quantity: Number(qty) || 0,
+                months: Number(state.durationMonth) || 1,
+            }));
+    }
 
-  const res = await fetch("/api/orders", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+    const payload = {
+        serviceType: serviceType.toUpperCase(),
+        serviceDate: state.collectionDate || state.date || "", // Check both possible keys
+        timeSlotId: state.timeSlotId || "",
+        distanceMiles: Number(state.distanceMiles) || 0,
+        customer: {
+            // Try to find the email in common locations
+            email: state.email || state.customerDetails?.email || state.customer?.email || "",
+            fullName: state.fullName || state.name || state.customerDetails?.name || "Valued Customer",
+            phone: state.phone || state.customerDetails?.phone || "",
+        },
+        items,
+        addresses: mapAddresses(state), // Helper to keep it clean
+        movingPackageId: state.movingPackageId || null,
+    };
 
-  const data = await res.json();
+    console.log(payload);
 
-  if (!res.ok) {
-    throw new Error(data.error || "Failed to create order");
-  }
+    const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+    const data = await res.json();
 
-  return data;
+    if (!res.ok) {
+        throw new Error(data.error || "Failed to create order");
+    }
+
+    return data;
+}
+
+// Separate helper to debug address mapping
+function mapAddresses(state: any) {
+    const addr = [];
+    // Check if the keys are actually 'fromLocation' or something else like 'origin'
+    if (state.fromLocation || state.origin) {
+        const source = state.fromLocation || state.origin;
+        addr.push({
+            type: "PICKUP",
+            line1: source.houseNumber || source.line1 || "",
+            line2: source.address || source.line2 || "",
+            postalCode: source.postalCode || state.postalCode || "",
+            country: "GB",
+        });
+    }
+    return addr;
 }

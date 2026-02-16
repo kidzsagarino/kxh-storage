@@ -204,7 +204,8 @@ model Order {
   timeSlotId  String?
   timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
 
-  packingAssistance Boolean @default(false)
+  movingPackageId MovingPackageId
+  distanceMiles Int @default(0)
   notes             String?
 
   currency      String @default("GBP")

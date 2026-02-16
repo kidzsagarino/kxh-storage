@@ -3,16 +3,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-    useCheckout,
     useStorageCheckout,
 } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
-import { submitOrderAction } from "@/app/services/order";
-import { EmbeddedCheckout } from "../stripe/EmbeddedCheckout";
-import { proceedToPayment } from "@/app/lib/proceed-to-payment";
-import { createEmbeddedSession } from "@/app/services/stripe";
 
 type StepId = 0 | 1 | 2 | 3;
 
@@ -144,7 +139,6 @@ export function StorageForm({
     busy?: boolean;
     error?: string | null;
 }) {
-    const router = useRouter();
     const { state, setState, orderFlow, resetNonce } = useStorageCheckout();
 
     const [step, setStep] = useState<StepId>(0);
@@ -153,12 +147,11 @@ export function StorageForm({
 
     const storageItems = orderFlow && orderFlow.catalog.storage.items;
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
-    const weekdays = new Set(orderFlow && orderFlow.settings.scheduling.weekdayRules.filter((s: any) => s.serviceType === "STORAGE" && s.enabled).map((r: any) => r.weekday.toLowerCase()));
     const timeSlots = orderFlow && orderFlow.timeSlots;
     const [orderId, setOrderId] = useState<string | null>(null);
-    const [clientSecret, setClientSecret] = useState<string | null>(null);
-    const [isPaying, setIsPaying] = useState(false);
 
+    console.log(state, orderFlow);
+    
     const inc = (id: string) => {
         if (!orderFlow) return;
 
@@ -251,11 +244,10 @@ export function StorageForm({
 
     useEffect(() => {
         setStep(0);
-        setClientSecret(null);
         setOrderId("");
     }, [resetNonce])
 
-    const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
+    const goNext = () => setStep((s) => (Math.min(4, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
     return (
@@ -631,8 +623,6 @@ export function StorageForm({
             />
             
             {error && <div className="text-red-500 mb-4">{error}</div>}
-            {/* 
-            {isSubmitting ? 'Processing...' : 'Submitted'} */}
         </form>
 
     );

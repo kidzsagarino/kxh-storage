@@ -184,13 +184,15 @@ export default function HomeClientControls({
                             busy={isPaying || isSubmitting}
                             error={error}
                             onProceed={handleProceedToPayment} />}
-                        {state.serviceType === "moving" && <MovingForm />}
+                        {state.serviceType === "moving" && <MovingForm  busy={isPaying || isSubmitting}
+                            error={error}
+                            onProceed={handleProceedToPayment}/>}
                         {state.serviceType === "shredding" && <ShreddingForm />}
                     </div>
 
                     <div className="min-w-0 lg:sticky lg:top-6">
                         {state.serviceType === "storage" && <StorageOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
-                        {state.serviceType === "moving" && <MovingOrderSummary />}
+                        {state.serviceType === "moving" && <MovingOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error}/>}
                         {state.serviceType === "shredding" && <ShreddingOrderSummary />}
                     </div>
                     {orderId && (
