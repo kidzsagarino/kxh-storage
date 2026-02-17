@@ -81,12 +81,12 @@ export async function POST(req: NextRequest) {
                     // 5. Finalize payment/order status
                     await tx.payment.update({
                         where: { id: payment.id },
-                        data: { status: 'SUCCEEDED' },
+                        data: { status: PaymentStatus.SUCCEEDED },
                     });
 
                     await tx.order.update({
                         where: { id: payment.orderId },
-                        data: { status: 'PAID' },
+                        data: { status: OrderStatus.SCHEDULED },
                     });
                 });
 
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
 
                     await prisma.order.update({
                         where: { id: payment.orderId },
-                        data: { status: OrderStatus.PAID },
+                        data: { status: OrderStatus.SCHEDULED },
                     });
                 }
                 break;

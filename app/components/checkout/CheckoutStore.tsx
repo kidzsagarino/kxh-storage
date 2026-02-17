@@ -53,6 +53,7 @@ export type MovingState = {
   enableButton: boolean;
   distanceMiles?: number;
   packingAssistance?: "yes" | "no";
+  notes: string;
 };
 
 export type ShreddingState = {
@@ -121,6 +122,7 @@ const emptyMoving: MovingState = {
   customerDetails: { ...emptyCustomer },
   enableButton: false,
   distanceMiles: 1,
+  notes: ""
 };
 
 const emptyShredding: ShreddingState = {

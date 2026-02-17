@@ -29,6 +29,10 @@ export async function getAdminOrders(filters: {
       customer: true,
       timeSlot: true,
       addresses: true,
+      payments: {
+        orderBy: [{ status: "desc"}, {createdAt: "desc" }],
+        take: 1
+      }
     },
     orderBy: { createdAt: 'desc' },
   });

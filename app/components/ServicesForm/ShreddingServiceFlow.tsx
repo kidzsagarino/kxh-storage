@@ -432,14 +432,14 @@ export function ShreddingForm({
             })}
           </div>
           <div>
-            <input
+            {/* <input
               value={state.customerDetails.address}
               onChange={(e) =>
-                setState((s) => ({ ...s, customerDetails: { ...s.customerDetails, address: e.target.value } }))
+                setState((s) => ({ ...s, notes: e.target.value }))
               }
               placeholder="Additional Address Details"
               className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-            />
+            /> */}
             {!scheduleOk && <div className="mt-2 text-xs text-rose-600">Select a date and time slot.</div>}
           </div>
         </div>

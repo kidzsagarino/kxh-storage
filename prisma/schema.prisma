@@ -271,12 +271,12 @@ model Address {
 
 model Payment {
   id      String          @id @default(cuid())
-  orderId String
+  orderId String          
   order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   provider PaymentProvider @default(STRIPE)
   status   PaymentStatus   @default(PROCESSING)
   amountMinor Int
-  providerRef String?      // Stripe Session ID / PI ID
+  providerRef String?      @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -89,6 +89,7 @@ export default function AdminOrdersPage() {
           to: selectedRange?.toExclusive,
         });
         setOrders(data);
+        console.log(data);
       } catch (err) {
         console.error("Failed to fetch orders", err);
       } finally {
@@ -165,7 +166,8 @@ export default function AdminOrdersPage() {
                   <th className="px-4 py-4">Customer</th>
                   <th className="px-4 py-4">Collection Address</th>
                   <th className="px-4 py-4">Service Date</th>
-                  <th className="px-4 py-4">Status</th>
+                  <th className="px-4 py-4">Order Status</th>
+                  <th className="px-4 py-4">Payment Status</th>
                   <th className="px-4 py-4 text-right">Total</th>
                 </tr>
               </thead>
@@ -217,6 +219,9 @@ export default function AdminOrdersPage() {
                       </td> */}
                       <td className="px-4 py-4">
                         {o.status}
+                      </td>
+                      <td className="px-4 py-4">
+                        {o.payments[0]?.status}
                       </td>
                       <td className="px-4 py-4 text-right">
                         <div className="font-bold text-slate-900">

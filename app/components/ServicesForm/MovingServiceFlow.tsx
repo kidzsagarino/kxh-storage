@@ -419,9 +419,9 @@ export function MovingForm({
                     </div>
                     <div>
                         <input
-                            value={state.customerDetails.address}
+                            value={state.notes}
                             onChange={(e) =>
-                                setState((s) => ({ ...s, customerDetails: { ...s.customerDetails, address: e.target.value } }))
+                                setState((s) => ({ ...s, notes: e.target.value }))
                             }
                             placeholder="Additional Address Details"
                             className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"

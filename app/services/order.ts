@@ -38,18 +38,18 @@ export async function submitOrderAction(checkoutState: any) {
 
     const payload = {
         serviceType: serviceType.toUpperCase(),
-        serviceDate: state.collectionDate || state.date || "", // Check both possible keys
+        serviceDate: state.collectionDate || state.date || "",
         timeSlotId: state.timeSlotId || "",
         distanceMiles: Number(state.distanceMiles) || 0,
         customer: {
-            // Try to find the email in common locations
             email: state.email || state.customerDetails?.email || state.customer?.email || "",
             fullName: state.fullName || state.name || state.customerDetails?.name || "Valued Customer",
             phone: state.phone || state.customerDetails?.phone || "",
         },
         items,
-        addresses: mapAddresses(state), // Helper to keep it clean
+        addresses: mapAddresses(state),
         movingPackageId: state.movingPackageId || null,
+        notes: state.notes
     };
 
     const res = await fetch("/api/orders", {
