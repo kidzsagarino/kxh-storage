@@ -145,13 +145,13 @@ export function ShreddingForm({
   const [orderId, setOrderId] = useState<string | null>(null);
   const shreddingItems = orderFlow?.catalog?.shredding.items ?? [];
   const totalItems = useMemo(
-          () =>
-              Object.values(state.quantities).reduce(
-                  (acc, val) => acc + (Number(val) || 0),
-                  0
-              ),
-          [state.quantities]
-      );
+    () =>
+      Object.values(state.quantities).reduce(
+        (acc, val) => acc + (Number(val) || 0),
+        0
+      ),
+    [state.quantities]
+  );
   // validation
   const itemsOk = totalItems > 0;
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
@@ -206,32 +206,32 @@ export function ShreddingForm({
   const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
   const inc = (id: string) => {
-        if (!orderFlow) return;
-        
-        const item = orderFlow.catalog.shredding.itemsBySku?.[id];
+    if (!orderFlow) return;
 
-        if (!item) return;
+    const item = orderFlow.catalog.shredding.itemsBySku?.[id];
 
-        if (!item.price) return;
+    if (!item) return;
 
-        setState((st) => ({
-            ...st,
-            quantities: {
-                ...st.quantities,
-                [id]: (st.quantities[id] ?? 0) + 1,
-            },
-        }));
-    };
+    if (!item.price) return;
 
-    const dec = (id: string) => {
-        setState((st) => ({
-            ...st,
-            quantities: {
-                ...st.quantities,
-                [id]: Math.max(0, (st.quantities[id] ?? 0) - 1),
-            },
-        }));
-    };
+    setState((st) => ({
+      ...st,
+      quantities: {
+        ...st.quantities,
+        [id]: (st.quantities[id] ?? 0) + 1,
+      },
+    }));
+  };
+
+  const dec = (id: string) => {
+    setState((st) => ({
+      ...st,
+      quantities: {
+        ...st.quantities,
+        [id]: Math.max(0, (st.quantities[id] ?? 0) - 1),
+      },
+    }));
+  };
 
   return (
     <form
@@ -477,7 +477,18 @@ export function ShreddingForm({
               className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
             />
           </div>
-
+          <input
+            value={state.address.houseNumber}
+            onChange={(e) =>
+              setState((s) => ({
+                ...s,
+                address: { ...s.address, houseNumber: e.target.value },
+              }))
+            }
+            type="text"
+            placeholder="House Number"
+            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+          />
           <input
             value={state.address.streetAddress}
             onChange={(e) =>
