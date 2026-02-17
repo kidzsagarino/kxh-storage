@@ -50,19 +50,19 @@ export default function HomeClientControls({
     const [orderId, setOrderId] = React.useState<string | null>(null);
     const [clientSecret, setClientSecret] = React.useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
-    const [isPaying, setIsPaying] = React.useState(false); // ✅ add
+    const [isPaying, setIsPaying] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const checkoutRef = React.useRef<HTMLDivElement | null>(null);
 
-    // Call this when embedded checkout is done (success/cancel)
     const handlePaymentDone = React.useCallback(() => {
         setOrderId(null);
         setClientSecret(null);
         setIsPaying(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
     }, []);
 
     const handleProceedToPayment = React.useCallback(async () => {
-        // ✅ don’t allow duplicates while paying/submitting
         if (isSubmitting || isPaying || orderId) return;
 
         setIsSubmitting(true);
@@ -74,14 +74,13 @@ export default function HomeClientControls({
                 state,
                 submitOrder: submitOrderAction,
                 createEmbeddedSession,
-                setOrderId,        // ✅ pass setter directly
-                setClientSecret,   // ✅ pass setter directly
+                setOrderId,
+                setClientSecret,
                 setEnableButton: (enabled) =>
                     setState((st: any) => ({ ...st, enableProceedButton: enabled })),
             });
-            // ✅ keep isPaying true while embedded is shown
         } catch (e: any) {
-            setIsPaying(false); // ✅ stop loader if it failed to start
+            setIsPaying(false);
             setError(e?.message ?? "Failed to proceed to payment");
         } finally {
             setIsSubmitting(false);
@@ -91,14 +90,12 @@ export default function HomeClientControls({
     const handleChange = (v: ServiceType) => {
         setServiceType(v);
 
-        // optional: when hero dropdown changes, jump to pricing
         if (variant === "hero") {
             document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
         }
     };
 
     if (variant === "hero") {
-        // ✅ Use this inside your hero CTA card
         return (
             <ServiceSelect
                 value={state.serviceType}
@@ -116,11 +113,9 @@ export default function HomeClientControls({
         }
     }, [orderId]);
 
-    // variant === "pricing"
     return (
         <div>
             <div className="space-y-4">
-                {/* Dropdown trigger */}
                 <div>
                     <div className="text-sm font-medium text-slate-900">Service</div>
                     <div className="text-xs text-slate-500">Choose a service to continue</div>

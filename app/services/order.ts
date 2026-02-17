@@ -8,14 +8,12 @@ export async function submitOrderAction(checkoutState: any) {
     if (serviceType== "moving") {
         state = state.moving ?? state;
         items = [{
-            // Use optional chaining and fallbacks to avoid crashes
             serviceItemId: (state.movingItemId || "").replace(/-/g, "_"),
             quantity: 1,
             packageId: state.movingPackageId,
         }];
     } else if(serviceType == "storage") {
         state = state.storage ?? state;
-        // If quantities is undefined, items will be []
         const quantities = state.quantities || {};
         items = Object.entries(quantities)
             .filter(([_, qty]) => (Number(qty) || 0) > 0)
@@ -26,7 +24,6 @@ export async function submitOrderAction(checkoutState: any) {
             }));
     }else if(serviceType == "shredding") {
         state = state.shredding ?? state;
-        // If quantities is undefined, items will be []
         const quantities = state.quantities || {};
         items = Object.entries(quantities)
             .filter(([_, qty]) => (Number(qty) || 0) > 0)
@@ -66,12 +63,12 @@ export async function submitOrderAction(checkoutState: any) {
     return data;
 }
 
-// Separate helper to debug address mapping
 function mapAddresses(state: any) {
     const addr = [];
-    // Check if the keys are actually 'fromLocation' or something else like 'origin'
-    if (state.fromLocation || state.origin) {
-        const source = state.fromLocation || state.origin;
+    console.log(state);
+   
+    if (state.fromLocation || state.origin || state.address) {
+        const source = state.fromLocation || state.origin || state.address;
         addr.push({
             type: "PICKUP",
             line1: source.houseNumber || source.line1 || "",
@@ -79,6 +76,17 @@ function mapAddresses(state: any) {
             postalCode: source.postalCode || state.postalCode || "",
             country: "GB",
         });
+    } 
+    if(state.toLocation || state.destination){
+        const source = state.toLocation || state.destination;
+        addr.push({
+            type: "DROPOFF",
+            line1: source.houseNumber || source.line1 || "",
+            line2: source.address || source.line2 || "",
+            postalCode: source.postalCode || state.postalCode || "",
+            country: "GB",
+        });
     }
+
     return addr;
 }

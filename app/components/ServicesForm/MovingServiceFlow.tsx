@@ -141,8 +141,8 @@ export function MovingForm({
     const movingPackages = orderFlow?.catalog.moving.packages ?? [];
 
     // --- 2. Validation Logic ---
-    const originOk = state.fromLocation.address.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
-    const destinationOk = state.toLocation.address.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
+    const originOk = state.fromLocation.streetAddress.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
+    const destinationOk = state.toLocation.streetAddress.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
     const itemOk = state.movingItemId !== "";
     const packageOk = state.movingPackageId !== "";
     const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
@@ -215,11 +215,11 @@ export function MovingForm({
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
                     <input
-                        value={state.fromLocation.address}
+                        value={state.fromLocation.streetAddress}
                         onChange={(e) =>
                             setState((s) => ({
                                 ...s,
-                                fromLocation: { ...s.fromLocation, address: e.target.value },
+                                fromLocation: { ...s.fromLocation, streetAddress: e.target.value },
                             }))
                         }
                         placeholder="From Address"
@@ -244,11 +244,11 @@ export function MovingForm({
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
                     <input
-                        value={state.toLocation.address}
+                        value={state.toLocation.streetAddress}
                         onChange={(e) =>
                             setState((s) => ({
                                 ...s,
-                                toLocation: { ...s.toLocation, address: e.target.value },
+                                toLocation: { ...s.toLocation, streetAddress: e.target.value },
                             }))
                         }
                         placeholder="To Address"

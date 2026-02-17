@@ -157,9 +157,9 @@ export function ShreddingForm({
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
   const detailsOk =
-    (state.customerDetails.postalCode ?? "").trim().length > 0 &&
+    (state.address.postalCode ?? "").trim().length > 0 &&
     (state.customerDetails.phone ?? "").trim().length > 0 &&
-    (state.customerDetails.address ?? "").trim().length > 0;
+    (state.address.streetAddress ?? "").trim().length > 0;
 
   const canGoNext =
     (step === 0 && itemsOk) ||
@@ -452,11 +452,11 @@ export function ShreddingForm({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <input
-              value={state.customerDetails.postalCode}
+              value={state.address.postalCode}
               onChange={(e) =>
                 setState((s) => ({
                   ...s,
-                  customerDetails: { ...s.customerDetails, postalCode: e.target.value },
+                  address: { ...s.address, postalCode: e.target.value },
                 }))
               }
               type="text"
@@ -479,11 +479,11 @@ export function ShreddingForm({
           </div>
 
           <input
-            value={state.customerDetails.address}
+            value={state.address.streetAddress}
             onChange={(e) =>
               setState((s) => ({
                 ...s,
-                customerDetails: { ...s.customerDetails, address: e.target.value },
+                address: { ...s.address, streetAddress: e.target.value },
               }))
             }
             type="text"

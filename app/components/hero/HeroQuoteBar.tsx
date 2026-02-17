@@ -78,11 +78,17 @@ function ServiceOption(props: {
 }
 
 export function HeroQuoteBar() {
-    const { state, setServiceType, setState } = useCheckout();
+    const { state, setServiceType, setState, resetAll } = useCheckout();
     const postcodeRef = useRef<HTMLInputElement>(null);
     const meta = useMemo(() => SERVICE_META[state.serviceType], [state.serviceType]);
 
-    function applyPostcode(service: ServiceType, postcode: string) {
+    function applyPostcode(service: ServiceType, postcodeRaw: string) {
+        const postcode = postcodeRaw.trim().toUpperCase();
+        if (!postcode) return;
+
+        resetAll();
+        setServiceType(service);
+
         setState((s) => {
             if (service === "storage") {
                 return {
@@ -93,6 +99,10 @@ export function HeroQuoteBar() {
                             ...s.storage.customerDetails,
                             postalCode: postcode,
                         },
+                        address: {
+                            ...s.storage.address,
+                            postalCode: postcode
+                        }
                     },
                 };
             }
@@ -106,6 +116,10 @@ export function HeroQuoteBar() {
                             ...s.moving.customerDetails,
                             postalCode: postcode,
                         },
+                        fromLocation: {
+                            ...s.moving.fromLocation,
+                            postalCode: postcode
+                        }
                     },
                 };
             }
@@ -119,17 +133,20 @@ export function HeroQuoteBar() {
                         ...s.shredding.customerDetails,
                         postalCode: postcode,
                     },
+                    address: {
+                        ...s.shredding.address,
+                        postalCode: postcode
+                    }
                 },
             };
         });
     }
 
     function onGetQuote() {
-        const postcode = (postcodeRef.current?.value ?? "").trim();
+        const postcode = postcodeRef.current?.value ?? "";
         const service = state.serviceType;
-        if (postcode) {
-            applyPostcode(service, postcode);
-        }
+
+        applyPostcode(service, postcode);
 
         document.getElementById("pricing")?.scrollIntoView({
             behavior: "smooth",

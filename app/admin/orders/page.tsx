@@ -163,6 +163,7 @@ export default function AdminOrdersPage() {
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
                 <tr>
                   <th className="px-4 py-4">Order #</th>
+                  <th className="px-4 py-4">Service Type</th>
                   <th className="px-4 py-4">Customer</th>
                   <th className="px-4 py-4">Collection Address</th>
                   <th className="px-4 py-4">Service Date</th>
@@ -176,6 +177,7 @@ export default function AdminOrdersPage() {
                   const pickupAddr = o.addresses?.find((a: any) => a.type === "PICKUP");
                   return (
                     <tr key={o.id} className="hover:bg-slate-50/50 transition-colors">
+                      
                       <td className="px-4 py-4">
                         <Link 
                           href={`/admin/orders/${o.id}`}
@@ -186,6 +188,10 @@ export default function AdminOrdersPage() {
                         <div className="text-[10px] text-slate-400 mt-0.5">
                           {new Date(o.createdAt).toLocaleDateString()}
                         </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="font-semibold text-slate-900">{o.serviceType}</div>
+                       
                       </td>
                       <td className="px-4 py-4">
                         <div className="font-semibold text-slate-900">{o.customer.fullName}</div>

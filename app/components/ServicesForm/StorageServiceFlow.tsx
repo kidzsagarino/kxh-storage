@@ -193,10 +193,10 @@ export function StorageForm({
     const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
     const detailsOk =
-        (state.customerDetails.houseNumber ?? "").trim().length > 0 &&
-        (state.customerDetails.postalCode ?? "").trim().length > 0 &&
+        (state.address.houseNumber ?? "").trim().length > 0 &&
+        (state.address.postalCode ?? "").trim().length > 0 &&
         (state.customerDetails.phone ?? "").trim().length > 0 &&
-        (state.customerDetails.address ?? "").trim().length > 0;
+        (state.address.streetAddress ?? "").trim().length > 0;
 
     const canGoNext =
         (step === 0 && durationOk) ||
@@ -531,12 +531,12 @@ export function StorageForm({
 
                     <div className="grid gap-4 sm:grid-cols-2">
                         <input
-                            value={state.customerDetails.postalCode}
+                            value={state.address.postalCode}
                             onChange={(e) =>
                                 setState((s) => ({
                                     ...s,
-                                    customerDetails: {
-                                        ...s.customerDetails,
+                                    address: {
+                                        ...s.address,
                                         postalCode: e.target.value,
                                     },
                                 }))
@@ -562,12 +562,12 @@ export function StorageForm({
                             className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                         />
                         <input
-                            value={state.customerDetails.houseNumber}
+                            value={state.address.houseNumber}
                             onChange={(e) =>
                                 setState((s) => ({
                                     ...s,
-                                    customerDetails: {
-                                        ...s.customerDetails,
+                                    address: {
+                                        ...s.address,
                                         houseNumber: e.target.value,
                                     },
                                 }))
@@ -577,13 +577,13 @@ export function StorageForm({
                             className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                         />
                         <input
-                            value={state.customerDetails.address}
+                            value={state.address.streetAddress}
                             onChange={(e) =>
                                 setState((s) => ({
                                     ...s,
-                                    customerDetails: {
-                                        ...s.customerDetails,
-                                        address: e.target.value,
+                                    address: {
+                                        ...s.address,
+                                        streetAddress: e.target.value,
                                     },
                                 }))
                             }
