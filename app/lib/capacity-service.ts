@@ -33,8 +33,6 @@ export async function validateCapacity(
         })
     ]);
 
-    console.log(currentOrderCount);
-    
     const capacityLimit = settings?.capacities[0]?.capacity ?? 0;
 
     if (currentOrderCount >= capacityLimit) {

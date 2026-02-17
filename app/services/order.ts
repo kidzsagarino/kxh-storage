@@ -1,9 +1,6 @@
 export async function submitOrderAction(checkoutState: any) {
     let state = checkoutState ?? {};
 
-    // LOG THIS: This is the most important line for debugging right now
-    console.log("🛠 Mapping state to payload. Current State:", state);
-
     let serviceType = state.serviceType;
 
     let items:any = [];
@@ -27,6 +24,16 @@ export async function submitOrderAction(checkoutState: any) {
                 quantity: Number(qty) || 0,
                 months: Number(state.durationMonth) || 1,
             }));
+    }else if(serviceType == "shredding") {
+        state = state.shredding ?? state;
+        // If quantities is undefined, items will be []
+        const quantities = state.quantities || {};
+        items = Object.entries(quantities)
+            .filter(([_, qty]) => (Number(qty) || 0) > 0)
+            .map(([id, qty]) => ({
+                serviceItemId: id.replace(/-/g, "_"),
+                quantity: Number(qty) || 0,
+            }));
     }
 
     const payload = {
@@ -44,8 +51,6 @@ export async function submitOrderAction(checkoutState: any) {
         addresses: mapAddresses(state), // Helper to keep it clean
         movingPackageId: state.movingPackageId || null,
     };
-
-    console.log(payload);
 
     const res = await fetch("/api/orders", {
         method: "POST",

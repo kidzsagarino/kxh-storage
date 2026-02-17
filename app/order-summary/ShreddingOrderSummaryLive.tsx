@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import { useShreddingCheckout, type TimeSlotId } from "../components/checkout/CheckoutStore";
+import { to12Hour } from "../utils/utils";
 
 const BAG_PRICE = 7;
 const BOX_PRICE = 9;
@@ -16,39 +17,55 @@ function money(n: number, sym = "£") {
   return `${sym}${n.toFixed(2)}`;
 }
 
-export function ShreddingOrderSummary() {
-  const { state } = useShreddingCheckout();
 
-  const { items, totalDueNow, note } = useMemo(() => {
-    const bagQty = Math.max(0, Number(state.items?.bagQty ?? 0));
-    const boxQty = Math.max(0, Number(state.items?.boxQty ?? 0));
+type Props = {
+  onProceed: () => void;
+  busy?: boolean;
+  error?: string | null;
+};
 
-    const bagCost = +(bagQty * BAG_PRICE).toFixed(2);
-    const boxCost = +(boxQty * BOX_PRICE).toFixed(2);
+export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
+  const { state, orderFlow } = useShreddingCheckout();
 
-    const items: { key: string; label: string; subLabel: string; price: number }[] = [];
+  const itemsBySku = orderFlow?.catalog?.shredding?.itemsBySku ?? {};
 
-    items.push({
-      key: "bag",
-      label: "Bag",
-      subLabel: `${bagQty} × (up to 15 lbs)`,
-      price: bagCost,
-    });
+  const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
 
-    items.push({
-      key: "archive-box",
-      label: "Archive Box",
-      subLabel: `${boxQty} × (up to 15 lbs)`,
-      price: boxCost,
-    });
+  const itemsOk = Object.values(state.quantities ?? {}).some((n) => (Number(n) || 0) > 0);
+  const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
-    const totalDueNow = +(bagCost + boxCost).toFixed(2);
+  const detailsOk =
+    (state.customerDetails.postalCode ?? "").trim().length > 0 &&
+    (state.customerDetails.phone ?? "").trim().length > 0 &&
+    (state.customerDetails.address ?? "").trim().length > 0;
 
-    const slotText = state.timeSlotId ? SLOT_LABEL[state.timeSlotId as Exclude<TimeSlotId, "">] : "";
-    const note = `Collection: ${state.collectionDate || "—"}${slotText ? ` (${slotText})` : ""}`;
+  const canProceed = !!orderFlow?.ok && itemsOk && scheduleOk && detailsOk && !busy;
+  const { items, totalDueNow } =
+    useMemo(() => {
+      const items = Object.entries(state.quantities)
+        .filter(([_, qty]) => (qty ?? 0) > 0)
+        .map(([sku, qty]) => {
+          const catalogItem = itemsBySku[sku];
 
-    return { items, totalDueNow, note };
-  }, [state]);
+          const unitPrice = Number(catalogItem?.price?.price ?? 0);
+          const total = +(unitPrice * (qty ?? 0)).toFixed(2);
+
+          return {
+            sku,
+            label: catalogItem?.name ?? sku,
+            qty: qty ?? 0,
+            unitPrice,
+            total,
+          };
+        });
+
+      const totalDueNow = +items
+        .reduce((sum, it) => sum + it.total, 0)
+        .toFixed(2);
+
+      return { items, totalDueNow };
+
+    }, [state.quantities, itemsBySku]);
 
   return (
     <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
@@ -65,28 +82,45 @@ export function ShreddingOrderSummary() {
 
       {/* Shredding Items (2-line rows) */}
       <div className="rounded-xl bg-slate-50 p-4 space-y-4">
-        {items.map((it) => (
-          <div key={it.key} className="space-y-1">
-            <div className="flex justify-between text-sm font-medium text-slate-900">
-              <span>{it.label}</span>
-              <span>{money(it.price)}</span>
+        {items.length === 0 ? (
+          <div className="text-sm text-slate-600">No items added yet.</div>
+        ) : (
+          items.map((it) => (
+            <div key={it.sku} className="flex justify-between text-sm text-slate-700">
+              <span>
+                {it.qty} × {it.label}
+              </span>
+              <span className="text-slate-900">
+                {money(it.total, currencySymbol)}
+              </span>
             </div>
-            <div className="flex justify-between text-sm text-slate-600">
-              <span>{it.subLabel}</span>
-              <span>{money(it.price)}</span>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
-
-      <p className="text-xs text-slate-500">{note}</p>
+      <p className="text-xs text-slate-500">
+        {items.length === 0
+          ? "Add items on the left to see your order summary."
+          : (() => {
+            const slot = orderFlow?.timeSlots?.find((s: any) => s.id === state.timeSlotId);
+            const slotLabel = slot
+              ? `${slot.name} (${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)})`
+              : "—";
+            return `Collection: ${state.collectionDate || "—"} • Slot: ${slotLabel}`;
+          })()}
+      </p>
+      {/* 
+      <p className="text-xs text-slate-500">{note}</p> */}
 
       <button
         type="button"
-        disabled={!state.enableButton}
-        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={onProceed}
+        disabled={!canProceed}
+        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
       >
-        Proceed to Payment
+        {busy && (
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        )}
+        {busy ? "Opening payment..." : "Proceed to Payment"}
       </button>
     </aside>
   );

@@ -18,11 +18,6 @@ export type MovingPackageId = "basic-package" | "move-and-pack";
 
 export type TimeSlotId = "morning" | "afternoon" | "evening" | "";
 
-export type ShreddingItems = {
-  bagQty: number;
-  boxQty: number;
-};
-
 export type CustomerDetails = {
   houseNumber: string;
   name: string;
@@ -61,7 +56,7 @@ export type MovingState = {
 };
 
 export type ShreddingState = {
-  items: ShreddingItems;
+  quantities: Record<string, number>;
   collectionDate: string;
   timeSlotId: string;
   customerDetails: CustomerDetails;
@@ -129,7 +124,10 @@ const emptyMoving: MovingState = {
 };
 
 const emptyShredding: ShreddingState = {
-  items: { bagQty: 0, boxQty: 0 },
+  quantities: {
+    "archive-box": 0,
+    "bag": 0,
+  },
   collectionDate: "",
   timeSlotId: "",
   customerDetails: { ...emptyCustomer },

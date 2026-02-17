@@ -92,6 +92,28 @@ export async function POST(req: NextRequest) {
                 discountMinor = storageCalc.discountMonthlyMinor;
                 totalMinor = storageCalc.dueNowMinor;
                 finalTierId = storageCalc.finalTierId;
+
+            } else if(serviceType === "SHREDDING") {
+                
+                const [dbPrices, settings] = await Promise.all([
+                     tx.serviceItemPrice.findMany({
+                        where: {
+                            serviceItemId: { in: items.map((i: any) => i.serviceItemId as CatalogItemId) },
+                            isActive: true,
+                        },
+                        include: { serviceItem: true },
+                    }),
+                   
+                    tx.adminSettings.findFirst()
+                ]);
+
+
+                const storageCalc = processOrderItems(items, dbPrices as any, null, discountTierId);
+                mappedItems = storageCalc.mappedItems;
+                subtotalMinor = storageCalc.subtotalMonthlyMinor;
+                discountMinor = storageCalc.discountMonthlyMinor;
+                totalMinor = storageCalc.dueNowMinor;
+                finalTierId = storageCalc.finalTierId;
             }
 
             // 2) Customer Persistence

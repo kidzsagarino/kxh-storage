@@ -18,11 +18,11 @@ type Props = {
 
 // Map your UI slot id -> DB key used in orderFlow.settings.timeSlotSettings
 const SLOT_KEY_BY_ID: Record<Exclude<TimeSlotId, "">, "MORNING" | "AFTERNOON" | "EVENING"> =
-  {
-    morning: "MORNING",
-    afternoon: "AFTERNOON",
-    evening: "EVENING",
-  };
+{
+  morning: "MORNING",
+  afternoon: "AFTERNOON",
+  evening: "EVENING",
+};
 
 function timeRangeToLabel(start?: string, end?: string) {
   // start/end like "07:00"
@@ -44,7 +44,13 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
   // ✅ Expecting your store to already carry orderFlow (like your storage flow)
   const { state, orderFlow } = useMovingCheckout() as any;
 
-  console.log(state);
+  const originOk = state.fromLocation.address.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
+  const destinationOk = state.toLocation.address.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
+  const itemOk = state.movingItemId !== "";
+  const packageOk = state.movingPackageId !== "";
+  const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
+
+  const canProceed = !!orderFlow?.ok && originOk && destinationOk && itemOk && packageOk && scheduleOk && !busy;
 
   const { items, totalDueNow, note, currencySymbol } = useMemo(() => {
     const sym = orderFlow?.currency === "GBP" ? "£" : "£";
@@ -61,18 +67,18 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
     // Moving item (home type) from catalog
     const homeSku = state.movingItemId as string;
     const home = itemsById[homeSku];
-      
+
     const homeLabel = home?.name ?? "";
     const homeCost = home?.price?.price ? Number(home.price.price) : 0;
 
     // Package from catalog (if you seeded packages)
 
-     const packageById = Object.fromEntries(
+    const packageById = Object.fromEntries(
       Object.values(orderFlow?.catalog?.moving?.packagesBySku).map((item: any) => [item.id, item])
-    ); 
+    );
     const pkgSku = state.movingPackageId as string;
     const pkg = packageById[pkgSku]
-      
+
     const pkgLabel = pkg?.name ?? "";
     const pkgCost = pkg?.price?.price ? Number(pkg.price.price) : 0;
 
@@ -127,9 +133,8 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
       }
     }
 
-    const note = `Collection: ${state.collectionDate || "—"}${
-      slotText ? ` (${slotText})` : ""
-    }`;
+    const note = `Collection: ${state.collectionDate || "—"}${slotText ? ` (${slotText})` : ""
+      }`;
 
     return { items: rows, totalDueNow: total, note, currencySymbol: sym };
   }, [state, orderFlow]);
@@ -172,10 +177,13 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
       <button
         type="button"
         onClick={onProceed}
-        disabled={!state.enableButton || !!busy}
-        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={!canProceed}
+        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
       >
-        {busy ? "Processing…" : "Proceed to Payment"}
+        {busy && (
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        )}
+        {busy ? "Opening payment..." : "Proceed to Payment"}
       </button>
     </aside>
   );

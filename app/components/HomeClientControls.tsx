@@ -184,16 +184,20 @@ export default function HomeClientControls({
                             busy={isPaying || isSubmitting}
                             error={error}
                             onProceed={handleProceedToPayment} />}
-                        {state.serviceType === "moving" && <MovingForm  busy={isPaying || isSubmitting}
+                        {state.serviceType === "moving" && <MovingForm
+                            busy={isPaying || isSubmitting}
                             error={error}
-                            onProceed={handleProceedToPayment}/>}
-                        {state.serviceType === "shredding" && <ShreddingForm />}
+                            onProceed={handleProceedToPayment} />}
+                        {state.serviceType === "shredding" && <ShreddingForm
+                            busy={isPaying || isSubmitting}
+                            error={error}
+                            onProceed={handleProceedToPayment} />}
                     </div>
 
                     <div className="min-w-0 lg:sticky lg:top-6">
                         {state.serviceType === "storage" && <StorageOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
-                        {state.serviceType === "moving" && <MovingOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error}/>}
-                        {state.serviceType === "shredding" && <ShreddingOrderSummary />}
+                        {state.serviceType === "moving" && <MovingOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
+                        {state.serviceType === "shredding" && <ShreddingOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
                     </div>
                     {orderId && (
                         <div ref={checkoutRef} className="mt-8 animate-fadeIn">

@@ -3,8 +3,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-    type MovingItemId,
-    type MovingPackageId,
     type TimeSlotId,
     useMovingCheckout,
 } from "../checkout/CheckoutStore";
@@ -142,27 +140,6 @@ export function MovingForm({
     const movingItems = orderFlow?.catalog?.moving.items ?? [];
     const movingPackages = orderFlow?.catalog.moving.packages ?? [];
 
-    const { movingCaps, movingWeekdays } = useMemo(() => {
-        const caps = { morning: 0, afternoon: 0, evening: 0 };
-        const weekdays: Record<string, boolean> = {};
-
-        if (orderFlow?.settings?.scheduling) {
-            orderFlow.settings.scheduling.capacities
-                .filter((c: any) => c.serviceType === "MOVING")
-                .forEach((c: any) => {
-                    const key = c.slotKey.toLowerCase() as keyof typeof caps;
-                    caps[key] = c.capacity;
-                });
-
-            orderFlow.settings.scheduling.weekdayRules
-                .filter((r: any) => r.serviceType === "MOVING")
-                .forEach((r: any) => {
-                    weekdays[r.weekday.toLowerCase()] = r.enabled;
-                });
-        }
-        return { movingCaps: caps, movingWeekdays: weekdays };
-    }, [orderFlow]);
-
     // --- 2. Validation Logic ---
     const originOk = state.fromLocation.address.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
     const destinationOk = state.toLocation.address.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
@@ -210,22 +187,12 @@ export function MovingForm({
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-    useEffect(() => {
-        setState((s) => ({ ...s, timeSlot: "" as TimeSlotId }));
-    }, [state.collectionDate, setState]);
-
-    const onSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (originOk && destinationOk && itemOk && packageOk && scheduleOk) {
-            router.push("/order-summary");
-        }
-    };
 
     const goNext = () => setStep((s) => (Math.min(4, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
     return (
-        <form onSubmit={onSubmit} className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6">
+        <form className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6">
             <Stepper
                 current={step}
                 maxAllowed={maxAllowedStep as StepId}

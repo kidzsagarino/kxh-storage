@@ -149,8 +149,6 @@ export function StorageForm({
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
     const timeSlots = orderFlow && orderFlow.timeSlots;
     const [orderId, setOrderId] = useState<string | null>(null);
-
-    console.log(state, orderFlow);
     
     const inc = (id: string) => {
         if (!orderFlow) return;

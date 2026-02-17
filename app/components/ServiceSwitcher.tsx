@@ -46,13 +46,13 @@ export default function PricingSwitcher({
                 <div>
                     {state.serviceType === "storage" && <StorageForm onProceed={async()=>{}} error={''} busy={false} />}
                     {state.serviceType === "moving" && <MovingForm onProceed={async()=>{}} error={''} busy={false}/>}
-                    {state.serviceType === "shredding" && <ShreddingForm />}
+                    {state.serviceType === "shredding" && <ShreddingForm onProceed={()=>{}} error={''} busy={false}/>}
                 </div>
 
                 <div className="lg:sticky lg:top-6">
                     {state.serviceType === "storage" && <StorageOrderSummary onProceed={()=>{}} error={''} busy={false}/>}
                     {state.serviceType === "moving" && <MovingOrderSummary onProceed={()=>{}} error={''} busy={false}/>}
-                    {state.serviceType === "shredding" && <ShreddingOrderSummary />}
+                    {state.serviceType === "shredding" && <ShreddingOrderSummary onProceed={()=>{}} error={''} busy={false}/>}
                 </div>
             </div>
         </div>
