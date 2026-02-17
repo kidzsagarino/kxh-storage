@@ -95,10 +95,6 @@ export function HeroQuoteBar() {
                     ...s,
                     storage: {
                         ...s.storage,
-                        customerDetails: {
-                            ...s.storage.customerDetails,
-                            postalCode: postcode,
-                        },
                         address: {
                             ...s.storage.address,
                             postalCode: postcode
@@ -112,12 +108,12 @@ export function HeroQuoteBar() {
                     ...s,
                     moving: {
                         ...s.moving,
-                        customerDetails: {
-                            ...s.moving.customerDetails,
-                            postalCode: postcode,
-                        },
                         fromLocation: {
                             ...s.moving.fromLocation,
+                            postalCode: postcode
+                        },
+                        toLocation: {
+                            ...s.moving.toLocation,
                             postalCode: postcode
                         }
                     },
@@ -129,10 +125,6 @@ export function HeroQuoteBar() {
                 ...s,
                 shredding: {
                     ...s.shredding,
-                    customerDetails: {
-                        ...s.shredding.customerDetails,
-                        postalCode: postcode,
-                    },
                     address: {
                         ...s.shredding.address,
                         postalCode: postcode

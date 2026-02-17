@@ -65,15 +65,14 @@ export async function submitOrderAction(checkoutState: any) {
 
 function mapAddresses(state: any) {
     const addr = [];
-    console.log(state);
-   
+
     if (state.fromLocation || state.origin || state.address) {
         const source = state.fromLocation || state.origin || state.address;
         addr.push({
             type: "PICKUP",
             line1: source.houseNumber || source.line1 || "",
-            line2: source.address || source.line2 || "",
-            postalCode: source.postalCode || state.postalCode || "",
+            line2: source.streetAddress || source.line2 || "",
+            postalCode: state.fromLocation ? "" : source.postalCode || "",
             country: "GB",
         });
     } 
@@ -82,8 +81,8 @@ function mapAddresses(state: any) {
         addr.push({
             type: "DROPOFF",
             line1: source.houseNumber || source.line1 || "",
-            line2: source.address || source.line2 || "",
-            postalCode: source.postalCode || state.postalCode || "",
+            line2: source.streetAddress || source.line2 || "",
+            postalCode: "",
             country: "GB",
         });
     }

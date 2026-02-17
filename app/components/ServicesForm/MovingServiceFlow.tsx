@@ -187,6 +187,10 @@ export function MovingForm({
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
+    useEffect(()=>{
+        console.log(state);
+    },[state])
+
 
     const goNext = () => setStep((s) => (Math.min(4, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));

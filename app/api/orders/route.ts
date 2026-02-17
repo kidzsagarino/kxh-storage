@@ -132,7 +132,8 @@ export async function POST(req: NextRequest) {
                     phone: customer.phone || null,
                 },
             });
-
+            
+            console.log(addresses);
             // 3) Order Creation
             return tx.order.create({
                 data: {
