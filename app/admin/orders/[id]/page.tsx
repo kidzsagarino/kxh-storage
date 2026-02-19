@@ -99,6 +99,8 @@ export default function AdminOrderByIdPage() {
 
   const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
   const isMoving = order.serviceType?.toUpperCase() === "MOVING";
+  const isStorage = order.serviceType?.toUpperCase() === "STORAGE";
+  const isShredding = order.serviceType?.toUpperCase() === "SHREDDING";
 
   const discountPercent = order.storageDiscountTier?.percentOff || 0;
   const durationMonths = order.items?.[0]?.months || 0;
@@ -113,13 +115,15 @@ export default function AdminOrderByIdPage() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1.5">
             {/* New Service Profile Section */}
-            <section className="bg-slate-50/50 mb-4 w-50">
+            <section className="mb-4 w-50">
               <div className="flex items-left justify-left">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-200">
                       {/* Icon changes based on service */}
-                      {isMoving ? "🚚" : "📦"}
+                      {isMoving && "🚚"}
+                      {isStorage && "📦"}
+                      {isShredding && "♻️"}
                     </div>
                     <span className="text-sm font-bold text-slate-900 capitalize">
                       {order.serviceType?.toLowerCase()} Service
@@ -146,9 +150,6 @@ export default function AdminOrderByIdPage() {
               <div className="flex items-center gap-1.5 ml-2">
                 <span className={statusBadge(order.status)}>
                   {order.status}
-                </span>
-                <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                  {order.serviceType}
                 </span>
               </div>
             </div>
