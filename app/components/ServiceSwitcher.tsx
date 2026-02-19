@@ -45,14 +45,14 @@ export default function PricingSwitcher({
             <div className="grid gap-6 items-start lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
                 <div>
                     {state.serviceType === "storage" && <StorageForm onProceed={async()=>{}} error={''} busy={false} />}
-                    {state.serviceType === "moving" && <MovingForm />}
-                    {state.serviceType === "shredding" && <ShreddingForm />}
+                    {state.serviceType === "moving" && <MovingForm onProceed={async()=>{}} error={''} busy={false}/>}
+                    {state.serviceType === "shredding" && <ShreddingForm onProceed={()=>{}} error={''} busy={false}/>}
                 </div>
 
                 <div className="lg:sticky lg:top-6">
                     {state.serviceType === "storage" && <StorageOrderSummary onProceed={()=>{}} error={''} busy={false}/>}
-                    {state.serviceType === "moving" && <MovingOrderSummary />}
-                    {state.serviceType === "shredding" && <ShreddingOrderSummary />}
+                    {state.serviceType === "moving" && <MovingOrderSummary onProceed={()=>{}} error={''} busy={false}/>}
+                    {state.serviceType === "shredding" && <ShreddingOrderSummary onProceed={()=>{}} error={''} busy={false}/>}
                 </div>
             </div>
         </div>

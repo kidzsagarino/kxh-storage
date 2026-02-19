@@ -32,9 +32,12 @@ async function seedServiceItemsAndPrices() {
     { id: "full_container", serviceType: ServiceType.STORAGE, sku: "full-container", name: "Full Container", unit: BillingUnit.PER_MONTH, price: 15000 },
 
     // MOVING (flat)
-    { id: "small_move", serviceType: ServiceType.MOVING, sku: "small-move", name: "Small Move", unit: BillingUnit.FLAT, price: 15000 },
-    { id: "one_bedroom_flat", serviceType: ServiceType.MOVING, sku: "1-bedroom-flat", name: "1 Bedroom Flat", unit: BillingUnit.FLAT, price: 25000 },
-    { id: "two_bedroom_flat", serviceType: ServiceType.MOVING, sku: "2-bedroom-flat", name: "2 Bedroom Flat", unit: BillingUnit.FLAT, price: 35000 },
+    { id: "small_move", serviceType: ServiceType.MOVING, sku: "small-move", name: "Small Move", unit: BillingUnit.FLAT, price: 29500 },
+    { id: "one_bedroom_flat", serviceType: ServiceType.MOVING, sku: "1-bedroom-flat", name: "1 Bedroom Flat", unit: BillingUnit.FLAT, price: 44900 },
+    { id: "two_bedroom_flat", serviceType: ServiceType.MOVING, sku: "2-bedroom-flat", name: "2 Bedroom Flat", unit: BillingUnit.FLAT, price: 79000 },
+    { id: "three_bedroom_flat", serviceType: ServiceType.MOVING, sku: "3-bedroom-flat", name: "3 Bedroom Flat", unit: BillingUnit.FLAT, price: 113100 },
+    { id: "four_bedroom_flat", serviceType: ServiceType.MOVING, sku: "4-bedroom-flat", name: "4 Bedroom Flat", unit: BillingUnit.FLAT, price: 135800 },
+    { id: "office_move", serviceType: ServiceType.MOVING, sku: "office-move", name: "Office Move", unit: BillingUnit.FLAT, price: 175000 },
 
     // SHREDDING (per item)
     { id: "bag", serviceType: ServiceType.SHREDDING, sku: "bag", name: "Bag", unit: BillingUnit.PER_ITEM, price: 1000 },
@@ -139,7 +142,7 @@ async function seedAdminSettings() {
       });
     }
   }
-  
+
   // ... rest of your capacity and weekday rule seeding
 }
 
@@ -155,12 +158,14 @@ async function seedCapacityAndRules() {
       storageEnabled: true,
       movingEnabled: true,
       shreddingEnabled: true,
+      movingPricePerMileMinor: 58
     },
     create: {
       id: SETTINGS_ID,
       storageEnabled: true,
       movingEnabled: true,
       shreddingEnabled: true,
+      movingPricePerMileMinor: 58
     },
   });
 
@@ -175,7 +180,7 @@ async function seedCapacityAndRules() {
   for (const service of services) {
     for (const day of days) {
       const isWeekend = day === Weekday.SAT || day === Weekday.SUN;
-      
+
       await prisma.weekdayRule.create({
         data: {
           settingsId: globalSettings.id, // Reference the object we just upserted
@@ -188,7 +193,7 @@ async function seedCapacityAndRules() {
   }
 
   const slots = [TimeSlotKey.MORNING, TimeSlotKey.AFTERNOON, TimeSlotKey.EVENING];
-  
+
   for (const service of services) {
     for (const slot of slots) {
       await prisma.capacitySetting.create({
@@ -203,6 +208,64 @@ async function seedCapacityAndRules() {
   }
 }
 
+async function seedMovingPackage() {
+  console.log('🌱 Seeding Moving Packages and Prices...');
+
+  // 1. BASIC PACKAGE
+  const basic = await prisma.movingPackage.upsert({
+    where: { id: 'basic_package' },
+    update: { name: 'Basic Package', isActive: true },
+    create: {
+      id: 'basic_package',
+      sku: 'MOV-BASIC',
+      name: 'Basic Package',
+      description: 'Standard moving service.',
+      isActive: true,
+    },
+  });
+
+  await prisma.movingPackagePrice.upsert({
+    where: {
+      packageId_currency: { packageId: basic.id, currency: 'GBP' }
+    },
+    update: { priceMinor: 0 }, // Ensure price is 0
+    create: {
+      packageId: basic.id,
+      currency: 'GBP',
+      priceMinor: 0,
+      isActive: true,
+    },
+  });
+
+  // 2. MOVE AND PACK
+  const pack = await prisma.movingPackage.upsert({
+    where: { id: 'move_and_pack' },
+    update: { name: 'Move and Pack', isActive: true },
+    create: {
+      id: 'move_and_pack',
+      sku: 'MOV-PACK',
+      name: 'Move and Pack',
+      description: 'Professional packing service included.',
+      isActive: true,
+    },
+  });
+
+  await prisma.movingPackagePrice.upsert({
+    where: {
+      packageId_currency: { packageId: pack.id, currency: 'GBP' }
+    },
+    update: { priceMinor: 29500 }, // £290.00
+    create: {
+      packageId: pack.id,
+      currency: 'GBP',
+      priceMinor: 29500,
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Seeding completed successfully.');
+}
+
 async function main() {
   console.log("🌱 Seeding Database...");
   await seedTimeSlots();
@@ -210,6 +273,7 @@ async function main() {
   await seedStorageDiscountTiers();
   await seedAdminSettings();
   await seedCapacityAndRules();
+  await seedMovingPackage();
   console.log("✅ Seed Complete");
 }
 

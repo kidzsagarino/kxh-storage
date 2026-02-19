@@ -9,7 +9,7 @@ interface InputItem {
 export function processOrderItems(
   items: InputItem[],
   dbPrices: ServiceItemPrice[],
-  discountTiers: StorageDiscountTier[],
+  discountTiers?: StorageDiscountTier[] | null,
   requestedTierId?: string
 ) {
   let subtotalMonthlyMinor = 0;
@@ -46,12 +46,12 @@ export function processOrderItems(
 
   // 2) Determine the active discount tier
   let activeTier = requestedTierId
-    ? discountTiers.find((t) => t.id === requestedTierId)
+    ? discountTiers && discountTiers.find((t) => t.id === requestedTierId)
     : undefined;
 
   if (!activeTier) {
     const maxMonths = Math.max(...items.map((i) => i.months ?? 0));
-    activeTier = discountTiers
+    activeTier = discountTiers && discountTiers
       .filter((t) => maxMonths >= t.minMonths)
       .sort((a, b) => b.minMonths - a.minMonths)[0];
   }

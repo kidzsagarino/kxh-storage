@@ -89,6 +89,7 @@ export default function AdminOrdersPage() {
           to: selectedRange?.toExclusive,
         });
         setOrders(data);
+        console.log(data);
       } catch (err) {
         console.error("Failed to fetch orders", err);
       } finally {
@@ -116,9 +117,9 @@ export default function AdminOrdersPage() {
           <h1 className="text-xl font-bold text-slate-900">Live Orders</h1>
 
           <div className="flex flex-wrap items-center gap-2">
-            <select 
-              value={mode} 
-              onChange={(e) => { setMode(e.target.value as any); setRangeKey(""); }} 
+            <select
+              value={mode}
+              onChange={(e) => { setMode(e.target.value as any); setRangeKey(""); }}
               className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20"
             >
               <option value="all">All time</option>
@@ -128,9 +129,9 @@ export default function AdminOrdersPage() {
             </select>
 
             {mode !== "all" && (
-              <select 
-                value={rangeKey} 
-                onChange={(e) => setRangeKey(e.target.value)} 
+              <select
+                value={rangeKey}
+                onChange={(e) => setRangeKey(e.target.value)}
                 className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20"
               >
                 <option value="">Select range...</option>
@@ -162,20 +163,24 @@ export default function AdminOrdersPage() {
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
                 <tr>
                   <th className="px-4 py-4">Order #</th>
+                  <th className="px-4 py-4">Service Type</th>
                   <th className="px-4 py-4">Customer</th>
-                  <th className="px-4 py-4">Collection Address</th>
+                  <th className="px-4 py-4">Address</th>
+                  <th className="px-4 py-4">Additional Notes</th>
                   <th className="px-4 py-4">Service Date</th>
-                  <th className="px-4 py-4">Status</th>
+                  <th className="px-4 py-4">Order Status</th>
+                  <th className="px-4 py-4">Payment Status</th>
                   <th className="px-4 py-4 text-right">Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {orders.map((o) => {
-                  const pickupAddr = o.addresses?.find((a: any) => a.type === "PICKUP");
+                  const pickupAddr = o.addresses;
                   return (
                     <tr key={o.id} className="hover:bg-slate-50/50 transition-colors">
+
                       <td className="px-4 py-4">
-                        <Link 
+                        <Link
                           href={`/admin/orders/${o.id}`}
                           className="font-mono text-xs font-bold text-emerald-600 hover:underline"
                         >
@@ -186,20 +191,35 @@ export default function AdminOrdersPage() {
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="font-semibold text-slate-900">{o.customer.fullName}</div>
-                        <div className="text-xs text-slate-500">{o.customer.email}</div>
+                        <div className="font-semibold text-slate-900">{o.serviceType}</div>
+
                       </td>
                       <td className="px-4 py-4">
-                        <div className="text-slate-700 truncate max-w-[200px]">{pickupAddr?.line1 || "—"}</div>
-                        <div className="text-[11px] font-bold text-slate-400 uppercase">{pickupAddr?.postalCode}</div>
-                        <div className="text-[11px] font-bold text-slate-400 uppercase">{pickupAddr?.line2}</div>
+                        <div className="font-semibold text-slate-900">{o.customer.fullName}</div>
+                        <div className="text-xs text-slate-500">{o.customer.email}</div>
+                        <div className="text-xs text-slate-500">{o.customer.phone}</div>
+                      </td>
+                      <td className="px-4 py-4">
+                        {pickupAddr.map((address: any) => (
+                          <div key={address.id}>
+                            <div className="text-[11px] font-bold">{address?.type}</div>
+                            <div className="text-slate-700 truncate max-w-[200px]">{address?.line1}</div>
+                            <div className="text-xs text-slate-500">{address?.line2}</div>
+                            <div className="text-xs text-slate-500">{address?.postalCode}</div>
+                          </div>
+                        ))}
+
+                      </td>
+                      <td className="px-4 py-4">
+                        { o.notes }
+
                       </td>
                       <td className="px-4 py-4">
                         <div className="font-medium text-slate-900">
                           {o.serviceDate ? new Date(o.serviceDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : "—"}
                         </div>
                         <div className="text-[10px] text-slate-500 uppercase">
-                          {o.timeSlot ? `${ to12Hour(o.timeSlot.startTime)} - ${to12Hour(o.timeSlot.endTime)}` : "—"}
+                          {o.timeSlot ? `${to12Hour(o.timeSlot.startTime)} - ${to12Hour(o.timeSlot.endTime)}` : "—"}
                         </div>
                       </td>
                       {/* <td className="px-4 py-4">
@@ -217,6 +237,9 @@ export default function AdminOrdersPage() {
                       </td> */}
                       <td className="px-4 py-4">
                         {o.status}
+                      </td>
+                      <td className="px-4 py-4">
+                        {o.payments[0]?.status}
                       </td>
                       <td className="px-4 py-4 text-right">
                         <div className="font-bold text-slate-900">

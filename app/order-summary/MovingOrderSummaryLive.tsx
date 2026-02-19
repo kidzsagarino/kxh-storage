@@ -1,95 +1,143 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useMovingCheckout, type TimeSlotId } from "../components/checkout/CheckoutStore";
-
-const PRICE_PER_MILE = 0.58;
-
-const HOME_TYPE_PRICE = {
-  "small-move": 250,
-  "1-bedroom-flat": 650,
-  "2-bedroom-flat": 850,
-  "3-bedroom-flat": 1100,
-  "4-bedroom-flat": 1358,
-  "office-move": 2000,
-} as const;
-
-const HOME_TYPE_LABEL = {
-  "small-move": "Small Move",
-  "1-bedroom-flat": "1 Bed Flat",
-  "2-bedroom-flat": "2 Bed Flat",
-  "3-bedroom-flat": "3 Bed Flat",
-  "4-bedroom-flat": "4 Bed Flat",
-  "office-move": "Office Move",
-} as const;
-
-const PACKAGE_PRICE = {
-  "basic-package": 0,
-  "move-and-pack": 295,
-} as const;
-
-const PACKAGE_LABEL = {
-  "basic-package": "Package - Basic",
-  "move-and-pack": "Package - Move & Pack",
-} as const;
-
-const SLOT_LABEL: Record<Exclude<TimeSlotId, "">, string> = {
-  morning: "7am - 9am",
-  afternoon: "10am - 3pm",
-  evening: "3pm - 6pm",
-};
+import {
+  useMovingCheckout,
+  type TimeSlotId,
+} from "../components/checkout/CheckoutStore";
 
 function money(n: number, sym = "£") {
   return `${sym}${n.toFixed(2)}`;
 }
 
-export function MovingOrderSummary() {
-  const { state } = useMovingCheckout();
+type Props = {
+  onProceed: () => void;
+  busy?: boolean;
+  error?: string | null;
+};
 
-  const { items, totalDueNow, note } = useMemo(() => {
-    const miles = Math.max(0, Number(state.distanceMiles ?? 1));
-    const distanceCost = +(miles * PRICE_PER_MILE).toFixed(2);
+// Map your UI slot id -> DB key used in orderFlow.settings.timeSlotSettings
+const SLOT_KEY_BY_ID: Record<Exclude<TimeSlotId, "">, "MORNING" | "AFTERNOON" | "EVENING"> =
+{
+  morning: "MORNING",
+  afternoon: "AFTERNOON",
+  evening: "EVENING",
+};
 
-    const homeId = state.movingItemId;
-    const homeCost = homeId ? HOME_TYPE_PRICE[homeId] : 0;
+function timeRangeToLabel(start?: string, end?: string) {
+  // start/end like "07:00"
+  if (!start || !end) return "";
+  const to12 = (t: string) => {
+    const [hhStr, mmStr] = t.split(":");
+    const hh = Number(hhStr);
+    const mm = Number(mmStr);
+    if (!Number.isFinite(hh) || !Number.isFinite(mm)) return t;
 
-    const pkgId = state.movingPackageId;
-    const pkgCost = pkgId ? PACKAGE_PRICE[pkgId] : 0;
+    const suffix = hh >= 12 ? "pm" : "am";
+    const h12 = ((hh + 11) % 12) + 1;
+    return mm === 0 ? `${h12}${suffix}` : `${h12}:${String(mm).padStart(2, "0")}${suffix}`;
+  };
+  return `${to12(start)} – ${to12(end)}`;
+}
 
-    const items: { key: string; label: string; subLabel: string; price: number }[] = [];
+export function MovingOrderSummary({ onProceed, busy, error }: Props) {
+  // ✅ Expecting your store to already carry orderFlow (like your storage flow)
+  const { state, orderFlow } = useMovingCheckout() as any;
 
-    items.push({
+  const originOk = state.fromLocation.streetAddress.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
+  const destinationOk = state.toLocation.streetAddress.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
+  const itemOk = state.movingItemId !== "";
+  const packageOk = state.movingPackageId !== "";
+  const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
+
+  const canProceed = !!orderFlow?.ok && originOk && destinationOk && itemOk && packageOk && scheduleOk && !busy;
+
+  const { items, totalDueNow, note, currencySymbol } = useMemo(() => {
+    const sym = orderFlow?.currency === "GBP" ? "£" : "£";
+
+    const pricePerMile =
+      Number(orderFlow?.settings?.moving?.pricePerMile ?? 0.58) || 0.58;
+
+    const miles = Math.max(0, Number(state.distanceMiles ?? 0));
+    const distanceCost = +(miles * pricePerMile).toFixed(2);
+
+    const itemsById = Object.fromEntries(
+      Object.values(orderFlow?.catalog?.moving?.itemsBySku).map((item: any) => [item.id, item])
+    );
+    // Moving item (home type) from catalog
+    const homeSku = state.movingItemId as string;
+    const home = itemsById[homeSku];
+
+    const homeLabel = home?.name ?? "";
+    const homeCost = home?.price?.price ? Number(home.price.price) : 0;
+
+    // Package from catalog (if you seeded packages)
+
+    const packageById = Object.fromEntries(
+      Object.values(orderFlow?.catalog?.moving?.packagesBySku).map((item: any) => [item.id, item])
+    );
+    const pkgSku = state.movingPackageId as string;
+    const pkg = packageById[pkgSku]
+
+    const pkgLabel = pkg?.name ?? "";
+    const pkgCost = pkg?.price?.price ? Number(pkg.price.price) : 0;
+
+    const rows: { key: string; label: string; subLabel: string; price: number }[] =
+      [];
+
+    rows.push({
       key: "distance",
       label: "Distance",
-      subLabel: `${miles} miles`,
+      subLabel: miles ? `${miles} miles` : "—",
       price: distanceCost,
     });
 
-    if (homeId) {
-      items.push({
+    if (homeSku) {
+      rows.push({
         key: "home",
-        label: "Home Type",
-        subLabel: HOME_TYPE_LABEL[homeId],
-        price: homeCost,
+        label: "Move Size",
+        subLabel: homeLabel || homeSku,
+        price: +homeCost.toFixed(2),
       });
     }
 
-    if (pkgId) {
-      items.push({
+    if (pkgSku) {
+      rows.push({
         key: "package",
         label: "Package",
-        subLabel: PACKAGE_LABEL[pkgId],
-        price: pkgCost,
+        subLabel: pkgLabel || pkgSku,
+        price: +pkgCost.toFixed(2),
       });
     }
 
-    const totalDueNow = +(distanceCost + homeCost + pkgCost).toFixed(2);
+    const total = +(distanceCost + homeCost + pkgCost).toFixed(2);
 
-    const slotText = state.timeSlotId ? SLOT_LABEL[state.timeSlotId as Exclude<TimeSlotId, "">] : "";
-    const note = `Collection: ${state.collectionDate || "—"}${slotText ? ` (${slotText})` : ""}`;
+    // Slot label from orderFlow settings (preferred), fallback to orderFlow.timeSlots range
+    const slotId = state.timeSlotId as TimeSlotId;
+    let slotText = "";
 
-    return { items, totalDueNow, note };
-  }, [state]);
+    if (slotId) {
+      const key = SLOT_KEY_BY_ID[slotId as Exclude<TimeSlotId, "">];
+      const slotSetting = orderFlow?.settings?.timeSlotSettings?.find(
+        (s: any) => s.key === key
+      );
+      if (slotSetting?.enabled && slotSetting?.label) slotText = slotSetting.label;
+
+      if (!slotText) {
+        // fallback to timeSlots array (Morning + start/end)
+        const name =
+          slotId === "morning" ? "Morning" : slotId === "afternoon" ? "Afternoon" : "Evening";
+        const t = orderFlow?.timeSlots?.find((x: any) => x.name === name);
+        const range = timeRangeToLabel(t?.startTime, t?.endTime);
+        slotText = range ? `${name} (${range})` : name;
+      }
+    }
+
+    const note = `Collection: ${state.collectionDate || "—"}${slotText ? ` (${slotText})` : ""
+      }`;
+
+    return { items: rows, totalDueNow: total, note, currencySymbol: sym };
+  }, [state, orderFlow]);
 
   return (
     <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
@@ -97,24 +145,22 @@ export function MovingOrderSummary() {
 
       <div className="space-y-3">
         <div className="h-px bg-slate-200" />
-
         <div className="flex justify-between text-base font-medium text-slate-900">
           <span>Total due now</span>
-          <span>{money(totalDueNow)}</span>
+          <span>{money(totalDueNow, currencySymbol)}</span>
         </div>
       </div>
 
-      {/* Moving Items (2-line rows) */}
       <div className="rounded-xl bg-slate-50 p-4 space-y-4">
         {items.map((it) => (
           <div key={it.key} className="space-y-1">
             <div className="flex justify-between text-sm font-medium text-slate-900">
               <span>{it.label}</span>
-              <span>{money(it.price)}</span>
+              <span>{money(it.price, currencySymbol)}</span>
             </div>
             <div className="flex justify-between text-sm text-slate-600">
-              <span>{it.subLabel}</span>
-              <span>{money(it.price)}</span>
+              <span className="min-w-0 truncate">{it.subLabel}</span>
+              <span>{money(it.price, currencySymbol)}</span>
             </div>
           </div>
         ))}
@@ -122,12 +168,22 @@ export function MovingOrderSummary() {
 
       <p className="text-xs text-slate-500">{note}</p>
 
+      {error ? (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+          {error}
+        </div>
+      ) : null}
+
       <button
         type="button"
-        disabled={!state.enableButton}
-        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={onProceed}
+        disabled={!canProceed}
+        className="h-12 w-full rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
       >
-        Proceed to Payment
+        {busy && (
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        )}
+        {busy ? "Opening payment..." : "Proceed to Payment"}
       </button>
     </aside>
   );

@@ -43,8 +43,6 @@ function storageDiscountRate(months: number) {
 }
 
 export function selectCheckoutTotals(state: CheckoutState): CheckoutTotals {
-    console.log(state);
-    // Choose which service is active
     if (state.serviceType === "storage") {
         const s = state.storage;
 
@@ -57,7 +55,6 @@ export function selectCheckoutTotals(state: CheckoutState): CheckoutTotals {
         const durationPicked = months === 3 || months === 6 || months === 12;
         const hasItems = Object.values(s.quantities).some((v) => v > 0);
 
-        // per-month discount (matches your storage UI)
         const rate = storageDiscountRate(months);
         const discountPerMonth = durationPicked ? +(monthly * rate).toFixed(2) : 0;
 
@@ -72,7 +69,6 @@ export function selectCheckoutTotals(state: CheckoutState): CheckoutTotals {
         };
     }
 
-    // Moving
     const m = state.moving;
 
     const base = m.movingItemId ? MOVING_ITEM_PRICE[m.movingItemId] : 0;
@@ -84,9 +80,9 @@ export function selectCheckoutTotals(state: CheckoutState): CheckoutTotals {
         !!m.movingPackageId &&
         !!m.collectionDate &&
         !!m.timeSlotId &&
-        m.fromLocation.address.trim().length > 0 &&
+        m.fromLocation.streetAddress.trim().length > 0 &&
         m.fromLocation.houseNumber.trim().length > 0 &&
-        m.toLocation.address.trim().length > 0 &&
+        m.toLocation.streetAddress.trim().length > 0 &&
         m.toLocation.houseNumber.trim().length > 0 &&
         m.customerDetails.name.trim().length > 0 &&
         m.customerDetails.email.trim().length > 0 &&

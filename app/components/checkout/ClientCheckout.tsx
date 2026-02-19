@@ -17,8 +17,8 @@ export default function ClientCheckout({ initialData }: { initialData: any }) {
   return (
     <>
       {state.serviceType === "storage" && <StorageForm onProceed={async()=>{}} error={''} busy={false} />}
-      {state.serviceType === "moving" && <MovingForm />}
-      {state.serviceType === "shredding" && <ShreddingForm />}
+      {state.serviceType === "moving" && <MovingForm onProceed={async()=>{}} error={''} busy={false}/>}
+      {state.serviceType === "shredding" && <ShreddingForm onProceed={async()=>{}} error={''} busy={false}/>}
     </>
   );
 }
