@@ -12,7 +12,9 @@ export async function getOrderById(id: string) {
       items: true,
       addresses: true,
       timeSlot: true,
-      payments: true,
+      payments: {
+        orderBy: [{ status: "desc"}, {createdAt: "desc" }]
+      },
       storageDiscountTier: true
     },
   });

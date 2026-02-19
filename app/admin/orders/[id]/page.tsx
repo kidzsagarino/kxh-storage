@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { getOrderById, updateOrderStatus } from "./actions"; 
+import { getOrderById, updateOrderStatus } from "./actions";
 import { money, to12Hour } from "@/app/utils/utils";
 
 // ---- UI Helpers ----
@@ -93,13 +93,13 @@ export default function AdminOrderByIdPage() {
   }
 
   const pickupAddress = order.addresses?.find((a: any) => a.type === "PICKUP");
-  const deliveryAddress = order.addresses?.find((a: any) => a.type === "DELIVERY");
-  const stripePayment = order.payments?.find((p: any) => p.provider === "STRIPE");
+  const deliveryAddress = order.addresses?.find((a: any) => a.type === "DROPOFF");
+  const stripePayment = order.payments;
   const slot = order.timeSlot;
 
   const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
   const isMoving = order.serviceType?.toUpperCase() === "MOVING";
-  
+
   const discountPercent = order.storageDiscountTier?.percentOff || 0;
   const durationMonths = order.items?.[0]?.months || 0;
 
@@ -111,18 +111,66 @@ export default function AdminOrderByIdPage() {
       {/* Top header */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold text-slate-900">Order</h1>
-              <span className="font-mono text-xs text-slate-600">{order.orderNumber}</span>
-              <span className={statusBadge(order.status)}>{order.status}</span>
-              <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 capitalize">
-                {order.serviceType?.toLowerCase()}
-              </span>
+          <div className="flex flex-col gap-1.5">
+            {/* New Service Profile Section */}
+            <section className="bg-slate-50/50 mb-4 w-50">
+              <div className="flex items-left justify-left">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-200">
+                      {/* Icon changes based on service */}
+                      {isMoving ? "🚚" : "📦"}
+                    </div>
+                    <span className="text-sm font-bold text-slate-900 capitalize">
+                      {order.serviceType?.toLowerCase()} Service
+                    </span>
+                  </div>
+                </div>
+
+                {/* Secondary Fact: e.g. Duration or Items count */}
+                {/* <div className="text-right">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    {isMoving ? "Packing" : "Duration"}
+                  </span>
+                  <div className="text-sm font-semibold text-slate-700">
+                    {isMoving ? (hasPacking ? "Yes" : "No") : `${durationMonths} Months`}
+                  </div>
+                </div> */}
+              </div>
+            </section>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900">
+                Order <span className="font-mono font-medium text-slate-500 ml-1">#{order.orderNumber}</span>
+              </h1>
+
+              <div className="flex items-center gap-1.5 ml-2">
+                <span className={statusBadge(order.status)}>
+                  {order.status}
+                </span>
+                <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                  {order.serviceType}
+                </span>
+              </div>
             </div>
-            <p className="mt-1 text-xs text-slate-500">
-              Created: {new Date(order.createdAt).toLocaleString()}
-            </p>
+
+            {/* Bottom Row: Metadata */}
+            <div className="flex items-center gap-3 text-xs text-slate-500">
+              <div className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>Placed {new Date(order.createdAt).toLocaleDateString('en-GB', { dateStyle: 'medium' })}</span>
+              </div>
+
+              <span className="text-slate-300">•</span>
+
+              <div className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -133,7 +181,7 @@ export default function AdminOrderByIdPage() {
               Back
             </Link>
 
-            <select
+            {/* <select
               value={order.status}
               onChange={(e) => setOrder({ ...order, status: e.target.value })}
               className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none"
@@ -143,15 +191,15 @@ export default function AdminOrderByIdPage() {
               <option value="COLLECTED">COLLECTED</option>
               <option value="COMPLETED">COMPLETED</option>
               <option value="CANCELLED">CANCELLED</option>
-            </select>
+            </select> */}
 
-            <button
+            {/* <button
               onClick={handleSaveStatus}
               disabled={isSaving}
               className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
             >
               {isSaving ? "Saving..." : "Save"}
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -315,18 +363,55 @@ export default function AdminOrderByIdPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm pt-2">
-              <span className="text-slate-600">Payment status</span>
-              <span className={payBadge(order.payments?.[0]?.status || "unpaid")}>{order.payments?.[0]?.status || "unpaid"}</span>
-            </div>
+            <div className="flex flex-col gap-4">
+              <span className="text-sm font-semibold text-slate-600">Payment History</span>
 
-            {stripePayment && (
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-                <div className="font-bold text-slate-500 uppercase text-[10px]">Stripe Reference</div>
-                <div className="mt-1 font-mono break-all">{stripePayment.providerRef}</div>
+              <div className="flex flex-col space-y-3">
+                {stripePayment && stripePayment.length > 0 ? (
+                  stripePayment.map((payment: any, index: number) => (
+                    <div
+                      key={payment.id || index}
+                      className="flex items-start justify-between gap-2 border-b border-slate-50 pb-2 last:border-0"
+                    >
+                      {/* Left Side: Status & Reference */}
+                      <div className="flex flex-col gap-1 min-w-0 flex-1"> {/* min-w-0 allows truncation/wrap */}
+                        <div className="flex">
+                          <span className={payBadge(payment.status || "unpaid")}>
+                            {payment.status || "unpaid"}
+                          </span>
+                        </div>
+                        {payment.providerRef && (
+                          <span className="text-[10px] font-mono text-slate-400 break-all leading-tight">
+                            Ref: {payment.providerRef}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Right Side: Date & Time */}
+                      <div className="flex flex-col items-end shrink-0"> {/* shrink-0 keeps the date from squishing */}
+                        <span className="text-xs font-medium text-slate-500 whitespace-nowrap">
+                          {payment.createdAt
+                            ? new Date(payment.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+                            : "N/A"}
+                        </span>
+                        {payment.createdAt && (
+                          <span className="text-[10px] text-slate-400 whitespace-nowrap">
+                            {new Date(payment.createdAt).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div>
+                    <span className={payBadge("unpaid")}>No payments found</span>
+                  </div>
+                )}
               </div>
-            )}
-
+            </div>
             <div className="grid gap-2 pt-2">
               <button
                 onClick={() => window.print()}
