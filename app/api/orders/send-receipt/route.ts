@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
         drawMeta("DATE", order.createdAt.toLocaleDateString("en-GB"), y - 18);
         drawMeta("SERVICE", order.serviceType, y - 36);
 
-        // --- Logistics Section (Conditional Logic) ---
+        // --- Logistics Section ---
         y -= 80;
         page.drawText("LOGISTICS & SCHEDULE", { x: margin, y, font: fontBold, size: 8, color: SECONDARY_TEXT });
         y -= 15;
@@ -124,7 +124,6 @@ export async function POST(req: NextRequest) {
         const dropoff = findAddr(order.addresses, AddressType.DROPOFF);
         const billing = findAddr(order.addresses, AddressType.BILLING);
 
-        // Define Box Height based on Service
         const boxHeight = isMoving ? 75 : 45;
         page.drawRectangle({ 
             x: margin, 
@@ -136,11 +135,11 @@ export async function POST(req: NextRequest) {
             borderWidth: 0.5 
         });
         
-        let logY = y - 15;
+        let currentY = y - 15;
         const drawLogDetail = (label: string, value: string) => {
-            page.drawText(label, { x: margin + 10, y: logY, font: fontBold, size: 9 });
-            page.drawText(value, { x: margin + 90, y: logY, size: 9, color: SECONDARY_TEXT });
-            logY -= 15;
+            page.drawText(label, { x: margin + 10, y: currentY, font: fontBold, size: 9 });
+            page.drawText(value, { x: margin + 90, y: currentY, size: 9, color: SECONDARY_TEXT });
+            currentY -= 15;
         };
 
         if (isMoving) {
@@ -150,13 +149,30 @@ export async function POST(req: NextRequest) {
                 drawLogDetail("DISTANCE:", `${distanceMiles} miles (${moneyGBP(distanceCostMinor)})`);
             }
         } else {
-            // Storage/Shredding only shows collection point
             drawLogDetail("COLLECTION:", fmtAddress(pickup ?? billing));
         }
         drawLogDetail("SCHEDULE:", `${formatServiceDate(order.serviceDate)} | ${formatTimeSlot(order.timeSlot)}`);
 
+        // --- Special Instructions (Only if notes exist) ---
+        if (order.notes) {
+            currentY -= 10;
+            page.drawText("SPECIAL INSTRUCTIONS:", { x: margin, y: currentY, font: fontBold, size: 8, color: SECONDARY_TEXT });
+            currentY -= 15;
+            page.drawText(order.notes, { 
+                x: margin, 
+                y: currentY, 
+                size: 9, 
+                color: PRIMARY_TEXT,
+                maxWidth: width - (margin * 2),
+                lineHeight: 12
+            });
+            // Calculate lines used to adjust y for the table
+            const lines = Math.ceil(font.widthOfTextAtSize(order.notes, 9) / (width - (margin * 2)));
+            currentY -= (lines * 12) + 10;
+        }
+
         // --- Items Table ---
-        y = logY - 30;
+        y = currentY - 20;
         page.drawRectangle({ x: margin, y: y - 5, width: width - (margin * 2), height: 20, color: PRIMARY_TEXT });
         page.drawText("DESCRIPTION", { x: margin + 10, y: y + 3, font: fontBold, size: 8, color: rgb(1, 1, 1) });
         drawRightText("QTY", width - margin - 110, y + 3, { font: fontBold, size: 8, color: rgb(1, 1, 1) });
@@ -211,8 +227,8 @@ export async function POST(req: NextRequest) {
         const pdfBytes = await pdfDoc.save();
 
         await sendEmail({
-            to: order.customer.email || "hello@kxhlogistics.co.uk",
             //to: "kennedysagarino@gmail.com",
+           to: order.customer.email || "hello@kxhlogistics.co.uk",
             subject: `Receipt for Order #${order.orderNumber || order.id.slice(0,8)}`,
             html: `<p>Thank you for your order. Please find your receipt attached.</p>`,
             attachments: [{

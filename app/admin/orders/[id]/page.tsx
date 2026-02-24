@@ -278,6 +278,15 @@ export default function AdminOrderByIdPage() {
                   </div>
                 </div>
               )}
+              {order.notes && (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="text-xs font-semibold text-slate-500">Notes</div>
+                  <div className="mt-1 text-sm font-medium text-slate-900">
+                    {order.notes}
+                  </div>
+                 
+                </div>
+              ) }
             </div>
           </section>
 
