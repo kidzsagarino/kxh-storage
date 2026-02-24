@@ -119,22 +119,22 @@ export async function POST(req: NextRequest) {
         y -= 80;
         page.drawText("LOGISTICS & SCHEDULE", { x: margin, y, font: fontBold, size: 8, color: SECONDARY_TEXT });
         y -= 15;
-        
+
         const pickup = findAddr(order.addresses, AddressType.PICKUP);
         const dropoff = findAddr(order.addresses, AddressType.DROPOFF);
         const billing = findAddr(order.addresses, AddressType.BILLING);
 
         const boxHeight = isMoving ? 75 : 45;
-        page.drawRectangle({ 
-            x: margin, 
-            y: y - (boxHeight - 10), 
-            width: width - (margin * 2), 
-            height: boxHeight, 
-            color: rgb(0.98, 0.98, 0.99), 
-            borderColor: BORDER_COLOR, 
-            borderWidth: 0.5 
+        page.drawRectangle({
+            x: margin,
+            y: y - (boxHeight - 10),
+            width: width - (margin * 2),
+            height: boxHeight,
+            color: rgb(0.98, 0.98, 0.99),
+            borderColor: BORDER_COLOR,
+            borderWidth: 0.5
         });
-        
+
         let currentY = y - 15;
         const drawLogDetail = (label: string, value: string) => {
             page.drawText(label, { x: margin + 10, y: currentY, font: fontBold, size: 9 });
@@ -158,10 +158,10 @@ export async function POST(req: NextRequest) {
             currentY -= 10;
             page.drawText("SPECIAL INSTRUCTIONS:", { x: margin, y: currentY, font: fontBold, size: 8, color: SECONDARY_TEXT });
             currentY -= 15;
-            page.drawText(order.notes, { 
-                x: margin, 
-                y: currentY, 
-                size: 9, 
+            page.drawText(order.notes, {
+                x: margin,
+                y: currentY,
+                size: 9,
                 color: PRIMARY_TEXT,
                 maxWidth: width - (margin * 2),
                 lineHeight: 12
@@ -228,8 +228,8 @@ export async function POST(req: NextRequest) {
 
         await sendEmail({
             //to: "kennedysagarino@gmail.com",
-           to: order.customer.email || "hello@kxhlogistics.co.uk",
-            subject: `Receipt for Order #${order.orderNumber || order.id.slice(0,8)}`,
+            to: order.customer.email || "hello@kxhlogistics.co.uk",
+            subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
             html: `<p>Thank you for your order. Please find your receipt attached.</p>`,
             attachments: [{
                 filename: `receipt-${order.orderNumber || 'order'}.pdf`,
