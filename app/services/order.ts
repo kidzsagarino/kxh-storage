@@ -46,7 +46,9 @@ export async function submitOrderAction(checkoutState: any) {
         items,
         addresses: mapAddresses(state),
         movingPackageId: state.movingPackageId || null,
-        notes: state.notes
+        notes: state.notes,
+        fromLocation: state.fromLocation,
+        toLocation: state.toLocation
     };
 
     const res = await fetch("/api/orders", {

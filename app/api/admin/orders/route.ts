@@ -7,6 +7,27 @@ import { generateOrderNumber } from "@/app/lib/order-utils";
 
 const prisma = new PrismaClient();
 
+function toNum(v: unknown) {
+  const n = typeof v === "string" ? Number(v) : (v as number);
+  return Number.isFinite(n) ? n : null;
+}
+
+function haversineMiles(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 3958.7613; // Earth radius in miles
+  const toRad = (d: number) => (d * Math.PI) / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -21,8 +42,23 @@ export async function POST(req: NextRequest) {
       notes,
       // Moving specific fields
       movingPackageId,
-      distanceMiles = 0
+      distanceMiles = 0,
+      fromLocation,
+      toLocation
     } = body;
+
+
+    const fromLat = toNum(fromLocation.lat) || 0;
+    const fromLon = toNum(fromLocation.lon) || 0;
+    const toLat = toNum(toLocation.lat) || 0;
+    const toLon = toNum(toLocation.lon) || 0;
+
+    const miles = haversineMiles(fromLat, fromLon, toLat, toLon);
+
+
+    console.log("MIles", miles);
+
+    return;
 
     const result = await prisma.$transaction(async (tx) => {
       // 1) Validation
@@ -54,10 +90,24 @@ export async function POST(req: NextRequest) {
           tx.adminSettings.findFirst()
         ]);
 
+
+        if (fromLat == null || fromLon == null || toLat == null || toLon == null) {
+          return NextResponse.json(
+            { ok: false, error: "Missing/invalid coordinates. Expected { from:{lat,lon}, to:{lat,lon} }" },
+            { status: 400 }
+          );
+        }
+
+        const miles = haversineMiles(fromLat, fromLon, toLat, toLon);
+
+        console.log(miles);
+
+        return;
+
         const basePrice = 0;
         const packPrice = packagePrice?.priceMinor || 0;
         const mileageRate = settings?.movingPricePerMileMinor || 0;
-        const mileageTotal = Math.round(distanceMiles * mileageRate);
+        const mileageTotal = Math.round(miles * mileageRate);
 
         subtotalMinor = basePrice + packPrice + mileageTotal;
         totalMinor = subtotalMinor; // No tiers for moving yet
@@ -94,6 +144,10 @@ export async function POST(req: NextRequest) {
         totalMinor = storageCalc.dueNowMinor;
         finalTierId = storageCalc.finalTierId;
       }
+
+      //remove this
+
+      return;
 
       // 2) Customer Persistence
       const customerEmail = customer.email?.toLowerCase().trim();

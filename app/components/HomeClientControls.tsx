@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useCheckout, type ServiceType } from "./checkout/CheckoutStore";
+import { useRouter } from "next/navigation";
 
 import { StorageForm } from "./ServicesForm/StorageServiceFlow";
 import { MovingForm } from "./ServicesForm/MovingServiceFlow";
@@ -46,6 +47,7 @@ export default function HomeClientControls({
     variant: "hero" | "pricing";
 }) {
     const { state, setServiceType, setState } = useCheckout();
+    const router = useRouter();
 
     const [orderId, setOrderId] = React.useState<string | null>(null);
     const [clientSecret, setClientSecret] = React.useState<string | null>(null);
@@ -54,13 +56,22 @@ export default function HomeClientControls({
     const [error, setError] = React.useState<string | null>(null);
     const checkoutRef = React.useRef<HTMLDivElement | null>(null);
 
-    const handlePaymentDone = React.useCallback(() => {
+    const handlePaymentDone = React.useCallback(async (paidOrderId?: string) => {
+        if (paidOrderId) {
+            router.push(`/success?orderId=${paidOrderId}`);
+            await fetch("/api/orders/send-receipt", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paidOrderId }),
+            });
+        } else {
+            router.push(`/success`);
+        }
         setOrderId(null);
         setClientSecret(null);
         setIsPaying(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
-
-    }, []);
+    }, [router]);
 
     const handleProceedToPayment = React.useCallback(async () => {
         if (isSubmitting || isPaying || orderId) return;

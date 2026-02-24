@@ -41,7 +41,6 @@ function timeRangeToLabel(start?: string, end?: string) {
 }
 
 export function MovingOrderSummary({ onProceed, busy, error }: Props) {
-  // ✅ Expecting your store to already carry orderFlow (like your storage flow)
   const { state, orderFlow } = useMovingCheckout() as any;
 
   const originOk = state.fromLocation.streetAddress.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
@@ -55,41 +54,43 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
   const { items, totalDueNow, note, currencySymbol } = useMemo(() => {
     const sym = orderFlow?.currency === "GBP" ? "£" : "£";
 
-    const pricePerMile =
-      Number(orderFlow?.settings?.moving?.pricePerMile ?? 0.58) || 0.58;
+    const pricePerMileMinor =
+      Number(orderFlow?.settings?.movingPricePerMileMinor ?? 58) || 58;
 
-    const miles = Math.max(0, Number(state.distanceMiles ?? 0));
-    const distanceCost = +(miles * pricePerMile).toFixed(2);
+    const milesRaw = Number(state.distanceMiles ?? 0);
+    const miles = Math.max(0, Math.round(milesRaw * 100) / 100); // 2dp number
+
+    const distanceCostMinor = Math.round(miles * pricePerMileMinor);
+    const distanceCost = distanceCostMinor / 100;
 
     const itemsById = Object.fromEntries(
-      Object.values(orderFlow?.catalog?.moving?.itemsBySku).map((item: any) => [item.id, item])
+      Object.values(orderFlow?.catalog?.moving?.itemsBySku ?? {}).map((item: any) => [item.id, item])
     );
-    // Moving item (home type) from catalog
+
     const homeSku = state.movingItemId as string;
     const home = itemsById[homeSku];
 
     const homeLabel = home?.name ?? "";
     const homeCost = home?.price?.price ? Number(home.price.price) : 0;
 
-    // Package from catalog (if you seeded packages)
-
     const packageById = Object.fromEntries(
-      Object.values(orderFlow?.catalog?.moving?.packagesBySku).map((item: any) => [item.id, item])
+      Object.values(orderFlow?.catalog?.moving?.packagesBySku ?? {}).map((item: any) => [item.id, item])
     );
+
     const pkgSku = state.movingPackageId as string;
-    const pkg = packageById[pkgSku]
+    const pkg = packageById[pkgSku];
 
     const pkgLabel = pkg?.name ?? "";
     const pkgCost = pkg?.price?.price ? Number(pkg.price.price) : 0;
 
-    const rows: { key: string; label: string; subLabel: string; price: number }[] =
-      [];
+    const rows: { key: string; label: string; subLabel: string; price: number }[] = [];
 
+    // ✅ Distance line item
     rows.push({
       key: "distance",
       label: "Distance",
       subLabel: miles ? `${miles} miles` : "—",
-      price: distanceCost,
+      price: +distanceCost.toFixed(2),
     });
 
     if (homeSku) {
@@ -112,19 +113,15 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
 
     const total = +(distanceCost + homeCost + pkgCost).toFixed(2);
 
-    // Slot label from orderFlow settings (preferred), fallback to orderFlow.timeSlots range
     const slotId = state.timeSlotId as TimeSlotId;
     let slotText = "";
 
     if (slotId) {
       const key = SLOT_KEY_BY_ID[slotId as Exclude<TimeSlotId, "">];
-      const slotSetting = orderFlow?.settings?.timeSlotSettings?.find(
-        (s: any) => s.key === key
-      );
+      const slotSetting = orderFlow?.settings?.timeSlotSettings?.find((s: any) => s.key === key);
       if (slotSetting?.enabled && slotSetting?.label) slotText = slotSetting.label;
 
       if (!slotText) {
-        // fallback to timeSlots array (Morning + start/end)
         const name =
           slotId === "morning" ? "Morning" : slotId === "afternoon" ? "Afternoon" : "Evening";
         const t = orderFlow?.timeSlots?.find((x: any) => x.name === name);

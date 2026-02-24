@@ -9,6 +9,35 @@ import {
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
+import { haversineMiles } from "@/app/lib/distance";
+
+type NominatimResult = {
+    displayName: string;
+    lat: string;
+    lon: string;
+    address?: {
+        house_number?: string;
+        road?: string;
+        neighbourhood?: string;
+        suburb?: string;
+        city?: string;
+        town?: string;
+        village?: string;
+        county?: string;
+        postcode?: string;
+        country_code?: string;
+    };
+};
+
+function pickCity(a?: NominatimResult["address"]) {
+    return a?.city || a?.town || a?.village || a?.suburb || a?.county || "";
+}
+
+async function fetchNominatim(query: string): Promise<NominatimResult[]> {
+    const res = await fetch(`/api/geocode?q=${encodeURIComponent(query)}`);
+    if (!res.ok) return [];
+    return res.json();
+}
 
 type StepId = 0 | 1 | 2 | 3 | 4;
 const steps = [
@@ -163,6 +192,47 @@ export function MovingForm({
         return step;
     }, [originOk, destinationOk, itemOk, packageOk, scheduleOk, step]);
 
+    const [fromQ, setFromQ] = useState("");
+    const [toQ, setToQ] = useState("");
+
+    const [fromSuggestions, setFromSuggestions] = useState<NominatimResult[]>([]);
+    const [toSuggestions, setToSuggestions] = useState<NominatimResult[]>([]);
+
+    const [openFrom, setOpenFrom] = useState(false);
+    const [openTo, setOpenTo] = useState(false);
+    useEffect(() => {
+        const q = fromQ.trim();
+        if (q.length < 4) {
+            setFromSuggestions([]);
+            return;
+        }
+
+        const t = setTimeout(async () => {
+            const results = await fetchNominatim(`${state.fromLocation.streetAddress} London`);
+            setFromSuggestions(results);
+            setOpenFrom(true);
+        }, 1000);
+
+        return () => clearTimeout(t);
+    }, [fromQ, state.fromLocation.streetAddress]);
+
+    // Debounced search: Destination
+    useEffect(() => {
+        const q = toQ.trim();
+        if (q.length < 4) {
+            setToSuggestions([]);
+            return;
+        }
+
+        const t = setTimeout(async () => {
+            const results = await fetchNominatim(`${state.toLocation.streetAddress} London`);
+            setToSuggestions(results);
+            setOpenTo(true);
+        }, 1000);
+
+        return () => clearTimeout(t);
+    }, [toQ, state.toLocation.streetAddress]);
+
     useEffect(() => {
         if (!orderFlow?.ok) return;
 
@@ -187,10 +257,57 @@ export function MovingForm({
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(state);
-    },[state])
+    }, [state])
 
+    useEffect(() => {
+        // Only recalc when coordinates change
+        const t = setTimeout(() => {
+            updateDistance();
+        }, 350);
+
+        return () => clearTimeout(t);
+    }, [
+        state.fromLocation.lat,
+        state.fromLocation.lon,
+        state.toLocation.lat,
+        state.toLocation.lon,
+    ]);
+
+
+    async function updateDistance() {
+        const fromLat = Number(state.fromLocation.lat);
+        const fromLon = Number(state.fromLocation.lon);
+        const toLat = Number(state.toLocation.lat);
+        const toLon = Number(state.toLocation.lon);
+
+        if (![fromLat, fromLon, toLat, toLon].every(Number.isFinite)) {
+            setState((s: any) => ({ ...s, distanceMiles: 0 }));
+            return;
+        }
+
+        const url = `https://router.project-osrm.org/route/v1/driving/` +
+            `${fromLon},${fromLat};${toLon},${toLat}?overview=false&alternatives=false&steps=false`;
+
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const meters = data?.routes?.[0]?.distance;
+
+        if (typeof meters !== "number") {
+            return;
+        }
+
+        const miles = meters / 1609.344;
+        const miles2dp = Math.ceil(miles);
+
+        setState((s: any) => ({
+            ...s,
+            distanceMiles: miles2dp,
+        }));
+    }
 
     const goNext = () => setStep((s) => (Math.min(4, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
@@ -207,6 +324,74 @@ export function MovingForm({
             {/* Step 0: Origin */}
             {step === 0 && (
                 <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="relative">
+                        <input
+                            value={state.fromLocation.streetAddress}
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                setState((s) => ({
+                                    ...s,
+                                    fromLocation: { ...s.fromLocation, streetAddress: v },
+                                }));
+                                setFromQ(v);
+                                setOpenFrom(true);
+                            }}
+                            onFocus={() => setOpenFrom(true)}
+                            onBlur={() => setTimeout(() => setOpenFrom(false), 150)}
+                            placeholder="From Address"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+
+                        {openFrom && fromSuggestions.length > 0 && (
+                            <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                                {fromSuggestions.map((sug, idx) => {
+                                    const addr = sug.address || {};
+
+                                    return (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={() => {
+                                                const city =
+                                                    addr.city || addr.town || addr.village || addr.suburb || "";
+
+                                                setState((st) => ({
+                                                    ...st,
+                                                    fromLocation: {
+                                                        ...st.fromLocation,
+                                                        streetAddress: sug.displayName,
+                                                        postalCode: addr.postcode ?? "",
+                                                        lat: Number(sug.lat),
+                                                        lon: Number(sug.lon),
+                                                    },
+                                                }));
+
+                                                setFromSuggestions([]);
+                                                setOpenFrom(false);
+                                            }}
+                                        >
+                                            <div className="truncate font-medium text-slate-900">
+                                                {sug.displayName}
+                                            </div>
+
+                                            <div className="text-xs text-slate-500">
+                                                {addr.postcode ? `Postcode: ${addr.postcode}` : ""}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+
+                            </div>
+                        )}
+                        {/* {fromSuggestions.length === 0 && fromQ.length > 4 && (
+                            <div className="text-xs text-slate-500 mt-2">
+                                Address not found.
+                            </div>
+                        )} */}
+
+                    </div>
                     <input
                         value={state.fromLocation.houseNumber}
                         onChange={(e) =>
@@ -218,17 +403,6 @@ export function MovingForm({
                         placeholder="From House Number"
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
-                    <input
-                        value={state.fromLocation.streetAddress}
-                        onChange={(e) =>
-                            setState((s) => ({
-                                ...s,
-                                fromLocation: { ...s.fromLocation, streetAddress: e.target.value },
-                            }))
-                        }
-                        placeholder="From Address"
-                        className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-                    />
                     {!originOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address.</div>}
                 </div>
             )}
@@ -236,6 +410,75 @@ export function MovingForm({
             {/* Step 1: Destination */}
             {step === 1 && (
                 <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="relative">
+                        <input
+                            value={state.toLocation.streetAddress}
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                setState((s) => ({
+                                    ...s,
+                                    toLocation: { ...s.toLocation, streetAddress: v },
+                                }));
+                                setToQ(v);
+                                setOpenTo(true);
+                            }}
+                            onFocus={() => setOpenTo(true)}
+                            onBlur={() => setTimeout(() => setOpenTo(false), 150)}
+                            placeholder="To Address"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+
+                        {openTo && toSuggestions.length > 0 && (
+                            <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                                {toSuggestions.map((sug, idx) => {
+                                    const addr = sug.address || {};
+
+                                    return (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={() => {
+                                                const city =
+                                                    addr.city || addr.town || addr.village || addr.suburb || "";
+
+                                                setState((st) => ({
+                                                    ...st,
+                                                    toLocation: {
+                                                        ...st.toLocation,
+                                                        streetAddress: sug.displayName,
+                                                        //postalCode: addr.postcode ?? "",
+                                                        city,
+                                                        country: (addr.country_code || "gb").toUpperCase(),
+                                                        lat: Number(sug.lat),
+                                                        lon: Number(sug.lon),
+                                                    },
+                                                }));
+
+                                                setToSuggestions([]);
+                                                setOpenTo(false);
+                                            }}
+                                        >
+                                            <div className="truncate font-medium text-slate-900">
+                                                {sug.displayName}
+                                            </div>
+
+                                            <div className="text-xs text-slate-500">
+                                                {addr.postcode ? `Postcode: ${addr.postcode}` : ""}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+
+                            </div>
+                        )}
+                        {/* {toSuggestions.length === 0 && toQ.length > 4 && (
+                            <div className="text-xs text-slate-500 mt-2">
+                                Address not found.
+                            </div>
+                        )} */}
+                    </div>
                     <input
                         value={state.toLocation.houseNumber}
                         onChange={(e) =>
@@ -245,17 +488,6 @@ export function MovingForm({
                             }))
                         }
                         placeholder="To House Number"
-                        className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-                    />
-                    <input
-                        value={state.toLocation.streetAddress}
-                        onChange={(e) =>
-                            setState((s) => ({
-                                ...s,
-                                toLocation: { ...s.toLocation, streetAddress: e.target.value },
-                            }))
-                        }
-                        placeholder="To Address"
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
                     {!destinationOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address.</div>}
@@ -270,7 +502,7 @@ export function MovingForm({
                             key={it.id}
                             className={`cursor-pointer rounded-xl border p-4 transition ${state.movingItemId === it.id ? "border-emerald-600 bg-emerald-50" : "border-slate-200 bg-white"
                                 }`}
-                            onClick={() => setState((s) => ({ ...s, movingItemId: it.id}))}
+                            onClick={() => setState((s) => ({ ...s, movingItemId: it.id }))}
                         >
                             <div className="text-sm font-medium text-slate-900">{it.name}</div>
                             <div className="text-xs text-slate-600">{it.desc || it.description}</div>
@@ -289,7 +521,7 @@ export function MovingForm({
                             key={pk.id}
                             className={`cursor-pointer rounded-xl border p-4 transition ${state.movingPackageId === pk.id ? "border-emerald-600 bg-emerald-50" : "border-slate-200 bg-white"
                                 }`}
-                            onClick={() => setState((s) => ({ ...s, movingPackageId: pk.id}))}
+                            onClick={() => setState((s) => ({ ...s, movingPackageId: pk.id }))}
                         >
                             <div className="text-sm font-medium text-slate-900">{pk.name}</div>
                             <div className="text-xs text-slate-600">{pk.desc || pk.description}</div>

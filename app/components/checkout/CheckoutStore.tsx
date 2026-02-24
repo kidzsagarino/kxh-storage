@@ -27,6 +27,8 @@ export type LocationDetails = {
   streetAddress: string;
   houseNumber: string;
   postalCode: string;
+  lat: number;
+  lon: number;
 };
 
 export type StorageState = {
@@ -94,6 +96,8 @@ const makeEmptyAddress = (): LocationDetails => ({
   streetAddress: "",
   houseNumber: "",
   postalCode: "",
+  lat: 0,
+  lon: 0
 });
 
 const makeEmptyStorage = (): StorageState => ({

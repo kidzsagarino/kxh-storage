@@ -4,8 +4,35 @@ import { processOrderItems } from "@/app/lib/order-service";
 import { validateServiceAvailability } from "@/app/lib/validation-service";
 import { validateCapacity } from "@/app/lib/capacity-service";
 import { generateOrderNumber } from "@/app/lib/order-utils";
+import { toNum } from "@/app/lib/distance";
 
 const prisma = new PrismaClient();
+
+async function getDistance(fromLat: number, fromLon: number, toLat: number, toLon: number) {
+
+    if (![fromLat, fromLon, toLat, toLon].every(Number.isFinite)) {
+        
+        return;
+    }
+
+    const url = `https://router.project-osrm.org/route/v1/driving/` +
+        `${fromLon},${fromLat};${toLon},${toLat}?overview=false&alternatives=false&steps=false`;
+
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return;
+
+    const data = await res.json();
+    const meters = data?.routes?.[0]?.distance;
+
+    if (typeof meters !== "number") {
+        return;
+    }
+
+    const miles = meters / 1609.344;
+    const miles2dp = Math.ceil(miles);
+
+   return miles2dp;
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -20,7 +47,9 @@ export async function POST(req: NextRequest) {
             discountTierId,
             notes,
             movingPackageId,
-            distanceMiles = 0
+            distanceMiles = 0,
+            fromLocation,
+            toLocation
         } = body;
 
         const result = await prisma.$transaction(async (tx) => {
@@ -42,7 +71,7 @@ export async function POST(req: NextRequest) {
             if (serviceType === "MOVING") {
                 // Find the Move Item (e.g., two-bedroom-flat)
                 const moveItemId = items[0]?.serviceItemId as CatalogItemId;
-                
+
                 const [movingItem, packagePrice, settings] = await Promise.all([
                     tx.serviceItem.findUnique({
                         where: { id: moveItemId },
@@ -54,10 +83,17 @@ export async function POST(req: NextRequest) {
                     tx.adminSettings.findFirst()
                 ]);
 
+                const fromLat = toNum(fromLocation.lat) || 0;
+                const fromLon = toNum(fromLocation.lon) || 0;
+                const toLat = toNum(toLocation.lat) || 0;
+                const toLon = toNum(toLocation.lon) || 0;
+
+                const miles = getDistance(fromLat, fromLon, toLat, toLon);
+
                 const itemBase = movingItem?.prices[0]?.unitPriceMinor || 0;
                 const packBase = packagePrice?.priceMinor || 0;
                 const mileRate = settings?.movingPricePerMileMinor || 0;
-                const mileageTotal = Math.round((Number(distanceMiles) || 0) * mileRate);
+                const mileageTotal = Math.round((Number(miles) || 0) * mileRate);
 
                 subtotalMinor = itemBase + packBase + mileageTotal;
                 totalMinor = subtotalMinor;
@@ -68,9 +104,9 @@ export async function POST(req: NextRequest) {
                     sku: movingItem?.sku || "MOVE-GENERIC",
                     quantity: 1,
                     unitPriceMinor: itemBase,
-                    lineTotalMinor: itemBase, 
+                    lineTotalMinor: itemBase,
                 }];
-            } else if(serviceType === "STORAGE") {
+            } else if (serviceType === "STORAGE") {
                 // --- STORAGE CALCULATION ---
                 const [dbPrices, discountTiers] = await Promise.all([
                     tx.serviceItemPrice.findMany({
@@ -93,17 +129,17 @@ export async function POST(req: NextRequest) {
                 totalMinor = storageCalc.dueNowMinor;
                 finalTierId = storageCalc.finalTierId;
 
-            } else if(serviceType === "SHREDDING") {
-                
+            } else if (serviceType === "SHREDDING") {
+
                 const [dbPrices, settings] = await Promise.all([
-                     tx.serviceItemPrice.findMany({
+                    tx.serviceItemPrice.findMany({
                         where: {
                             serviceItemId: { in: items.map((i: any) => i.serviceItemId as CatalogItemId) },
                             isActive: true,
                         },
                         include: { serviceItem: true },
                     }),
-                   
+
                     tx.adminSettings.findFirst()
                 ]);
 
@@ -132,8 +168,7 @@ export async function POST(req: NextRequest) {
                     phone: customer.phone || null,
                 },
             });
-            
-            console.log(addresses);
+
             // 3) Order Creation
             return tx.order.create({
                 data: {
@@ -144,7 +179,7 @@ export async function POST(req: NextRequest) {
                     serviceDate: serviceDate ? new Date(serviceDate) : null,
                     timeSlotId: timeSlotId || null,
                     notes: notes || null,
-                    
+
                     // Logic for required Enum field movingPackageId
                     movingPackageId: (movingPackageId as MovingPackageId) || MovingPackageId.basic_package,
                     distanceMiles: Number(distanceMiles) || 0,

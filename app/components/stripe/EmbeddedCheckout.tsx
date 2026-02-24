@@ -6,7 +6,7 @@ import { useCheckout } from "../checkout/CheckoutStore";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone: () => void; }) {
+export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone: (orderId: string) => void; }) {
     const checkoutRef = useRef<any>(null);
     const initingRef = useRef(false);
 
@@ -32,7 +32,6 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
             const stripe = await stripePromise;
             if (!stripe || !alive) return;
 
-            // ✅ Prevent multiple Embedded Checkout objects
             if (checkoutRef.current) return;
             if (initingRef.current) return;
             initingRef.current = true;
@@ -41,7 +40,7 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
                 const checkout = await stripe.initEmbeddedCheckout({
                     fetchClientSecret,
                     onComplete: () => {
-                        // ✅ destroy first, then reset state
+                      
                         setIsResetting(true);
                         setTimeout(() => {
 
@@ -49,9 +48,9 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
                             checkoutRef.current = null;
 
                             resetAll();
-                            onDone();
+                            onDone(orderId);
                         }, 3000)
-                        // Ideally also clear orderId in parent so this unmounts
+                       
                     },
                 });
 
@@ -73,7 +72,7 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
             checkoutRef.current = null;
             initingRef.current = false;
         };
-    }, [fetchClientSecret, resetAll]);
+    }, [fetchClientSecret, resetAll, orderId, onDone]);
 
     return <div className="space-y-4">
         <div id="embedded-checkout" />
