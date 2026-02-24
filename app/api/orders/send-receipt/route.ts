@@ -211,8 +211,8 @@ export async function POST(req: NextRequest) {
         const pdfBytes = await pdfDoc.save();
 
         await sendEmail({
-            //to: order.customer.email || "hello@kxhlogistics.co.uk",
-            to: "kennedysagarino@gmail.com",
+            to: order.customer.email || "hello@kxhlogistics.co.uk",
+            //to: "kennedysagarino@gmail.com",
             subject: `Receipt for Order #${order.orderNumber || order.id.slice(0,8)}`,
             html: `<p>Thank you for your order. Please find your receipt attached.</p>`,
             attachments: [{
