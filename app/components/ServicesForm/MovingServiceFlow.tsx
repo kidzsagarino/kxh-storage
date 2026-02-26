@@ -338,7 +338,7 @@ export function MovingForm({
                                 setFromQ(v);
                                 setOpenFrom(true);
                             }}
-                            onFocus={() => setOpenFrom(true)}
+                            //onFocus={() => setOpenFrom(true)}
                             onBlur={() => setTimeout(() => setOpenFrom(false), 150)}
                             placeholder="From Address"
                             className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
@@ -424,7 +424,7 @@ export function MovingForm({
                                 setToQ(v);
                                 setOpenTo(true);
                             }}
-                            onFocus={() => setOpenTo(true)}
+                            //onFocus={() => setOpenTo(true)}
                             onBlur={() => setTimeout(() => setOpenTo(false), 150)}
                             placeholder="To Address"
                             className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
