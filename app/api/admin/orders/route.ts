@@ -55,9 +55,6 @@ export async function POST(req: NextRequest) {
 
     const miles = haversineMiles(fromLat, fromLon, toLat, toLon);
 
-
-    console.log("MIles", miles);
-
     return;
 
     const result = await prisma.$transaction(async (tx) => {
@@ -99,8 +96,6 @@ export async function POST(req: NextRequest) {
         }
 
         const miles = haversineMiles(fromLat, fromLon, toLat, toLon);
-
-        console.log(miles);
 
         return;
 

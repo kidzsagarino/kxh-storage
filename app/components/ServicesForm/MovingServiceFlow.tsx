@@ -39,6 +39,19 @@ async function fetchNominatim(query: string): Promise<NominatimResult[]> {
     return res.json();
 }
 
+
+function getDistance(fromLat: number, fromLon: number, toLat: number, toLon: number) {
+
+    if (![fromLat, fromLon, toLat, toLon].every(Number.isFinite)) {
+
+        return;
+    }
+
+    const miles2dp = haversineMiles(fromLat, fromLon, toLat, toLon);
+
+    return Math.ceil(miles2dp);
+}
+
 type StepId = 0 | 1 | 2 | 3 | 4;
 const steps = [
     { id: 0 as StepId, title: "Origin" },
@@ -162,6 +175,15 @@ export function MovingForm({
     const router = useRouter();
     const { state, setState, orderFlow } = useMovingCheckout();
     const [step, setStep] = useState<StepId>(0);
+    const [fromQ, setFromQ] = useState("");
+    const [toQ, setToQ] = useState("");
+
+    const [fromSuggestions, setFromSuggestions] = useState<NominatimResult[]>([]);
+    const [toSuggestions, setToSuggestions] = useState<NominatimResult[]>([]);
+
+    const [openFrom, setOpenFrom] = useState(false);
+    const [openTo, setOpenTo] = useState(false);
+
     const timeSlots = orderFlow && orderFlow.timeSlots;
     const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
     const [orderId, setOrderId] = useState<string | null>(null);
@@ -170,8 +192,8 @@ export function MovingForm({
     const movingPackages = orderFlow?.catalog.moving.packages ?? [];
 
     // --- 2. Validation Logic ---
-    const originOk = state.fromLocation.streetAddress.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
-    const destinationOk = state.toLocation.streetAddress.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
+    const originOk = state.fromLocation.streetAddress.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0 && state.fromLocation.lat != 0 && state.fromLocation.lon != 0;
+    const destinationOk = state.toLocation.streetAddress.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0 && state.toLocation.lat != 0 && state.toLocation.lon != 0;
     const itemOk = state.movingItemId !== "";
     const packageOk = state.movingPackageId !== "";
     const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
@@ -192,14 +214,7 @@ export function MovingForm({
         return step;
     }, [originOk, destinationOk, itemOk, packageOk, scheduleOk, step]);
 
-    const [fromQ, setFromQ] = useState("");
-    const [toQ, setToQ] = useState("");
-
-    const [fromSuggestions, setFromSuggestions] = useState<NominatimResult[]>([]);
-    const [toSuggestions, setToSuggestions] = useState<NominatimResult[]>([]);
-
-    const [openFrom, setOpenFrom] = useState(false);
-    const [openTo, setOpenTo] = useState(false);
+    
     useEffect(() => {
         const q = fromQ.trim();
         if (q.length < 4) {
@@ -211,7 +226,7 @@ export function MovingForm({
             const results = await fetchNominatim(`${state.fromLocation.streetAddress} London`);
             setFromSuggestions(results);
             setOpenFrom(true);
-        }, 1000);
+        }, 500);
 
         return () => clearTimeout(t);
     }, [fromQ, state.fromLocation.streetAddress]);
@@ -258,10 +273,6 @@ export function MovingForm({
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
     useEffect(() => {
-        console.log(state);
-    }, [state])
-
-    useEffect(() => {
         // Only recalc when coordinates change
         const t = setTimeout(() => {
             updateDistance();
@@ -282,26 +293,17 @@ export function MovingForm({
         const toLat = Number(state.toLocation.lat);
         const toLon = Number(state.toLocation.lon);
 
+        if(fromLat == 0 || fromLon == 0 || toLat == 0 || toLon == 0)
+        {
+            return;
+        }
+
         if (![fromLat, fromLon, toLat, toLon].every(Number.isFinite)) {
             setState((s: any) => ({ ...s, distanceMiles: 0 }));
             return;
         }
 
-        const url = `https://router.project-osrm.org/route/v1/driving/` +
-            `${fromLon},${fromLat};${toLon},${toLat}?overview=false&alternatives=false&steps=false`;
-
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) return;
-
-        const data = await res.json();
-        const meters = data?.routes?.[0]?.distance;
-
-        if (typeof meters !== "number") {
-            return;
-        }
-
-        const miles = meters / 1609.344;
-        const miles2dp = Math.ceil(miles);
+        const miles2dp = getDistance(fromLat, fromLon, toLat, toLon);
 
         setState((s: any) => ({
             ...s,
@@ -385,11 +387,11 @@ export function MovingForm({
 
                             </div>
                         )}
-                        {/* {fromSuggestions.length === 0 && fromQ.length > 4 && (
+                        {state.fromLocation.lat == 0 && state.fromLocation.lon == 0 && fromQ.length > 4 && (
                             <div className="text-xs text-slate-500 mt-2">
-                                Address not found.
+                                Address not found. Please pick address from the dropdown.
                             </div>
-                        )} */}
+                        )}
 
                     </div>
                     <input
@@ -403,7 +405,7 @@ export function MovingForm({
                         placeholder="From House Number"
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
-                    {!originOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address.</div>}
+                    {!originOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address. Pick address from the dropdown.</div>}
                 </div>
             )}
 
@@ -473,11 +475,11 @@ export function MovingForm({
 
                             </div>
                         )}
-                        {/* {toSuggestions.length === 0 && toQ.length > 4 && (
+                        {state.toLocation.lat == 0 && state.toLocation.lon == 0 && toQ.length > 4 && (
                             <div className="text-xs text-slate-500 mt-2">
-                                Address not found.
+                                Address not found. Please pick address from the dropdown.
                             </div>
-                        )} */}
+                        )}
                     </div>
                     <input
                         value={state.toLocation.houseNumber}
@@ -490,7 +492,7 @@ export function MovingForm({
                         placeholder="To House Number"
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
-                    {!destinationOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address.</div>}
+                    {!destinationOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address. Pick address from the dropdown.</div>}
                 </div>
             )}
 

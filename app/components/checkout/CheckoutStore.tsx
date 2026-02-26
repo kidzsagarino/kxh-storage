@@ -128,7 +128,7 @@ const makeEmptyMoving = (): MovingState => ({
   toLocation: makeEmptyAddress(),
   customerDetails: makeEmptyCustomer(),
   enableButton: false,
-  distanceMiles: 1,
+  distanceMiles: 0,
   notes: "",
 });
 

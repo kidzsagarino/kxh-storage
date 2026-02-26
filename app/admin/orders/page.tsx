@@ -89,7 +89,6 @@ export default function AdminOrdersPage() {
           to: selectedRange?.toExclusive,
         });
         setOrders(data);
-        console.log(data);
       } catch (err) {
         console.error("Failed to fetch orders", err);
       } finally {

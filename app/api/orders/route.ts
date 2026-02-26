@@ -4,34 +4,21 @@ import { processOrderItems } from "@/app/lib/order-service";
 import { validateServiceAvailability } from "@/app/lib/validation-service";
 import { validateCapacity } from "@/app/lib/capacity-service";
 import { generateOrderNumber } from "@/app/lib/order-utils";
-import { toNum } from "@/app/lib/distance";
+import { haversineMiles, toNum } from "@/app/lib/distance";
 
 const prisma = new PrismaClient();
 
-async function getDistance(fromLat: number, fromLon: number, toLat: number, toLon: number) {
+
+function getDistance(fromLat: number, fromLon: number, toLat: number, toLon: number) {
 
     if (![fromLat, fromLon, toLat, toLon].every(Number.isFinite)) {
-        
+
         return;
     }
 
-    const url = `https://router.project-osrm.org/route/v1/driving/` +
-        `${fromLon},${fromLat};${toLon},${toLat}?overview=false&alternatives=false&steps=false`;
+    const miles2dp = haversineMiles(fromLat, fromLon, toLat, toLon);
 
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) return;
-
-    const data = await res.json();
-    const meters = data?.routes?.[0]?.distance;
-
-    if (typeof meters !== "number") {
-        return;
-    }
-
-    const miles = meters / 1609.344;
-    const miles2dp = Math.ceil(miles);
-
-   return miles2dp;
+    return Math.ceil(miles2dp);
 }
 
 export async function POST(req: NextRequest) {
@@ -51,6 +38,8 @@ export async function POST(req: NextRequest) {
             fromLocation,
             toLocation
         } = body;
+
+
 
         const result = await prisma.$transaction(async (tx) => {
             // 1) Validation

@@ -43,8 +43,8 @@ function timeRangeToLabel(start?: string, end?: string) {
 export function MovingOrderSummary({ onProceed, busy, error }: Props) {
   const { state, orderFlow } = useMovingCheckout() as any;
 
-  const originOk = state.fromLocation.streetAddress.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0;
-  const destinationOk = state.toLocation.streetAddress.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0;
+  const originOk = state.fromLocation.streetAddress.trim().length > 0 && state.fromLocation.houseNumber.trim().length > 0 && state.fromLocation.lat != 0 && state.fromLocation.lon != 0;
+  const destinationOk = state.toLocation.streetAddress.trim().length > 0 && state.toLocation.houseNumber.trim().length > 0 && state.toLocation.lat != 0 && state.toLocation.lon != 0;
   const itemOk = state.movingItemId !== "";
   const packageOk = state.movingPackageId !== "";
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
