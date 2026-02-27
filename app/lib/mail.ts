@@ -1,7 +1,11 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
+
+if (process.env.SMTP_PASS) {
+  sgMail.setApiKey(process.env.SMTP_PASS);
+}
 
 type SendEmailArgs = {
-  to: string | string[];
+  to: string;
   subject: string;
   html?: string;
   text?: string;
@@ -13,31 +17,6 @@ type SendEmailArgs = {
   replyTo?: string;
 };
 
-let cachedTransporter: nodemailer.Transporter | null = null;
-
-function getTransporter() {
-  if (cachedTransporter) return cachedTransporter;
-
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT || "587");
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
-  // For SendGrid SMTP, user is literally "apikey"
-  if (!host || !user || !pass) {
-    throw new Error("SMTP env vars missing (SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS)");
-  }
-
-  cachedTransporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: { user, pass },
-  });
-
-  return cachedTransporter;
-}
-
 export async function sendEmail({
   to,
   subject,
@@ -46,23 +25,36 @@ export async function sendEmail({
   attachments,
   replyTo,
 }: SendEmailArgs) {
-  const from = process.env.SMTP_FROM || process.env.SMTP_USER;
+  const from = process.env.SMTP_FROM;
+  
+  if (!process.env.SMTP_PASS) throw new Error("SENDGRID_API_KEY missing");
   if (!from) throw new Error("SMTP_FROM missing");
 
-  const transporter = getTransporter();
-
-  // Optional: only verify in dev to avoid extra SMTP roundtrip in prod
-  if (process.env.NODE_ENV !== "production") {
-    await transporter.verify();
-  }
-
-  return transporter.sendMail({
-    from,
+  // Fix: Ensure we have at least an empty string to satisfy "MailDataRequired"
+  // SendGrid requires either 'text' or 'html' to be defined.
+  const msg: sgMail.MailDataRequired = {
     to,
+    from,
     subject,
-    html,
-    text,
+    // Use nullish coalescing to ensure these aren't 'undefined'
+    text: text || " ", 
+    html: html || text || " ",
     replyTo,
-    attachments,
-  });
+    attachments: attachments?.map((file) => ({
+      filename: file.filename,
+      content: file.content.toString("base64"),
+      type: file.contentType,
+      disposition: "attachment",
+    })),
+  };
+
+  try {
+    const [response] = await sgMail.send(msg);
+    return response;
+  } catch (error: any) {
+    if (error.response) {
+      console.error("SendGrid Details:", JSON.stringify(error.response.body, null, 2));
+    }
+    throw error;
+  }
 }
