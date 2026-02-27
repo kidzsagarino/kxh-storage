@@ -201,7 +201,7 @@ export function HeroQuoteBar() {
             </div>
 
             {/* Postcode input */}
-            <div className="mt-3">
+            {/* <div className="mt-3">
                 <div className="relative">
                     <label className="sr-only" htmlFor="hero-postcode">
                         Enter Postcode
@@ -227,7 +227,7 @@ export function HeroQuoteBar() {
                         Helps us route your request to the right team.
                     </p>
                 </div>
-            </div>
+            </div> */}
 
             {/* Actions */}
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">

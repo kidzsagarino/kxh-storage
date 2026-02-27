@@ -177,6 +177,8 @@ export function MovingForm({
     const [step, setStep] = useState<StepId>(0);
     const [fromQ, setFromQ] = useState("");
     const [toQ, setToQ] = useState("");
+    const [fromSearched, setFromSearched] = useState(false);
+    const [toSearched, setToSearched] = useState(false);
 
     const [fromSuggestions, setFromSuggestions] = useState<NominatimResult[]>([]);
     const [toSuggestions, setToSuggestions] = useState<NominatimResult[]>([]);
@@ -214,39 +216,47 @@ export function MovingForm({
         return step;
     }, [originOk, destinationOk, itemOk, packageOk, scheduleOk, step]);
 
-    
+
     useEffect(() => {
         const q = fromQ.trim();
-        if (q.length < 4) {
+        if (!openFrom || q.length < 4) {
             setFromSuggestions([]);
+            setFromSearched(false);
             return;
         }
 
         const t = setTimeout(async () => {
-            const results = await fetchNominatim(`${state.fromLocation.streetAddress} London`);
-            setFromSuggestions(results);
-            setOpenFrom(true);
-        }, 500);
+            try {
+                const results = await fetchNominatim(q); // ✅ use the query
+                setFromSuggestions(results);
+            } finally {
+                setFromSearched(true);
+            }
+        }, 450);
 
         return () => clearTimeout(t);
-    }, [fromQ, state.fromLocation.streetAddress]);
+    }, [fromQ, openFrom]);
 
     // Debounced search: Destination
     useEffect(() => {
         const q = toQ.trim();
-        if (q.length < 4) {
+        if (!openTo || q.length < 4) {
             setToSuggestions([]);
+            setToSearched(false);
             return;
         }
 
         const t = setTimeout(async () => {
-            const results = await fetchNominatim(`${state.toLocation.streetAddress} London`);
-            setToSuggestions(results);
-            setOpenTo(true);
-        }, 1000);
+            try {
+                const results = await fetchNominatim(q); // ✅ use the query
+                setToSuggestions(results);
+            } finally {
+                setToSearched(true);
+            }
+        }, 450);
 
         return () => clearTimeout(t);
-    }, [toQ, state.toLocation.streetAddress]);
+    }, [toQ, openTo]);
 
     useEffect(() => {
         if (!orderFlow?.ok) return;
@@ -293,8 +303,7 @@ export function MovingForm({
         const toLat = Number(state.toLocation.lat);
         const toLon = Number(state.toLocation.lon);
 
-        if(fromLat == 0 || fromLon == 0 || toLat == 0 || toLon == 0)
-        {
+        if (fromLat == 0 || fromLon == 0 || toLat == 0 || toLon == 0) {
             return;
         }
 
@@ -328,19 +337,28 @@ export function MovingForm({
                 <div className="grid gap-3 sm:grid-cols-2">
                     <div className="relative">
                         <input
-                            value={state.fromLocation.streetAddress}
+                            value={fromQ}
                             onChange={(e) => {
                                 const v = e.target.value;
-                                setState((s) => ({
-                                    ...s,
-                                    fromLocation: { ...s.fromLocation, streetAddress: v },
-                                }));
+
                                 setFromQ(v);
                                 setOpenFrom(true);
+
+                                // ✅ typing means "not confirmed/picked" anymore
+                                setState((s) => ({
+                                    ...s,
+                                    fromLocation: {
+                                        ...s.fromLocation,
+                                        streetAddress: v, // keep state in sync if you want
+                                        lat: 0,
+                                        lon: 0,
+                                        postalCode: "",
+                                    },
+                                }));
                             }}
-                            //onFocus={() => setOpenFrom(true)}
+                            onFocus={() => setOpenFrom(true)}
                             onBlur={() => setTimeout(() => setOpenFrom(false), 150)}
-                            placeholder="From Address"
+                            placeholder="From Address / Postcode"
                             className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                         />
 
@@ -348,6 +366,7 @@ export function MovingForm({
                             <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
                                 {fromSuggestions.map((sug, idx) => {
                                     const addr = sug.address || {};
+                                    const city = pickCity(addr);
 
                                     return (
                                         <button
@@ -356,43 +375,44 @@ export function MovingForm({
                                             className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
                                             onMouseDown={(e) => e.preventDefault()}
                                             onClick={() => {
-                                                const city =
-                                                    addr.city || addr.town || addr.village || addr.suburb || "";
-
                                                 setState((st) => ({
                                                     ...st,
                                                     fromLocation: {
                                                         ...st.fromLocation,
                                                         streetAddress: sug.displayName,
                                                         postalCode: addr.postcode ?? "",
+                                                        city,
+                                                        country: (addr.country_code || "gb").toUpperCase(),
                                                         lat: Number(sug.lat),
                                                         lon: Number(sug.lon),
                                                     },
                                                 }));
 
+                                                // ✅ set the visible input to the selected label
+                                                setFromQ(sug.displayName);
+
                                                 setFromSuggestions([]);
                                                 setOpenFrom(false);
+                                                setFromSearched(false);
                                             }}
                                         >
-                                            <div className="truncate font-medium text-slate-900">
-                                                {sug.displayName}
-                                            </div>
-
+                                            <div className="truncate font-medium text-slate-900">{sug.displayName}</div>
                                             <div className="text-xs text-slate-500">
                                                 {addr.postcode ? `Postcode: ${addr.postcode}` : ""}
+                                                {city ? (addr.postcode ? ` • ${city}` : city) : ""}
                                             </div>
                                         </button>
                                     );
                                 })}
-
                             </div>
                         )}
-                        {state.fromLocation.lat == 0 && state.fromLocation.lon == 0 && fromQ.length > 4 && (
+
+                        {/* ✅ "not found" only if searched and still nothing */}
+                        {openFrom && fromSearched && !fromSuggestions.length && fromQ.trim().length >= 4 && (
                             <div className="text-xs text-slate-500 mt-2">
-                                Address not found. Please pick address from the dropdown.
+                                Address not found. Try a postcode (e.g. SW1A 1AA) or add a street name.
                             </div>
                         )}
-
                     </div>
                     <input
                         value={state.fromLocation.houseNumber}
@@ -414,19 +434,27 @@ export function MovingForm({
                 <div className="grid gap-3 sm:grid-cols-2">
                     <div className="relative">
                         <input
-                            value={state.toLocation.streetAddress}
+                            value={toQ}
                             onChange={(e) => {
                                 const v = e.target.value;
-                                setState((s) => ({
-                                    ...s,
-                                    toLocation: { ...s.toLocation, streetAddress: v },
-                                }));
+
                                 setToQ(v);
                                 setOpenTo(true);
+
+                                setState((s) => ({
+                                    ...s,
+                                    toLocation: {
+                                        ...s.toLocation,
+                                        streetAddress: v,
+                                        lat: 0,
+                                        lon: 0,
+                                        postalCode: "",
+                                    },
+                                }));
                             }}
-                            //onFocus={() => setOpenTo(true)}
+                            onFocus={() => setOpenTo(true)}
                             onBlur={() => setTimeout(() => setOpenTo(false), 150)}
-                            placeholder="To Address"
+                            placeholder="To Address / Postcode"
                             className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                         />
 
@@ -434,6 +462,7 @@ export function MovingForm({
                             <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
                                 {toSuggestions.map((sug, idx) => {
                                     const addr = sug.address || {};
+                                    const city = pickCity(addr);
 
                                     return (
                                         <button
@@ -442,15 +471,12 @@ export function MovingForm({
                                             className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
                                             onMouseDown={(e) => e.preventDefault()}
                                             onClick={() => {
-                                                const city =
-                                                    addr.city || addr.town || addr.village || addr.suburb || "";
-
                                                 setState((st) => ({
                                                     ...st,
                                                     toLocation: {
                                                         ...st.toLocation,
                                                         streetAddress: sug.displayName,
-                                                        //postalCode: addr.postcode ?? "",
+                                                        postalCode: addr.postcode ?? "",
                                                         city,
                                                         country: (addr.country_code || "gb").toUpperCase(),
                                                         lat: Number(sug.lat),
@@ -458,26 +484,27 @@ export function MovingForm({
                                                     },
                                                 }));
 
+                                                setToQ(sug.displayName);
+
                                                 setToSuggestions([]);
                                                 setOpenTo(false);
+                                                setToSearched(false);
                                             }}
                                         >
-                                            <div className="truncate font-medium text-slate-900">
-                                                {sug.displayName}
-                                            </div>
-
+                                            <div className="truncate font-medium text-slate-900">{sug.displayName}</div>
                                             <div className="text-xs text-slate-500">
                                                 {addr.postcode ? `Postcode: ${addr.postcode}` : ""}
+                                                {city ? (addr.postcode ? ` • ${city}` : city) : ""}
                                             </div>
                                         </button>
                                     );
                                 })}
-
                             </div>
                         )}
-                        {state.toLocation.lat == 0 && state.toLocation.lon == 0 && toQ.length > 4 && (
+
+                        {openTo && toSearched && !toSuggestions.length && toQ.trim().length >= 4 && (
                             <div className="text-xs text-slate-500 mt-2">
-                                Address not found. Please pick address from the dropdown.
+                                Address not found. Try a postcode (e.g. SW1A 1AA) or add a street name.
                             </div>
                         )}
                     </div>
