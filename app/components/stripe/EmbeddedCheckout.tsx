@@ -40,17 +40,14 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
                 const checkout = await stripe.initEmbeddedCheckout({
                     fetchClientSecret,
                     onComplete: () => {
-                      
+
                         setIsResetting(true);
-                        setTimeout(() => {
+                        checkoutRef.current?.destroy?.();
+                        checkoutRef.current = null;
 
-                            checkoutRef.current?.destroy?.();
-                            checkoutRef.current = null;
+                        resetAll();
+                        onDone(orderId);
 
-                            resetAll();
-                            onDone(orderId);
-                        }, 3000)
-                       
                     },
                 });
 

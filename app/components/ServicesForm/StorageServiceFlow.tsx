@@ -575,104 +575,102 @@ export function StorageForm({
             {step === 3 && (
                 <div className="space-y-4">
                     <p className="text-sm font-medium text-slate-700">Customer Details</p>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="relative">
-                            <input
-                                value={addressQuery}
-                                onChange={(e) => {
-                                    const v = e.target.value;
-                                    setAddressQuery(v);
-                                    setOpenAddress(true);
-                                    setPcSearched(false);
-                                }}
-                                placeholder="Address/Postcode (e.g. SW1A 1AA)"
-                                className="h-11 w-full rounded-xl border border-slate-200 px-3 pr-10 text-sm text-slate-800 outline-none"
-                            />
-                            {/* optional loading spinner */}
-                            {/* {pcLoading && (
+                    <div className="relative">
+                        <input
+                            value={addressQuery}
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                setAddressQuery(v);
+                                setOpenAddress(true);
+                                setPcSearched(false);
+                            }}
+                            placeholder="Address/Postcode (e.g. SW1A 1AA)"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 pr-10 text-sm text-slate-800 outline-none"
+                        />
+                        {/* optional loading spinner */}
+                        {/* {pcLoading && (
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700" />
                             )} */}
 
-                            {openAddress && addressSuggestion.length > 0 && (
-                                <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-                                    <ul className="max-h-64 overflow-auto">
-                                        {addressSuggestion.map((sug, idx) => {
-                                            const addr = sug.address;
+                        {openAddress && addressSuggestion.length > 0 && (
+                            <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                                <ul className="max-h-64 overflow-auto">
+                                    {addressSuggestion.map((sug, idx) => {
+                                        const addr = sug.address;
 
-                                            const city =
-                                                addr?.city ??
-                                                addr?.town ??
-                                                addr?.village ??
-                                                addr?.suburb ??
-                                                addr?.county ??
-                                                "";
+                                        const city =
+                                            addr?.city ??
+                                            addr?.town ??
+                                            addr?.village ??
+                                            addr?.suburb ??
+                                            addr?.county ??
+                                            "";
 
-                                            const road = addr?.road ?? "";
+                                        const road = addr?.road ?? "";
 
-                                            const houseNumber = addr?.house_number ?? "";
+                                        const houseNumber = addr?.house_number ?? "";
 
-                                            const streetShort = [houseNumber, road]
-                                                .filter((v): v is string => Boolean(v))
-                                                .join(" ")
-                                                .trim();
+                                        const streetShort = [houseNumber, road]
+                                            .filter((v): v is string => Boolean(v))
+                                            .join(" ")
+                                            .trim();
 
-                                            const label = sug.displayName;
+                                        const label = sug.displayName;
 
-                                            return (
-                                                <li key={idx}>
-                                                    <button
-                                                        type="button"
-                                                        className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
-                                                        onMouseDown={(e) => e.preventDefault()}
-                                                        onClick={() => {
-                                                            const a = sug?.address ?? {};
-                                                            const city = pickCity(a);
-                                                            const street = streetFromNominatim(sug);
+                                        return (
+                                            <li key={idx}>
+                                                <button
+                                                    type="button"
+                                                    className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
+                                                    onMouseDown={(e) => e.preventDefault()}
+                                                    onClick={() => {
+                                                        const a = sug?.address ?? {};
+                                                        const city = pickCity(a);
+                                                        const street = streetFromNominatim(sug);
 
-                                                            // ✅ Set final selected address into checkout state
-                                                            setState((st) => ({
-                                                                ...st,
-                                                                address: {
-                                                                    ...st.address,
-                                                                    streetAddress: street || st.address.streetAddress,
-                                                                    houseNumber: a.house_number ?? st.address.houseNumber,
-                                                                    postalCode: a.postcode ?? st.address.postalCode,
-                                                                    ...(city ? { city } : {}),
-                                                                    ...(a.country_code ? { country: a.country_code.toUpperCase() } : {}),
-                                                                },
-                                                            }));
+                                                        // ✅ Set final selected address into checkout state
+                                                        setState((st) => ({
+                                                            ...st,
+                                                            address: {
+                                                                ...st.address,
+                                                                streetAddress: street || st.address.streetAddress,
+                                                                houseNumber: a.house_number ?? st.address.houseNumber,
+                                                                postalCode: a.postcode ?? st.address.postalCode,
+                                                                ...(city ? { city } : {}),
+                                                                ...(a.country_code ? { country: a.country_code.toUpperCase() } : {}),
+                                                            },
+                                                        }));
 
-                                                            // ✅ Set visible input to selected label
-                                                            setAddressQuery(sug.displayName ?? street);
+                                                        // ✅ Set visible input to selected label
+                                                        setAddressQuery(sug.displayName ?? street);
 
-                                                            // ✅ Close dropdown
-                                                            setOpenAddress(false);
-                                                            setAddressSuggestion([]);
-                                                            setPcSearched(false);
-                                                        }}
-                                                    >
-                                                        <div className="truncate font-medium text-slate-900">{label}</div>
-                                                        <div className="text-xs text-slate-500 truncate">
-                                                            {addr?.postcode ? `Postcode: ${addr.postcode}` : ""}
-                                                            {city ? (addr?.postcode ? ` • ${city}` : city) : ""}
-                                                        </div>
-                                                    </button>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            )}
+                                                        // ✅ Close dropdown
+                                                        setOpenAddress(false);
+                                                        setAddressSuggestion([]);
+                                                        setPcSearched(false);
+                                                    }}
+                                                >
+                                                    <div className="truncate font-medium text-slate-900">{label}</div>
+                                                    <div className="text-xs text-slate-500 truncate">
+                                                        {addr?.postcode ? `Postcode: ${addr.postcode}` : ""}
+                                                        {city ? (addr?.postcode ? ` • ${city}` : city) : ""}
+                                                    </div>
+                                                </button>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                        )}
 
-                            {openAddress && pcSearched && !pcLoading && addressSuggestion.length === 0 && (
-                                <div className="mt-2 text-xs text-rose-600">
-                                    No results found. Try a postcode (e.g. SW1A 1AA) or add a street name.
-                                </div>
-                            )}
+                        {openAddress && pcSearched && !pcLoading && addressSuggestion.length === 0 && (
+                            <div className="mt-2 text-xs text-rose-600">
+                                No results found. Try a postcode (e.g. SW1A 1AA) or add a street name.
+                            </div>
+                        )}
 
-                        </div>
-
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-1">
                             <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-emerald-200">
                                 {/* Prefix */}

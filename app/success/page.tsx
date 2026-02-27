@@ -220,7 +220,13 @@ export default async function SuccessPage({ searchParams }: Props) {
             <div className="flex flex-wrap gap-2">
               
               <Link
-                href="mailto:hello@kxhlogistics.co.uk/"
+                href="/"
+                className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+              >
+                Return Home
+              </Link>
+              <Link
+                href="/"
                 className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
               >
                 Email support
