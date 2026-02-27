@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { getOrderById, updateOrderStatus } from "./actions";
+import { getOrderById } from "./actions";
 import { money, to12Hour } from "@/app/utils/utils";
 
 // ---- UI Helpers ----
@@ -72,7 +72,7 @@ export default function AdminOrderByIdPage() {
     if (!order) return;
     setIsSaving(true);
     try {
-      await updateOrderStatus(order.id, order.status);
+      //await updateOrderStatus(order.id, order.status);
       alert("Status updated successfully!");
     } catch (err) {
       alert("Failed to update status");
@@ -99,6 +99,10 @@ export default function AdminOrderByIdPage() {
 
   const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
   const isMoving = order.serviceType?.toUpperCase() === "MOVING";
+  const movingPricePerMileMinor = order?.pricing?.movingPricePerMileMinor ?? 58;
+  const distanceMiles = isMoving ? Number(order.distanceMiles ?? 0) : 0;
+  const distanceCostMinor = isMoving ? Math.max(0, distanceMiles) * movingPricePerMileMinor : 0;
+
   const isStorage = order.serviceType?.toUpperCase() === "STORAGE";
   const isShredding = order.serviceType?.toUpperCase() === "SHREDDING";
 
@@ -107,6 +111,11 @@ export default function AdminOrderByIdPage() {
 
   const getMapUrl = (addr: any) =>
     addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${addr.line1} ${addr.postalCode}`)}` : "#";
+
+  // Calculate discount amount for storage orders
+  const storageDiscountAmountMinor = isStorage && order.storageDiscountTier
+    ? Math.round((order.subtotalMinor || 0) * (order.storageDiscountTier.percentOff / 100))
+    : 0;
 
   return (
     <main className="space-y-4">
@@ -239,7 +248,7 @@ export default function AdminOrderByIdPage() {
                 <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.line1}</div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                <div className="text-xs font-semibold text-slate-500">Street Address</div>
+                <div className="text-xs font-semibold text-slate-500">Address</div>
                 <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.line2}</div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
@@ -258,6 +267,26 @@ export default function AdminOrderByIdPage() {
                   {slot ? `${to12Hour(slot.startTime)} – ${to12Hour(slot.endTime)}` : "—"}
                 </div>
               </div>
+              {isMoving && (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="text-xs font-semibold text-slate-500">Distance</div>
+                  <div className="mt-1 text-sm font-medium text-slate-900">
+                    {distanceMiles ? `${distanceMiles} mile${distanceMiles === 1 ? "" : "s"}` : "—"}
+                  </div>
+                  <div className="mt-1 text-xs text-slate-500">
+                    Cost: {money(distanceCostMinor / 100)}
+                  </div>
+                </div>
+              )}
+              {order.notes && (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="text-xs font-semibold text-slate-500">Notes</div>
+                  <div className="mt-1 text-sm font-medium text-slate-900">
+                    {order.notes}
+                  </div>
+                 
+                </div>
+              ) }
             </div>
           </section>
 
@@ -274,8 +303,8 @@ export default function AdminOrderByIdPage() {
                   <div className="mt-1 text-sm font-medium text-slate-900">{deliveryAddress.line1}</div>
                 </div>
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-xs font-semibold text-slate-500">Postcode</div>
-                  <div className="mt-1 text-sm font-medium text-slate-900">{deliveryAddress.postalCode}</div>
+                  <div className="text-xs font-semibold text-slate-500">Address</div>
+                  <div className="mt-1 text-sm font-medium text-slate-900">{deliveryAddress.line2}</div>
                 </div>
               </div>
             </section>
@@ -321,6 +350,38 @@ export default function AdminOrderByIdPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
+                  {isMoving && (
+                    <tr>
+                      <td className="p-3 font-medium text-slate-900">
+                        Distance ({distanceMiles} mile{distanceMiles === 1 ? "" : "s"})
+                      </td>
+                      <td className="p-3 text-right text-slate-600">1</td>
+                      <td className="p-3 text-right font-semibold text-slate-900">
+                        {money(distanceCostMinor / 100)}
+                      </td>
+                    </tr>
+                  )}
+                  {/* Moving package row if present */}
+                  {isMoving && order.movingPackage && (
+                    <tr>
+                      <td className="p-3 font-medium text-slate-900">
+                        {order.movingPackage.name || order.movingPackage.sku || "Moving Package"}
+                      </td>
+                      <td className="p-3 text-right text-slate-600">1</td>
+                      <td className="p-3 text-right font-semibold text-slate-900">
+                        {money(order.movingPackage.prices?.[0]?.priceMinor / 100)}
+                      </td>
+                    </tr>
+                  )}
+                  {/* Storage discount tier row if present */}
+                  {isStorage && order.storageDiscountTier && (
+                    <tr>
+                      <td className="p-3 font-medium text-slate-900">Discount Tier</td>
+                      <td className="p-3 text-right text-slate-600">{order.storageDiscountTier.minMonths} mo</td>
+                      <td className="p-3 text-right font-semibold text-slate-900">{money(storageDiscountAmountMinor / 100)}</td>
+                    </tr>
+                  )}
+                  {/* Order items */}
                   {order.items?.map((it: any) => (
                     <tr key={it.id}>
                       <td className="p-3 font-medium text-slate-900">{it.name}</td>
@@ -425,6 +486,24 @@ export default function AdminOrderByIdPage() {
                 className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
               >
                 Email Customer
+              </button>
+              <button
+                onClick={async () => {
+                  if (!order?.id) return;
+                  const res = await fetch(`/api/orders/send-receipt`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ paidOrderId: order.id }),
+                  });
+                  if (res.ok) {
+                    alert("Receipt sent to customer email.");
+                  } else {
+                    alert("Failed to send receipt.");
+                  }
+                }}
+                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              >
+                Send Receipt PDF
               </button>
             </div>
           </div>

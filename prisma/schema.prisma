@@ -171,6 +171,7 @@ model MovingPackage {
   isActive    Boolean         @default(true)
 
   prices MovingPackagePrice[]
+  orders Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -205,6 +206,7 @@ model Order {
   timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
 
   movingPackageId MovingPackageId
+  movingPackage MovingPackage? @relation(fields: [movingPackageId], references: [id])
   distanceMiles Int @default(0)
   notes             String?
 

@@ -11,7 +11,7 @@ export const HERO_BY_SERVICE: Record<
 > = {
   storage: {
     image: "/images/hero_storage.png",
-    primaryPill: "Same-day slots available",
+    primaryPill: "Available from 2 business days",
     secondaryPill: "Door-to-door convenience",
     alt: "Secure storage collection and monthly storage service",
   },

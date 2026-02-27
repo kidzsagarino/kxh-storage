@@ -8,6 +8,9 @@ import {
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
+import { NominatimResult, fetchNominatim, pickCity, streetFromNominatim } from "@/app/lib/address";
+import { displayToStoredGB, formatGBForDisplay, isValidGBPhone, normalizeGBPhone, toGBNational } from "@/app/lib/phone";
+import { stat } from "fs";
 
 type StepId = 0 | 1 | 2 | 3;
 
@@ -142,6 +145,12 @@ export function StorageForm({
     const { state, setState, orderFlow, resetNonce } = useStorageCheckout();
 
     const [step, setStep] = useState<StepId>(0);
+    const [addressSuggestion, setAddressSuggestion] = useState<NominatimResult[]>([]);
+    const [openAddress, setOpenAddress] = useState(false);
+    const [pcLoading, setPcLoading] = useState(false);
+    const [pcSearched, setPcSearched] = useState(false);
+    const [phoneError, setPhoneError] = useState<string | null>(null);
+    const [addressQuery, setAddressQuery] = useState("");
 
     const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
 
@@ -149,7 +158,7 @@ export function StorageForm({
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
     const timeSlots = orderFlow && orderFlow.timeSlots;
     const [orderId, setOrderId] = useState<string | null>(null);
-    
+
     const inc = (id: string) => {
         if (!orderFlow) return;
 
@@ -194,9 +203,8 @@ export function StorageForm({
 
     const detailsOk =
         (state.address.houseNumber ?? "").trim().length > 0 &&
-        (state.address.postalCode ?? "").trim().length > 0 &&
-        (state.customerDetails.phone ?? "").trim().length > 0 &&
-        (state.address.streetAddress ?? "").trim().length > 0;
+        isValidGBPhone(state.customerDetails.phone ?? "");
+    (state.address.streetAddress ?? "").trim().length > 0;
 
     const canGoNext =
         (step === 0 && durationOk) ||
@@ -244,6 +252,34 @@ export function StorageForm({
         setStep(0);
         setOrderId("");
     }, [resetNonce])
+
+    useEffect(() => {
+        const q = addressQuery.trim();
+
+        if (!openAddress || q.length < 3) {
+            setAddressSuggestion([]);
+            return;
+        }
+
+        const t = setTimeout(async () => {
+            try {
+                setPcLoading(true);
+                setPcSearched(false);
+
+                const results = await fetchNominatim(`${q}, UK`);
+
+                setAddressSuggestion(results ?? []);
+                setPcSearched(true);
+            } catch {
+                setAddressSuggestion([]);
+                setPcSearched(true);
+            } finally {
+                setPcLoading(false);
+            }
+        }, 400);
+
+        return () => clearTimeout(t);
+    }, [addressQuery, openAddress]);
 
     const goNext = () => setStep((s) => (Math.min(4, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
@@ -398,29 +434,41 @@ export function StorageForm({
                                 setState((s) => ({
                                     ...s,
                                     collectionDate: val,
-
                                 }))
                             }
                             disabled={(day: Date) => {
                                 if (!orderFlow?.ok) return false;
 
                                 const scheduling = orderFlow.settings.scheduling;
-
                                 if (scheduling.disableAutoBlockSchedule) return false;
 
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
 
+                                const minDate = new Date(today);
+                                let businessDaysAdded = 0;
+
+                                while (businessDaysAdded < 2) {
+                                    minDate.setDate(minDate.getDate() + 1);
+
+                                    const dayOfWeek = minDate.getDay();
+                                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+                                    if (!isWeekend) {
+                                        businessDaysAdded++;
+                                    }
+                                }
+
                                 const d = new Date(day);
                                 d.setHours(0, 0, 0, 0);
 
-                                if (d < today) return true;
+                                if (d < minDate) return true;
 
                                 const iso = toLocalISODate(d);
 
                                 if (scheduling.blackoutDates.includes(iso)) return true;
 
-                                const wk = weekdayKey(d).toUpperCase(); // MON, TUE, etc.
+                                const wk = weekdayKey(d).toUpperCase();
 
                                 const weekdayRule = scheduling.weekdayRules.find(
                                     (r: any) =>
@@ -433,7 +481,6 @@ export function StorageForm({
                                     orderFlow,
                                     service: "storage",
                                     dateISO: iso,
-                                    // volumesByTimeSlotId optional when you add volumes endpoint
                                 });
                             }}
                         />
@@ -530,37 +577,154 @@ export function StorageForm({
                     <p className="text-sm font-medium text-slate-700">Customer Details</p>
 
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <input
-                            value={state.address.postalCode}
-                            onChange={(e) =>
-                                setState((s) => ({
-                                    ...s,
-                                    address: {
-                                        ...s.address,
-                                        postalCode: e.target.value,
-                                    },
-                                }))
-                            }
-                            type="text"
-                            placeholder="Postal Code"
-                            className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-                        />
+                        <div className="relative">
+                            <input
+                                value={addressQuery}
+                                onChange={(e) => {
+                                    const v = e.target.value;
+                                    setAddressQuery(v);
+                                    setOpenAddress(true);
+                                    setPcSearched(false);
+                                }}
+                                placeholder="Address/Postcode (e.g. SW1A 1AA)"
+                                className="h-11 w-full rounded-xl border border-slate-200 px-3 pr-10 text-sm text-slate-800 outline-none"
+                            />
+                            {/* optional loading spinner */}
+                            {/* {pcLoading && (
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700" />
+                            )} */}
 
-                        <input
-                            value={state.customerDetails.phone}
-                            onChange={(e) =>
-                                setState((s) => ({
-                                    ...s,
-                                    customerDetails: {
-                                        ...s.customerDetails,
-                                        phone: e.target.value,
-                                    },
-                                }))
-                            }
-                            type="tel"
-                            placeholder="Phone Number"
-                            className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-                        />
+                            {openAddress && addressSuggestion.length > 0 && (
+                                <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                                    <ul className="max-h-64 overflow-auto">
+                                        {addressSuggestion.map((sug, idx) => {
+                                            const addr = sug.address;
+
+                                            const city =
+                                                addr?.city ??
+                                                addr?.town ??
+                                                addr?.village ??
+                                                addr?.suburb ??
+                                                addr?.county ??
+                                                "";
+
+                                            const road = addr?.road ?? "";
+
+                                            const houseNumber = addr?.house_number ?? "";
+
+                                            const streetShort = [houseNumber, road]
+                                                .filter((v): v is string => Boolean(v))
+                                                .join(" ")
+                                                .trim();
+
+                                            const label = sug.displayName;
+
+                                            return (
+                                                <li key={idx}>
+                                                    <button
+                                                        type="button"
+                                                        className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
+                                                        onMouseDown={(e) => e.preventDefault()}
+                                                        onClick={() => {
+                                                            const a = sug?.address ?? {};
+                                                            const city = pickCity(a);
+                                                            const street = streetFromNominatim(sug);
+
+                                                            // ✅ Set final selected address into checkout state
+                                                            setState((st) => ({
+                                                                ...st,
+                                                                address: {
+                                                                    ...st.address,
+                                                                    streetAddress: street || st.address.streetAddress,
+                                                                    houseNumber: a.house_number ?? st.address.houseNumber,
+                                                                    postalCode: a.postcode ?? st.address.postalCode,
+                                                                    ...(city ? { city } : {}),
+                                                                    ...(a.country_code ? { country: a.country_code.toUpperCase() } : {}),
+                                                                },
+                                                            }));
+
+                                                            // ✅ Set visible input to selected label
+                                                            setAddressQuery(sug.displayName ?? street);
+
+                                                            // ✅ Close dropdown
+                                                            setOpenAddress(false);
+                                                            setAddressSuggestion([]);
+                                                            setPcSearched(false);
+                                                        }}
+                                                    >
+                                                        <div className="truncate font-medium text-slate-900">{label}</div>
+                                                        <div className="text-xs text-slate-500 truncate">
+                                                            {addr?.postcode ? `Postcode: ${addr.postcode}` : ""}
+                                                            {city ? (addr?.postcode ? ` • ${city}` : city) : ""}
+                                                        </div>
+                                                    </button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {openAddress && pcSearched && !pcLoading && addressSuggestion.length === 0 && (
+                                <div className="mt-2 text-xs text-rose-600">
+                                    No results found. Try a postcode (e.g. SW1A 1AA) or add a street name.
+                                </div>
+                            )}
+
+                        </div>
+
+                        <div className="space-y-1">
+                            <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-emerald-200">
+                                {/* Prefix */}
+                                <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 text-sm text-slate-700 border-r border-slate-200">
+                                    <span className="text-base leading-none">🇬🇧</span>
+                                    <span className="font-semibold">+44</span>
+                                </div>
+
+                                {/* Input */}
+                                <input
+                                    inputMode="tel"
+                                    autoComplete="tel"
+                                    placeholder="7123 456789"
+                                    className="h-11 flex-1 px-3 text-sm text-slate-800 outline-none"
+                                    value={formatGBForDisplay(state.customerDetails.phone ?? "")}
+                                    onChange={(e) => {
+                                        const nextDisplay = e.target.value;
+                                        const stored = displayToStoredGB(nextDisplay);
+
+                                        setState((s) => ({
+                                            ...s,
+                                            customerDetails: {
+                                                ...s.customerDetails,
+                                                phone: stored,
+                                            },
+                                        }));
+                                    }}
+                                    onPaste={(e) => {
+                                        const pasted = e.clipboardData.getData("text");
+
+                                        // If pasted includes +44 or 07..., normalize then store
+                                        const national = toGBNational(pasted);
+
+                                        setState((s) => ({
+                                            ...s,
+                                            customerDetails: {
+                                                ...s.customerDetails,
+                                                phone: national,
+                                            },
+                                        }));
+
+                                        e.preventDefault();
+                                    }}
+                                />
+                            </div>
+
+                            {/* Error (optional) */}
+                            {normalizeGBPhone(state.customerDetails.phone ?? "").length >= 10 &&
+                                !isValidGBPhone(state.customerDetails.phone ?? "") && (
+                                    <div className="text-xs text-rose-600">Enter a valid UK phone number.</div>
+                                )}
+                        </div>
                         <input
                             value={state.address.houseNumber}
                             onChange={(e) =>
@@ -576,24 +740,7 @@ export function StorageForm({
                             placeholder="House/Flat Number"
                             className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                         />
-                        <input
-                            value={state.address.streetAddress}
-                            onChange={(e) =>
-                                setState((s) => ({
-                                    ...s,
-                                    address: {
-                                        ...s.address,
-                                        streetAddress: e.target.value,
-                                    },
-                                }))
-                            }
-                            type="text"
-                            placeholder="Street Address"
-                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-                        />
                     </div>
-
-
 
                     {!detailsOk && (
                         <div className="text-xs text-rose-600">
@@ -619,7 +766,7 @@ export function StorageForm({
                 }}
                 isPaying={!!busy}
             />
-            
+
             {error && <div className="text-red-500 mb-4">{error}</div>}
         </form>
 
