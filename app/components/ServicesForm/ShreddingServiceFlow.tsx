@@ -2,13 +2,25 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  type TimeSlotId,
-  useShreddingCheckout,
-} from "../checkout/CheckoutStore";
+import { useShreddingCheckout } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
+import {
+  displayToStoredGB,
+  formatGBForDisplay,
+  isValidGBPhone,
+  normalizeGBPhone,
+  toGBNational,
+} from "@/app/lib/phone";
+
+// ✅ same as other service
+import {
+  type NominatimResult,
+  fetchNominatim,
+  pickCity,
+  streetFromNominatim,
+} from "@/app/lib/address";
 
 type StepId = 0 | 1 | 2;
 
@@ -19,7 +31,6 @@ const steps = [
 ];
 
 const LAST_STEP: StepId = 2;
-
 
 function Stepper({
   current,
@@ -47,8 +58,13 @@ function Stepper({
               onClick={() => !isLocked && onGo(s.id)}
               disabled={!isEnabled}
               className={`w-full rounded-xl border px-3 py-2 text-left transition
-              ${isActive ? "border-emerald-200 bg-emerald-50" : "border-slate-200 bg-white hover:border-slate-300"}
-              ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""
+              ${isActive
+                  ? "border-emerald-200 bg-emerald-50"
+                  : "border-slate-200 bg-white hover:border-slate-300"
+                }
+              ${!isEnabled
+                  ? "opacity-40 cursor-not-allowed hover:border-slate-200"
+                  : ""
                 }`}
             >
               <div className="flex items-center gap-2">
@@ -130,7 +146,7 @@ function FooterNav({
 export function ShreddingForm({
   onProceed,
   busy,
-  error
+  error,
 }: {
   onProceed: () => void;
   busy?: boolean;
@@ -141,9 +157,12 @@ export function ShreddingForm({
 
   const [step, setStep] = useState<StepId>(0);
   const timeSlots = orderFlow && orderFlow.timeSlots;
-  const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
+  const disableAuto =
+    orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
   const [orderId, setOrderId] = useState<string | null>(null);
+
   const shreddingItems = orderFlow?.catalog?.shredding.items ?? [];
+
   const totalItems = useMemo(
     () =>
       Object.values(state.quantities).reduce(
@@ -152,13 +171,23 @@ export function ShreddingForm({
       ),
     [state.quantities]
   );
+
+  const [addressQuery, setAddressQuery] = useState("");
+  const [addressSuggestion, setAddressSuggestion] = useState<NominatimResult[]>(
+    []
+  );
+  const [openAddress, setOpenAddress] = useState(false);
+  const [pcLoading, setPcLoading] = useState(false);
+  const [pcSearched, setPcSearched] = useState(false);
+
   // validation
   const itemsOk = totalItems > 0;
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
+  // ✅ removed postalCode requirement
   const detailsOk =
-    (state.address.postalCode ?? "").trim().length > 0 &&
     (state.customerDetails.phone ?? "").trim().length > 0 &&
+    (state.address.houseNumber ?? "").trim().length > 0 &&
     (state.address.streetAddress ?? "").trim().length > 0;
 
   const canGoNext =
@@ -174,14 +203,16 @@ export function ShreddingForm({
   }, [itemsOk, scheduleOk, detailsOk, step]);
 
   useEffect(() => {
-    setState((s) => ({ ...s, enableButton: step === 2 && itemsOk && scheduleOk && detailsOk }));
+    setState((s) => ({
+      ...s,
+      enableButton: step === 2 && itemsOk && scheduleOk && detailsOk,
+    }));
   }, [detailsOk, itemsOk, scheduleOk, step, setState]);
 
   useEffect(() => {
     if (!orderFlow?.ok) return;
 
     const scheduling = orderFlow.settings.scheduling;
-
     if (scheduling.disableAutoBlockSchedule) return;
 
     if (!state.collectionDate) return;
@@ -192,8 +223,6 @@ export function ShreddingForm({
       service: "storage",
       dateISO: state.collectionDate,
       timeSlotId: state.timeSlotId,
-      // volumesByTimeSlotId: optional for now (defaults to 0)
-      // volumesByTimeSlotId,
     });
 
     if (slotIsFull) {
@@ -201,6 +230,33 @@ export function ShreddingForm({
     }
   }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
+  useEffect(() => {
+    const q = addressQuery.trim();
+
+    if (!openAddress || q.length < 3) {
+      setAddressSuggestion([]);
+      return;
+    }
+
+    const t = setTimeout(async () => {
+      try {
+        setPcLoading(true);
+        setPcSearched(false);
+
+        const results = await fetchNominatim(`${q}, UK`);
+
+        setAddressSuggestion(results ?? []);
+        setPcSearched(true);
+      } catch {
+        setAddressSuggestion([]);
+        setPcSearched(true);
+      } finally {
+        setPcLoading(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(t);
+  }, [addressQuery, openAddress]);
 
   const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
   const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
@@ -209,10 +265,7 @@ export function ShreddingForm({
     if (!orderFlow) return;
 
     const item = orderFlow.catalog.shredding.itemsBySku?.[id];
-
-    if (!item) return;
-
-    if (!item.price) return;
+    if (!item?.price) return;
 
     setState((st) => ({
       ...st,
@@ -234,9 +287,7 @@ export function ShreddingForm({
   };
 
   return (
-    <form
-      className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6"
-    >
+    <form className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6">
       {/* Stepper */}
       <div className="space-y-2">
         <Stepper
@@ -249,11 +300,10 @@ export function ShreddingForm({
           {step === 0 && "Choose what you want to shred and quantities."}
           {step === 1 && "Pick a collection date and time slot."}
           {step === 2 && "Enter your address and contact details."}
-          {/* {step === 3 && "Review your shredding order before payment."} */}
         </div>
       </div>
 
-      {/* Step 1: Items */}
+      {/* Step 0: Items */}
       {step === 0 && (
         <div className="grid gap-3 sm:grid-cols-2">
           {shreddingItems.map((item: any) => {
@@ -268,7 +318,9 @@ export function ShreddingForm({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-sm font-medium text-slate-900">{item.name}</div>
+                    <div className="text-sm font-medium text-slate-900">
+                      {item.name}
+                    </div>
                     <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
                     <div className="mt-1 text-xs text-slate-600">{price}</div>
                   </div>
@@ -278,8 +330,7 @@ export function ShreddingForm({
                       type="button"
                       onClick={() => dec(item.sku)}
                       disabled={count === 0}
-                      className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white
-                                                text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                       aria-label={`Decrease ${item.name}`}
                     >
                       −
@@ -292,11 +343,7 @@ export function ShreddingForm({
                     <button
                       type="button"
                       onClick={() => inc(item.sku)}
-                      disabled={
-                        false
-                      }
-                      className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white 
-                                                    text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
                       aria-label={`Increase ${item.name}`}
                     >
                       +
@@ -306,11 +353,16 @@ export function ShreddingForm({
               </div>
             );
           })}
-          {!itemsOk && <div className="sm:col-span-2 text-xs text-rose-600">Add atleast 1 item to continue</div>}
+
+          {!itemsOk && (
+            <div className="sm:col-span-2 text-xs text-rose-600">
+              Add at least 1 item to continue
+            </div>
+          )}
         </div>
       )}
 
-      {/* Step 2: Schedule */}
+      {/* Step 1: Schedule */}
       {step === 1 && (
         <div className="space-y-4">
           <DatePicker
@@ -319,14 +371,12 @@ export function ShreddingForm({
               setState((s) => ({
                 ...s,
                 collectionDate: val,
-
               }))
             }
             disabled={(day: Date) => {
               if (!orderFlow?.ok) return false;
 
               const scheduling = orderFlow.settings.scheduling;
-
               if (scheduling.disableAutoBlockSchedule) return false;
 
               const today = new Date();
@@ -338,14 +388,12 @@ export function ShreddingForm({
               if (d < today) return true;
 
               const iso = toLocalISODate(d);
-
               if (scheduling.blackoutDates.includes(iso)) return true;
 
-              const wk = weekdayKey(d).toUpperCase(); // MON, TUE, etc.
+              const wk = weekdayKey(d).toUpperCase();
 
               const weekdayRule = scheduling.weekdayRules.find(
-                (r: any) =>
-                  r.serviceType === "STORAGE" && r.weekday === wk
+                (r: any) => r.serviceType === "STORAGE" && r.weekday === wk
               );
 
               if (weekdayRule && !weekdayRule.enabled) return true;
@@ -354,10 +402,10 @@ export function ShreddingForm({
                 orderFlow,
                 service: "storage",
                 dateISO: iso,
-                // volumesByTimeSlotId optional when you add volumes endpoint
               });
             }}
           />
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {timeSlots.map((slot: any) => {
               const dateISO = state.collectionDate;
@@ -370,12 +418,12 @@ export function ShreddingForm({
                   service: "storage",
                   dateISO,
                   timeSlotId: slot.id,
-                  // volumesByTimeSlotId,     // optional later when you have volumes endpoint
                 });
 
               const selected = state.timeSlotId === slot.id;
-
-              const rangeLabel = `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`;
+              const rangeLabel = `${to12Hour(slot.startTime)} - ${to12Hour(
+                slot.endTime
+              )}`;
 
               function selectSlot() {
                 if (slotIsFull) return;
@@ -390,11 +438,11 @@ export function ShreddingForm({
                 <div
                   key={slot.id}
                   className={`relative min-w-0 rounded-xl border p-3 text-center transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200
-                                                                        ${slotIsFull
+                  ${slotIsFull
                       ? "cursor-not-allowed bg-slate-50 opacity-50 border-slate-200"
                       : "cursor-pointer bg-white hover:border-slate-300"
                     }
-                                                                        ${selected
+                  ${selected
                       ? "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600"
                       : "border-slate-200"
                     }`}
@@ -431,146 +479,200 @@ export function ShreddingForm({
               );
             })}
           </div>
-          <div>
-            {/* <input
-              value={state.customerDetails.address}
-              onChange={(e) =>
-                setState((s) => ({ ...s, notes: e.target.value }))
-              }
-              placeholder="Additional Address Details"
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-            /> */}
-            {!scheduleOk && <div className="mt-2 text-xs text-rose-600">Select a date and time slot.</div>}
-          </div>
+
+          {!scheduleOk && (
+            <div className="mt-2 text-xs text-rose-600">
+              Select a date and time slot.
+            </div>
+          )}
         </div>
       )}
 
-      {/* Step 3: Details */}
+      {/* Step 2: Details */}
       {step === 2 && (
         <div className="space-y-4">
           <p className="text-sm font-medium text-slate-700">Customer Details</p>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          {/* ✅ Nominatim Address Input */}
+          <div className="relative">
             <input
-              value={state.address.postalCode}
+              value={addressQuery}
+              onChange={(e) => {
+                const v = e.target.value;
+                setAddressQuery(v);
+                setOpenAddress(true);
+                setPcSearched(false);
+              }}
+              placeholder="Address/Postcode (e.g. SW1A 1AA)"
+              className="h-11 w-full rounded-xl border border-slate-200 px-3 pr-10 text-sm text-slate-800 outline-none"
+            />
+            {/* optional loading spinner */}
+            {/* {pcLoading && (
+                                          <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700" />
+                                      )} */}
+
+            {openAddress && addressSuggestion.length > 0 && (
+              <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                <ul className="max-h-64 overflow-auto">
+                  {addressSuggestion.map((sug, idx) => {
+                    const addr = sug.address;
+
+                    const city =
+                      addr?.city ??
+                      addr?.town ??
+                      addr?.village ??
+                      addr?.suburb ??
+                      addr?.county ??
+                      "";
+
+                    const road = addr?.road ?? "";
+
+                    const houseNumber = addr?.house_number ?? "";
+
+                    const streetShort = [houseNumber, road]
+                      .filter((v): v is string => Boolean(v))
+                      .join(" ")
+                      .trim();
+
+                    const label = sug.displayName;
+
+                    return (
+                      <li key={idx}>
+                        <button
+                          type="button"
+                          className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            const a = sug?.address ?? {};
+                            const city = pickCity(a);
+                            const street = streetFromNominatim(sug);
+
+                            // ✅ Set final selected address into checkout state
+                            setState((st) => ({
+                              ...st,
+                              address: {
+                                ...st.address,
+                                streetAddress: street || st.address.streetAddress,
+                                houseNumber: a.house_number ?? st.address.houseNumber,
+                                postalCode: a.postcode ?? st.address.postalCode,
+                                ...(city ? { city } : {}),
+                                ...(a.country_code ? { country: a.country_code.toUpperCase() } : {}),
+                              },
+                            }));
+
+                            // ✅ Set visible input to selected label
+                            setAddressQuery(sug.displayName ?? street);
+
+                            // ✅ Close dropdown
+                            setOpenAddress(false);
+                            setAddressSuggestion([]);
+                            setPcSearched(false);
+                          }}
+                        >
+                          <div className="truncate font-medium text-slate-900">{label}</div>
+                          <div className="text-xs text-slate-500 truncate">
+                            {addr?.postcode ? `Postcode: ${addr.postcode}` : ""}
+                            {city ? (addr?.postcode ? ` • ${city}` : city) : ""}
+                          </div>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
+            {openAddress && pcSearched && !pcLoading && addressSuggestion.length === 0 && (
+              <div className="mt-2 text-xs text-rose-600">
+                No results found. Try a postcode (e.g. SW1A 1AA) or add a street name.
+              </div>
+            )}
+
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-emerald-200">
+                <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 text-sm text-slate-700 border-r border-slate-200">
+                  <span className="text-base leading-none">🇬🇧</span>
+                  <span className="font-semibold">+44</span>
+                </div>
+
+                <input
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="7123 456789"
+                  className="h-11 flex-1 px-3 text-sm text-slate-800 outline-none"
+                  value={formatGBForDisplay(state.customerDetails.phone ?? "")}
+                  onChange={(e) => {
+                    const nextDisplay = e.target.value;
+                    const stored = displayToStoredGB(nextDisplay);
+
+                    setState((s) => ({
+                      ...s,
+                      customerDetails: {
+                        ...s.customerDetails,
+                        phone: stored,
+                      },
+                    }));
+                  }}
+                  onPaste={(e) => {
+                    const pasted = e.clipboardData.getData("text");
+                    const national = toGBNational(pasted);
+
+                    setState((s) => ({
+                      ...s,
+                      customerDetails: {
+                        ...s.customerDetails,
+                        phone: national,
+                      },
+                    }));
+
+                    e.preventDefault();
+                  }}
+                />
+              </div>
+
+              {normalizeGBPhone(state.customerDetails.phone ?? "").length >= 10 &&
+                !isValidGBPhone(state.customerDetails.phone ?? "") && (
+                  <div className="text-xs text-rose-600">
+                    Enter a valid UK phone number.
+                  </div>
+                )}
+            </div>
+
+            <input
+              value={state.address.houseNumber}
               onChange={(e) =>
                 setState((s) => ({
                   ...s,
-                  address: { ...s.address, postalCode: e.target.value },
+                  address: { ...s.address, houseNumber: e.target.value },
                 }))
               }
               type="text"
-              placeholder="Postal Code"
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-            />
-
-            <input
-              value={state.customerDetails.phone}
-              onChange={(e) =>
-                setState((s) => ({
-                  ...s,
-                  customerDetails: { ...s.customerDetails, phone: e.target.value },
-                }))
-              }
-              type="tel"
-              placeholder="Phone Number"
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+              placeholder="House / Flat Number"
+              className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
             />
           </div>
-          <input
-            value={state.address.houseNumber}
-            onChange={(e) =>
-              setState((s) => ({
-                ...s,
-                address: { ...s.address, houseNumber: e.target.value },
-              }))
-            }
-            type="text"
-            placeholder="House Number"
-            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-          />
-          <input
-            value={state.address.streetAddress}
-            onChange={(e) =>
-              setState((s) => ({
-                ...s,
-                address: { ...s.address, streetAddress: e.target.value },
-              }))
-            }
-            type="text"
-            placeholder="Street Address"
-            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
-          />
 
           {!detailsOk && (
             <div className="text-xs text-rose-600">
-              Fill in postal code, phone number, and street address to continue.
+              Fill in phone number, house/flat number, and street address to continue.
+              (Pick an address from the dropdown.)
             </div>
           )}
         </div>
       )}
 
-      {/* Step 4: Review */}
-      {/* {step === 3 && (
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-slate-700">Review</p>
-
-          <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Bag (up to 15 lbs)</span>
-              <span className="font-medium text-slate-900">{state.items?.bagQty ?? 0}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Archive Box (up to 15 lbs)</span>
-              <span className="font-medium text-slate-900">{state.items?.boxQty ?? 0}</span>
-            </div>
-
-            <div className="h-px bg-slate-200" />
-
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Collection</span>
-              <span className="font-medium text-slate-900">
-                {state.collectionDate || "—"} · {state.timeSlot || "—"}
-              </span>
-            </div>
-
-            <div className="flex items-start justify-between gap-4 text-sm">
-              <span className="text-slate-600">Address</span>
-              <span className="text-right font-medium text-slate-900">
-                {state.customerDetails.address || "—"}
-                <br />
-                {state.customerDetails.postalCode || ""}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Phone</span>
-              <span className="font-medium text-slate-900">{state.customerDetails.phone || "—"}</span>
-            </div>
-          </div>
-
-          {!(itemsOk && scheduleOk && detailsOk) && (
-            <div className="text-xs text-rose-600">
-              Please complete all steps before proceeding to payment.
-            </div>
-          )}
-        </div>
-      )} */}
-
-      {/* Footer navigation */}
       <FooterNav
         canBack={step > 0 && !orderId}
         canNext={!orderId && canGoNext && step <= maxAllowedStep}
         isLast={step === LAST_STEP}
-        onBack={goBack}
+        onBack={() => setStep((s) => (Math.max(0, s - 1) as StepId))}
         onNext={() => {
           if (!canGoNext) return;
-
-          if (step === LAST_STEP) {
-            onProceed();
-          } else {
-            goNext();
-          }
+          if (step === LAST_STEP) onProceed();
+          else setStep((s) => (Math.min(3, s + 1) as StepId));
         }}
         isPaying={!!busy}
       />
