@@ -106,15 +106,19 @@ enum TimeSlotKey {
 // --- MODELS ---
 
 model Customer {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  email     String? @unique
-  phone     String?
-  fullName  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  email                String?  @unique
+  phone                String?
+  fullName             String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  stripeSubscriptionId String?
+  subscriptionStatus   String?
+  stripeCustomerId     String?  @unique
 
-  orders Order[]
+  orders              Order[]
+  subscriptionInvoice SubscriptionInvoice[]
 }
 
 model AdminUser {
@@ -137,8 +141,8 @@ model ServiceItem {
   description String?
   isActive    Boolean       @default(true)
 
-  prices      ServiceItemPrice[]
-  orderItems  OrderItem[]
+  prices     ServiceItemPrice[]
+  orderItems OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -148,9 +152,9 @@ model ServiceItem {
 }
 
 model ServiceItemPrice {
-  id            String      @id @default(cuid())
+  id            String        @id @default(cuid())
   serviceItemId CatalogItemId
-  serviceItem   ServiceItem @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
+  serviceItem   ServiceItem   @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
 
   currency       String      @default("GBP")
   unitPriceMinor Int
@@ -194,7 +198,7 @@ model MovingPackagePrice {
 
 model Order {
   id          String      @id @default(cuid())
-  orderNumber String      @unique @default(cuid()) 
+  orderNumber String      @unique @default(cuid())
   serviceType ServiceType
   status      OrderStatus @default(DRAFT)
 
@@ -206,9 +210,9 @@ model Order {
   timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
 
   movingPackageId MovingPackageId
-  movingPackage MovingPackage? @relation(fields: [movingPackageId], references: [id])
-  distanceMiles Int @default(0)
-  notes             String?
+  movingPackage   MovingPackage?  @relation(fields: [movingPackageId], references: [id])
+  distanceMiles   Int             @default(0)
+  notes           String?
 
   currency      String @default("GBP")
   subtotalMinor Int    @default(0)
@@ -219,6 +223,11 @@ model Order {
   // Link to the Tier for auditing
   discountTierId      String?
   storageDiscountTier StorageDiscountTier? @relation(fields: [discountTierId], references: [id])
+
+  stripeSubscriptionId String?   @unique
+  subscriptionStatus   String?
+  nextBillingAt        DateTime?
+  cancelAt             DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -255,15 +264,15 @@ model OrderItem {
 }
 
 model Address {
-  id      String      @id @default(cuid())
-  orderId String
-  order   Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  type    AddressType
-  line1   String
-  line2   String
-  city    String
+  id         String      @id @default(cuid())
+  orderId    String
+  order      Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type       AddressType
+  line1      String
+  line2      String
+  city       String
   postalCode String
-  country String      @default("GB")
+  country    String      @default("GB")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -272,13 +281,13 @@ model Address {
 }
 
 model Payment {
-  id      String          @id @default(cuid())
-  orderId String          
-  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  provider PaymentProvider @default(STRIPE)
-  status   PaymentStatus   @default(PROCESSING)
+  id          String          @id @default(cuid())
+  orderId     String
+  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider    PaymentProvider @default(STRIPE)
+  status      PaymentStatus   @default(PROCESSING)
   amountMinor Int
-  providerRef String?      @unique
+  providerRef String?         @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -295,13 +304,13 @@ model TimeSlot {
 }
 
 model StorageDiscountTier {
-  id            String         @id @default(cuid())
-  name          String?         
-  minMonths     Int            @unique 
-  percentOff    Int
-  isActive      Boolean        @default(true)
+  id         String  @id @default(cuid())
+  name       String?
+  minMonths  Int     @unique
+  percentOff Int
+  isActive   Boolean @default(true)
 
-  orders Order[]
+  orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -309,58 +318,88 @@ model StorageDiscountTier {
 model AdminSettings {
   id String @id @default("global_settings") // Ensures only one row exists
 
-  storageEnabled  Boolean @default(true)
-  movingEnabled   Boolean @default(true)
+  storageEnabled   Boolean @default(true)
+  movingEnabled    Boolean @default(true)
   shreddingEnabled Boolean @default(true)
 
   movingPricePerMileMinor Int @default(58)
   packingAssistanceMinor  Int @default(29500)
 
   timeSlotSettings TimeSlotSetting[]
-  capacities      CapacitySetting[]
-  weekdayRules    WeekdayRule[]
-  blackoutDates   BlackoutDate[]
+  capacities       CapacitySetting[]
+  weekdayRules     WeekdayRule[]
+  blackoutDates    BlackoutDate[]
 
   updatedAt DateTime @updatedAt
 }
 
 model TimeSlotSetting {
-  id         String      @id @default(cuid())
+  id         String        @id @default(cuid())
   settingsId String
   settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
-  key        TimeSlotKey @unique
+  key        TimeSlotKey   @unique
   label      String
-  enabled    Boolean     @default(true)
+  enabled    Boolean       @default(true)
 }
 
 model CapacitySetting {
-  id         String      @id @default(cuid())
-  settingsId String
-  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  id          String        @id @default(cuid())
+  settingsId  String
+  settings    AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
   serviceType ServiceType
-  slotKey    TimeSlotKey
-  capacity   Int         @default(5)
+  slotKey     TimeSlotKey
+  capacity    Int           @default(5)
 
   @@unique([settingsId, serviceType, slotKey])
 }
 
 model WeekdayRule {
-  id         String      @id @default(cuid())
-  settingsId String      
-  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  id          String        @id @default(cuid())
+  settingsId  String
+  settings    AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
   serviceType ServiceType
-  weekday    Weekday
-  enabled    Boolean     @default(true)
+  weekday     Weekday
+  enabled     Boolean       @default(true)
 
   @@unique([settingsId, serviceType, weekday])
 }
 
 model BlackoutDate {
-  id         String      @id @default(cuid())
+  id         String        @id @default(cuid())
   settingsId String
   settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
   date       DateTime
   reason     String?
 
   @@unique([settingsId, date])
+}
+
+model SubscriptionInvoice {
+  id String @id @default(cuid())
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  stripeInvoiceId      String  @unique
+  stripeSubscriptionId String?
+  status               String
+  currency             String
+  amountDueMinor       Int     @default(0)
+  amountPaidMinor      Int     @default(0)
+  amountRemainingMinor Int     @default(0)
+
+  hostedInvoiceUrl String?
+  invoicePdf       String?
+  number           String? // Stripe invoice number (e.g. "3C2F1F3-0001")
+  billingReason    String?
+
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([stripeSubscriptionId])
+  @@index([createdAt])
 }

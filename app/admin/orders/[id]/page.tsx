@@ -47,6 +47,13 @@ function payBadge(status: string) {
   }
 }
 
+function formatNextBilling(value: any) {
+  if (!value) return "—";
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("en-GB", { dateStyle: "medium" });
+}
+
 export default function AdminOrderByIdPage() {
   const params = useParams<{ id: string }>();
   const [order, setOrder] = useState<any>(null);
@@ -96,6 +103,7 @@ export default function AdminOrderByIdPage() {
   const deliveryAddress = order.addresses?.find((a: any) => a.type === "DROPOFF");
   const stripePayment = order.payments;
   const slot = order.timeSlot;
+  const nextBillingAt = order?.subscription?.nextBillingAt ?? order?.nextBillingAt ?? order?.billing?.nextBillingAt ?? null;
 
   const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
   const isMoving = order.serviceType?.toUpperCase() === "MOVING";
@@ -284,9 +292,9 @@ export default function AdminOrderByIdPage() {
                   <div className="mt-1 text-sm font-medium text-slate-900">
                     {order.notes}
                   </div>
-                 
+
                 </div>
-              ) }
+              )}
             </div>
           </section>
 
@@ -417,6 +425,7 @@ export default function AdminOrderByIdPage() {
                 <div className="text-xs text-emerald-700">
                   {durationMonths} month plan • {discountPercent}% off
                 </div>
+
               </div>
 
               <div className="pt-2 border-t border-slate-100 flex justify-between items-baseline">
@@ -424,7 +433,19 @@ export default function AdminOrderByIdPage() {
                 <span className="font-bold text-xl text-slate-900">{money(order.totalMinor / 100)}</span>
               </div>
             </div>
-
+            {isStorage && (
+              <div className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600 font-semibold">Next billing cycle</span>
+                  <span className="font-bold text-slate-900">
+                    {formatNextBilling(nextBillingAt)}
+                  </span>
+                </div>
+                <div className="mt-1 text-xs text-slate-500">
+                  Based on the active subscription period end
+                </div>
+              </div>
+            )}
             <div className="flex flex-col gap-4">
               <span className="text-sm font-semibold text-slate-600">Payment History</span>
 

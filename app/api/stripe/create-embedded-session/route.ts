@@ -4,12 +4,13 @@ import { prisma } from "@/src/lib/prisma";
 import { PaymentProvider, PaymentStatus, OrderStatus } from "@prisma/client";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  // apiVersion: "2025-01-27.acacia",
+  apiVersion: "2026-01-28.clover",
 });
 
 type Body = {
   orderId: string;
-  mode?: "DEPOSIT" | "FULL"; // keep for now, but DEPOSIT = first month due now
+  months?: number; // ✅ optional input; for STORAGE we’ll use tier months if present, else this
+  mode?: "DEPOSIT" | "FULL";
 };
 
 function getBaseUrl() {
@@ -18,14 +19,31 @@ function getBaseUrl() {
   return url.replace(/\/$/, "");
 }
 
+// ✅ Dynamic recurring monthly price (simple version; consider caching later)
+async function getOrCreateStorageMonthlyPriceId(params: {
+  currency: string; // "gbp"
+  unitAmountMinor: number;
+}) {
+  const productId = process.env.STRIPE_STORAGE_PRODUCT_ID;
+  if (!productId) throw new Error("STRIPE_STORAGE_PRODUCT_ID is missing");
+
+  const price = await stripe.prices.create({
+    currency: params.currency,
+    unit_amount: params.unitAmountMinor,
+    recurring: { interval: "month" },
+    product: productId,
+    nickname: `Storage ${(params.unitAmountMinor / 100).toFixed(2)}/mo`,
+  });
+
+  return price.id;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as Body;
     if (!body.orderId) {
       return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
     }
-
-    const mode = body.mode ?? "DEPOSIT";
 
     const payableStatuses: OrderStatus[] = [
       OrderStatus.DRAFT,
@@ -40,7 +58,17 @@ export async function POST(req: NextRequest) {
         orderNumber: true,
         status: true,
         currency: true,
-        totalMinor: true, // ✅ should already be "due now (first month)" from your new order logic
+        totalMinor: true,
+        serviceType: true,
+        customer: {
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+            stripeCustomerId: true, // ✅ add this field in Prisma
+          },
+        },
+        storageDiscountTier: true, // has minMonths
       },
     });
 
@@ -54,35 +82,27 @@ export async function POST(req: NextRequest) {
     }
 
     const currency = (order.currency ?? "GBP").toLowerCase();
+    const baseUrl = getBaseUrl();
+    const mode = body.mode ?? "DEPOSIT";
 
-    // ✅ charge first month only (due now)
-    // If you later support FULL upfront, you need a separate termTotalMinor value.
-    const amountMinor = order.totalMinor;
-
-    if (!Number.isInteger(amountMinor) || amountMinor <= 0) {
-      return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
-    }
-
-    // ✅ Reuse existing PROCESSING payment (and session) if available
+    // ✅ Reuse existing PROCESSING payment/session if available
     const existing = await prisma.payment.findFirst({
       where: {
         orderId: order.id,
         provider: PaymentProvider.STRIPE,
         status: PaymentStatus.PROCESSING,
-        amountMinor, // ✅ now equals order.totalMinor
-        providerRef: { not: null }, // session.id
+        providerRef: { not: null },
       },
       orderBy: { createdAt: "desc" },
     });
 
     if (existing?.providerRef) {
-      const session = await stripe.checkout.sessions.retrieve(existing.providerRef);
-      if (session.client_secret) {
+      const s = await stripe.checkout.sessions.retrieve(existing.providerRef);
+      if (s.client_secret) {
         return NextResponse.json({
-          clientSecret: session.client_secret,
-          sessionId: session.id,
+          clientSecret: s.client_secret,
+          sessionId: s.id,
           paymentId: existing.id,
-          amountMinor,
           currency,
         });
       }
@@ -96,32 +116,110 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const baseUrl = getBaseUrl();
+    let session: Stripe.Checkout.Session;
 
-    const session = await stripe.checkout.sessions.create({
-      ui_mode: "embedded",
-      mode: "payment",
-      redirect_on_completion: "if_required",
-      customer_creation: "if_required",
-      return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
+    if (order.serviceType === "STORAGE") {
+      const months = Number(order.storageDiscountTier?.minMonths ?? body.months ?? 0);
+      if (!Number.isInteger(months) || months <= 0 || months > 12) {
+        return NextResponse.json(
+          { error: "For STORAGE, months is required (1–12)." },
+          { status: 400 }
+        );
+      }
 
-      line_items: [
-        {
-          price_data: {
-            currency,
-            unit_amount: amountMinor, // ✅ first month due now
-            product_data: {
-              name: `Order ${order.orderNumber}`,
-              description: "First month payment", // ✅
-            },
-          },
-          quantity: 1,
+      const monthlyAmountMinor = order.totalMinor;
+      if (!Number.isInteger(monthlyAmountMinor) || monthlyAmountMinor <= 0) {
+        return NextResponse.json({ error: "Invalid monthly amount" }, { status: 400 });
+      }
+
+      const dynamicPriceId = await getOrCreateStorageMonthlyPriceId({
+        currency,
+        unitAmountMinor: monthlyAmountMinor,
+      });
+
+      let stripeCustomerId = order.customer.stripeCustomerId ?? null;
+
+      if (!stripeCustomerId) {
+        const created = await stripe.customers.create({
+          metadata: { customerId: order.customer.id },
+        });
+
+        stripeCustomerId = created.id;
+
+        await prisma.customer.update({
+          where: { id: order.customer.id },
+          data: { stripeCustomerId }, // ✅ requires Prisma field
+        });
+      }
+
+      session = await stripe.checkout.sessions.create({
+        ui_mode: "embedded",
+        mode: "subscription",
+        redirect_on_completion: "if_required",
+        return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
+
+        customer: stripeCustomerId,
+
+        line_items: [{ price: dynamicPriceId, quantity: 1 }],
+
+        client_reference_id: order.id,
+        metadata: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          serviceType: order.serviceType,
+          mode,
+          months: String(months),
         },
-      ],
 
-      client_reference_id: order.id,
-      metadata: { orderId: order.id, orderNumber: order.orderNumber, mode },
-    });
+        subscription_data: {
+          metadata: {
+            orderId: order.id,
+            orderNumber: order.orderNumber,
+            serviceType: "STORAGE",
+            months: String(months),
+          },
+        },
+      });
+    } else {
+      const amountMinor = order.totalMinor;
+
+      if (!Number.isInteger(amountMinor) || amountMinor <= 0) {
+        return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
+      }
+
+      session = await stripe.checkout.sessions.create({
+        ui_mode: "embedded",
+        mode: "payment",
+        redirect_on_completion: "if_required",
+        customer_creation: "if_required",
+        return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
+
+        line_items: [
+          {
+            price_data: {
+              currency,
+              unit_amount: amountMinor,
+              product_data: {
+                name: `Order ${order.orderNumber}`,
+                description:
+                  order.serviceType === "MOVING"
+                    ? "Moving service payment"
+                    : "Shredding service payment",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+
+        client_reference_id: order.id,
+        metadata: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          serviceType: order.serviceType,
+          mode,
+        },
+      });
+    }
 
     if (!session.client_secret) {
       return NextResponse.json({ error: "Missing session client secret" }, { status: 500 });
@@ -132,7 +230,7 @@ export async function POST(req: NextRequest) {
         orderId: order.id,
         provider: PaymentProvider.STRIPE,
         status: PaymentStatus.PROCESSING,
-        amountMinor,
+        amountMinor: order.totalMinor,
         providerRef: session.id,
       },
       select: { id: true },
@@ -142,10 +240,10 @@ export async function POST(req: NextRequest) {
       clientSecret: session.client_secret,
       sessionId: session.id,
       paymentId: payment.id,
-      amountMinor,
       currency,
     });
   } catch (err: any) {
+    console.log(err);
     return NextResponse.json({ error: err?.message ?? "Server error" }, { status: 500 });
   }
 }

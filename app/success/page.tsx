@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
+import { EmailLive } from "./EmailLive";
 
 const prisma = new PrismaClient();
 
@@ -136,7 +137,6 @@ export default async function SuccessPage({ searchParams }: Props) {
   const totalMinor = payment?.amountMinor ?? session?.amount_total ?? null;
 
   const email =
-    order?.customer?.email ??
     session?.customer_details?.email ??
     session?.customer_email ??
     "—";
@@ -201,7 +201,12 @@ export default async function SuccessPage({ searchParams }: Props) {
               <div>
                 <h1 className="text-xl sm:text-2xl font-semibold text-slate-900">Payment confirmed</h1>
                 <p className="mt-1 text-sm text-slate-600">
-                  We emailed your receipt to <span className="font-medium text-slate-900">{email}</span>.
+                  We emailed your receipt to{" "}
+                  {order?.id ? (
+                    <EmailLive orderId={order.id} initialEmail={order?.customer?.email ?? "—"} />
+                  ) : (
+                    <span className="font-medium text-slate-900">getting your detail..</span>
+                  )}.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700">
@@ -218,7 +223,7 @@ export default async function SuccessPage({ searchParams }: Props) {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              
+
               <Link
                 href="/"
                 className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
