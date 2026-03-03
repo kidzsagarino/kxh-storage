@@ -5,24 +5,97 @@ const GBP = "GBP";
 const SETTINGS_ID = "global_settings"; // Standardized singleton ID
 
 async function seedTimeSlots() {
-  const slots = [
-    { name: "Morning", startTime: "07:00", endTime: "10:00" },
-    { name: "Afternoon", startTime: "10:00", endTime: "15:00" },
-    { name: "Evening", startTime: "15:00", endTime: "18:00" },
+  console.log("🧹 Seeding TimeSlots (canonical) ...");
+
+  const canonical = [
+    { name: "morning", startTime: "07:00", endTime: "10:00", isActive: true },
+    { name: "afternoon", startTime: "10:00", endTime: "15:00", isActive: true },
+    { name: "evening", startTime: "15:00", endTime: "18:00", isActive: true },
   ];
 
-  for (const s of slots) {
+  // helper to convert "10am" -> "10:00" (only if needed)
+  function to24(time) {
+    if (!time) return null;
+    const s = String(time).trim().toLowerCase();
+
+    if (/^\d{2}:\d{2}$/.test(s)) return s;
+
+    const m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);
+    if (!m) return null;
+
+    let h = Number(m[1]);
+    const min = m[2] ? Number(m[2]) : 0;
+    const mer = m[3];
+
+    if (mer === "am") {
+      if (h === 12) h = 0;
+    } else {
+      if (h !== 12) h += 12;
+    }
+
+    return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+  }
+
+  const existing = await prisma.timeSlot.findMany();
+  for (const s of existing) {
+    const start = to24(s.startTime) ?? s.startTime;
+    const end = to24(s.endTime) ?? s.endTime;
+
+    if (start !== s.startTime || end !== s.endTime) {
+      await prisma.timeSlot.update({
+        where: { id: s.id },
+        data: { startTime: start, endTime: end },
+      });
+    }
+  }
+  const titleToCanon = {
+    Morning: "morning",
+    Afternoon: "afternoon",
+    Evening: "evening",
+  };
+
+  for (const [title, canonName] of Object.entries(titleToCanon)) {
+    const oldSlot = await prisma.timeSlot.findUnique({ where: { name: title } });
+    if (!oldSlot) continue;
+
+    const canonSlot =
+      (await prisma.timeSlot.findUnique({ where: { name: canonName } })) ||
+      (await prisma.timeSlot.create({
+        data: canonical.find((x) => x.name === canonName),
+      }));
+
+    await prisma.order.updateMany({
+      where: { timeSlotId: oldSlot.id },
+      data: { timeSlotId: canonSlot.id },
+    });
+  }
+
+  await prisma.timeSlot.deleteMany({
+    where: { name: { in: ["Morning", "Afternoon", "Evening"] } },
+  });
+
+  await prisma.timeSlot.deleteMany({
+    where: {
+      AND: [
+        { name: { in: ["MORNING", "AFTERNOON", "EVENING"] } },
+      ],
+    },
+  });
+
+  for (const s of canonical) {
     await prisma.timeSlot.upsert({
       where: { name: s.name },
       create: s,
-      update: {},
+      update: { startTime: s.startTime, endTime: s.endTime, isActive: s.isActive },
     });
   }
+
+  console.log("✅ TimeSlots seeded & normalized");
 }
+
 
 async function seedServiceItemsAndPrices() {
   const items = [
-    // STORAGE (monthly)
     { id: "small_box", serviceType: ServiceType.STORAGE, sku: "small-box", name: "Small Box", unit: BillingUnit.PER_MONTH, price: 500 },
     { id: "medium_box", serviceType: ServiceType.STORAGE, sku: "medium-box", name: "Medium Box", unit: BillingUnit.PER_MONTH, price: 800 },
     { id: "large_box", serviceType: ServiceType.STORAGE, sku: "large-box", name: "Large Box", unit: BillingUnit.PER_MONTH, price: 1200 },
@@ -31,7 +104,6 @@ async function seedServiceItemsAndPrices() {
     { id: "half_container", serviceType: ServiceType.STORAGE, sku: "half-container", name: "Half Container", unit: BillingUnit.PER_MONTH, price: 7500 },
     { id: "full_container", serviceType: ServiceType.STORAGE, sku: "full-container", name: "Full Container", unit: BillingUnit.PER_MONTH, price: 15000 },
 
-    // MOVING (flat)
     { id: "small_move", serviceType: ServiceType.MOVING, sku: "small-move", name: "Small Move", unit: BillingUnit.FLAT, price: 29500 },
     { id: "one_bedroom_flat", serviceType: ServiceType.MOVING, sku: "1-bedroom-flat", name: "1 Bedroom Flat", unit: BillingUnit.FLAT, price: 44900 },
     { id: "two_bedroom_flat", serviceType: ServiceType.MOVING, sku: "2-bedroom-flat", name: "2 Bedroom Flat", unit: BillingUnit.FLAT, price: 79000 },
@@ -39,7 +111,6 @@ async function seedServiceItemsAndPrices() {
     { id: "four_bedroom_flat", serviceType: ServiceType.MOVING, sku: "4-bedroom-flat", name: "4 Bedroom Flat", unit: BillingUnit.FLAT, price: 135800 },
     { id: "office_move", serviceType: ServiceType.MOVING, sku: "office-move", name: "Office Move", unit: BillingUnit.FLAT, price: 175000 },
 
-    // SHREDDING (per item)
     { id: "bag", serviceType: ServiceType.SHREDDING, sku: "bag", name: "Bag", unit: BillingUnit.PER_ITEM, price: 1000 },
     { id: "archive_box", serviceType: ServiceType.SHREDDING, sku: "archive-box", name: "Archive Box", unit: BillingUnit.PER_ITEM, price: 1500 },
   ];
@@ -103,14 +174,12 @@ async function seedStorageDiscountTiers() {
 }
 
 async function seedAdminSettings() {
-  // 1. Ensure the global settings row exists
   const settings = await prisma.adminSettings.upsert({
     where: { id: SETTINGS_ID },
     update: {},
     create: { id: SETTINGS_ID },
   });
 
-  // 2. Time slot settings
   const slotDefaults = [
     { key: "MORNING", label: "Morning (7am – 10am)", enabled: true },
     { key: "AFTERNOON", label: "Afternoon (10am – 3pm)", enabled: true },
@@ -118,7 +187,6 @@ async function seedAdminSettings() {
   ];
 
   for (const s of slotDefaults) {
-    // Check for existing record manually since 'key' isn't @unique
     const existing = await prisma.timeSlotSetting.findFirst({
       where: { key: s.key, settingsId: settings.id }
     });
@@ -142,16 +210,11 @@ async function seedAdminSettings() {
       });
     }
   }
-
-  // ... rest of your capacity and weekday rule seeding
 }
 
 async function seedCapacityAndRules() {
   console.log("🧹 Initializing Capacity and Rules...");
 
-  // 1. Force the parent record to exist and capture the result
-  // Using 'upsert' ensures we don't crash if it exists, 
-  // and 'update' ensures we have the latest fields.
   const globalSettings = await prisma.adminSettings.upsert({
     where: { id: SETTINGS_ID },
     update: {
@@ -169,21 +232,19 @@ async function seedCapacityAndRules() {
     },
   });
 
-  // 2. Clear old rules to avoid constraint conflicts during seed
   await prisma.weekdayRule.deleteMany({ where: { settingsId: globalSettings.id } });
   await prisma.capacitySetting.deleteMany({ where: { settingsId: globalSettings.id } });
 
-  const days = Object.values(Weekday); // Use Prisma's enum values directly
+  const days = Object.values(Weekday);
   const services = [ServiceType.STORAGE, ServiceType.MOVING, ServiceType.SHREDDING];
 
-  // 3. Seed Weekday Rules
   for (const service of services) {
     for (const day of days) {
       const isWeekend = day === Weekday.SAT || day === Weekday.SUN;
 
       await prisma.weekdayRule.create({
         data: {
-          settingsId: globalSettings.id, // Reference the object we just upserted
+          settingsId: globalSettings.id,
           serviceType: service,
           weekday: day,
           enabled: !isWeekend,
@@ -201,7 +262,7 @@ async function seedCapacityAndRules() {
           settingsId: globalSettings.id,
           serviceType: service,
           slotKey: slot,
-          capacity: 100, // Defaulting to 5 for all slots
+          capacity: 100,
         },
       });
     }
@@ -211,7 +272,6 @@ async function seedCapacityAndRules() {
 async function seedMovingPackage() {
   console.log('🌱 Seeding Moving Packages and Prices...');
 
-  // 1. BASIC PACKAGE
   const basic = await prisma.movingPackage.upsert({
     where: { id: 'basic_package' },
     update: { name: 'Basic Package', isActive: true },
@@ -228,7 +288,7 @@ async function seedMovingPackage() {
     where: {
       packageId_currency: { packageId: basic.id, currency: 'GBP' }
     },
-    update: { priceMinor: 0 }, // Ensure price is 0
+    update: { priceMinor: 0 },
     create: {
       packageId: basic.id,
       currency: 'GBP',
@@ -236,8 +296,6 @@ async function seedMovingPackage() {
       isActive: true,
     },
   });
-
-  // 2. MOVE AND PACK
   const pack = await prisma.movingPackage.upsert({
     where: { id: 'move_and_pack' },
     update: { name: 'Move and Pack', isActive: true },
@@ -254,7 +312,7 @@ async function seedMovingPackage() {
     where: {
       packageId_currency: { packageId: pack.id, currency: 'GBP' }
     },
-    update: { priceMinor: 29500 }, // £290.00
+    update: { priceMinor: 29500 },
     create: {
       packageId: pack.id,
       currency: 'GBP',

@@ -393,14 +393,14 @@ export function ShreddingForm({
               const wk = weekdayKey(d).toUpperCase();
 
               const weekdayRule = scheduling.weekdayRules.find(
-                (r: any) => r.serviceType === "STORAGE" && r.weekday === wk
+                (r: any) => r.serviceType === "SHREDDING" && r.weekday === wk
               );
 
               if (weekdayRule && !weekdayRule.enabled) return true;
 
               return isDayFull({
                 orderFlow,
-                service: "storage",
+                service: "shredding",
                 dateISO: iso,
               });
             }}

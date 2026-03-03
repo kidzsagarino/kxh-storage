@@ -151,6 +151,9 @@ export function HeroQuoteBar() {
             className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
             onSubmit={(e) => e.preventDefault()}
         >
+            <p className="mb-2 py-0 px-0 text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                Choose a service
+            </p>
             {/* Main grid: left selectable + right description */}
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
                 {/* LEFT: selectable services */}
@@ -230,20 +233,20 @@ export function HeroQuoteBar() {
             </div> */}
 
             {/* Actions */}
-            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 mt-3">
                 <button
                     type="button"
                     onClick={onGetQuote}
-                    className="h-11 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 cursor-pointer sm:order-none order-1"
+                    className="h-11 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 cursor-pointer"
                 >
                     Get instant quote →
                 </button>
 
                 <a
                     href="tel:+441474396663"
-                    className="h-11 rounded-xl bg-[#4CAF50] px-4 text-sm font-semibold text-white inline-flex items-center justify-center gap-2 hover:bg-[#45A049] sm:order-none order-2"
+                    className="h-11 rounded-lg bg-[#4CAF50] px-4 text-sm font-semibold text-white inline-flex items-center justify-center gap-2 hover:bg-[#45A049]"
                 >
-                    Call Us
+                    Call An Expert
                 </a>
             </div>
             <div className="flex justify-center">

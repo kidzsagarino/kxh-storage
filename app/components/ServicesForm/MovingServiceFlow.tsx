@@ -49,7 +49,7 @@ function getDistance(fromLat: number, fromLon: number, toLat: number, toLon: num
 
     const miles2dp = haversineMiles(fromLat, fromLon, toLat, toLon);
 
-    return Math.ceil(miles2dp);
+    return Math.ceil(miles2dp > 0 ? miles2dp : 1);
 }
 
 type StepId = 0 | 1 | 2 | 3 | 4;
@@ -596,14 +596,14 @@ export function MovingForm({
 
                             const weekdayRule = scheduling.weekdayRules.find(
                                 (r: any) =>
-                                    r.serviceType === "STORAGE" && r.weekday === wk
+                                    r.serviceType === "MOVING" && r.weekday === wk
                             );
 
                             if (weekdayRule && !weekdayRule.enabled) return true;
 
                             return isDayFull({
                                 orderFlow,
-                                service: "storage",
+                                service: "moving",
                                 dateISO: iso,
                                 // volumesByTimeSlotId optional when you add volumes endpoint
                             });

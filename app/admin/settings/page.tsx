@@ -1,129 +1,9 @@
 "use client";
 
-import { useCheckoutSettings } from "@/app/components/checkout/CheckoutStore";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { getAdminSettings, saveAdminSettings, type PricingSettings } from "./action";
 
 type WeekdayKey = "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
-type WeekdayMap = Record<WeekdayKey, boolean>;
-type ServiceWeekdays = Record<"storage" | "moving" | "shredding", WeekdayMap>;
-
-
-type TimeSlot = {
-  id: "morning" | "afternoon" | "evening";
-  label: string;
-  range: string; // e.g. "7am – 10am"
-  enabled: boolean;
-};
-
-type PricingSettings = {
-  // Moving
-  pricePerMile: number;
-  movingHomeTypePrice: {
-    "small-move": number;
-    "1-bedroom-flat": number;
-    "2-bedroom-flat": number;
-    "3-bedroom-flat": number;
-    "4-bedroom-flat": number;
-    "office-move": number;
-  };
-  packingAssistancePrice: number; // used when yes
-
-  // Storage (example: price per month per item)
-  storagePricePerMonth: {
-    "small-box": number;
-    "medium-box": number;
-    "large-box": number;
-    "xl-box": number;
-    suitcase: number;
-    "half-container": number;
-    "full-container": number;
-  };
-  storageDiscounts: { months: 1 | 3 | 6 | 12; percentOff: number }[];
-
-  // Shredding
-  shredding: {
-    bagPrice: number;
-    archiveBoxPrice: number;
-  };
-
-  timeSlots: TimeSlot[];
-  serviceEnabled: {
-    storage: boolean;
-    moving: boolean;
-    shredding: boolean;
-  };
-  scheduling: {
-    disableAutoBlockSchedule: boolean; // true = don't auto-disable
-    // optional: volume-based caps (per service, per slot)
-    capacityEnabled: boolean;
-    capacityPerService: {
-      storage: { morning: number; afternoon: number; evening: number };
-      moving: { morning: number; afternoon: number; evening: number };
-      shredding: { morning: number; afternoon: number; evening: number };
-    };
-    weekdaysByService: ServiceWeekdays;
-    blackoutDates: string[];
-  };
-};
-
-const STORAGE_DEFAULT: PricingSettings = {
-  pricePerMile: 0.58,
-  movingHomeTypePrice: {
-    "small-move": 450,
-    "1-bedroom-flat": 650,
-    "2-bedroom-flat": 850,
-    "3-bedroom-flat": 1100,
-    "4-bedroom-flat": 1358,
-    "office-move": 1500,
-  },
-  packingAssistancePrice: 295,
-
-  storagePricePerMonth: {
-    "small-box": 5,
-    "medium-box": 8,
-    "large-box": 12,
-    "xl-box": 15,
-    suitcase: 10,
-    "half-container": 75,
-    "full-container": 150,
-  },
-  storageDiscounts: [
-    { months: 1, percentOff: 0 },
-    { months: 3, percentOff: 5 },
-    { months: 6, percentOff: 10 },
-    { months: 12, percentOff: 15 },
-  ],
-
-  shredding: {
-    bagPrice: 12,
-    archiveBoxPrice: 18,
-  },
-
-  timeSlots: [
-    { id: "morning", label: "Morning", range: "7am – 10am", enabled: true },
-    { id: "afternoon", label: "Afternoon", range: "10am – 3pm", enabled: true },
-    { id: "evening", label: "Evening", range: "3pm – 6pm", enabled: true },
-  ],
-
-  serviceEnabled: { storage: true, moving: true, shredding: true },
-  scheduling: {
-    disableAutoBlockSchedule: false,
-    capacityEnabled: true,
-    capacityPerService: {
-      storage: { morning: 6, afternoon: 8, evening: 6 },
-      moving: { morning: 3, afternoon: 3, evening: 2 },
-      shredding: { morning: 10, afternoon: 12, evening: 10 },
-    },
-    weekdaysByService: {
-      storage: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false },
-      moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
-      shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
-    },
-    blackoutDates: [],
-  },
-};
-
-const LS_KEY = "kxh_admin_settings_v1";
 
 function num(v: string) {
   const n = Number(v);
@@ -163,19 +43,89 @@ function Field({
           className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
         />
         {suffix ? (
-          <span className="whitespace-nowrap text-xs font-semibold text-slate-500">
-            {suffix}
-          </span>
+          <span className="whitespace-nowrap text-xs font-semibold text-slate-500">{suffix}</span>
         ) : null}
       </div>
     </label>
   );
 }
 
+// ✅ typed Object.entries helper (so you can remove "as any" everywhere)
+function typedEntries<T extends Record<string, any>>(obj: T) {
+  return Object.entries(obj) as { [K in keyof T]-?: [K, T[K]] }[keyof T][];
+}
+
 export default function AdminSettingsPage() {
-  const [settings, setSettings] = useState<PricingSettings>(STORAGE_DEFAULT);
+  // Keep a fallback while loading (if action fails)
+  const FALLBACK_DEFAULT = useMemo(
+    () =>
+      ({
+        pricePerMile: 0.58,
+        movingHomeTypePrice: {
+          "small-move": 450,
+          "1-bedroom-flat": 650,
+          "2-bedroom-flat": 850,
+          "3-bedroom-flat": 1100,
+          "4-bedroom-flat": 1358,
+          "office-move": 1500,
+        },
+        packingAssistancePrice: 295,
+        storagePricePerMonth: {
+          "small-box": 5,
+          "medium-box": 8,
+          "large-box": 12,
+          "xl-box": 15,
+          suitcase: 10,
+          "half-container": 75,
+          "full-container": 150,
+        },
+        storageDiscounts: [
+          { months: 1, percentOff: 0 },
+          { months: 3, percentOff: 5 },
+          { months: 6, percentOff: 10 },
+          { months: 12, percentOff: 15 },
+        ],
+        shredding: { bagPrice: 12, archiveBoxPrice: 18 },
+        timeSlots: [
+          { id: "morning", label: "Morning", range: "7am – 10am", enabled: true },
+          { id: "afternoon", label: "Afternoon", range: "10am – 3pm", enabled: true },
+          { id: "evening", label: "Evening", range: "3pm – 6pm", enabled: true },
+        ],
+        serviceEnabled: { storage: true, moving: true, shredding: true },
+        scheduling: {
+          disableAutoBlockSchedule: false,
+          capacityEnabled: true,
+          capacityPerService: {
+            storage: { morning: 6, afternoon: 8, evening: 6 },
+            moving: { morning: 3, afternoon: 3, evening: 2 },
+            shredding: { morning: 10, afternoon: 12, evening: 10 },
+          },
+          weekdaysByService: {
+            storage: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false },
+            moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
+            shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
+          },
+          blackoutDates: [],
+        },
+        movingPackagePrices: {
+          basic_package: 0,
+          move_and_pack: 295,
+        },
+      }) as PricingSettings,
+    []
+  );
+
+  const [settings, setSettings] = useState<PricingSettings>(FALLBACK_DEFAULT);
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [newBlackoutDate, setNewBlackoutDate] = useState("");
+
+  // snapshot used for "Unsaved changes" indicator
+  const initialJsonRef = useRef<string>("");
 
   const WEEKDAYS: { key: WeekdayKey; label: string }[] = [
     { key: "mon", label: "Mon" },
@@ -189,39 +139,60 @@ export default function AdminSettingsPage() {
 
   const SERVICES = ["storage", "moving", "shredding"] as const;
 
-  // Load from localStorage
+  // ✅ Load from DB via server action
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      if (raw) setSettings(JSON.parse(raw));
-    } catch {
-      // ignore
-    }
-  }, []);
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setErrorMsg(null);
+      try {
+        const data = await getAdminSettings();
+        if (cancelled) return;
+        setSettings(data);
+        initialJsonRef.current = JSON.stringify(data);
+      } catch (e) {
+        if (cancelled) return;
+        setSettings(FALLBACK_DEFAULT);
+        initialJsonRef.current = JSON.stringify(FALLBACK_DEFAULT);
+        setErrorMsg("Failed to load settings. Showing defaults.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [FALLBACK_DEFAULT]);
 
   const hasChanges = useMemo(() => {
+    // if still loading, treat as "saved" (optional)
+    if (loading) return false;
+    return JSON.stringify(settings) !== initialJsonRef.current;
+  }, [settings, loading]);
+
+  async function save() {
+    setSaving(true);
+    setErrorMsg(null);
     try {
-      const raw = localStorage.getItem(LS_KEY);
-      if (!raw) return true;
-      return raw !== JSON.stringify(settings);
-    } catch {
-      return true;
+      await saveAdminSettings(settings);
+      initialJsonRef.current = JSON.stringify(settings);
+      setSavedMsg("Saved.");
+      window.setTimeout(() => setSavedMsg(null), 1500);
+    } catch (e) {
+      setErrorMsg("Save failed.");
+      window.setTimeout(() => setErrorMsg(null), 2500);
+    } finally {
+      setSaving(false);
     }
-  }, [settings]);
+  }
 
-  function save() {
-    localStorage.setItem(LS_KEY, JSON.stringify(settings));
-    setSavedMsg("Saved.");
+  async function reset() {
+    // Reset to fallback defaults locally (and optionally save)
+    setSettings(FALLBACK_DEFAULT);
+    setSavedMsg("Reset to defaults (not saved).");
     window.setTimeout(() => setSavedMsg(null), 1500);
   }
 
-  function reset() {
-    localStorage.removeItem(LS_KEY);
-    setSettings(STORAGE_DEFAULT);
-    setSavedMsg("Reset to defaults.");
-    window.setTimeout(() => setSavedMsg(null), 1500);
-  }
-  
   return (
     <main className="space-y-4">
       {/* Header */}
@@ -229,48 +200,48 @@ export default function AdminSettingsPage() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-lg font-semibold text-slate-900">Settings</h1>
-            <p className="text-xs text-slate-500">
-              Dummy settings stored locally. Wire to DB later.
-            </p>
+            <p className="text-xs text-slate-500">Stored in DB via server actions.</p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={reset}
-              className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              disabled={saving || loading}
+              className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50"
             >
               Reset
             </button>
             <button
               type="button"
               onClick={save}
-              className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800"
+              disabled={saving || loading || !hasChanges}
+              className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
             >
-              Save
+              {saving ? "Saving..." : "Save"}
             </button>
           </div>
         </div>
 
-        <div className="mt-2 flex items-center gap-2 text-xs">
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
           <span
-            className={`inline-flex rounded-full border px-2 py-1 font-semibold ${hasChanges
-              ? "bg-amber-50 text-amber-800 border-amber-200"
-              : "bg-emerald-50 text-emerald-800 border-emerald-200"
+            className={`inline-flex rounded-full border px-2 py-1 font-semibold ${loading
+              ? "bg-slate-50 text-slate-700 border-slate-200"
+              : hasChanges
+                ? "bg-amber-50 text-amber-800 border-amber-200"
+                : "bg-emerald-50 text-emerald-800 border-emerald-200"
               }`}
           >
-            {hasChanges ? "Unsaved changes" : "All saved"}
+            {loading ? "Loading..." : hasChanges ? "Unsaved changes" : "All saved"}
           </span>
           {savedMsg ? <span className="text-slate-600">{savedMsg}</span> : null}
+          {errorMsg ? <span className="text-rose-600 font-semibold">{errorMsg}</span> : null}
         </div>
       </div>
 
       {/* Service Toggles */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
-        <SectionTitle
-          title="Services"
-          desc="Enable or disable services shown in the quote flow."
-        />
+        <SectionTitle title="Services" desc="Enable or disable services shown in the quote flow." />
 
         <div className="grid gap-3 sm:grid-cols-3">
           {(["storage", "moving", "shredding"] as const).map((k) => (
@@ -278,9 +249,7 @@ export default function AdminSettingsPage() {
               key={k}
               className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
             >
-              <span className="text-sm font-semibold capitalize text-slate-900">
-                {k}
-              </span>
+              <span className="text-sm font-semibold capitalize text-slate-900">{k}</span>
               <input
                 type="checkbox"
                 checked={settings.serviceEnabled[k]}
@@ -313,48 +282,75 @@ export default function AdminSettingsPage() {
             label="Packing assistance (Yes) add-on"
             value={settings.packingAssistancePrice}
             suffix="£"
-            onChange={(n) =>
-              setSettings((s) => ({ ...s, packingAssistancePrice: n }))
-            }
+            onChange={(n) => setSettings((s) => ({ ...s, packingAssistancePrice: n }))}
           />
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(settings.movingHomeTypePrice).map(([k, v]) => (
+          {typedEntries(settings.movingHomeTypePrice).map(([k, v]) => (
             <Field
-              key={k}
-              label={k.replaceAll("-", " ")}
+              key={String(k)}
+              label={String(k).replaceAll("-", " ")}
               value={v}
               suffix="£"
               onChange={(n) =>
                 setSettings((s) => ({
                   ...s,
-                  movingHomeTypePrice: { ...s.movingHomeTypePrice, [k]: n } as any,
+                  movingHomeTypePrice: { ...s.movingHomeTypePrice, [k]: n },
                 }))
               }
             />
           ))}
         </div>
       </div>
-
-      {/* Storage */}
+      {/* Moving packages */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
         <SectionTitle
-          title="Storage pricing"
-          desc="Price per month per item + discounts."
+          title="Moving packages"
+          desc="Set add-on package pricing (used for package selection in moving checkout)."
         />
 
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label="Basic package"
+            value={settings.movingPackagePrices.basic_package}
+            suffix="£"
+            onChange={(n) =>
+              setSettings((s) => ({
+                ...s,
+                movingPackagePrices: { ...s.movingPackagePrices, basic_package: n },
+              }))
+            }
+          />
+
+          <Field
+            label="Move & Pack package"
+            value={settings.movingPackagePrices.move_and_pack}
+            suffix="£"
+            onChange={(n) =>
+              setSettings((s) => ({
+                ...s,
+                movingPackagePrices: { ...s.movingPackagePrices, move_and_pack: n },
+              }))
+            }
+          />
+        </div>
+      </div>
+      {/* Storage */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+        <SectionTitle title="Storage pricing" desc="Price per month per item + discounts." />
+
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(settings.storagePricePerMonth).map(([k, v]) => (
+          {typedEntries(settings.storagePricePerMonth).map(([k, v]) => (
             <Field
-              key={k}
-              label={k.replaceAll("-", " ")}
+              key={String(k)}
+              label={String(k).replaceAll("-", " ")}
               value={v}
               suffix="£ / mo"
               onChange={(n) =>
                 setSettings((s) => ({
                   ...s,
-                  storagePricePerMonth: { ...s.storagePricePerMonth, [k]: n } as any,
+                  storagePricePerMonth: { ...s.storagePricePerMonth, [k]: n },
                 }))
               }
             />
@@ -366,9 +362,7 @@ export default function AdminSettingsPage() {
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {settings.storageDiscounts.map((d, idx) => (
               <label key={d.months} className="grid gap-1">
-                <span className="text-xs font-semibold text-slate-600">
-                  {d.months} months (% off)
-                </span>
+                <span className="text-xs font-semibold text-slate-600">{d.months} months (% off)</span>
                 <input
                   inputMode="numeric"
                   value={String(d.percentOff)}
@@ -376,9 +370,7 @@ export default function AdminSettingsPage() {
                     const percentOff = num(e.target.value);
                     setSettings((s) => ({
                       ...s,
-                      storageDiscounts: s.storageDiscounts.map((x, i) =>
-                        i === idx ? { ...x, percentOff } : x
-                      ),
+                      storageDiscounts: s.storageDiscounts.map((x, i) => (i === idx ? { ...x, percentOff } : x)),
                     }));
                   }}
                   className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
@@ -391,50 +383,31 @@ export default function AdminSettingsPage() {
 
       {/* Shredding */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
-        <SectionTitle
-          title="Shredding pricing"
-          desc="Set unit prices for shredding items."
-        />
+        <SectionTitle title="Shredding pricing" desc="Set unit prices for shredding items." />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
             label="Bag price"
             value={settings.shredding.bagPrice}
             suffix="£"
-            onChange={(n) =>
-              setSettings((s) => ({
-                ...s,
-                shredding: { ...s.shredding, bagPrice: n },
-              }))
-            }
+            onChange={(n) => setSettings((s) => ({ ...s, shredding: { ...s.shredding, bagPrice: n } }))}
           />
           <Field
             label="Archive box price"
             value={settings.shredding.archiveBoxPrice}
             suffix="£"
-            onChange={(n) =>
-              setSettings((s) => ({
-                ...s,
-                shredding: { ...s.shredding, archiveBoxPrice: n },
-              }))
-            }
+            onChange={(n) => setSettings((s) => ({ ...s, shredding: { ...s.shredding, archiveBoxPrice: n } }))}
           />
         </div>
       </div>
 
       {/* Time Slots */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
-        <SectionTitle
-          title="Time slots"
-          desc="Control which time slots appear in the booking flow."
-        />
+        <SectionTitle title="Time slots" desc="Control which time slots appear in the booking flow." />
 
         <div className="grid gap-3 sm:grid-cols-3">
           {settings.timeSlots.map((t, idx) => (
-            <div
-              key={t.id}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3"
-            >
+            <div key={t.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="text-sm font-semibold text-slate-900">{t.label}</div>
                 <input
@@ -443,9 +416,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) =>
                     setSettings((s) => ({
                       ...s,
-                      timeSlots: s.timeSlots.map((x, i) =>
-                        i === idx ? { ...x, enabled: e.target.checked } : x
-                      ),
+                      timeSlots: s.timeSlots.map((x, i) => (i === idx ? { ...x, enabled: e.target.checked } : x)),
                     }))
                   }
                   className="h-5 w-5"
@@ -459,9 +430,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) =>
                     setSettings((s) => ({
                       ...s,
-                      timeSlots: s.timeSlots.map((x, i) =>
-                        i === idx ? { ...x, label: e.target.value } : x
-                      ),
+                      timeSlots: s.timeSlots.map((x, i) => (i === idx ? { ...x, label: e.target.value } : x)),
                     }))
                   }
                   className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
@@ -475,9 +444,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) =>
                     setSettings((s) => ({
                       ...s,
-                      timeSlots: s.timeSlots.map((x, i) =>
-                        i === idx ? { ...x, range: e.target.value } : x
-                      ),
+                      timeSlots: s.timeSlots.map((x, i) => (i === idx ? { ...x, range: e.target.value } : x)),
                     }))
                   }
                   className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
@@ -488,12 +455,9 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-
+      {/* Weekday availability */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
-        <SectionTitle
-          title="Weekday availability (per service)"
-          desc="Choose which weekdays can be booked for each service."
-        />
+        <SectionTitle title="Weekday availability (per service)" desc="Choose which weekdays can be booked for each service." />
 
         <div className="grid gap-3 lg:grid-cols-3">
           {SERVICES.map((svc) => (
@@ -537,22 +501,17 @@ export default function AdminSettingsPage() {
 
       {/* Scheduling */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
-        <SectionTitle
-          title="Scheduling"
-          desc="Control auto-disabling dates/time slots and volume-based capacity limits."
-        />
+        <SectionTitle title="Scheduling" desc="Control blackout dates and volume-based capacity limits." />
+
         {/* Blackout dates */}
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-sm font-semibold text-slate-900">Blackout dates</div>
-              <p className="mt-1 text-xs text-slate-500">
-                Disable booking for specific dates (YYYY-MM-DD).
-              </p>
+              <p className="mt-1 text-xs text-slate-500">Disable booking for specific dates (YYYY-MM-DD).</p>
             </div>
           </div>
 
-          {/* Add date */}
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
             <input
               type="date"
@@ -565,8 +524,6 @@ export default function AdminSettingsPage() {
               onClick={() => {
                 const d = newBlackoutDate;
                 if (!d) return;
-
-                // Basic YYYY-MM-DD check
                 if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
 
                 setSettings((s) => {
@@ -574,10 +531,7 @@ export default function AdminSettingsPage() {
                   existing.add(d);
                   return {
                     ...s,
-                    scheduling: {
-                      ...s.scheduling,
-                      blackoutDates: Array.from(existing).sort(),
-                    },
+                    scheduling: { ...s.scheduling, blackoutDates: Array.from(existing).sort() },
                   };
                 });
 
@@ -589,7 +543,6 @@ export default function AdminSettingsPage() {
             </button>
           </div>
 
-          {/* List */}
           <div className="mt-3 space-y-2">
             {settings.scheduling.blackoutDates.length === 0 ? (
               <div className="text-xs text-slate-500">No blackout dates.</div>
@@ -624,57 +577,10 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-
-        {/* <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-          <input
-            type="checkbox"
-            className="mt-1 h-4 w-4"
-            checked={settings.scheduling.disableAutoBlockSchedule}
-            onChange={(e) =>
-              setSettings((s) => ({
-                ...s,
-                scheduling: { ...s.scheduling, disableAutoBlockSchedule: e.target.checked },
-              }))
-            }
-          />
-          <div className="min-w-0">
-            <div className="text-sm font-semibold text-slate-900">
-              Disable auto-blocking for Date & Time Slot
-            </div>
-            <div className="text-xs text-slate-600">
-              When enabled, your booking flow will not automatically disable dates or time slots.
-            </div>
-          </div>
-        </label>
-
-        <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-          <input
-            type="checkbox"
-            className="mt-1 h-4 w-4"
-            checked={settings.scheduling.capacityEnabled}
-            onChange={(e) =>
-              setSettings((s) => ({
-                ...s,
-                scheduling: { ...s.scheduling, capacityEnabled: e.target.checked },
-              }))
-            }
-          />
-          <div className="min-w-0">
-            <div className="text-sm font-semibold text-slate-900">
-              Enable volume-based capacity limits
-            </div>
-            <div className="text-xs text-slate-600">
-              Auto-disable specific days/time slots once order volume reaches the limit.
-            </div>
-          </div>
-        </label> */}
-
         {/* Capacity grid */}
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <div className="text-sm font-semibold text-slate-900">Capacity per slot</div>
-          <p className="mt-1 text-xs text-slate-500">
-            Orders allowed per service per time slot (morning/afternoon/evening).
-          </p>
+          <p className="mt-1 text-xs text-slate-500">Orders allowed per service per time slot.</p>
 
           <div className="mt-3 grid gap-3 lg:grid-cols-3">
             {(["storage", "moving", "shredding"] as const).map((svc) => (
@@ -684,9 +590,7 @@ export default function AdminSettingsPage() {
                 <div className="grid gap-3">
                   {(["morning", "afternoon", "evening"] as const).map((slot) => (
                     <label key={slot} className="grid gap-1">
-                      <span className="text-xs font-semibold text-slate-600">
-                        {slot} cap
-                      </span>
+                      <span className="text-xs font-semibold text-slate-600">{slot} cap</span>
                       <input
                         inputMode="numeric"
                         value={String(settings.scheduling.capacityPerService[svc][slot])}
@@ -719,38 +623,3 @@ export default function AdminSettingsPage() {
     </main>
   );
 }
-
-// export function ScheduleSettings() {
-//   const { settings, setSettings } = useCheckoutSettings();
-
-//   return (
-//     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-//       <div>
-//         <h2 className="text-sm font-semibold text-slate-900">Scheduling</h2>
-//         <p className="text-xs text-slate-500">
-//           Control whether dates and time slots are automatically disabled.
-//         </p>
-//       </div>
-
-//       <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-//         <input
-//           type="checkbox"
-//           className="mt-1 h-4 w-4"
-//           checked={settings.disableAutoBlockSchedule}
-//           onChange={(e) =>
-//             setSettings((s) => ({ ...s, disableAutoBlockSchedule: e.target.checked }))
-//           }
-//         />
-//         <div className="min-w-0">
-//           <div className="text-sm font-semibold text-slate-900">
-//             Disable auto-blocking for Date & Time Slot
-//           </div>
-//           <div className="text-xs text-slate-600">
-//             When enabled, the calendar and time slots will not be auto-disabled (e.g. past
-//             dates / unavailable slots).
-//           </div>
-//         </div>
-//       </label>
-//     </section>
-//   );
-// }

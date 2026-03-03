@@ -109,9 +109,7 @@ export default async function HomePage() {
                     <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-4 sm:px-6 lg:px-8 py-10 md:grid-cols-2">
 
                         <div className="relative z-10">
-                            <p className="absolute -top-6 left-0 text-[11px] font-medium uppercase tracking-wide text-slate-400">
-                                Choose a service
-                            </p>
+                        
                             <HeroQuoteBar />
                         </div>
                         <div className="relative">
