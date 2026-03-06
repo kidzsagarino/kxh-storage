@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
         };
 
         // Header Branding
-        page.drawText("KXH", { x: margin, y: height - 60, font: fontBold, size: 24, color: ACCENT_GREEN });
+        page.drawText("KXH", { x: margin, y: height - 60, font: fontBold, size: 24, color: PRIMARY_TEXT });
         page.drawText("LOGISTICS", { x: margin + 55, y: height - 60, font: font, size: 20, color: PRIMARY_TEXT });
         drawRightText("RECEIPT", width - margin, height - 60, { font: fontBold, size: 22 });
 
