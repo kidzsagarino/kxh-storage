@@ -64,6 +64,14 @@ export function buildYearOptions(yearsBack = 6) {
   return out;
 }
 
+function fmtDate(value: any) {
+  if (!value) return "—";
+  const d = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(d.getTime())
+    ? "—"
+    : d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<OrderWithCustomer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -169,6 +177,7 @@ export default function AdminOrdersPage() {
                   <th className="px-4 py-4">Service Date</th>
                   <th className="px-4 py-4">Order Status</th>
                   <th className="px-4 py-4">Payment Status</th>
+                  <th className="px-4 py-4">Next Billing</th>
                   <th className="px-4 py-4 text-right">Total</th>
                 </tr>
               </thead>
@@ -210,7 +219,7 @@ export default function AdminOrdersPage() {
 
                       </td>
                       <td className="px-4 py-4">
-                        { o.notes }
+                        {o.notes}
 
                       </td>
                       <td className="px-4 py-4">
@@ -239,6 +248,15 @@ export default function AdminOrdersPage() {
                       </td>
                       <td className="px-4 py-4">
                         {o.payments[0]?.status}
+                      </td>
+                      <td className="px-4 py-4">
+                        {String(o.serviceType).toUpperCase() === "STORAGE" ? (
+                          <div className="font-medium text-slate-900">
+                            {fmtDate(o.nextBillingAt ?? o.subscription?.nextBillingAt)}
+                          </div>
+                        ) : (
+                          <span className="text-slate-400">—</span>
+                        )}
                       </td>
                       <td className="px-4 py-4 text-right">
                         <div className="font-bold text-slate-900">

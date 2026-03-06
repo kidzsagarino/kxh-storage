@@ -47,11 +47,20 @@ function payBadge(status: string) {
   }
 }
 
+function formatNextBilling(value: any) {
+  if (!value) return "—";
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("en-GB", { dateStyle: "medium" });
+}
+
 export default function AdminOrderByIdPage() {
   const params = useParams<{ id: string }>();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [markingDone, setMarkingDone] = useState(false);
+  const [sendDropoff, setSendDropoff] = useState(false);
 
   useEffect(() => {
     async function loadOrder() {
@@ -96,6 +105,7 @@ export default function AdminOrderByIdPage() {
   const deliveryAddress = order.addresses?.find((a: any) => a.type === "DROPOFF");
   const stripePayment = order.payments;
   const slot = order.timeSlot;
+  const nextBillingAt = order?.subscription?.nextBillingAt ?? order?.nextBillingAt ?? order?.billing?.nextBillingAt ?? null;
 
   const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
   const isMoving = order.serviceType?.toUpperCase() === "MOVING";
@@ -284,9 +294,9 @@ export default function AdminOrderByIdPage() {
                   <div className="mt-1 text-sm font-medium text-slate-900">
                     {order.notes}
                   </div>
-                 
+
                 </div>
-              ) }
+              )}
             </div>
           </section>
 
@@ -417,6 +427,7 @@ export default function AdminOrderByIdPage() {
                 <div className="text-xs text-emerald-700">
                   {durationMonths} month plan • {discountPercent}% off
                 </div>
+
               </div>
 
               <div className="pt-2 border-t border-slate-100 flex justify-between items-baseline">
@@ -424,7 +435,19 @@ export default function AdminOrderByIdPage() {
                 <span className="font-bold text-xl text-slate-900">{money(order.totalMinor / 100)}</span>
               </div>
             </div>
-
+            {isStorage && (
+              <div className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600 font-semibold">Next billing cycle</span>
+                  <span className="font-bold text-slate-900">
+                    {formatNextBilling(nextBillingAt)}
+                  </span>
+                </div>
+                <div className="mt-1 text-xs text-slate-500">
+                  Based on the active subscription period end
+                </div>
+              </div>
+            )}
             <div className="flex flex-col gap-4">
               <span className="text-sm font-semibold text-slate-600">Payment History</span>
 
@@ -482,10 +505,67 @@ export default function AdminOrderByIdPage() {
                 Print Manifest
               </button>
               <button
-                onClick={() => alert("Email functionality wire-up required")}
-                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                disabled={sendDropoff}
+                onClick={async () => {
+                  if (!order?.id) return;
+
+                  setSendDropoff(true);
+                  try {
+                    const res = await fetch(`/api/orders/send-dropoff`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ orderId: order.id }),
+                    });
+
+                    if (res.ok) {
+                      alert("Drop-off confirmation email sent.");
+                    } else {
+                      const j = await res.json().catch(() => ({}));
+                      alert(j?.error ?? "Failed to send drop-off email.");
+                    }
+                  } finally {
+                    setSendDropoff(false);
+                  }
+                }}
+                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50"
               >
-                Email Customer
+                {sendDropoff ? "Sending..." : "Send Dropoff Email"}
+              </button>
+              <button
+                disabled={markingDone}
+                onClick={async () => {
+                  if (!order?.id) return;
+
+                  setMarkingDone(true);
+                  try {
+                    const res = await fetch(`/api/orders/mark-completed`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ orderId: order.id }),
+                    });
+
+                    const j = await res.json().catch(() => ({}));
+
+                    if (res.ok) {
+                      alert("Order marked as COMPLETED and email sent.");
+                      // Update UI instantly:
+                      setOrder((prev: any) => ({ ...prev, status: "COMPLETED" }));
+                      // Optional: re-fetch to refresh emailLogs
+                      const fresh = await getOrderById(order.id);
+                      setOrder(fresh);
+                    } else {
+                      alert(j?.error ?? "Failed to complete order.");
+                      // Still re-fetch because status might be updated even if email failed
+                      const fresh = await getOrderById(order.id);
+                      setOrder(fresh);
+                    }
+                  } finally {
+                    setMarkingDone(false);
+                  }
+                }}
+                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50"
+              >
+                {markingDone ? "Processing..." : "Mark Completed + Email"}
               </button>
               <button
                 onClick={async () => {
@@ -506,6 +586,32 @@ export default function AdminOrderByIdPage() {
                 Send Receipt PDF
               </button>
             </div>
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h2 className="text-sm font-semibold text-slate-900">Email Logs</h2>
+
+              <div className="mt-3 space-y-2">
+                {order.emailLogs?.length ? (
+                  order.emailLogs.map((l: any) => (
+                    <div key={l.id} className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-slate-900">
+                          {l.type} • {l.status}
+                        </div>
+                        <div className="text-xs text-slate-600 break-all">To: {l.to}</div>
+                        {l.subject && <div className="text-xs text-slate-600">Subject: {l.subject}</div>}
+                        {l.error && <div className="text-xs text-rose-600 mt-1 break-all">Error: {l.error}</div>}
+                      </div>
+
+                      <div className="shrink-0 text-[10px] text-slate-500">
+                        {new Date(l.createdAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-slate-500">No emails sent yet.</div>
+                )}
+              </div>
+            </section>
           </div>
         </aside>
       </div>

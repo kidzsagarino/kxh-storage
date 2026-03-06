@@ -159,6 +159,8 @@ export function StorageForm({
     const timeSlots = orderFlow && orderFlow.timeSlots;
     const [orderId, setOrderId] = useState<string | null>(null);
 
+    console.log(orderFlow);
+
     const inc = (id: string) => {
         if (!orderFlow) return;
 
@@ -185,6 +187,15 @@ export function StorageForm({
             },
         }));
     };
+    const visibleSlots = useMemo(() => {
+        if (!timeSlots) return [];
+        const active = timeSlots.filter((s: any) => s && (s.isActive ?? true));
+        const map = new Map<string, any>();
+        for (const s of active) {
+            if (!map.has(String(s.id))) map.set(String(s.id), s);
+        }
+        return Array.from(map.values());
+    }, [timeSlots]);
 
     const totalItems = useMemo(
         () =>
@@ -203,8 +214,8 @@ export function StorageForm({
 
     const detailsOk =
         (state.address.houseNumber ?? "").trim().length > 0 &&
+        (state.address.streetAddress ?? "").trim().length > 0 &&
         isValidGBPhone(state.customerDetails.phone ?? "");
-    (state.address.streetAddress ?? "").trim().length > 0;
 
     const canGoNext =
         (step === 0 && durationOk) ||
@@ -281,7 +292,7 @@ export function StorageForm({
         return () => clearTimeout(t);
     }, [addressQuery, openAddress]);
 
-    const goNext = () => setStep((s) => (Math.min(4, s + 1) as StepId));
+    const goNext = () => setStep((s) => (Math.min(LAST_STEP, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
     return (
@@ -490,7 +501,7 @@ export function StorageForm({
                         <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full">
-                            {timeSlots.map((slot: any) => {
+                            {visibleSlots.map((slot: any) => {
                                 const dateISO = state.collectionDate;
 
                                 const slotIsFull =
@@ -501,12 +512,14 @@ export function StorageForm({
                                         service: "storage",
                                         dateISO,
                                         timeSlotId: slot.id,
-                                        // volumesByTimeSlotId,     // optional later when you have volumes endpoint
                                     });
 
                                 const selected = state.timeSlotId === slot.id;
 
-                                const rangeLabel = `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`;
+                                const rangeLabel =
+                                    slot.startTime && slot.endTime
+                                        ? `${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)}`
+                                        : slot.range ?? "";
 
                                 function selectSlot() {
                                     if (slotIsFull) return;

@@ -15,6 +15,7 @@ export async function getOrderById(id: string) {
       timeSlot: true,
       movingPackage: { include: { prices: { where: { isActive: true, currency: "GBP" } } } },
       storageDiscountTier: true,
+      emailLogs: { orderBy: { createdAt: "desc" } },
     },
   });
 
