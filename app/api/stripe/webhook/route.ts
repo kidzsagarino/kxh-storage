@@ -5,7 +5,7 @@ import { PaymentStatus, OrderStatus, ServiceType } from "@prisma/client";
 export const runtime = "nodejs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2026-01-28.clover",
+    //apiVersion: "2026-01-28.clover",
 });
 
 function addMonthsUTC(date: Date, months: number) {
