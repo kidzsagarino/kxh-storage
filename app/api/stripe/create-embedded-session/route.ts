@@ -4,7 +4,7 @@ import { prisma } from "@/src/lib/prisma";
 import { PaymentProvider, PaymentStatus, OrderStatus } from "@prisma/client";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-01-28.clover",
+  //apiVersion: "2026-01-28.clover",
 });
 
 type Body = {
