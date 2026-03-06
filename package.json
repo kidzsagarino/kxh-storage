@@ -2,9 +2,10 @@
   "name": "kxh-storage",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+
+    "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && prisma db seed && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate"
