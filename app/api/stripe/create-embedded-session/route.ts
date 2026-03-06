@@ -243,7 +243,6 @@ export async function POST(req: NextRequest) {
       currency,
     });
   } catch (err: any) {
-    console.log(err);
     return NextResponse.json({ error: err?.message ?? "Server error" }, { status: 500 });
   }
 }

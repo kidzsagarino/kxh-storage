@@ -188,7 +188,6 @@ export default async function SuccessPage({ searchParams }: Props) {
   const timeSlot: OrderTimeSlot = order?.timeSlot ?? null;
   const primaryAddr = order?.addresses?.[0];
 
-  console.log(order);
   // Build display rows (what user sees)
   const rows: { key: string; label: string; qty: number; minor: number }[] = [];
 
