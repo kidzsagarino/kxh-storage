@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
+import CrispChat from "./components/chat/CrispChat";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -61,20 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body>
         <CheckoutProvider>{children}</CheckoutProvider>
-        <Script id="tawkto" strategy="afterInteractive">
-          {`
-            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-              var s1=document.createElement("script"),
-              s0=document.getElementsByTagName("script")[0];
-              s1.async=true;
-              s1.src='https://embed.tawk.to/69149f9ffcc0e1195703fef0/1j9s8v2nj';
-              s1.charset='UTF-8';
-              s1.setAttribute('crossorigin','*');
-              s0.parentNode.insertBefore(s1,s0);
-            })();
-          `}
-        </Script>
+        <CrispChat />
       </body>
     </html>
 

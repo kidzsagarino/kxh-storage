@@ -226,21 +226,49 @@ export async function POST(req: NextRequest) {
 
         const pdfBytes = await pdfDoc.save();
 
-        await sendEmail({
-            //to: "kennedysagarino@gmail.com",
-            to: order.customer.email || "hello@kxhlogistics.co.uk",
-            subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
-            html: `<p>Thank you for your order. Please find your receipt attached.</p>`,
-            attachments: [{
-                filename: `receipt-${order.orderNumber || 'order'}.pdf`,
-                content: Buffer.from(pdfBytes),
-                contentType: "application/pdf",
-            }],
-        });
+        try {
+            await sendEmail({
+                to: order.customer.email || "hello@kxhlogistics.co.uk",
+                subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
+                html: `<p>Thank you for your order. Please find your receipt attached.</p>`,
+                attachments: [{
+                    filename: `receipt-${order.orderNumber || 'order'}.pdf`,
+                    content: Buffer.from(pdfBytes),
+                    contentType: "application/pdf",
+                }],
+            });
+
+            await prisma.emailLog.create({
+                data: {
+                    orderId: order.id,
+                    type: "RECEIPT",
+                    to: order.customer.email || "hello@kxhlogistics.co.uk",
+                    subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
+                    status: "SENT",
+                    provider: "SEND GRID"
+                },
+            });
+
+        }
+        catch (err: any) {
+            await prisma.emailLog.create({
+                data: {
+                    orderId: order.id,
+                    type: "RECEIPT",
+                    to: order.customer.email || "hello@kxhlogistics.co.uk",
+                    subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
+                    status: "FAILED",
+                    provider: "SENDGRID",
+                    error: String(err?.message ?? err),
+                },
+            });
+            console.error("Email sending failed:", err);
+        }
 
         return NextResponse.json({ ok: true });
     } catch (err: any) {
         console.error(err);
+
         return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
     }
 }

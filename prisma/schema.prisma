@@ -235,6 +235,7 @@ model Order {
   items     OrderItem[]
   addresses Address[]
   payments  Payment[]
+  emailLogs EmailLog[]
 
   @@index([customerId])
   @@index([status])
@@ -402,4 +403,38 @@ model SubscriptionInvoice {
   @@index([customerId])
   @@index([stripeSubscriptionId])
   @@index([createdAt])
+}
+
+model EmailLog {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  type    EmailLogType
+  to      String
+  subject String?
+
+  status      EmailLogStatus @default(SENT)
+  provider    String?
+  providerRef String?
+  error       String?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([type])
+  @@index([status])
+}
+
+enum EmailLogType {
+  RECEIPT
+  DROPOFF
+  OTHER
+  COMPLETED
+}
+
+enum EmailLogStatus {
+  SENT
+  FAILED
 }
