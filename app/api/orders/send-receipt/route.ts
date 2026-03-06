@@ -94,9 +94,9 @@ export async function POST(req: NextRequest) {
         };
 
         // Header Branding
-        page.drawText("KXH", { x: margin, y: height - 60, font: fontBold, size: 24, color: PRIMARY_TEXT });
-        page.drawText("LOGISTICS", { x: margin + 55, y: height - 60, font: font, size: 20, color: PRIMARY_TEXT });
-        drawRightText("RECEIPT", width - margin, height - 60, { font: fontBold, size: 22 });
+        page.drawText("KXH LOGISTICS", { x: margin, y: height - 60, font: fontBold, size: 20, color: PRIMARY_TEXT });
+        //page.drawText("LOGISTICS", { x: margin +50, y: height - 60, font: fontBold, size: 20, color: PRIMARY_TEXT });
+        drawRightText("RECEIPT", width - margin, height - 60, { font: fontBold, size: 18 });
 
         page.drawLine({ start: { x: margin, y: height - 90 }, end: { x: width - margin, y: height - 90 }, thickness: 1, color: BORDER_COLOR });
 
