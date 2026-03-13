@@ -8,7 +8,7 @@ import { StorageForm } from "./ServicesForm/StorageServiceFlow";
 import { MovingForm } from "./ServicesForm/MovingServiceFlow";
 import { ShreddingForm } from "./ServicesForm/ShreddingServiceFlow";
 
-import { StorageOrderSummary } from "../order-summary/OrderSummaryLive";
+import { StorageOrderSummary } from "../order-summary/StorageOrderSummaryLive";
 import { MovingOrderSummary } from "../order-summary/MovingOrderSummaryLive";
 import { ShreddingOrderSummary } from "../order-summary/ShreddingOrderSummaryLive";
 
@@ -125,13 +125,10 @@ export default function HomeClientControls({
     }, [orderId]);
 
     return (
-        <div>
-            <div className="space-y-4">
-                <div>
-                    <div className="text-sm font-medium text-slate-900">Service</div>
-                    <div className="text-xs text-slate-500">Choose a service to continue</div>
-                </div>
-                <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
+        <div className="mx-auto max-w-screen-xl">
+            <div className="space-y-5 lg:space-y-6">
+                {/* service row */}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {[
                         {
                             id: "storage",
@@ -141,7 +138,7 @@ export default function HomeClientControls({
                         {
                             id: "moving",
                             title: "Packing and Moving",
-                            desc: "Same-day moves within London",
+                            desc: "Same-day moves across London",
                         },
                         {
                             id: "shredding",
@@ -156,68 +153,140 @@ export default function HomeClientControls({
                                 key={item.id}
                                 type="button"
                                 onClick={() => setServiceType(item.id as any)}
-                                className={`
-                                            flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition
-                                            ${selected
-                                        ? "border-slate-200 bg-emerald-50"
-                                        : "border-slate-200 bg-white hover:bg-slate-50"
-                                    }
-                                        `}
+                                className={[
+                                    "group relative flex min-h-[82px] w-full items-center justify-between rounded-2xl border px-5 py-4 text-left transition-all duration-200",
+                                    selected
+                                        ? "border-emerald-700/30 bg-[linear-gradient(135deg,#2e7d57_0%,#3f8f66_100%)] text-white shadow-[0_10px_30px_rgba(34,197,94,0.18)]"
+                                        : "border-slate-200 bg-white text-slate-900 shadow-[0_8px_24px_rgba(15,23,42,0.05)] hover:border-slate-300",
+                                ].join(" ")}
                             >
-                                <div>
-                                    <div className="text-sm font-semibold text-slate-900">
+                                <div className="pr-4">
+                                    <div
+                                        className={[
+                                            "text-[1.05rem] font-extrabold leading-tight",
+                                            selected ? "text-white" : "text-slate-900",
+                                        ].join(" ")}
+                                    >
                                         {item.title}
                                     </div>
-                                    <div className="text-xs text-slate-600">{item.desc}</div>
+
+                                    <div
+                                        className={[
+                                            "mt-1 text-sm leading-5",
+                                            selected ? "text-white/80" : "text-slate-500",
+                                        ].join(" ")}
+                                    >
+                                        {item.desc}
+                                    </div>
                                 </div>
 
-                                <span
-                                    className={`rounded-full px-3 py-1 text-xs font-semibold ${selected
-                                        ? "bg-emerald-600 text-white"
-                                        : "bg-slate-100 text-slate-600"
-                                        }`}
+                                <div
+                                    className={[
+                                        "inline-flex h-11 min-w-[96px] items-center justify-center rounded-full px-4 text-sm font-bold transition",
+                                        selected
+                                            ? "bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                                            : "bg-slate-100 text-slate-800",
+                                    ].join(" ")}
                                 >
-                                    {selected ? "Selected" : "Select"}
-                                </span>
+                                    {selected ? (
+                                        <span className="flex items-center gap-2">
+                                            <span>✓</span>
+                                        </span>
+                                    ) : (
+                                        "Select"
+                                    )}
+                                </div>
                             </button>
                         );
                     })}
                 </div>
 
-                <div className="grid gap-6 items-start lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
-                    <div className="min-w-0">
-                        {state.serviceType === "storage" && <StorageForm
-                            busy={isPaying || isSubmitting}
-                            error={error}
-                            onProceed={handleProceedToPayment} />}
-                        {state.serviceType === "moving" && <MovingForm
-                            busy={isPaying || isSubmitting}
-                            error={error}
-                            onProceed={handleProceedToPayment} />}
-                        {state.serviceType === "shredding" && <ShreddingForm
-                            busy={isPaying || isSubmitting}
-                            error={error}
-                            onProceed={handleProceedToPayment} />}
+                {/* main widget shell */}
+                <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_370px]">
+                    {/* left flow */}
+                    <div className="min-w-0 rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
+                        <div className="p-4 sm:p-5 lg:p-5">
+                            {state.serviceType === "storage" && (
+                                <StorageForm
+                                    busy={isPaying || isSubmitting}
+                                    error={error}
+                                    onProceed={handleProceedToPayment}
+                                />
+                            )}
+
+                            {state.serviceType === "moving" && (
+                                <MovingForm
+                                    busy={isPaying || isSubmitting}
+                                    error={error}
+                                    onProceed={handleProceedToPayment}
+                                />
+                            )}
+
+                            {state.serviceType === "shredding" && (
+                                <ShreddingForm
+                                    busy={isPaying || isSubmitting}
+                                    error={error}
+                                    onProceed={handleProceedToPayment}
+                                />
+                            )}
+                        </div>
                     </div>
 
+                    {/* right summary */}
                     <div className="min-w-0 lg:sticky lg:top-6">
-                        {state.serviceType === "storage" && <StorageOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
-                        {state.serviceType === "moving" && <MovingOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
-                        {state.serviceType === "shredding" && <ShreddingOrderSummary onProceed={handleProceedToPayment} busy={isPaying || isSubmitting || !!orderId} error={error} />}
-                    </div>
-                    {orderId && (
-                        <div ref={checkoutRef} className="mt-8 animate-fadeIn">
-                            <EmbeddedCheckout
-                                orderId={orderId}
-                                onDone={handlePaymentDone}
-                            />
+                        <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_16px_45px_rgba(15,23,42,0.10)]">
+                            <div className="px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
+                                {state.serviceType === "storage" && (
+                                    <StorageOrderSummary
+                                        onProceed={handleProceedToPayment}
+                                        busy={isPaying || isSubmitting || !!orderId}
+                                        error={error}
+                                    />
+                                )}
+
+                                {state.serviceType === "moving" && (
+                                    <MovingOrderSummary
+                                        onProceed={handleProceedToPayment}
+                                        busy={isPaying || isSubmitting || !!orderId}
+                                        error={error}
+                                    />
+                                )}
+
+                                {state.serviceType === "shredding" && (
+                                    <ShreddingOrderSummary
+                                        onProceed={handleProceedToPayment}
+                                        busy={isPaying || isSubmitting || !!orderId}
+                                        error={error}
+                                    />
+                                )}
+                            </div>
                         </div>
-                    )}
+                    </div>
                 </div>
 
-                {/* <div className="pb-24 md:pb-0">
-                    <MobileCheckoutBar />
-                </div> */}
+                {/* embedded checkout */}
+                {orderId && (
+                    <div
+                        ref={checkoutRef}
+                        className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_45px_rgba(15,23,42,0.08)] animate-fadeIn"
+                    >
+                        <div className="border-b border-slate-100 px-5 py-4 sm:px-6">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-600">
+                                Secure payment
+                            </p>
+                            <h3 className="mt-1 text-lg font-black tracking-tight text-slate-900">
+                                Complete your booking
+                            </h3>
+                            <p className="mt-1 text-sm text-slate-500">
+                                Your order has been prepared. Finish payment below to confirm it.
+                            </p>
+                        </div>
+
+                        <div className="p-4 sm:p-6">
+                            <EmbeddedCheckout orderId={orderId} onDone={handlePaymentDone} />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

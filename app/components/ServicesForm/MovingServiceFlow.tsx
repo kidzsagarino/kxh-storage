@@ -8,7 +8,7 @@ import {
 } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
-import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
+import { money, to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
 import { haversineMiles } from "@/app/lib/distance";
 
 type NominatimResult = {
@@ -172,23 +172,22 @@ export function MovingForm({
     busy?: boolean;
     error?: string | null;
 }) {
-    const router = useRouter();
     const { state, setState, orderFlow } = useMovingCheckout();
-    const [step, setStep] = useState<StepId>(0);
-    const [fromQ, setFromQ] = useState("");
-    const [toQ, setToQ] = useState("");
-    const [fromSearched, setFromSearched] = useState(false);
-    const [toSearched, setToSearched] = useState(false);
+    const [step, setStep] = React.useState<StepId>(0);
+    const [fromQ, setFromQ] = React.useState("");
+    const [toQ, setToQ] = React.useState("");
+    const [fromSearched, setFromSearched] = React.useState(false);
+    const [toSearched, setToSearched] = React.useState(false);
 
-    const [fromSuggestions, setFromSuggestions] = useState<NominatimResult[]>([]);
-    const [toSuggestions, setToSuggestions] = useState<NominatimResult[]>([]);
+    const [fromSuggestions, setFromSuggestions] = React.useState<NominatimResult[]>([]);
+    const [toSuggestions, setToSuggestions] = React.useState<NominatimResult[]>([]);
 
-    const [openFrom, setOpenFrom] = useState(false);
-    const [openTo, setOpenTo] = useState(false);
+    const [openFrom, setOpenFrom] = React.useState(false);
+    const [openTo, setOpenTo] = React.useState(false);
 
     const timeSlots = orderFlow && orderFlow.timeSlots;
     const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
-    const [orderId, setOrderId] = useState<string | null>(null);
+    const [orderId, setOrderId] = React.useState<string | null>(null);
     // --- 1. Extract Dynamic Data from orderFlow ---
     const movingItems = orderFlow?.catalog?.moving.items ?? [];
     const movingPackages = orderFlow?.catalog.moving.packages ?? [];
@@ -217,7 +216,7 @@ export function MovingForm({
     }, [originOk, destinationOk, itemOk, packageOk, scheduleOk, step]);
 
 
-    useEffect(() => {
+    React.useEffect(() => {
         const q = fromQ.trim();
         if (!openFrom || q.length < 4) {
             setFromSuggestions([]);
@@ -227,7 +226,7 @@ export function MovingForm({
 
         const t = setTimeout(async () => {
             try {
-                const results = await fetchNominatim(q); // ✅ use the query
+                const results = await fetchNominatim(q);
                 setFromSuggestions(results);
             } finally {
                 setFromSearched(true);
@@ -237,8 +236,8 @@ export function MovingForm({
         return () => clearTimeout(t);
     }, [fromQ, openFrom]);
 
-    // Debounced search: Destination
-    useEffect(() => {
+    
+    React.useEffect(() => {
         const q = toQ.trim();
         if (!openTo || q.length < 4) {
             setToSuggestions([]);
@@ -258,7 +257,7 @@ export function MovingForm({
         return () => clearTimeout(t);
     }, [toQ, openTo]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (!orderFlow?.ok) return;
 
         const scheduling = orderFlow.settings.scheduling;
@@ -282,7 +281,7 @@ export function MovingForm({
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         // Only recalc when coordinates change
         const t = setTimeout(() => {
             updateDistance();
@@ -320,7 +319,7 @@ export function MovingForm({
         }));
     }
 
-    const goNext = () => setStep((s) => (Math.min(4, s + 1) as StepId));
+    const goNext = () => setStep((s) => (Math.min(LAST_STEP, s + 1) as StepId));
     const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
     return (
@@ -332,7 +331,6 @@ export function MovingForm({
                 allCompleted={scheduleOk}
             />
 
-            {/* Step 0: Origin */}
             {step === 0 && (
                 <div className="grid gap-3 sm:grid-cols-2">
                     <div className="relative">
@@ -344,12 +342,11 @@ export function MovingForm({
                                 setFromQ(v);
                                 setOpenFrom(true);
 
-                                // ✅ typing means "not confirmed/picked" anymore
                                 setState((s) => ({
                                     ...s,
                                     fromLocation: {
                                         ...s.fromLocation,
-                                        streetAddress: v, // keep state in sync if you want
+                                        streetAddress: v,
                                         lat: 0,
                                         lon: 0,
                                         postalCode: "",
@@ -388,7 +385,6 @@ export function MovingForm({
                                                     },
                                                 }));
 
-                                                // ✅ set the visible input to the selected label
                                                 setFromQ(sug.displayName);
 
                                                 setFromSuggestions([]);
@@ -407,7 +403,6 @@ export function MovingForm({
                             </div>
                         )}
 
-                        {/* ✅ "not found" only if searched and still nothing */}
                         {openFrom && fromSearched && !fromSuggestions.length && fromQ.trim().length >= 4 && (
                             <div className="text-xs text-slate-500 mt-2">
                                 Address not found. Try a postcode (e.g. SW1A 1AA) or add a street name.
@@ -429,7 +424,6 @@ export function MovingForm({
                 </div>
             )}
 
-            {/* Step 1: Destination */}
             {step === 1 && (
                 <div className="grid gap-3 sm:grid-cols-2">
                     <div className="relative">
@@ -523,9 +517,8 @@ export function MovingForm({
                 </div>
             )}
 
-            {/* Step 2: Items (Dynamic from orderFlow) */}
             {step === 2 && (
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3">
                     {movingItems.map((it: any) => (
                         <div
                             key={it.id}
@@ -535,16 +528,15 @@ export function MovingForm({
                         >
                             <div className="text-sm font-medium text-slate-900">{it.name}</div>
                             <div className="text-xs text-slate-600">{it.desc || it.description}</div>
-                            <div className="text-sm font-medium text-slate-900">{it.price.price}</div>
+                            <div className="text-sm font-medium text-slate-900">{money(it.price.price)}</div>
                         </div>
                     ))}
                     {!itemOk && <div className="sm:col-span-2 text-xs text-rose-600">Select a move size.</div>}
                 </div>
             )}
 
-            {/* Step 3: Package (Dynamic from orderFlow) */}
             {step === 3 && (
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3">
                     {movingPackages.map((pk: any) => (
                         <div
                             key={pk.id}
@@ -554,14 +546,13 @@ export function MovingForm({
                         >
                             <div className="text-sm font-medium text-slate-900">{pk.name}</div>
                             <div className="text-xs text-slate-600">{pk.desc || pk.description}</div>
-                            <div className="text-sm font-medium text-slate-900">{pk.price.price}</div>
+                            <div className="text-sm font-medium text-slate-900">{money(pk.price.price)}</div>
                         </div>
                     ))}
                     {!packageOk && <div className="sm:col-span-2 text-xs text-rose-600">Select a package.</div>}
                 </div>
             )}
 
-            {/* Step 4: Schedule (Dynamic from orderFlow) */}
             {step === 4 && (
                 <div className="space-y-4">
                     <DatePicker
@@ -592,7 +583,7 @@ export function MovingForm({
 
                             if (scheduling.blackoutDates.includes(iso)) return true;
 
-                            const wk = weekdayKey(d).toUpperCase(); // MON, TUE, etc.
+                            const wk = weekdayKey(d).toUpperCase();
 
                             const weekdayRule = scheduling.weekdayRules.find(
                                 (r: any) =>
@@ -717,6 +708,3 @@ export function MovingForm({
         </form>
     );
 }
-// export function MovingForm(){
-//     return <div>Under Construction</div>
-// }

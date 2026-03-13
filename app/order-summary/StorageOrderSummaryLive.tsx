@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { useStorageCheckout } from "../components/checkout/CheckoutStore";
 import { money, to12Hour } from "../utils/utils";
+import { isValidGBPhone } from "../lib/phone";
 
 type Props = {
   onProceed: () => void;
@@ -18,7 +19,7 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
   const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
 
   const { items, storagePerMonth, months, discountPerMonth, totalDueNow } =
-    useMemo(() => {
+    React.useMemo(() => {
       const months = state.durationMonth > 0 ? state.durationMonth : 1;
 
       const items = Object.entries(state.quantities)
@@ -63,12 +64,10 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
 
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
-  // Match your StorageForm rule (Step 3) — note: you currently don't require name/email in the form
   const detailsOk =
-    (state.customerDetails.houseNumber ?? "").trim().length > 0 &&
-    (state.customerDetails.postalCode ?? "").trim().length > 0 &&
-    (state.customerDetails.phone ?? "").trim().length > 0 &&
-    (state.customerDetails.address ?? "").trim().length > 0;
+    (state.address.houseNumber ?? "").trim().length > 0 &&
+    (state.address.streetAddress ?? "").trim().length > 0 &&
+    isValidGBPhone(state.customerDetails.phone ?? "");
 
   const canProceed = !!orderFlow?.ok && durationOk && itemsOk && scheduleOk && detailsOk && !busy;
 
@@ -122,7 +121,9 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
           ))
         )}
       </div>
-
+      <p className="text-xs text-slate-500">
+        {state.address.houseNumber + " " + state.address.streetAddress}
+      </p>
       <p className="text-xs text-slate-500">
         {items.length === 0
           ? "Add items on the left to see your order summary."
@@ -130,11 +131,16 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
             const slot = orderFlow?.timeSlots?.find((s: any) => s.id === state.timeSlotId);
             const slotLabel = slot
               ? `${slot.name} (${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)})`
-              : "—";
-            return `Collection: ${state.collectionDate || "—"} • Slot: ${slotLabel}`;
+              : "";
+            return `${state.collectionDate} ${slotLabel}`;
           })()}
       </p>
 
+      {error ? (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+          {error}
+        </div>
+      ) : null}
       <button
         type="button"
         onClick={onProceed}

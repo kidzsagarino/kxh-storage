@@ -5,6 +5,7 @@ import {
   useMovingCheckout,
   type TimeSlotId,
 } from "../components/checkout/CheckoutStore";
+import { to12Hour } from "../utils/utils";
 
 function money(n: number, sym = "£") {
   return `${sym}${n.toFixed(2)}`;
@@ -51,7 +52,7 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
 
   const canProceed = !!orderFlow?.ok && originOk && destinationOk && itemOk && packageOk && scheduleOk && !busy;
 
-  const { items, totalDueNow, note, currencySymbol } = useMemo(() => {
+  const { items, totalDueNow, currencySymbol } = React.useMemo(() => {
     const sym = orderFlow?.currency === "GBP" ? "£" : "£";
 
     const pricePerMileMinor =
@@ -113,27 +114,7 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
 
     const total = +(distanceCost + homeCost + pkgCost).toFixed(2);
 
-    const slotId = state.timeSlotId as TimeSlotId;
-    let slotText = "";
-
-    if (slotId) {
-      const key = SLOT_KEY_BY_ID[slotId as Exclude<TimeSlotId, "">];
-      const slotSetting = orderFlow?.settings?.timeSlotSettings?.find((s: any) => s.key === key);
-      if (slotSetting?.enabled && slotSetting?.label) slotText = slotSetting.label;
-
-      if (!slotText) {
-        const name =
-          slotId === "morning" ? "Morning" : slotId === "afternoon" ? "Afternoon" : "Evening";
-        const t = orderFlow?.timeSlots?.find((x: any) => x.name === name);
-        const range = timeRangeToLabel(t?.startTime, t?.endTime);
-        slotText = range ? `${name} (${range})` : name;
-      }
-    }
-
-    const note = `Collection: ${state.collectionDate || "—"}${slotText ? ` (${slotText})` : ""
-      }`;
-
-    return { items: rows, totalDueNow: total, note, currencySymbol: sym };
+    return { items: rows, totalDueNow: total, currencySymbol: sym };
   }, [state, orderFlow]);
 
   return (
@@ -162,9 +143,22 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
           </div>
         ))}
       </div>
-
-      <p className="text-xs text-slate-500">{note}</p>
-
+      <p className="text-xs text-slate-500">
+        {items.length === 0
+          ? "Add items on the left to see your order summary."
+          : (() => {
+            const slot = orderFlow?.timeSlots?.find((s: any) => s.id === state.timeSlotId);
+            const slotLabel = slot
+              ? `${slot.name} (${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)})`
+              : "";
+            return `${state.collectionDate} ${slotLabel}`;
+          })()}
+      </p>
+      <p className="text-xs text-slate-500">
+        {state.fromLocation?.houseNumber + " " + state.fromLocation?.streetAddress}
+      </p>
+      <p className="text-xs text-slate-500">{state.notes}</p>
+      
       {error ? (
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
           {error}

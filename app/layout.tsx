@@ -2,8 +2,7 @@ import { CheckoutProvider } from "./components/checkout/CheckoutStore";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
-import Script from "next/script";
-import CrispChat from "./components/chat/CrispChat";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -62,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body>
         <CheckoutProvider>{children}</CheckoutProvider>
-        <CrispChat />
+        <Toaster position="top-right" richColors />
       </body>
     </html>
 

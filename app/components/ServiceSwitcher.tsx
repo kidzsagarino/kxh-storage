@@ -4,7 +4,7 @@ import { useCheckout, type ServiceType } from "./checkout/CheckoutStore";
 import { StorageForm } from "./ServicesForm/StorageServiceFlow";
 import { MovingForm } from "./ServicesForm/MovingServiceFlow";
 import { ShreddingForm } from "./ServicesForm/ShreddingServiceFlow";
-import { StorageOrderSummary } from "../order-summary/OrderSummaryLive";
+import { StorageOrderSummary } from "../order-summary/StorageOrderSummaryLive";
 import { MovingOrderSummary } from "../order-summary/MovingOrderSummaryLive";
 import { ShreddingOrderSummary } from "../order-summary/ShreddingOrderSummaryLive";
 import { useEffect } from "react";

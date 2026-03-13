@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useShreddingCheckout } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
-import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
+import { money, to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
 import {
   displayToStoredGB,
   formatGBForDisplay,
@@ -152,18 +152,17 @@ export function ShreddingForm({
   busy?: boolean;
   error?: string | null;
 }) {
-  const router = useRouter();
   const { state, setState, orderFlow } = useShreddingCheckout();
 
-  const [step, setStep] = useState<StepId>(0);
+  const [step, setStep] = React.useState<StepId>(0);
   const timeSlots = orderFlow && orderFlow.timeSlots;
   const disableAuto =
     orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderId, setOrderId] = React.useState<string | null>(null);
 
   const shreddingItems = orderFlow?.catalog?.shredding.items ?? [];
 
-  const totalItems = useMemo(
+  const totalItems = React.useMemo(
     () =>
       Object.values(state.quantities).reduce(
         (acc, val) => acc + (Number(val) || 0),
@@ -172,23 +171,21 @@ export function ShreddingForm({
     [state.quantities]
   );
 
-  const [addressQuery, setAddressQuery] = useState("");
-  const [addressSuggestion, setAddressSuggestion] = useState<NominatimResult[]>(
+  const [addressQuery, setAddressQuery] = React.useState("");
+  const [addressSuggestion, setAddressSuggestion] = React.useState<NominatimResult[]>(
     []
   );
-  const [openAddress, setOpenAddress] = useState(false);
-  const [pcLoading, setPcLoading] = useState(false);
-  const [pcSearched, setPcSearched] = useState(false);
+  const [openAddress, setOpenAddress] = React.useState(false);
+  const [pcLoading, setPcLoading] = React.useState(false);
+  const [pcSearched, setPcSearched] = React.useState(false);
 
-  // validation
   const itemsOk = totalItems > 0;
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
-  // ✅ removed postalCode requirement
   const detailsOk =
-    (state.customerDetails.phone ?? "").trim().length > 0 &&
     (state.address.houseNumber ?? "").trim().length > 0 &&
-    (state.address.streetAddress ?? "").trim().length > 0;
+    (state.address.streetAddress ?? "").trim().length > 0 &&
+    isValidGBPhone(state.customerDetails.phone ?? "");
 
   const canGoNext =
     (step === 0 && itemsOk) ||
@@ -202,14 +199,14 @@ export function ShreddingForm({
     return step;
   }, [itemsOk, scheduleOk, detailsOk, step]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setState((s) => ({
       ...s,
       enableButton: step === 2 && itemsOk && scheduleOk && detailsOk,
     }));
   }, [detailsOk, itemsOk, scheduleOk, step, setState]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!orderFlow?.ok) return;
 
     const scheduling = orderFlow.settings.scheduling;
@@ -230,7 +227,7 @@ export function ShreddingForm({
     }
   }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const q = addressQuery.trim();
 
     if (!openAddress || q.length < 3) {
@@ -258,7 +255,7 @@ export function ShreddingForm({
     return () => clearTimeout(t);
   }, [addressQuery, openAddress]);
 
-  const goNext = () => setStep((s) => (Math.min(3, s + 1) as StepId));
+  const goNext = () => setStep((s) => (Math.min(LAST_STEP, s + 1) as StepId));
   const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
 
   const inc = (id: string) => {
@@ -288,7 +285,6 @@ export function ShreddingForm({
 
   return (
     <form className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-6 shadow-sm space-y-6">
-      {/* Stepper */}
       <div className="space-y-2">
         <Stepper
           current={step}
@@ -305,7 +301,7 @@ export function ShreddingForm({
 
       {/* Step 0: Items */}
       {step === 0 && (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="">
           {shreddingItems.map((item: any) => {
             const id = item.sku as string;
             const count = state.quantities[id] ?? 0;
@@ -314,16 +310,14 @@ export function ShreddingForm({
             return (
               <div
                 key={item.id}
-                className="rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition"
+                className="rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition mb-2"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-medium text-slate-900">
-                      {item.name}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
-                    <div className="mt-1 text-xs text-slate-600">{price}</div>
+                  <div className="text-sm font-medium text-slate-900">
+                    {item.name}
                   </div>
+                  <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
+                  <div className="mt-1 text-xs text-slate-600">{money(price)}</div>
 
                   <div className="flex items-center gap-2">
                     <button
@@ -362,7 +356,6 @@ export function ShreddingForm({
         </div>
       )}
 
-      {/* Step 1: Schedule */}
       {step === 1 && (
         <div className="space-y-4">
           <DatePicker
@@ -552,7 +545,7 @@ export function ShreddingForm({
                               ...st,
                               address: {
                                 ...st.address,
-                                streetAddress: street || st.address.streetAddress,
+                                streetAddress: sug.displayName,
                                 houseNumber: a.house_number ?? st.address.houseNumber,
                                 postalCode: a.postcode ?? st.address.postalCode,
                                 ...(city ? { city } : {}),
@@ -668,11 +661,15 @@ export function ShreddingForm({
         canBack={step > 0 && !orderId}
         canNext={!orderId && canGoNext && step <= maxAllowedStep}
         isLast={step === LAST_STEP}
-        onBack={() => setStep((s) => (Math.max(0, s - 1) as StepId))}
+        onBack={goBack}
         onNext={() => {
           if (!canGoNext) return;
-          if (step === LAST_STEP) onProceed();
-          else setStep((s) => (Math.min(3, s + 1) as StepId));
+
+          if (step === LAST_STEP) {
+            onProceed();
+          } else {
+            goNext();
+          }
         }}
         isPaying={!!busy}
       />

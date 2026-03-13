@@ -25,17 +25,22 @@ const services = [
 
 export function ServicesGrid() {
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {services.map((s) => (
         <div
           key={s.key}
-          className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm
-                 transition hover:-translate-y-0.5 hover:shadow-md"
+          className="group relative flex flex-col rounded-2xl border border-slate-200 bg-white p-6
+                 shadow-[0_6px_20px_rgba(15,23,42,0.06)]
+                 transition-all duration-200
+                 hover:-translate-y-1 hover:shadow-[0_14px_35px_rgba(15,23,42,0.10)]"
         >
           {/* Icon */}
-          <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl
-                      bg-emerald-50 ring-1 ring-emerald-100 transition
-                      group-hover:bg-emerald-100">
+          <div
+            className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl
+                   bg-emerald-50 ring-1 ring-emerald-100
+                   transition-all duration-200
+                   group-hover:bg-emerald-100 group-hover:ring-emerald-200"
+          >
             <Icon
               name={s.key}
               set="lucide"
@@ -45,13 +50,21 @@ export function ServicesGrid() {
             />
           </div>
 
-          <h3 className="text-base font-semibold text-slate-900">{s.title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">{s.desc}</p>
+          {/* Title */}
+          <h3 className="text-base font-bold text-slate-900">
+            {s.title}
+          </h3>
 
-          {/* Optional: subtle affordance */}
-          {/* <div className="mt-4 text-xs font-semibold text-slate-500 transition group-hover:text-slate-700">
+          {/* Description */}
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            {s.desc}
+          </p>
+
+          {/* CTA */}
+          <div className="mt-4 text-xs font-semibold text-slate-500 transition
+                      group-hover:text-emerald-600">
             Learn more →
-          </div> */}
+          </div>
         </div>
       ))}
     </div>
