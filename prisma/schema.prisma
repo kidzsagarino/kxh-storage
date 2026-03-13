@@ -228,6 +228,7 @@ model Order {
   subscriptionStatus   String?
   nextBillingAt        DateTime?
   cancelAt             DateTime?
+  cancelReason         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -282,13 +283,15 @@ model Address {
 }
 
 model Payment {
-  id          String          @id @default(cuid())
-  orderId     String
-  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  provider    PaymentProvider @default(STRIPE)
-  status      PaymentStatus   @default(PROCESSING)
-  amountMinor Int
-  providerRef String?         @unique
+  id              String          @id @default(cuid())
+  orderId         String
+  order           Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider        PaymentProvider @default(STRIPE)
+  status          PaymentStatus   @default(PROCESSING)
+  amountMinor     Int
+  providerRef     String?         @unique
+  paymentIntentId String?         @unique
+  refundReason    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,4 +1,5 @@
 const { PrismaClient, ServiceType, BillingUnit, Weekday, TimeSlotKey } = require("@prisma/client");
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 const GBP = "GBP";
@@ -96,13 +97,13 @@ async function seedTimeSlots() {
 
 async function seedServiceItemsAndPrices() {
   const items = [
-    { id: "small_box", serviceType: ServiceType.STORAGE, sku: "small-box", name: "Small Box", unit: BillingUnit.PER_MONTH, price: 500 },
-    { id: "medium_box", serviceType: ServiceType.STORAGE, sku: "medium-box", name: "Medium Box", unit: BillingUnit.PER_MONTH, price: 800 },
-    { id: "large_box", serviceType: ServiceType.STORAGE, sku: "large-box", name: "Large Box", unit: BillingUnit.PER_MONTH, price: 1200 },
-    { id: "xl_box", serviceType: ServiceType.STORAGE, sku: "xl-box", name: "XL Box", unit: BillingUnit.PER_MONTH, price: 1500 },
-    { id: "suitcase", serviceType: ServiceType.STORAGE, sku: "suitcase", name: "Suitcase", unit: BillingUnit.PER_MONTH, price: 1000 },
-    { id: "half_container", serviceType: ServiceType.STORAGE, sku: "half-container", name: "Half Container", unit: BillingUnit.PER_MONTH, price: 7500 },
-    { id: "full_container", serviceType: ServiceType.STORAGE, sku: "full-container", name: "Full Container", unit: BillingUnit.PER_MONTH, price: 15000 },
+    { id: "small_box", serviceType: ServiceType.STORAGE, sku: "small-box", name: "Small Box (36 x 36 x 36 cm)", unit: BillingUnit.PER_MONTH, price: 500 },
+    { id: "medium_box", serviceType: ServiceType.STORAGE, sku: "medium-box", name: "Medium Box (46 x 46 x 31 cm)", unit: BillingUnit.PER_MONTH, price: 800 },
+    { id: "large_box", serviceType: ServiceType.STORAGE, sku: "large-box", name: "Large Box (46 x 46x 61 cm)", unit: BillingUnit.PER_MONTH, price: 1200 },
+    { id: "xl_box", serviceType: ServiceType.STORAGE, sku: "xl-box", name: "XL Box (45 x 45 x 75cm)", unit: BillingUnit.PER_MONTH, price: 1500 },
+    { id: "suitcase", serviceType: ServiceType.STORAGE, sku: "suitcase", name: "Suitcase: Hard shelled suitcase", unit: BillingUnit.PER_MONTH, price: 1000 },
+    { id: "half_container", serviceType: ServiceType.STORAGE, sku: "half-container", name: "Half Container (25sqft)", unit: BillingUnit.PER_MONTH, price: 7500 },
+    { id: "full_container", serviceType: ServiceType.STORAGE, sku: "full-container", name: "Full Container (50sqft)", unit: BillingUnit.PER_MONTH, price: 15000 },
 
     { id: "small_move", serviceType: ServiceType.MOVING, sku: "small-move", name: "Small Move", unit: BillingUnit.FLAT, price: 29500 },
     { id: "one_bedroom_flat", serviceType: ServiceType.MOVING, sku: "1-bedroom-flat", name: "1 Bedroom Flat", unit: BillingUnit.FLAT, price: 44900 },
@@ -324,6 +325,23 @@ async function seedMovingPackage() {
   console.log('✅ Seeding completed successfully.');
 }
 
+async function seedAdminUser() {
+  const passwordHash = await bcrypt.hash("KHciHM690", 12);
+
+  await prisma.adminUser.upsert({
+    where: { email: "admin@kxhlogistics.co.uk" },
+    update: {},
+    create: {
+      email: "admin@kxhlogistics.co.uk",
+      name: "Main Admin",
+      passwordHash,
+      role: "ADMIN",
+    },
+  });
+  
+  console.log('✅ User Admin Seeding completed successfully.');
+}
+
 async function main() {
   console.log("🌱 Seeding Database...");
   await seedTimeSlots();
@@ -332,6 +350,7 @@ async function main() {
   await seedAdminSettings();
   await seedCapacityAndRules();
   await seedMovingPackage();
+  await seedAdminUser();
   console.log("✅ Seed Complete");
 }
 

@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
     useStorageCheckout,
 } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
-import { to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
+import { money, to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
 import { NominatimResult, fetchNominatim, pickCity, streetFromNominatim } from "@/app/lib/address";
 import { displayToStoredGB, formatGBForDisplay, isValidGBPhone, normalizeGBPhone, toGBNational } from "@/app/lib/phone";
-import { stat } from "fs";
 
 type StepId = 0 | 1 | 2 | 3;
 
@@ -144,22 +142,19 @@ export function StorageForm({
 }) {
     const { state, setState, orderFlow, resetNonce } = useStorageCheckout();
 
-    const [step, setStep] = useState<StepId>(0);
-    const [addressSuggestion, setAddressSuggestion] = useState<NominatimResult[]>([]);
-    const [openAddress, setOpenAddress] = useState(false);
-    const [pcLoading, setPcLoading] = useState(false);
-    const [pcSearched, setPcSearched] = useState(false);
-    const [phoneError, setPhoneError] = useState<string | null>(null);
-    const [addressQuery, setAddressQuery] = useState("");
+    const [step, setStep] = React.useState<StepId>(0);
+    const [addressSuggestion, setAddressSuggestion] = React.useState<NominatimResult[]>([]);
+    const [openAddress, setOpenAddress] = React.useState(false);
+    const [pcLoading, setPcLoading] = React.useState(false);
+    const [pcSearched, setPcSearched] = React.useState(false);
+    const [addressQuery, setAddressQuery] = React.useState("");
 
     const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
 
     const storageItems = orderFlow && orderFlow.catalog.storage.items;
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
     const timeSlots = orderFlow && orderFlow.timeSlots;
-    const [orderId, setOrderId] = useState<string | null>(null);
-
-    console.log(orderFlow);
+    const [orderId, setOrderId] = React.useState<string | null>(null);
 
     const inc = (id: string) => {
         if (!orderFlow) return;
@@ -231,11 +226,11 @@ export function StorageForm({
         return step;
     }, [durationOk, itemsOk, scheduleOk, detailsOk, step]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         setState((s) => ({ ...s, enableButton: detailsOk }));
     }, [detailsOk, setState]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (!orderFlow?.ok) return;
 
         const scheduling = orderFlow.settings.scheduling;
@@ -259,12 +254,12 @@ export function StorageForm({
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         setStep(0);
         setOrderId("");
     }, [resetNonce])
 
-    useEffect(() => {
+    React.useEffect(() => {
         const q = addressQuery.trim();
 
         if (!openAddress || q.length < 3) {
@@ -374,7 +369,7 @@ export function StorageForm({
                         </div>
                     </div>
 
-                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="mt-4">
                         {storageItems.map((item: any) => {
                             const id = item.sku as string;
                             const count = state.quantities[id] ?? 0;
@@ -383,13 +378,13 @@ export function StorageForm({
                             return (
                                 <div
                                     key={item.id}
-                                    className="rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition"
+                                    className="rounded-xl border border-slate-200 bg-white p-4 m-2 hover:border-slate-300 transition"
                                 >
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
                                             <div className="text-sm font-medium text-slate-900">{item.name}</div>
                                             <div className="mt-1 text-xs text-slate-600">{item.desc}</div>
-                                            <div className="mt-1 text-xs text-slate-600">{price}</div>
+                                            <div className="mt-1 text-xs text-slate-600">{money(price)}</div>
                                         </div>
 
                                         <div className="flex items-center gap-2">
@@ -546,7 +541,7 @@ export function StorageForm({
                                         onKeyDown={(e) => {
                                             if (slotIsFull) return;
                                             if (e.key === "Enter" || e.key === " ") {
-                                                e.preventDefault();
+                                                e.preventDefault(); 
                                                 selectSlot();
                                             }
                                         }}
@@ -646,7 +641,7 @@ export function StorageForm({
                                                             ...st,
                                                             address: {
                                                                 ...st.address,
-                                                                streetAddress: street || st.address.streetAddress,
+                                                                streetAddress: sug.displayName,
                                                                 houseNumber: a.house_number ?? st.address.houseNumber,
                                                                 postalCode: a.postcode ?? st.address.postalCode,
                                                                 ...(city ? { city } : {}),

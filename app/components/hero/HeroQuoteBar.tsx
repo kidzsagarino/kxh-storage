@@ -145,126 +145,165 @@ export function HeroQuoteBar() {
             block: "start",
         });
     }
+    const SERVICE_DATA = {
+        storage: {
+            label: "Storage",
+            tagline: "Secure & Climate Controlled",
+            bullets: ["24/7 CCTV Monitoring", "Flexible monthly terms", "Insurance included"]
+        },
+        moving: {
+            label: "Packing & Moving",
+            tagline: "Professional London Transit",
+            bullets: ["Full packing service", "Goods in transit insurance", "Expert handling"]
+        },
+        shredding: {
+            label: "Secure Shredding",
+            tagline: "GDPR & Data Compliant",
+            bullets: ["Destruction Certificate", "Eco-friendly recycling", "Secure chain of custody"]
+        }
+    } as const;
+
+    const ServiceOption = ({ active, title, subtitle, onClick }: { active: boolean; title: string; subtitle: string; onClick: () => void }) => (
+        <button
+            type="button"
+            onClick={onClick}
+            className={`flex w-full items-center justify-between rounded-xl border-2 p-4 text-left transition-all duration-200 ${active
+                ? "border-emerald-500 bg-emerald-50/50 ring-4 ring-emerald-500/5 shadow-sm"
+                : "border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50"
+                }`}
+        >
+            <div className="flex flex-col">
+                <span className={`text-sm font-bold ${active ? "text-emerald-900" : "text-slate-900"}`}>{title}</span>
+                <span className="text-xs text-slate-500 mt-0.5">{subtitle}</span>
+            </div>
+            <div className={`flex h-5 w-5 items-center justify-center rounded-full border-2 transition-colors ${active ? "border-emerald-500 bg-emerald-500" : "border-slate-200 bg-white"
+                }`}>
+                {active && <div className="h-2 w-2 rounded-full bg-white animate-in zoom-in-50 duration-300" />}
+            </div>
+        </button>
+    );
 
     return (
-        <div
-            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
-            onSubmit={(e) => e.preventDefault()}
-        >
-            <p className="mb-2 py-0 px-0 text-[11px] font-medium uppercase tracking-wide text-slate-400">
-                Choose a service
-            </p>
-            {/* Main grid: left selectable + right description */}
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-                {/* LEFT: selectable services */}
-                <div className="space-y-2">
-                    <ServiceOption
-                        active={state.serviceType === "storage"}
-                        title="Storage"
-                        subtitle="Collection + monthly storage"
-                        onClick={() => { setServiceType("storage"); setTimeout(() => postcodeRef.current?.focus(), 0); }}
+        <div className="relative mx-auto max-w-4xl">
+            <div className="absolute inset-0 -z-10 scale-110 rounded-full bg-emerald-100/40 blur-[100px]" />
 
-                    />
-                    <ServiceOption
-                        active={state.serviceType === "moving"}
-                        title="Packing and Moving"
-                        subtitle="Same-day moves across London"
-                        onClick={() => { setServiceType("moving"); setTimeout(() => postcodeRef.current?.focus(), 0); }}
-                    />
-                    <ServiceOption
-                        active={state.serviceType === "shredding"}
-                        title="Shredding"
-                        subtitle="Secure document disposal"
-                        onClick={() => { setServiceType("shredding"); setTimeout(() => postcodeRef.current?.focus(), 0); }}
-                    />
-                </div>
-
-                {/* RIGHT: description panel */}
-                {/* <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                        <div className="flex items-start justify-between gap-3">
-                            <div>
-                                <div className="text-xs font-semibold text-emerald-700">Selected</div>
-                                <div className="mt-1 text-base font-extrabold text-slate-900">{meta.label}</div>
-                                <div className="mt-1 text-sm font-semibold text-slate-600">{meta.tagline}</div>
-                            </div>
-                            <span className="rounded-full bg-white px-2 py-1 text-[11px] font-semibold text-slate-600">
-                                Default: Storage
-                            </span>
-                        </div>
-
-                        <div className="mt-3 space-y-2">
-                            {meta.bullets.map((b) => (
-                                <div key={b} className="flex gap-2">
-                                    <span className="mt-1.5 inline-block h-2 w-2 rounded-full bg-emerald-500" />
-                                    <p className="text-sm text-slate-700">{b}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div> */}
-            </div>
-
-            {/* Postcode input */}
-            {/* <div className="mt-3">
-                <div className="relative">
-                    <label className="sr-only" htmlFor="hero-postcode">
-                        Enter Postcode
-                    </label>
-
-                    <input
-                        ref={postcodeRef}
-                        id="hero-postcode"
-                        placeholder="Enter Postcode"
-                        autoComplete="postal-code"
-                        className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-3 pr-12 text-sm font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-200"
-                    />
-
-                    <button
-                        type="button"
-                        aria-label="Use location"
-                        className="absolute right-2 top-1/3 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                    >
-                        ⦿
-                    </button>
-
-                    <p className="mt-1 text-xs text-slate-500">
-                        Helps us route your request to the right team.
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.10)]">
+                {/* top trust strip */}
+                <div className="bg-slate-900 px-6 py-2 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">
+                        Guaranteed Secure • 5,000+ Londoners Served
                     </p>
                 </div>
-            </div> */}
 
-            {/* Actions */}
-            <div className="grid grid-cols-1 gap-2 mt-3">
-                <button
-                    type="button"
-                    onClick={onGetQuote}
-                    className="h-11 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 cursor-pointer"
-                >
-                    Get instant quote →
-                </button>
+                <div className="p-5 md:p-7">
+                    <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-start">
+                        {/* left */}
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                    Select Service
+                                </p>
+                                <h2 className="mt-1 text-xl font-black tracking-tight text-slate-900">
+                                    Get your instant quote
+                                </h2>
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Choose a service and enter your postcode to begin.
+                                </p>
+                            </div>
 
-                <a
-                    href="tel:+441474396663"
-                    className="h-11 rounded-lg bg-[#4CAF50] px-4 text-sm font-semibold text-white inline-flex items-center justify-center gap-2 hover:bg-[#45A049]"
-                >
-                    Call An Expert
-                </a>
-            </div>
-            <div className="flex justify-center">
-                {/* Trust row */}
-                <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
-                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-600">
-                        <span className="font-bold text-slate-900">4.8</span>
-                        <span>Excellent</span>
-                        <span className="inline-flex items-center gap-0.5" aria-label="5 star rating">
-                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                            <span className="inline-block rounded bg-[#4CAF50] px-1 text-xs text-white">★</span>
-                        </span>
-                        <span className="font-semibold text-slate-700">Trustpilot</span>
+                            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                                {(Object.keys(SERVICE_DATA) as Array<keyof typeof SERVICE_DATA>).map((key) => (
+                                    <ServiceOption
+                                        key={key}
+                                        active={state.serviceType === key}
+                                        title={SERVICE_DATA[key].label}
+                                        subtitle={SERVICE_DATA[key].tagline}
+                                        onClick={() => {
+                                            setServiceType(key);
+                                            setTimeout(() => postcodeRef.current?.focus(), 0);
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* right */}
+                        <div className="space-y-5">
+                            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                                <p className="mb-4 text-[11px] font-bold uppercase tracking-wider text-emerald-600">
+                                    Included with {SERVICE_DATA[state.serviceType as keyof typeof SERVICE_DATA].label}
+                                </p>
+
+                                <div className="space-y-3">
+                                    {SERVICE_DATA[state.serviceType as keyof typeof SERVICE_DATA].bullets
+                                        .slice(0, 3)
+                                        .map((bullet) => (
+                                            <div key={bullet} className="flex items-start gap-2">
+                                                <svg
+                                                    className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={3}
+                                                        d="M5 13l4 4L19 7"
+                                                    />
+                                                </svg>
+                                                <span className="text-sm font-medium leading-5 text-slate-600">
+                                                    {bullet}
+                                                </span>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <button
+                                    onClick={onGetQuote}
+                                    className="group relative h-12 overflow-hidden rounded-xl bg-slate-900 px-4 font-bold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
+                                >
+                                    <span className="relative z-10 flex items-center justify-center gap-2">
+                                        Get instant quote
+                                        <span className="transition-transform group-hover:translate-x-1">→</span>
+                                    </span>
+                                </button>
+
+                                <a
+                                    href="tel:+441474396663"
+                                    className="flex h-12 items-center justify-center gap-2 rounded-xl border border-emerald-300 bg-emerald-50 px-4 font-bold text-emerald-700 transition-all hover:bg-emerald-100 active:scale-[0.98]"
+                                >
+                                    Call an expert
+                                </a>
+                            </div>
+
+                            <div className="flex justify-center lg:justify-center">
+                                <a href="https://www.trustpilot.com/review/kxhlogistics.com" target="_blank" rel="noopener noreferrer">
+                                    <div className="flex items-center gap-2 rounded-full border border-slate-100 bg-slate-50 px-4 py-1.5">
+                                        <span>
+                                            <span className="inline-flex items-center gap-0.5">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className="inline-flex h-4 w-4 items-center justify-center rounded-sm bg-[#00B67A] text-[10px] font-bold text-white"
+                                                    >
+                                                        ★
+                                                    </span>
+                                                ))}
+                                            </span>
+                                        </span>
+                                        <span className="text-xs font-bold text-slate-900">4.8/5</span>
+                                        <span className="text-[10px] font-medium text-slate-500">
+                                            Trustpilot Reviews
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     );

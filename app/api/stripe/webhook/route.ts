@@ -131,6 +131,23 @@ export async function POST(req: Request) {
     }
 
     switch (event.type) {
+        case "charge.refunded": {
+
+            const charge = event.data.object as Stripe.Charge;
+
+            const paymentIntentId = charge.payment_intent as string;
+
+            await prisma.payment.updateMany({
+                where: {
+                    paymentIntentId: paymentIntentId,
+                },
+                data: {
+                    status: "REFUNDED",
+                },
+            });
+
+            break;
+        }
         case "checkout.session.completed": {
             const session = event.data.object as Stripe.Checkout.Session;
 
@@ -225,7 +242,7 @@ export async function POST(req: Request) {
 
                 await tx.payment.update({
                     where: { id: payment.id },
-                    data: { status: PaymentStatus.SUCCEEDED },
+                    data: { status: PaymentStatus.SUCCEEDED, paymentIntentId: session.payment_intent as string },
                 });
 
                 await tx.order.update({

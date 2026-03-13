@@ -1,17 +1,10 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useShreddingCheckout, type TimeSlotId } from "../components/checkout/CheckoutStore";
+import { useShreddingCheckout } from "../components/checkout/CheckoutStore";
 import { to12Hour } from "../utils/utils";
+import { isValidGBPhone } from "../lib/phone";
 
-const BAG_PRICE = 7;
-const BOX_PRICE = 9;
-
-const SLOT_LABEL: Record<Exclude<TimeSlotId, "">, string> = {
-  morning: "7am - 9am",
-  afternoon: "10am - 3pm",
-  evening: "3pm - 6pm",
-};
 
 function money(n: number, sym = "£") {
   return `${sym}${n.toFixed(2)}`;
@@ -34,14 +27,14 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
   const itemsOk = Object.values(state.quantities ?? {}).some((n) => (Number(n) || 0) > 0);
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
-  const detailsOk =
-    (state.customerDetails.postalCode ?? "").trim().length > 0 &&
-    (state.customerDetails.phone ?? "").trim().length > 0 &&
-    (state.customerDetails.address ?? "").trim().length > 0;
+const detailsOk =
+    (state.address.houseNumber ?? "").trim().length > 0 &&
+    (state.address.streetAddress ?? "").trim().length > 0 &&
+    isValidGBPhone(state.customerDetails.phone ?? "");
 
   const canProceed = !!orderFlow?.ok && itemsOk && scheduleOk && detailsOk && !busy;
   const { items, totalDueNow } =
-    useMemo(() => {
+    React.useMemo(() => {
       const items = Object.entries(state.quantities)
         .filter(([_, qty]) => (qty ?? 0) > 0)
         .map(([sku, qty]) => {
@@ -80,7 +73,6 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
         </div>
       </div>
 
-      {/* Shredding Items (2-line rows) */}
       <div className="rounded-xl bg-slate-50 p-4 space-y-4">
         {items.length === 0 ? (
           <div className="text-sm text-slate-600">No items added yet.</div>
@@ -104,12 +96,20 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
             const slot = orderFlow?.timeSlots?.find((s: any) => s.id === state.timeSlotId);
             const slotLabel = slot
               ? `${slot.name} (${to12Hour(slot.startTime)} - ${to12Hour(slot.endTime)})`
-              : "—";
-            return `Collection: ${state.collectionDate || "—"} • Slot: ${slotLabel}`;
+              : "";
+            return `${state.collectionDate} ${slotLabel}`;
           })()}
       </p>
       {/* 
       <p className="text-xs text-slate-500">{note}</p> */}
+      <p className="text-xs text-slate-500">
+        {state.address.houseNumber + " " + state.address.streetAddress}
+      </p>
+      {error ? (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+          {error}
+        </div>
+      ) : null}
 
       <button
         type="button"

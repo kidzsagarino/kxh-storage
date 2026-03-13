@@ -46,7 +46,7 @@ export async function loadOrderFlow(currency = "GBP") {
             select: { unitPriceMinor: true, billingUnit: true, currency: true },
           },
         },
-        orderBy: [{ serviceType: "asc" }, { name: "asc" }],
+        orderBy: [{ serviceType: "asc" }, { createdAt: "asc" }],
       }),
 
       prisma.movingPackage.findMany({
@@ -71,14 +71,12 @@ export async function loadOrderFlow(currency = "GBP") {
         orderBy: [{ startTime: "asc" }, { name: "asc" }],
       }),
 
-      // Simplified Tier query: Removed currency/scope/serviceItemId as per new schema
       prisma.storageDiscountTier.findMany({
         where: { isActive: true },
         select: { id: true, name: true, minMonths: true, percentOff: true },
         orderBy: [{ minMonths: "asc" }],
       }),
 
-      // Using the singleton ID for better performance
       prisma.adminSettings.findUnique({
         where: { id: "global_settings" },
         select: {
@@ -95,7 +93,6 @@ export async function loadOrderFlow(currency = "GBP") {
       }),
     ]);
 
-  // Normalize Service Items
   const normalizedItems = serviceItems.map((it) => {
     const p = it.prices[0] ?? null;
     return {
@@ -114,7 +111,6 @@ export async function loadOrderFlow(currency = "GBP") {
   const movingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.MOVING);
   const shreddingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.SHREDDING);
 
-  // Normalize Moving Packages
   const normalizedPackages = movingPackages.map((p) => {
     const price = p.prices[0] ?? null;
     return {
@@ -129,7 +125,7 @@ export async function loadOrderFlow(currency = "GBP") {
   const blackoutDates =
     adminSettings?.blackoutDates?.map((b) => {
       const d = new Date(b.date);
-      return d.toISOString().split("T")[0]; // Cleaner YYYY-MM-DD conversion
+      return d.toISOString().split("T")[0];
     }) ?? [];
 
   return {
@@ -161,7 +157,7 @@ export async function loadOrderFlow(currency = "GBP") {
         items: storageItems,
         itemsBySku: toSkuMap(storageItems),
         billingUnit: BillingUnit.PER_MONTH,
-        discountTiers: storageDiscountTiers, // Now a global list of duration tiers
+        discountTiers: storageDiscountTiers,
       },
       moving: {
         items: movingItems,

@@ -22,17 +22,15 @@ function clamp(n: number, min: number, max: number) {
 
 const REASONS = [
   { value: "duplicate", label: "Duplicate payment" },
-  { value: "customer_request", label: "Customer requested refund" },
-  { value: "service_cancelled", label: "Service cancelled" },
-  { value: "rescheduled", label: "Rescheduled / not available" },
-  { value: "pricing_issue", label: "Pricing issue" },
-  { value: "other", label: "Other" },
+  { value: "fraudulent", label: "Fraudulent payment" },
+  { value: "requested_by_customer", label: "Requested by customer" },
+ 
 ] as const;
 
 export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConfirm }: Props) {
   const [full, setFull] = useState(true);
   const [amountStr, setAmountStr] = useState(maxAmount.toFixed(2));
-  const [reason, setReason] = useState<(typeof REASONS)[number]["value"]>("customer_request");
+  const [reason, setReason] = useState<(typeof REASONS)[number]["value"]>("requested_by_customer");
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -42,7 +40,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
     if (!open) return;
     setFull(true);
     setAmountStr(maxAmount.toFixed(2));
-    setReason("customer_request");
+    setReason("requested_by_customer");
     setNote("");
     setSubmitting(false);
     setTouched(false);
@@ -185,7 +183,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
             </div>
 
             {/* Optional note */}
-            <div className="grid gap-2">
+            {/* <div className="grid gap-2">
               <label className="text-sm font-semibold text-slate-700">
                 Note <span className="text-xs font-normal text-slate-500">(optional)</span>
               </label>
@@ -196,7 +194,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
                 className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-emerald-200"
                 placeholder="Internal note for staff (not shown to customer)…"
               />
-            </div>
+            </div> */}
 
             {/* Footer buttons */}
             <div className="flex items-center justify-end gap-2 pt-2">
