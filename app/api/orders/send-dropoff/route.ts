@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { prisma } from "@/src/lib/prisma";
 import { sendEmail } from "@/app/lib/mail";
+import { OrderStatus } from "@prisma/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,12 +29,16 @@ export async function POST(req: NextRequest) {
         const { orderId } = await req.json();
         if (!orderId) return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
 
-        const order = await prisma.order.findUnique({
+        const order = await prisma.order.update({
             where: { id: orderId },
+            data: {
+                status: "DROPPED_OFF" as OrderStatus,
+            },
             include: {
                 customer: true,
                 addresses: true,
                 timeSlot: true,
+                items: true
             },
         });
 
@@ -62,14 +67,27 @@ export async function POST(req: NextRequest) {
           <div><strong>Time slot:</strong> ${order.timeSlot ? `${order.timeSlot.startTime} – ${order.timeSlot.endTime} (${order.timeSlot.name})` : "—"
             }</div>
           <div><strong>Collection address:</strong> ${fmtAddr(pickup)}</div>
+          <div style="margin-top:16px;">
+      <strong>Items:</strong>
+      <ul style="padding-left:16px; margin:8px 0;">
+        ${order.items
+                .map((item: any) => `
+                    <li>
+                        ${item.name || item.title || "Item"} 
+                        ${item.quantity ? `× ${item.quantity}` : ""}
+                    </li>`
+                )
+                .join("")}
+      </ul>
+    </div>
         </div>
 
         <p style="margin:0 0 16px;">
-          If you have any questions or need to update anything, just reply to this email.
+          If you have any questions or need to update anything, just reply to help.kxhlogistics@gmail.com.
         </p>
 
         <p style="margin:0; color:#64748b; font-size:12px;">
-         KXH Logistics Ltd<br/>}
+         KXH Logistics Ltd<br/>
         </p>
       </div>
     `;
@@ -77,7 +95,7 @@ export async function POST(req: NextRequest) {
         try {
 
             await sendEmail({
-                to: order.customer.email || "hello@kxhlogistics.co.uk",
+                to: order.customer.email || "help.kxhlogistics@gmail.com",
                 subject: subject,
                 html: html
             });
@@ -112,6 +130,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ ok: true });
     } catch (err: any) {
+        console.error("send-dropoff error:", err);
 
         return NextResponse.json({ error: "Failed to send dropoff email" }, { status: 500 });
     }

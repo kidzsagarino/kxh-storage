@@ -1,3 +1,4 @@
+import { cs } from "date-fns/locale";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -13,13 +14,11 @@ export async function GET(req: NextRequest) {
 
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=gb&q=${encodeURIComponent(
-        q
-      )}`,
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q + ' London')}&format=jsonv2&polygon_geojson=1&addressdetails=1&limit=1`,
       {
         headers: {
           // REQUIRED by Nominatim policy
-          "User-Agent": "KXHStorageApp/1.0 (hello@kxhlogistics.co.uk)",
+          "User-Agent": "KXHStorageApp/1.0 (help.kxhlogistics@gmail.com)",
         },
       }
     );
@@ -35,6 +34,7 @@ export async function GET(req: NextRequest) {
       }))
     );
   } catch (err) {
+    console.log(err);
     return NextResponse.json({ error: "Geocode failed" }, { status: 500 });
   }
 }

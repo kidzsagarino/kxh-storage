@@ -36,7 +36,8 @@ export async function POST(req: NextRequest) {
             movingPackageId,
             distanceMiles = 0,
             fromLocation,
-            toLocation
+            toLocation,
+            originalOrderNumber,
         } = body;
 
 
@@ -139,9 +140,56 @@ export async function POST(req: NextRequest) {
                 discountMinor = storageCalc.discountMonthlyMinor;
                 totalMinor = storageCalc.dueNowMinor;
                 finalTierId = storageCalc.finalTierId;
+            } else if (serviceType === "RETURN") {
+               
+                const returnIds = items.map((i: any) => i.serviceItemId as CatalogItemId);
+
+                const dbPrices = await tx.serviceItemPrice.findMany({
+                    where: {
+                        serviceItemId: { in: returnIds },
+                        isActive: true,
+                        currency: "GBP",
+                    },
+                    include: { serviceItem: true },
+                });
+
+                const priceMap = new Map(
+                    dbPrices.map((p) => [p.serviceItemId, p])
+                );
+
+                mappedItems = items.map((item: any) => {
+                    const serviceItemId = item.serviceItemId as CatalogItemId;
+                    const priceRow = priceMap.get(serviceItemId);
+
+                    if (!priceRow) {
+                        throw new Error(`No active price found for return item: ${serviceItemId}`);
+                    }
+
+                    const quantity = Math.max(1, Number(item.quantity) || 1);
+                    const unitPriceMinor = Number(priceRow.unitPriceMinor || 0);
+                    const lineTotalMinor = unitPriceMinor * quantity;
+
+                    return {
+                        serviceItemId,
+                        sku: priceRow.serviceItem?.sku || serviceItemId,
+                        name: priceRow.serviceItem?.name || serviceItemId,
+                        quantity,
+                        unitPriceMinor,
+                        lineTotalMinor,
+                        months: null,
+                    };
+                });
+
+                subtotalMinor = mappedItems.reduce(
+                    (sum, item) => sum + Number(item.lineTotalMinor || 0),
+                    0
+                );
+
+                discountMinor = 0;
+                totalMinor = subtotalMinor;
+                finalTierId = null;
             }
 
-            // 2) Customer Persistence
             const customerEmail = customer.email?.toLowerCase().trim();
             const safeEmail = customerEmail || `draft-${Date.now()}@placeholder.com`;
 
@@ -164,12 +212,15 @@ export async function POST(req: NextRequest) {
                     orderNumber: generateOrderNumber(),
                     serviceType,
                     status: OrderStatus.QUOTED,
-                    customerId: dbCustomer.id, // Direct ID assignment
+                    customerId: dbCustomer.id,
                     serviceDate: serviceDate ? new Date(serviceDate) : null,
                     timeSlotId: timeSlotId || null,
-                    notes: notes || null,
+                    notes:
+                        notes ||
+                        (originalOrderNumber
+                            ? `Return request for original order: ${originalOrderNumber}`
+                            : null),
 
-                    // Logic for required Enum field movingPackageId
                     movingPackageId: (movingPackageId as MovingPackageId) || MovingPackageId.basic_package,
                     distanceMiles: Number(distanceMiles) || 0,
 

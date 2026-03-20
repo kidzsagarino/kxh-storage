@@ -18,7 +18,7 @@ function statusBadge(status: string) {
       return `${base} bg-slate-100 text-slate-700 border-slate-200`;
     case "confirmed":
       return `${base} bg-amber-50 text-amber-800 border-amber-200`;
-    case "collected":
+    case "dropped_off":
       return `${base} bg-sky-50 text-sky-800 border-sky-200`;
     case "completed":
       return `${base} bg-emerald-50 text-emerald-800 border-emerald-200`;
@@ -163,6 +163,7 @@ export default function AdminOrderByIdClient() {
 
   const isStorage = order.serviceType?.toUpperCase() === "STORAGE";
   const isShredding = order.serviceType?.toUpperCase() === "SHREDDING";
+  const isReturn = order.serviceType?.toUpperCase() === "RETURN"
 
   const discountPercent = order.storageDiscountTier?.percentOff || 0;
   const durationMonths = order.items?.[0]?.months || 0;
@@ -188,9 +189,10 @@ export default function AdminOrderByIdClient() {
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-200">
                       {/* Icon changes based on service */}
-                      {isMoving && "🚚"}
-                      {isStorage && "📦"}
-                      {isShredding && "♻️"}
+                      { isMoving && "🚚" }
+                      { isStorage && "📦" }
+                      { isShredding && "♻️" }
+                      { isReturn && "↩️" }
                     </div>
                     <span className="text-sm font-bold text-slate-900 capitalize">
                       {order.serviceType?.toLowerCase()} Service
@@ -349,7 +351,7 @@ export default function AdminOrderByIdClient() {
           </section>
 
           {/* Delivery Address (If Moving) */}
-          {isMoving && deliveryAddress && (
+          {(isMoving || isReturn) && deliveryAddress && (
             <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex justify-between items-center">
                 <h2 className="text-sm font-semibold text-blue-700">Delivery Details</h2>
@@ -567,9 +569,15 @@ export default function AdminOrderByIdClient() {
 
                     if (res.ok) {
                       toast.success("Drop-off confirmation email sent.");
+                      statusBadge("DROPPED_OFF");
+                      setOrder((prev: any) => ({ ...prev, status: "DROPPED_OFF" }));
+                      const fresh = await getOrderById(order.id);
+                      setOrder(fresh);
                     } else {
                       const j = await res.json().catch(() => ({}));
                       toast.error(j?.error ?? "Failed to send drop-off email.");
+                      const fresh = await getOrderById(order.id);
+                      setOrder(fresh);
                     }
                   } finally {
                     setSendDropoff(false);
@@ -577,7 +585,7 @@ export default function AdminOrderByIdClient() {
                 }}
                 className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50"
               >
-                {sendDropoff ? "Sending..." : "Send Dropoff Email"}
+                {sendDropoff ? "Sending..." : "Mark Dropped Off + Email"}
               </button>
               <button
                 disabled={markingDone}

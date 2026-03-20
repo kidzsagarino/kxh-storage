@@ -17,6 +17,8 @@ import { proceedToPayment } from "@/app/lib/proceed-to-payment";
 import { createEmbeddedSession } from "@/app/services/stripe";
 import { submitOrderAction } from "@/app/services/order";
 import { EmbeddedCheckout } from "./stripe/EmbeddedCheckout";
+import { ReturnForm } from "./ServicesForm/ReturnServiceFlow";
+import { ReturnOrderSummary } from "../order-summary/ReturnOrderSummaryLive";
 
 
 function ServiceSelect({
@@ -37,6 +39,7 @@ function ServiceSelect({
             <option value="storage">Storage</option>
             <option value="moving">Packing and Moving</option>
             <option value="shredding">Shredding</option>
+            <option value="return">Return</option>
         </select>
     );
 }
@@ -59,11 +62,6 @@ export default function HomeClientControls({
     const handlePaymentDone = React.useCallback(async (paidOrderId?: string) => {
         if (paidOrderId) {
             router.push(`/success?orderId=${paidOrderId}`);
-            await fetch("/api/orders/send-receipt", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ paidOrderId }),
-            });
         } else {
             router.push(`/success`);
         }
@@ -128,7 +126,7 @@ export default function HomeClientControls({
         <div className="mx-auto max-w-screen-xl">
             <div className="space-y-5 lg:space-y-6">
                 {/* service row */}
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
                     {[
                         {
                             id: "storage",
@@ -137,13 +135,18 @@ export default function HomeClientControls({
                         },
                         {
                             id: "moving",
-                            title: "Packing and Moving",
+                            title: "Moving",
                             desc: "Same-day moves across London",
                         },
                         {
                             id: "shredding",
                             title: "Shredding",
                             desc: "Secure document disposal",
+                        },
+                        {
+                            id: "return",
+                            title: "Return",
+                            desc: "Return items from storage to you",
                         },
                     ].map((item) => {
                         const selected = state.serviceType === item.id;
@@ -156,8 +159,8 @@ export default function HomeClientControls({
                                 className={[
                                     "group relative flex min-h-[82px] w-full items-center justify-between rounded-2xl border px-5 py-4 text-left transition-all duration-200",
                                     selected
-                                        ? "border-emerald-700/30 bg-[linear-gradient(135deg,#2e7d57_0%,#3f8f66_100%)] text-white shadow-[0_10px_30px_rgba(34,197,94,0.18)]"
-                                        : "border-slate-200 bg-white text-slate-900 shadow-[0_8px_24px_rgba(15,23,42,0.05)] hover:border-slate-300",
+                                        ? "border-emerald-700/30 bg-[linear-gradient(135deg,#2e7d57_0%,#3f8f66_100%)] text-white"
+                                        : "border-slate-200 bg-white text-slate-900 hover:border-slate-300",
                                 ].join(" ")}
                             >
                                 <div className="pr-4">
@@ -184,7 +187,7 @@ export default function HomeClientControls({
                                     className={[
                                         "inline-flex h-11 min-w-[96px] items-center justify-center rounded-full px-4 text-sm font-bold transition",
                                         selected
-                                            ? "bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                                            ? "bg-white/12 text-white"
                                             : "bg-slate-100 text-slate-800",
                                     ].join(" ")}
                                 >
@@ -204,7 +207,7 @@ export default function HomeClientControls({
                 {/* main widget shell */}
                 <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_370px]">
                     {/* left flow */}
-                    <div className="min-w-0 rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
+                    <div className="min-w-0 rounded-[28px] border border-slate-200 bg-white">
                         <div className="p-4 sm:p-5 lg:p-5">
                             {state.serviceType === "storage" && (
                                 <StorageForm
@@ -229,12 +232,19 @@ export default function HomeClientControls({
                                     onProceed={handleProceedToPayment}
                                 />
                             )}
+                            {state.serviceType === "return" && (
+                                <ReturnForm
+                                    busy={isPaying || isSubmitting}
+                                    error={error}
+                                    onProceed={handleProceedToPayment}
+                                />
+                            )}
                         </div>
                     </div>
 
                     {/* right summary */}
                     <div className="min-w-0 lg:sticky lg:top-6">
-                        <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_16px_45px_rgba(15,23,42,0.10)]">
+                        <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white">
                             <div className="px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
                                 {state.serviceType === "storage" && (
                                     <StorageOrderSummary
@@ -259,6 +269,13 @@ export default function HomeClientControls({
                                         error={error}
                                     />
                                 )}
+                                {state.serviceType === "return" && (
+                                    <ReturnOrderSummary
+                                        onProceed={handleProceedToPayment}
+                                        busy={isPaying || isSubmitting || !!orderId}
+                                        error={error}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -268,7 +285,7 @@ export default function HomeClientControls({
                 {orderId && (
                     <div
                         ref={checkoutRef}
-                        className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_45px_rgba(15,23,42,0.08)] animate-fadeIn"
+                        className="overflow-hidden rounded-[28px] border border-slate-200 bg-white animate-fadeIn"
                     >
                         <div className="border-b border-slate-100 px-5 py-4 sm:px-6">
                             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-600">

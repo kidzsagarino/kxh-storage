@@ -22,7 +22,9 @@ export function EmailLive({
 
     async function poll() {
       // If already real, stop.
-      if (!isPlaceholderEmail(email)) return;
+      if (!isPlaceholderEmail(email)) {
+        return;
+      };
 
       for (let i = 0; i < 12; i++) {
         try {

@@ -1,6 +1,8 @@
 import Stripe from "stripe";
 import { prisma } from "@/src/lib/prisma";
 import { PaymentStatus, OrderStatus, ServiceType } from "@prisma/client";
+import { generateOrderReceipt, getOrderEmailHtml } from "../../orders/generateReceipt";
+import { sendEmail } from "@/app/lib/mail";
 
 export const runtime = "nodejs";
 
@@ -12,6 +14,78 @@ function addMonthsUTC(date: Date, months: number) {
     const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
     d.setUTCMonth(d.getUTCMonth() + months);
     return d;
+}
+
+async function sendReceipt(paidOrderId: string) {
+    try {
+
+        const { pdfBytes, order, hasContainer } =
+            await generateOrderReceipt(prisma, paidOrderId);
+
+        try {
+            await sendEmail({
+                to: order.customer.email || "help.kxhlogistics@gmail.com",
+                subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
+                html: getOrderEmailHtml(hasContainer),
+                attachments: [{
+                    filename: `receipt-${order.orderNumber || 'order'}.pdf`,
+                    content: Buffer.from(pdfBytes),
+                    contentType: "application/pdf",
+                }],
+            });
+
+            await sendEmail({
+                to: "help.kxhlogistics@gmail.com",
+                subject: `New Order Received: #${order.orderNumber || order.id.slice(0, 8)}`,
+                html: `
+                            <p>A new order has been placed by ${order.customer.fullName || "Unknown Customer"}.</p>
+                            <p>Order Number: <strong>${order.orderNumber || order.id.slice(0, 8)}</strong></p>
+                            <p>Customer Email: ${order.customer.email || "Not provided"}</p>
+                            ${hasContainer ? "<p><strong>Note:</strong> This order includes a container.</p>" : ""}
+                            <p>See attached receipt for details.</p>
+                        `,
+                attachments: [
+                    {
+                        filename: `receipt-${order.orderNumber || "order"}.pdf`,
+                        content: Buffer.from(pdfBytes),
+                        contentType: "application/pdf",
+                    },
+                ],
+            });
+
+            await prisma.emailLog.create({
+                data: {
+                    orderId: order.id,
+                    type: "RECEIPT",
+                    to: order.customer.email || "help.kxhlogistics@gmail.com",
+                    subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
+                    status: "SENT",
+                    provider: "SEND GRID"
+                },
+            });
+
+        }
+        catch (err: any) {
+            await prisma.emailLog.create({
+                data: {
+                    orderId: order.id,
+                    type: "RECEIPT",
+                    to: order.customer.email || "help.kxhlogistics@gmail.com",
+                    subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
+                    status: "FAILED",
+                    provider: "SENDGRID",
+                    error: String(err?.message ?? err),
+                },
+            });
+            console.error("Email sending failed:", err);
+
+            throw new Error(err);
+        }
+
+    } catch (err: any) {
+        console.error(err);
+        throw new Error(err);
+    }
 }
 
 type InvoiceWithSubscription = Stripe.Invoice & {
@@ -302,6 +376,8 @@ export async function POST(req: Request) {
                         .catch(() => { });
                 }
             }
+
+            await sendReceipt(payment.orderId);
 
             break;
         }

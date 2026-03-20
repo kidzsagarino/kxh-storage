@@ -32,7 +32,7 @@ export function ServicesGrid() {
           className="group relative flex flex-col rounded-2xl border border-slate-200 bg-white p-6
                  shadow-[0_6px_20px_rgba(15,23,42,0.06)]
                  transition-all duration-200
-                 hover:-translate-y-1 hover:shadow-[0_14px_35px_rgba(15,23,42,0.10)]"
+                 hover:-translate-y-1"
         >
           {/* Icon */}
           <div
@@ -61,10 +61,10 @@ export function ServicesGrid() {
           </p>
 
           {/* CTA */}
-          <div className="mt-4 text-xs font-semibold text-slate-500 transition
+          {/* <div className="mt-4 text-xs font-semibold text-slate-500 transition
                       group-hover:text-emerald-600">
             Learn more →
-          </div>
+          </div> */}
         </div>
       ))}
     </div>

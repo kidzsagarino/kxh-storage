@@ -27,4 +27,10 @@ export const HERO_BY_SERVICE: Record<
     secondaryPill: "Confidential document shredding",
     alt: "Secure document shredding service",
   },
+  return: {
+    image: "",
+    primaryPill: "",
+    secondaryPill: "",
+    alt: ""
+  }
 };

@@ -5,10 +5,11 @@ import { PrismaClient } from '@prisma/client';
  * Format: ORD-YYYYMMDD-SHORTID (e.g., ORD-20260214-A1B2)
  */
 export function generateOrderNumber(): string {
-  const date = new Date();
-  const datePart = date.toISOString().split('T')[0].replace(/-/g, '');
-  // Using a short random string to ensure uniqueness within the same day
-  const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-  
-  return `ORD-${datePart}-${randomPart}`;
+  const seconds = Math.floor(Date.now() / 1000);
+
+  const shortTimestamp = (seconds % 1000000).toString().padStart(6, '0');
+
+  const randomDigit = Math.floor(Math.random() * 10);
+
+  return `ORD-${shortTimestamp}${randomDigit}`;
 }

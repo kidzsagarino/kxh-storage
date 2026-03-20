@@ -22,7 +22,7 @@ const SERVICE_META: Record<
         ],
     },
     moving: {
-        label: "Packing and Moving",
+        label: "Moving",
         tagline: "Same-day moves with careful crews.",
         bullets: [
             "Door-to-door moves with protected handling",
@@ -37,6 +37,15 @@ const SERVICE_META: Record<
             "Scheduled pickup or drop-off options",
             "Compliance-friendly secure disposal",
             "Perfect for clearing paperwork safely",
+        ],
+    },
+    return: {
+        label: "Returns",
+        tagline: "Hassle-free returns management for your business.",
+        bullets: [
+            "Easy return initiation and tracking",
+            "Flexible pickup options for your convenience",
+            "Dedicated support for all return inquiries",
         ],
     },
 };
@@ -160,6 +169,11 @@ export function HeroQuoteBar() {
             label: "Secure Shredding",
             tagline: "GDPR & Data Compliant",
             bullets: ["Destruction Certificate", "Eco-friendly recycling", "Secure chain of custody"]
+        },
+        return: {
+            label: "Return My Items",
+            tagline: "Streamlined Returns for Your Business",
+            bullets: ["Easy return initiation", "Flexible pickup options", "Dedicated support"]
         }
     } as const;
 
@@ -187,7 +201,7 @@ export function HeroQuoteBar() {
         <div className="relative mx-auto max-w-4xl">
             <div className="absolute inset-0 -z-10 scale-110 rounded-full bg-emerald-100/40 blur-[100px]" />
 
-            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.10)]">
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
                 {/* top trust strip */}
                 <div className="bg-slate-900 px-6 py-2 text-center">
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">
@@ -207,7 +221,7 @@ export function HeroQuoteBar() {
                                     Get your instant quote
                                 </h2>
                                 <p className="mt-1 text-sm text-slate-500">
-                                    Choose a service and enter your postcode to begin.
+                                    Choose a service.
                                 </p>
                             </div>
 
@@ -280,7 +294,7 @@ export function HeroQuoteBar() {
                             </div>
 
                             <div className="flex justify-center lg:justify-center">
-                                <a href="https://www.trustpilot.com/review/kxhlogistics.com" target="_blank" rel="noopener noreferrer">
+                                <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
                                     <div className="flex items-center gap-2 rounded-full border border-slate-100 bg-slate-50 px-4 py-1.5">
                                         <span>
                                             <span className="inline-flex items-center gap-0.5">

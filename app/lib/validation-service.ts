@@ -18,8 +18,9 @@ export async function validateServiceAvailability(
   const isEnabled = 
     (serviceType === 'STORAGE' && settings.storageEnabled) ||
     (serviceType === 'MOVING' && settings.movingEnabled) ||
-    (serviceType === 'SHREDDING' && settings.shreddingEnabled);
-  
+    (serviceType === 'SHREDDING' && settings.shreddingEnabled) ||
+    (serviceType === 'RETURN' && settings.returnEnabled);
+
   if (!isEnabled) throw new Error(`${serviceType} services are currently unavailable.`);
 
   // 2. Check for Blackout Dates
