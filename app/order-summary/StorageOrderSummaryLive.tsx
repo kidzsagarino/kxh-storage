@@ -72,7 +72,7 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
   const canProceed = !!orderFlow?.ok && durationOk && itemsOk && scheduleOk && detailsOk && !busy;
 
   return (
-    <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+    <aside className="space-y-5">
       <h2 className="text-xl font-medium text-slate-900 text-center">
         Your Order
       </h2>

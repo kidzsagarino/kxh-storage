@@ -13,6 +13,7 @@ enum ServiceType {
   STORAGE
   MOVING
   SHREDDING
+  RETURN
 }
 
 enum OrderStatus {
@@ -25,6 +26,7 @@ enum OrderStatus {
   COMPLETED
   CANCELED
   REFUNDED
+  DROPPED_OFF
 }
 
 enum PaymentStatus {
@@ -69,6 +71,9 @@ enum CatalogItemId {
   // SHREDDING
   bag
   archive_box
+  return_boxes_suitcase
+  return_half_container
+  return_container
 }
 
 enum MovingPackageId {
@@ -325,6 +330,7 @@ model AdminSettings {
   storageEnabled   Boolean @default(true)
   movingEnabled    Boolean @default(true)
   shreddingEnabled Boolean @default(true)
+  returnEnabled    Boolean @default(true)
 
   movingPricePerMileMinor Int @default(58)
   packingAssistanceMinor  Int @default(29500)

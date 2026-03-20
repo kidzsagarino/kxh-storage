@@ -68,7 +68,6 @@ export async function loadOrderFlow(currency = "GBP") {
       prisma.timeSlot.findMany({
         where: { isActive: true },
         select: { id: true, name: true, startTime: true, endTime: true, isActive: true },
-        orderBy: [{ startTime: "asc" }, { name: "asc" }],
       }),
 
       prisma.storageDiscountTier.findMany({
@@ -85,7 +84,7 @@ export async function loadOrderFlow(currency = "GBP") {
           shreddingEnabled: true,
           movingPricePerMileMinor: true,
           packingAssistanceMinor: true,
-          timeSlotSettings: { select: { key: true, label: true, enabled: true }, orderBy: { key: "asc" } },
+          timeSlotSettings: { select: { key: true, label: true, enabled: true }},
           capacities: { select: { serviceType: true, slotKey: true, capacity: true } },
           weekdayRules: { select: { serviceType: true, weekday: true, enabled: true } },
           blackoutDates: { select: { date: true }, orderBy: { date: "asc" } },
@@ -110,6 +109,7 @@ export async function loadOrderFlow(currency = "GBP") {
   const storageItems = normalizedItems.filter((x) => x.serviceType === ServiceType.STORAGE);
   const movingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.MOVING);
   const shreddingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.SHREDDING);
+  const returnItems = normalizedItems.filter((x) => x.serviceType === ServiceType.RETURN);
 
   const normalizedPackages = movingPackages.map((p) => {
     const price = p.prices[0] ?? null;
@@ -169,6 +169,10 @@ export async function loadOrderFlow(currency = "GBP") {
         items: shreddingItems,
         itemsBySku: toSkuMap(shreddingItems),
       },
+      return: {
+        items: returnItems,
+        itemsBySku: toSkuMap(returnItems),
+      }
     },
   };
 }

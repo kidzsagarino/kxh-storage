@@ -6,7 +6,6 @@ export async function validateCapacity(
     serviceDate: Date,
     timeSlotId: string
 ) {
-    // 1. Fetch the slot key (e.g., MORNING) for the given slot ID
     const slot = await tx.timeSlot.findUnique({
         where: { id: timeSlotId }
     });
@@ -14,7 +13,6 @@ export async function validateCapacity(
     if (!slot) throw new Error("Invalid time slot selected.");
     const slotKey = slot.name.toUpperCase() as TimeSlotKey;
 
-    // 2. Fetch capacity settings and current order count
     const [settings, currentOrderCount] = await Promise.all([
         tx.adminSettings.findFirst({
             include: {

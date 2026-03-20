@@ -63,9 +63,34 @@ export async function POST(req: NextRequest) {
           <div><strong>Address:</strong> ${fmtAddr(pickup)}</div>
           <div><strong>Status:</strong> COMPLETED</div>
         </div>
+        <div style="margin-top:20px; padding:16px; border:1px solid #e2e8f0; border-radius:12px; background:#f8fafc; text-align:center;">
+            <p style="margin:0 0 8px; font-size:14px; font-weight:600;">
+            ⭐ Enjoyed our service?
+            </p>
+            <p style="margin:0 0 12px; font-size:13px; color:#475569;">
+            We'd really appreciate your feedback on Trustpilot.
+            </p>
 
-        <p style="margin:0 0 16px;">
-          If you have any questions, just reply to this email and we’ll help right away.
+            <a 
+                href="https://uk.trustpilot.com/review/kxhlogistics.co.uk"
+                target="_blank"
+                style="
+                    display:inline-block;
+                    padding:10px 16px;
+                    background:#00b67a;
+                    color:#ffffff;
+                    text-decoration:none;
+                    border-radius:8px;
+                    font-size:13px;
+                    font-weight:600;
+                "
+            >
+            Leave a review →
+            </a>
+        </div>
+
+          <p style="margin:0 0 16px;">
+          If you have any questions or need to update anything, just reply to help.kxhlogistics@gmail.com.
         </p>
 
         <p style="margin:0; color:#64748b; font-size:12px;">
@@ -78,7 +103,7 @@ export async function POST(req: NextRequest) {
 
         try {
             await sendEmail({
-                to: order.customer.email || "hello@kxhlogistics.co.uk",
+                to: order.customer.email || "help.kxhlogistics@gmail.com",
                 subject: subject,
                 html: html
             });

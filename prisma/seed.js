@@ -114,6 +114,10 @@ async function seedServiceItemsAndPrices() {
 
     { id: "bag", serviceType: ServiceType.SHREDDING, sku: "bag", name: "Bag", unit: BillingUnit.PER_ITEM, price: 1000 },
     { id: "archive_box", serviceType: ServiceType.SHREDDING, sku: "archive-box", name: "Archive Box", unit: BillingUnit.PER_ITEM, price: 1500 },
+    { id: "return_boxes_suitcase", serviceType: ServiceType.RETURN, sku: "return-boxes-suitcase", name: "Boxes/Suitcase", unit: BillingUnit.PER_ITEM, price: 1400 },
+    { id: "return_half_container", serviceType: ServiceType.RETURN, sku: "return-half-container", name: "Half Container", unit: BillingUnit.PER_ITEM, price: 1400 },
+    { id: "return_container", serviceType: ServiceType.RETURN, sku: "return-container", name: "Full Container", unit: BillingUnit.PER_ITEM, price: 1400 },
+
   ];
 
   for (const it of items) {
@@ -222,6 +226,7 @@ async function seedCapacityAndRules() {
       storageEnabled: true,
       movingEnabled: true,
       shreddingEnabled: true,
+      returnEnabled: true,
       movingPricePerMileMinor: 58
     },
     create: {
@@ -229,6 +234,7 @@ async function seedCapacityAndRules() {
       storageEnabled: true,
       movingEnabled: true,
       shreddingEnabled: true,
+      returnEnabled: true,
       movingPricePerMileMinor: 58
     },
   });
@@ -237,20 +243,33 @@ async function seedCapacityAndRules() {
   await prisma.capacitySetting.deleteMany({ where: { settingsId: globalSettings.id } });
 
   const days = Object.values(Weekday);
-  const services = [ServiceType.STORAGE, ServiceType.MOVING, ServiceType.SHREDDING];
+  const services = [ServiceType.STORAGE, ServiceType.MOVING, ServiceType.SHREDDING, ServiceType.RETURN];
 
   for (const service of services) {
     for (const day of days) {
-      const isWeekend = day === Weekday.SAT || day === Weekday.SUN;
 
-      await prisma.weekdayRule.create({
-        data: {
-          settingsId: globalSettings.id,
-          serviceType: service,
-          weekday: day,
-          enabled: !isWeekend,
-        },
-      });
+      if (service == "MOVING") {
+        await prisma.weekdayRule.create({
+          data: {
+            settingsId: globalSettings.id,
+            serviceType: service,
+            weekday: day,
+            enabled: true,
+          },
+        });
+      }
+      else {
+        const isWeekend = day === Weekday.SAT || day === Weekday.SUN;
+
+        await prisma.weekdayRule.create({
+          data: {
+            settingsId: globalSettings.id,
+            serviceType: service,
+            weekday: day,
+            enabled: !isWeekend,
+          },
+        });
+      }
     }
   }
 
@@ -263,7 +282,7 @@ async function seedCapacityAndRules() {
           settingsId: globalSettings.id,
           serviceType: service,
           slotKey: slot,
-          capacity: 100,
+          capacity: 10,
         },
       });
     }
@@ -338,7 +357,7 @@ async function seedAdminUser() {
       role: "ADMIN",
     },
   });
-  
+
   console.log('✅ User Admin Seeding completed successfully.');
 }
 

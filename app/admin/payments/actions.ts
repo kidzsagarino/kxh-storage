@@ -12,6 +12,7 @@ export type AdminPaymentStatus =
 export type AdminPayment = {
   id: string;
   orderId: string;
+  orderNumber: string;
   serviceType: "storage" | "moving" | "shredding";
   status: string;
   amount: number; // GBP major units
@@ -58,7 +59,6 @@ function mapMethod(v: unknown): "stripe" | "cash" | "bank_transfer" {
 export async function getAdminPayments(): Promise<AdminPayment[]> {
   const payments = await prisma.payment.findMany({
     orderBy: [{ createdAt: "desc" }],
-    distinct: ["orderId"],
     include: {
       order: {
         include: {
@@ -76,6 +76,7 @@ export async function getAdminPayments(): Promise<AdminPayment[]> {
     return {
       id: p.id,
       orderId: p.orderId,
+      orderNumber: p.order.orderNumber,
       serviceType: mapServiceType(p.order?.serviceType),
       status: p.status,
       amount: Number((p.amountMinor ?? 0) / 100),

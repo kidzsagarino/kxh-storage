@@ -3,16 +3,16 @@ export async function submitOrderAction(checkoutState: any) {
 
     let serviceType = state.serviceType;
 
-    let items:any = [];
-    
-    if (serviceType== "moving") {
+    let items: any = [];
+
+    if (serviceType == "moving") {
         state = state.moving ?? state;
         items = [{
             serviceItemId: (state.movingItemId || "").replace(/-/g, "_"),
             quantity: 1,
             packageId: state.movingPackageId,
         }];
-    } else if(serviceType == "storage") {
+    } else if (serviceType == "storage") {
         state = state.storage ?? state;
         const quantities = state.quantities || {};
         items = Object.entries(quantities)
@@ -22,8 +22,17 @@ export async function submitOrderAction(checkoutState: any) {
                 quantity: Number(qty) || 0,
                 months: Number(state.durationMonth) || 1,
             }));
-    }else if(serviceType == "shredding") {
+    } else if (serviceType == "shredding") {
         state = state.shredding ?? state;
+        const quantities = state.quantities || {};
+        items = Object.entries(quantities)
+            .filter(([_, qty]) => (Number(qty) || 0) > 0)
+            .map(([id, qty]) => ({
+                serviceItemId: id.replace(/-/g, "_"),
+                quantity: Number(qty) || 0,
+            }));
+    } else if (serviceType == "return") {
+        state = state.return ?? state;
         const quantities = state.quantities || {};
         items = Object.entries(quantities)
             .filter(([_, qty]) => (Number(qty) || 0) > 0)
@@ -48,7 +57,8 @@ export async function submitOrderAction(checkoutState: any) {
         movingPackageId: state.movingPackageId || null,
         notes: state.notes,
         fromLocation: state.fromLocation,
-        toLocation: state.toLocation
+        toLocation: state.toLocation,
+        originalOrderNumber: state.originalOrderNumber
     };
 
     const res = await fetch("/api/orders", {
@@ -77,8 +87,8 @@ function mapAddresses(state: any) {
             postalCode: state.fromLocation ? "" : source.postalCode || "",
             country: "GB",
         });
-    } 
-    if(state.toLocation || state.destination){
+    }
+    if (state.toLocation || state.destination) {
         const source = state.toLocation || state.destination;
         addr.push({
             type: "DROPOFF",

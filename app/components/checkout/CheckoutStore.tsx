@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useMemo, useState } from "react";
 
-export type ServiceType = "storage" | "moving" | "shredding";
+export type ServiceType = "storage" | "moving" | "shredding" | "return";
 export type MovingItemId =
   | "small-move"
   | "1-bedroom-flat"
@@ -13,6 +13,7 @@ export type MovingItemId =
 export type ShreddingItemId = "bag" | "archive-box";
 export type MovingPackageId = "basic-package" | "move-and-pack";
 export type TimeSlotId = "morning" | "afternoon" | "evening" | "";
+export type ReturnItemId = "return-box-suitcase" | "return-half-container" | "return-container";
 
 export type CustomerDetails = {
   houseNumber: string;
@@ -65,6 +66,18 @@ export type ShreddingState = {
   address: LocationDetails;
 };
 
+export type ReturnState = {
+  customerDetails: CustomerDetails;
+  originalOrderNumber: string;
+  returnItemId: ReturnItemId | "";
+  quantities: Record<string, number>;
+  collectionDate: string;
+  timeSlotId: string;
+  fromLocation: LocationDetails;
+  toLocation: LocationDetails;
+  enableButton: boolean;
+}
+
 export type OrderFlowData = any;
 
 export type CheckoutSettings = {
@@ -76,6 +89,7 @@ export type CheckoutState = {
   storage: StorageState;
   moving: MovingState;
   shredding: ShreddingState;
+  return: ReturnState;
   settings: CheckoutSettings;
   orderFlow: OrderFlowData | null;
   enableProceedButton: boolean;
@@ -144,6 +158,22 @@ const makeEmptyShredding = (): ShreddingState => ({
   address: makeEmptyAddress(),
 });
 
+const makeEmptyReturn = (): ReturnState => ({
+  customerDetails: makeEmptyCustomer(),
+  originalOrderNumber: "",
+  returnItemId: "",
+  quantities: {
+    "return-box-suitcase": 0,
+    "return-half-container": 0,
+    "return-container": 0,
+  },
+  collectionDate: "",
+  timeSlotId: "",
+  fromLocation: makeEmptyAddress(),
+  toLocation: makeEmptyAddress(),
+  enableButton: false,
+});
+
 const defaultSettings: CheckoutSettings = { disableAutoBlockSchedule: false };
 
 const makeInitialState = (initialOrderFlow?: any | null): CheckoutState => ({
@@ -151,6 +181,7 @@ const makeInitialState = (initialOrderFlow?: any | null): CheckoutState => ({
   storage: makeEmptyStorage(),
   moving: makeEmptyMoving(),
   shredding: makeEmptyShredding(),
+  return: makeEmptyReturn(),
   settings: defaultSettings,
   orderFlow: initialOrderFlow ?? null,
   enableProceedButton: false,
@@ -171,6 +202,9 @@ type CheckoutContextValue = {
 
   setShredding: React.Dispatch<React.SetStateAction<ShreddingState>>;
   resetShredding: () => void;
+
+  setReturn: React.Dispatch<React.SetStateAction<ReturnState>>;
+  resetReturn: () => void;
 
   setSettings: React.Dispatch<React.SetStateAction<CheckoutSettings>>;
   setOrderFlow: (data: OrderFlowData) => void;
@@ -216,6 +250,12 @@ export function CheckoutProvider({
         shredding: typeof updater === "function" ? (updater as any)(s.shredding) : updater,
       }));
 
+    const setReturn: React.Dispatch<React.SetStateAction<ReturnState>> = (updater) =>
+      setState((s) => ({
+        ...s,
+        return: typeof updater === "function" ? (updater as any)(s.return) : updater,
+      }));
+
     const setSettings: React.Dispatch<React.SetStateAction<CheckoutSettings>> = (updater) =>
       setState((s) => ({
         ...s,
@@ -237,6 +277,9 @@ export function CheckoutProvider({
       setShredding,
       resetShredding: () => setState((s) => ({ ...s, shredding: makeEmptyShredding() })),
 
+      setReturn,
+      resetReturn: () => setState((s) => ({ ...s, return: makeEmptyReturn() })),
+
       setSettings,
 
       resetAll: () =>
@@ -245,6 +288,7 @@ export function CheckoutProvider({
           storage: makeEmptyStorage(),
           moving: makeEmptyMoving(),
           shredding: makeEmptyShredding(),
+          return: makeEmptyReturn(),
           settings: defaultSettings,
           orderFlow: prev.orderFlow, // keep server-loaded data
           enableProceedButton: false,
@@ -292,6 +336,18 @@ export function useShreddingCheckout() {
     setState: setShredding,
     setServiceType,
     reset: resetShredding,
+    orderFlow: state.orderFlow,
+  };
+}
+
+export function useReturnCheckout() {
+  const { state, setReturn, setServiceType, resetReturn } = useCheckout();
+  return {
+    state: state.return,
+    setState: setReturn,
+    setServiceType,
+    reset: resetReturn,
+    resetNonce: state.resetNonce,
     orderFlow: state.orderFlow,
   };
 }

@@ -1,22 +1,31 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import {
-    useStorageCheckout,
-} from "../checkout/CheckoutStore";
+import { useReturnCheckout } from "../checkout/CheckoutStore";
 import { DatePicker } from "../DatePicker";
 import { isDayFull, isSlotFull } from "../scheduling/capacityLogic";
 import { money, to12Hour, toLocalISODate, weekdayKey } from "@/app/utils/utils";
-import { NominatimResult, fetchNominatim, pickCity, streetFromNominatim } from "@/app/lib/address";
-import { displayToStoredGB, formatGBForDisplay, isValidGBPhone, normalizeGBPhone, toGBNational } from "@/app/lib/phone";
+import {
+    NominatimResult,
+    fetchNominatim,
+    pickCity,
+    streetFromNominatim,
+} from "@/app/lib/address";
+import {
+    displayToStoredGB,
+    formatGBForDisplay,
+    isValidGBPhone,
+    normalizeGBPhone,
+    toGBNational,
+} from "@/app/lib/phone";
 import { AddressLookupField } from "../addressLookUpField";
 
 type StepId = 0 | 1 | 2 | 3;
 
 const steps = [
-    { id: 0 as StepId, title: "Duration" },
-    { id: 1 as StepId, title: "Items" },
-    { id: 2 as StepId, title: "Schedule" },
+    { id: 0 as StepId, title: "Type" },
+    { id: 1 as StepId, title: "Schedule" },
+    { id: 2 as StepId, title: "Order" },
     { id: 3 as StepId, title: "Details" },
 ];
 
@@ -34,7 +43,7 @@ function Stepper({
     allCompleted?: boolean;
 }) {
     return (
-        <ol className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+        <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {steps.map((s, idx) => {
                 const isActive = s.id === current;
                 const isCompleted = s.id < maxAllowed || allCompleted;
@@ -48,33 +57,29 @@ function Stepper({
                             onClick={() => !isLocked && onGo(s.id)}
                             disabled={!isEnabled}
                             className={`w-full rounded-xl border px-3 py-2 text-left transition
-                            ${isActive
+              ${isActive
                                     ? "border-emerald-200 bg-emerald-50"
                                     : "border-slate-200 bg-white hover:border-slate-300"
                                 }
-                            ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
+              ${!isEnabled ? "opacity-40 cursor-not-allowed hover:border-slate-200" : ""}`}
                         >
                             <div className="flex items-center gap-2">
                                 <div
                                     className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
-                                        ${isActive && isCompleted
+                  ${isActive && isCompleted
                                             ? "border-emerald-600 bg-emerald-600 text-white ring-2 ring-emerald-200"
                                             : isActive
                                                 ? "border-emerald-600 bg-emerald-600 text-white"
                                                 : isCompleted
                                                     ? "border-emerald-600 bg-emerald-600 text-white"
                                                     : "border-slate-200 bg-white text-slate-700"
-                                        }
-`}
+                                        }`}
                                 >
                                     {idx + 1}
                                 </div>
 
                                 <div className="min-w-0">
-                                    <div
-                                        className={`truncate text-sm font-medium ${isActive ? "text-slate-900" : "text-slate-800"
-                                            }`}
-                                    >
+                                    <div className={`truncate text-sm font-medium ${isActive ? "text-slate-900" : "text-slate-800"}`}>
                                         {s.title}
                                     </div>
                                 </div>
@@ -93,13 +98,15 @@ function FooterNav({
     isLast,
     onBack,
     onNext,
-    isPaying,
+    busy,
+    isPaying
 }: {
     canBack: boolean;
     canNext: boolean;
     isLast: boolean;
     onBack: () => void;
     onNext: () => void;
+    busy?: boolean;
     isPaying: boolean;
 }) {
     return (
@@ -107,7 +114,7 @@ function FooterNav({
             <button
                 type="button"
                 onClick={onBack}
-                disabled={!canBack || isPaying}
+                disabled={!canBack || !!busy}
                 className="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50 disabled:opacity-40"
             >
                 Back
@@ -132,31 +139,37 @@ function FooterNav({
     );
 }
 
-export function StorageForm({
+export function ReturnForm({
     onProceed,
     busy,
-    error
+    error,
 }: {
     onProceed: () => void;
     busy?: boolean;
     error?: string | null;
 }) {
-    const { state, setState, orderFlow, resetNonce } = useStorageCheckout();
+    const { state, setState, orderFlow, setServiceType, resetNonce } = useReturnCheckout();
+    const [step, setStep] = useState<StepId>(0);
 
-    const [step, setStep] = React.useState<StepId>(0);
-    const [addressQuery, setAddressQuery] = React.useState("");
+    const [collectionQuery, setCollectionQuery] = useState("");
+    const [returnQuery, setReturnQuery] = useState("");
+    const returnItems = orderFlow && orderFlow.catalog.return.items;
 
-    const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
+    useEffect(() => {
+        setServiceType("return");
+    }, [setServiceType]);
 
-    const storageItems = orderFlow && orderFlow.catalog.storage.items;
-    const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
-    const timeSlots = orderFlow && orderFlow.timeSlots;
-    const [orderId, setOrderId] = React.useState<string | null>(null);
+    useEffect(() => {
+        setStep(0);
+    }, [resetNonce]);
+
+    const disableAuto = orderFlow?.settings?.scheduling?.disableAutoBlockSchedule;
+    const timeSlots = orderFlow?.timeSlots ?? [];
 
     const inc = (id: string) => {
         if (!orderFlow) return;
 
-        const item = orderFlow.catalog.storage.itemsBySku?.[id];
+        const item = orderFlow.catalog.return.itemsBySku?.[id];
         if (!item) return;
 
         if (!item.price) return;
@@ -179,8 +192,8 @@ export function StorageForm({
             },
         }));
     };
+
     const visibleSlots = useMemo(() => {
-        if (!timeSlots) return [];
         const active = timeSlots.filter((s: any) => s && (s.isActive ?? true));
         const map = new Map<string, any>();
         for (const s of active) {
@@ -198,53 +211,47 @@ export function StorageForm({
         [state.quantities]
     );
 
-    const durationOk = duration.some((d: any) => d.minMonths === state.durationMonth);
-
     const itemsOk = totalItems > 0;
-
     const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
-
+    const orderOk = state.originalOrderNumber.trim().length > 0;
     const detailsOk =
-        addressQuery.trim().length >= 3 &&
-        (state.address.houseNumber ?? "").trim().length > 0 &&
-        (state.address.streetAddress ?? "").trim().length > 0 &&
-        isValidGBPhone(state.customerDetails.phone ?? "");
+        state.customerDetails.name.trim().length > 0 &&
+        state.customerDetails.email.trim().length > 0 &&
+        isValidGBPhone(state.customerDetails.phone ?? "") &&
+        state.fromLocation.houseNumber.trim().length > 0 &&
+        state.fromLocation.streetAddress.trim().length > 0 &&
+        state.toLocation.houseNumber.trim().length > 0 &&
+        state.toLocation.streetAddress.trim().length > 0;
 
     const canGoNext =
-        (step === 0 && durationOk) ||
-        (step === 1 && itemsOk) ||
-        (step === 2 && scheduleOk) ||
+        (step === 0 && itemsOk) ||
+        (step === 1 && scheduleOk) ||
+        (step === 2 && orderOk) ||
         (step === 3 && detailsOk);
 
     const maxAllowedStep: StepId = useMemo(() => {
-        if (!durationOk) return 0;
-        if (!itemsOk) return 1;
-        if (!scheduleOk) return 2;
+        if (!itemsOk) return 0;
+        if (!scheduleOk) return 1;
+        if (!orderOk) return 2;
         if (!detailsOk) return 3;
         return step;
-    }, [durationOk, itemsOk, scheduleOk, detailsOk, step]);
+    }, [itemsOk, scheduleOk, orderOk, detailsOk, step]);
 
-    React.useEffect(() => {
+
+    useEffect(() => {
         setState((s) => ({ ...s, enableButton: detailsOk }));
     }, [detailsOk, setState]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!orderFlow?.ok) return;
-
-        const scheduling = orderFlow.settings.scheduling;
-
-        if (scheduling.disableAutoBlockSchedule) return;
-
-        if (!state.collectionDate) return;
-        if (!state.timeSlotId) return;
+        if (orderFlow.settings.scheduling.disableAutoBlockSchedule) return;
+        if (!state.collectionDate || !state.timeSlotId) return;
 
         const slotIsFull = isSlotFull({
             orderFlow,
-            service: "storage",
+            service: "return",
             dateISO: state.collectionDate,
             timeSlotId: state.timeSlotId,
-            // volumesByTimeSlotId: optional for now (defaults to 0)
-            // volumesByTimeSlotId,
         });
 
         if (slotIsFull) {
@@ -252,130 +259,40 @@ export function StorageForm({
         }
     }, [orderFlow, state.collectionDate, state.timeSlotId, setState]);
 
-    React.useEffect(() => {
-        setStep(0);
-        setOrderId("");
-    }, [resetNonce])
-
-
-    const goNext = () => setStep((s) => (Math.min(LAST_STEP, s + 1) as StepId));
-    const goBack = () => setStep((s) => (Math.max(0, s - 1) as StepId));
+    const goNext = () => setStep((s) => Math.min(LAST_STEP, s + 1) as StepId);
+    const goBack = () => setStep((s) => Math.max(0, s - 1) as StepId);
 
     return (
-        <form
-            className="space-y-6"
-        >
+        <form className="space-y-6">
             <div className="space-y-2">
                 <Stepper
                     current={step}
                     maxAllowed={maxAllowedStep}
                     onGo={setStep}
-                    allCompleted={durationOk && itemsOk && scheduleOk && detailsOk}
+                    allCompleted={itemsOk && scheduleOk && orderOk && detailsOk}
                 />
                 <div className="text-xs text-slate-600">
-                    {step === 0 && "Choose how long you want to store your items."}
-                    {step === 1 && "Select what you’re storing and quantities."}
-                    {step === 2 && "Pick a collection date and time slot."}
-                    {step === 3 && "Enter your address and contact details."}
+                    {step === 0 && "Choose your return type."}
+                    {step === 1 && "Pick the preferred return date and time slot."}
+                    {step === 2 && "Enter the original order number."}
+                    {step === 3 && "Provide addresses and customer details."}
                 </div>
             </div>
+
             {step === 0 && (
-                <div className="max-w-full">
-                    <label className="block text-sm font-semibold text-slate-800 mb-3">
-                        Storage Duration
-                    </label>
-
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                        {duration.map((m: any) => {
-                            const isActive = state.durationMonth === m.minMonths;
-
-                            return (
-                                <div
-                                    key={m.minMonths}
-                                    role="radio"
-                                    aria-checked={isActive}
-                                    tabIndex={0}
-                                    onClick={() =>
-                                        setState((st) => ({
-                                            ...st,
-                                            durationMonth: m.minMonths,
-                                            discountId: m.id,
-                                        }))
-                                    }
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter" || e.key === " ") {
-                                            e.preventDefault();
-                                            setState((st) => ({
-                                                ...st,
-                                                durationMonth: m.minMonths,
-                                                discountId: m.id,
-                                            }));
-                                        }
-                                    }}
-                                    className={`group relative flex flex-col items-center justify-center
-            rounded-2xl border px-3 py-4 text-center cursor-pointer
-            transition-all duration-200
-
-            ${isActive
-                                            ? "border-emerald-600 bg-emerald-50 shadow-sm"
-                                            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
-                                        }
-
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300`}
-                                >
-                                    {/* Hidden radio */}
-                                    <input
-                                        type="radio"
-                                        className="sr-only"
-                                        name="durationMonths"
-                                        checked={isActive}
-                                        readOnly
-                                    />
-
-                                    {/* Badge (discount highlight) */}
-                                    {m.percentOff > 0 && (
-                                        <div className="absolute top-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
-                                            {m.percentOff}% OFF
-                                        </div>
-                                    )}
-
-                                    {/* Months */}
-                                    <div
-                                        className={`text-base font-bold ${isActive ? "text-emerald-700" : "text-slate-900"
-                                            }`}
-                                    >
-                                        {m.minMonths}{" "}
-                                        <span className="text-xs font-medium text-slate-500">
-                                            months
-                                        </span>
-                                    </div>
-
-                                    {/* Description */}
-                                    <div className="mt-1 text-xs text-slate-500">
-                                        {m.percentOff === 0 ? "Standard plan" : "Discounted rate"}
-                                    </div>
-
-                                    {/* Active indicator */}
-                                    {isActive && (
-                                        <div className="absolute bottom-2 h-1 w-6 rounded-full bg-emerald-600" />
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
-            {step === 1 && (
                 <div>
                     <div className="flex items-end justify-between gap-4">
-                        <p className="text-sm font-medium text-slate-700">What are you storing?</p>
+                        <p className="text-sm font-medium text-slate-700">Return Type</p>
                         <div className="text-xs text-slate-600">
-                            Total items: <span className="font-medium text-slate-900">{totalItems}</span>
+                            Total:{" "}
+                            <span className="font-medium text-slate-900">
+                                {totalItems}
+                            </span>
                         </div>
                     </div>
 
-                    <div className="mt-4">
-                        {storageItems.map((item: any) => {
+                    <div className="mt-4 space-y-3">
+                        {returnItems.map((item: any) => {
                             const id = item.sku as string;
                             const count = state.quantities[id] ?? 0;
                             const price = item.price?.price ?? 0;
@@ -383,14 +300,18 @@ export function StorageForm({
                             return (
                                 <div
                                     key={item.id}
-                                    className="group rounded-2xl border border-slate-200 bg-white p-4 m-2
-  shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200"
+                                    className={`group rounded-2xl border p-4 transition-all duration-200
+          ${count > 0
+                                            ? "border-emerald-600 bg-emerald-50 shadow-sm"
+                                            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
+                                        }
+        `}
                                 >
                                     <div className="flex items-center justify-between gap-4">
 
                                         {/* LEFT: Item Info */}
                                         <div className="flex-1">
-                                            <div className="text-sm font-semibold text-slate-900 leading-tight">
+                                            <div className={`text-sm font-semibold ${count > 0 ? "text-emerald-700" : "text-slate-900"}`}>
                                                 {item.name}
                                             </div>
 
@@ -412,9 +333,9 @@ export function StorageForm({
                                                     onClick={() => dec(item.sku)}
                                                     disabled={count === 0}
                                                     className="flex h-9 w-9 items-center justify-center rounded-full bg-white
-          text-lg font-bold text-slate-900 shadow-sm
-          hover:bg-slate-50 active:scale-95 active:bg-slate-200
-          disabled:opacity-40 disabled:cursor-not-allowed"
+                  text-lg font-bold text-slate-900 shadow-sm
+                  hover:bg-slate-50 active:scale-95 active:bg-slate-200
+                  disabled:opacity-40 disabled:cursor-not-allowed"
                                                     aria-label={`Decrease ${item.name}`}
                                                 >
                                                     −
@@ -428,8 +349,8 @@ export function StorageForm({
                                                     type="button"
                                                     onClick={() => inc(item.sku)}
                                                     className="flex h-9 w-9 items-center justify-center rounded-full bg-white
-          text-lg font-bold text-slate-900 shadow-sm
-          hover:bg-slate-50 active:scale-95 active:bg-slate-200"
+                  text-lg font-bold text-slate-900 shadow-sm
+                  hover:bg-slate-50 active:scale-95 active:bg-slate-200"
                                                     aria-label={`Increase ${item.name}`}
                                                 >
                                                     +
@@ -442,20 +363,22 @@ export function StorageForm({
                                 </div>
                             );
                         })}
-                    </div>
 
-                    {!itemsOk && (
-                        <div className="mt-2 text-xs text-rose-600">Add at least 1 item to continue.</div>
-                    )}
+                        {/* Validation */}
+                        {!itemsOk && (
+                            <div className="mt-2 text-xs text-rose-600">
+                                Add at least 1 return type to continue.
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
 
-            {step === 2 && (
+            {step === 1 && (
                 <div className="space-y-4">
                     <div>
-                        <span className="block text-sm font-medium text-slate-700 mb-1">
-                            Collection Date
-                        </span>
+                        <span className="block text-sm font-medium text-slate-700 mb-1">Return Date</span>
+
                         <DatePicker
                             value={state.collectionDate ?? ""}
                             onChange={(val) =>
@@ -476,15 +399,11 @@ export function StorageForm({
                                 const minDate = new Date(today);
                                 let businessDaysAdded = 0;
 
-                                while (businessDaysAdded < 2) {
+                                while (businessDaysAdded < 3) {
                                     minDate.setDate(minDate.getDate() + 1);
-
                                     const dayOfWeek = minDate.getDay();
                                     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-
-                                    if (!isWeekend) {
-                                        businessDaysAdded++;
-                                    }
+                                    if (!isWeekend) businessDaysAdded++;
                                 }
 
                                 const d = new Date(day);
@@ -499,21 +418,20 @@ export function StorageForm({
                                 const wk = weekdayKey(d).toUpperCase();
 
                                 const weekdayRule = scheduling.weekdayRules.find(
-                                    (r: any) =>
-                                        r.serviceType === "STORAGE" && r.weekday === wk
+                                    (r: any) => r.serviceType === "RETURN" && r.weekday === wk
                                 );
 
                                 if (weekdayRule && !weekdayRule.enabled) return true;
 
                                 return isDayFull({
                                     orderFlow,
-                                    service: "storage",
+                                    service: "return",
                                     dateISO: iso,
                                 });
                             }}
                         />
-
                     </div>
+
                     <div className="w-full max-w-full">
                         <label className="block text-sm font-medium text-slate-700 mb-2">Time Slot</label>
 
@@ -526,7 +444,7 @@ export function StorageForm({
                                     !!dateISO &&
                                     isSlotFull({
                                         orderFlow,
-                                        service: "storage",
+                                        service: "return",
                                         dateISO,
                                         timeSlotId: slot.id,
                                     });
@@ -540,22 +458,21 @@ export function StorageForm({
 
                                 function selectSlot() {
                                     if (slotIsFull) return;
-                                    setState((s: any) => ({
+                                    setState((s) => ({
                                         ...s,
                                         timeSlotId: slot.id,
-                                        timeSlot: rangeLabel,
                                     }));
                                 }
 
                                 return (
                                     <div
                                         key={slot.id}
-                                        className={`relative min-w-0 rounded-xl border p-3 text-center transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200
-                                        ${slotIsFull
+                                        className={`relative min-w-0 rounded-xl border p-3 text-center transition
+                    ${slotIsFull
                                                 ? "cursor-not-allowed bg-slate-50 opacity-50 border-slate-200"
                                                 : "cursor-pointer bg-white hover:border-slate-300"
                                             }
-                                        ${selected
+                    ${selected
                                                 ? "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600"
                                                 : "border-slate-200"
                                             }`}
@@ -585,69 +502,55 @@ export function StorageForm({
                                         <div className="text-sm font-bold text-slate-900 truncate">
                                             {slot.name} {slotIsFull ? "(Full)" : ""}
                                         </div>
-                                        <div className="text-[11px] text-slate-500 whitespace-nowrap">
-                                            {rangeLabel}
-                                        </div>
+                                        <div className="text-[11px] text-slate-500 whitespace-nowrap">{rangeLabel}</div>
                                     </div>
                                 );
                             })}
-
                         </div>
+
                         {!scheduleOk && (
                             <div className="mt-2 text-xs text-rose-600">
-                                Select a date and a time slot to continue.
+                                Select a date and time slot to continue.
                             </div>
                         )}
                     </div>
                 </div>
             )}
 
+            {step === 2 && (
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-slate-700">Original Order Number</label>
+                    <input
+                        value={state.originalOrderNumber}
+                        onChange={(e) =>
+                            setState((s) => ({
+                                ...s,
+                                originalOrderNumber: e.target.value,
+                            }))
+                        }
+                        placeholder="Enter your order number"
+                        className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                    />
+
+                    {!orderOk && (
+                        <div className="text-xs text-rose-600">Enter the order number to continue.</div>
+                    )}
+                </div>
+            )}
+
             {step === 3 && (
-                <div className="space-y-4">
-                    <p className="text-sm font-medium text-slate-700">Customer Details</p>
-                    <div className="relative">
-                        <AddressLookupField
-                            value={addressQuery}
-                            onValueChange={(val) => {
-                                setAddressQuery(val);
+                <div className="space-y-5">
+                    <p className="text-sm font-medium text-slate-700">Collection Address</p>
 
+                    <AddressLookupField
+                        value={collectionQuery}
+                        onValueChange={(val) => {
+                            setCollectionQuery(val);
+                            if (!val || val.trim() === "") {
                                 setState((st) => ({
                                     ...st,
-                                    address: {
-                                        ...st.address,
-                                        streetAddress: val,
-                                        houseNumber: "",
-                                        postalCode: "",
-                                        lat: 0,
-                                        lon: 0,
-                                    },
-                                }));
-                            }}
-                            placeholder="Address/Postcode (e.g. SW1A 1AA)"
-                            onSelectAddress={(sug) => {
-                                const addr = sug.address ?? {};
-                                const city = pickCity(addr);
-                                const street = streetFromNominatim(sug);
-
-                                setState((st) => ({
-                                    ...st,
-                                    address: {
-                                        ...st.address,
-                                        streetAddress: sug.displayName ?? street,
-                                        houseNumber: addr.house_number ?? st.address.houseNumber,
-                                        postalCode: addr.postcode ?? st.address.postalCode,
-                                        lat: sug.lat ? Number(sug.lat) : 0,
-                                        lon: sug.lon ? Number(sug.lon) : 0,
-                                    },
-                                }));
-
-                                setAddressQuery(sug.displayName ?? street);
-                            }}
-                            onNoResults={() => {
-                                setState((st) => ({
-                                    ...st,
-                                    address: {
-                                        ...st.address,
+                                    fromLocation: {
+                                        ...st.fromLocation,
                                         streetAddress: "",
                                         houseNumber: "",
                                         postalCode: "",
@@ -655,70 +558,132 @@ export function StorageForm({
                                         lon: 0,
                                     },
                                 }));
-                            }}
-                        />
+                            }
+                        }}
+                        onNoResults={() => {
+                            // 🔥 invalidate when no suggestions found
+                            setState((st) => ({
+                                ...st,
+                                fromLocation: {
+                                    ...st.fromLocation,
+                                    streetAddress: "",
+                                    houseNumber: "",
+                                    postalCode: "",
+                                    lat: 0,
+                                    lon: 0,
+                                },
+                            }));
+                        }}
+                        placeholder="Collection address/postcode"
+                        onSelectAddress={(sug) => {
+                            const a = sug.address ?? {};
+                            const city = pickCity(a);
+                            const street = streetFromNominatim(sug);
 
-                    </div>
+                            setState((st) => ({
+                                ...st,
+                                fromLocation: {
+                                    ...st.fromLocation,
+                                    streetAddress: sug.displayName ?? street,
+                                    houseNumber: a.house_number ?? st.fromLocation.houseNumber,
+                                    postalCode: a.postcode ?? st.fromLocation.postalCode,
+                                    lat: sug.lat ? Number(sug.lat) : 0,
+                                    lon: sug.lon ? Number(sug.lon) : 0,
+                                },
+                                customerDetails: {
+                                    ...st.customerDetails,
+                                    postalCode: a.postcode ?? st.customerDetails.postalCode,
+                                    address: sug.displayName ?? st.customerDetails.address,
+                                },
+                            }));
+
+                            setCollectionQuery(sug.displayName ?? street);
+                        }}
+                    />
+
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-1">
-                            <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-emerald-200">
-                                {/* Prefix */}
-                                <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 text-sm text-slate-700 border-r border-slate-200">
-                                    <span className="text-base leading-none">🇬🇧</span>
-                                    <span className="font-semibold">+44</span>
-                                </div>
-
-                                {/* Input */}
-                                <input
-                                    inputMode="tel"
-                                    autoComplete="tel"
-                                    placeholder="7123 456789"
-                                    className="h-11 flex-1 px-3 text-sm text-slate-800 outline-none"
-                                    value={formatGBForDisplay(state.customerDetails.phone ?? "")}
-                                    onChange={(e) => {
-                                        const nextDisplay = e.target.value;
-                                        const stored = displayToStoredGB(nextDisplay);
-
-                                        setState((s) => ({
-                                            ...s,
-                                            customerDetails: {
-                                                ...s.customerDetails,
-                                                phone: stored,
-                                            },
-                                        }));
-                                    }}
-                                    onPaste={(e) => {
-                                        const pasted = e.clipboardData.getData("text");
-
-                                        // If pasted includes +44 or 07..., normalize then store
-                                        const national = toGBNational(pasted);
-
-                                        setState((s) => ({
-                                            ...s,
-                                            customerDetails: {
-                                                ...s.customerDetails,
-                                                phone: national,
-                                            },
-                                        }));
-
-                                        e.preventDefault();
-                                    }}
-                                />
-                            </div>
-
-                            {/* Error (optional) */}
-                            {normalizeGBPhone(state.customerDetails.phone ?? "").length >= 10 &&
-                                !isValidGBPhone(state.customerDetails.phone ?? "") && (
-                                    <div className="text-xs text-rose-600">Enter a valid UK phone number.</div>
-                                )}
-                        </div>
                         <input
-                            value={state.address.houseNumber}
+                            value={state.fromLocation.houseNumber}
                             onChange={(e) =>
                                 setState((s) => ({
                                     ...s,
-                                    address: {
-                                        ...s.address,
+                                    fromLocation: {
+                                        ...s.fromLocation,
+                                        houseNumber: e.target.value,
+                                    },
+                                }))
+                            }
+                            type="text"
+                            placeholder="House/Flat Number"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+
+                    </div>
+
+                    <p className="text-sm font-medium text-slate-700">Return Delivery Address</p>
+
+                    <AddressLookupField
+                        value={returnQuery}
+                        onValueChange={(val) => {
+                            setReturnQuery(val);
+
+                            if (!val.trim()) {
+                                setState((st) => ({
+                                    ...st,
+                                    toLocation: {
+                                        ...st.toLocation,
+                                        streetAddress: "",
+                                        houseNumber: "",
+                                        postalCode: "",
+                                        lat: 0,
+                                        lon: 0,
+                                    },
+                                }));
+                            }
+                        }}
+                        onNoResults={() => {
+
+                            setState((st) => ({
+                                ...st,
+                                toLocation: {
+                                    ...st.toLocation,
+                                    lat: 0,
+                                    lon: 0,
+                                    streetAddress: "",
+                                    houseNumber: "",
+                                    postalCode: "",
+                                },
+                            }));
+                        }}
+                        placeholder="Return delivery address/postcode"
+                        onSelectAddress={(sug) => {
+                            const a = sug.address ?? {};
+                            const street = streetFromNominatim(sug);
+
+                            setState((st) => ({
+                                ...st,
+                                toLocation: {
+                                    ...st.toLocation,
+                                    streetAddress: sug.displayName ?? street,
+                                    houseNumber: a.house_number ?? st.toLocation.houseNumber,
+                                    postalCode: a.postcode ?? st.toLocation.postalCode,
+                                    lat: sug.lat ? Number(sug.lat) : 0,
+                                    lon: sug.lon ? Number(sug.lon) : 0,
+                                },
+                            }));
+
+                            setReturnQuery(sug.displayName ?? street);
+                        }}
+                    />
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <input
+                            value={state.toLocation.houseNumber}
+                            onChange={(e) =>
+                                setState((s) => ({
+                                    ...s,
+                                    toLocation: {
+                                        ...s.toLocation,
                                         houseNumber: e.target.value,
                                     },
                                 }))
@@ -729,33 +694,109 @@ export function StorageForm({
                         />
                     </div>
 
+                    <p className="text-sm font-medium text-slate-700">Customer Details</p>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <input
+                            value={state.customerDetails.name}
+                            onChange={(e) =>
+                                setState((s) => ({
+                                    ...s,
+                                    customerDetails: {
+                                        ...s.customerDetails,
+                                        name: e.target.value,
+                                    },
+                                }))
+                            }
+                            placeholder="Full name"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+
+                        <input
+                            value={state.customerDetails.email}
+                            onChange={(e) =>
+                                setState((s) => ({
+                                    ...s,
+                                    customerDetails: {
+                                        ...s.customerDetails,
+                                        email: e.target.value,
+                                    },
+                                }))
+                            }
+                            type="email"
+                            placeholder="Email address"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
+                        />
+                    </div>
+
+                    <div className="space-y-1">
+                        <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-emerald-200">
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 text-sm text-slate-700 border-r border-slate-200">
+                                <span className="text-base leading-none">🇬🇧</span>
+                                <span className="font-semibold">+44</span>
+                            </div>
+
+                            <input
+                                inputMode="tel"
+                                autoComplete="tel"
+                                placeholder="7123 456789"
+                                className="h-11 flex-1 px-3 text-sm text-slate-800 outline-none"
+                                value={formatGBForDisplay(state.customerDetails.phone ?? "")}
+                                onChange={(e) => {
+                                    const stored = displayToStoredGB(e.target.value);
+                                    setState((s) => ({
+                                        ...s,
+                                        customerDetails: {
+                                            ...s.customerDetails,
+                                            phone: stored,
+                                        },
+                                    }));
+                                }}
+                                onPaste={(e) => {
+                                    const pasted = e.clipboardData.getData("text");
+                                    const national = toGBNational(pasted);
+
+                                    setState((s) => ({
+                                        ...s,
+                                        customerDetails: {
+                                            ...s.customerDetails,
+                                            phone: national,
+                                        },
+                                    }));
+
+                                    e.preventDefault();
+                                }}
+                            />
+                        </div>
+
+                        {normalizeGBPhone(state.customerDetails.phone ?? "").length >= 10 &&
+                            !isValidGBPhone(state.customerDetails.phone ?? "") && (
+                                <div className="text-xs text-rose-600">Enter a valid UK phone number.</div>
+                            )}
+                    </div>
+
                     {!detailsOk && (
                         <div className="text-xs text-rose-600">
-                            Fill in postal code, phone number, house/flat number and street address to continue.
+                            Fill in the required customer details and both addresses to continue.
                         </div>
                     )}
                 </div>
             )}
 
             <FooterNav
-                canBack={step > 0 && !orderId}
-                canNext={!orderId && canGoNext && step <= maxAllowedStep}
+                canBack={step > 0}
+                canNext={canGoNext && step <= maxAllowedStep}
                 isLast={step === LAST_STEP}
                 onBack={goBack}
                 onNext={() => {
                     if (!canGoNext) return;
-
-                    if (step === LAST_STEP) {
-                        onProceed();
-                    } else {
-                        goNext();
-                    }
+                    if (step === LAST_STEP) onProceed();
+                    else goNext();
                 }}
                 isPaying={!!busy}
             />
 
             {error && <div className="text-red-500 mb-4">{error}</div>}
         </form>
-
     );
 }

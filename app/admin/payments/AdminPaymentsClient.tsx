@@ -204,6 +204,7 @@ export default function AdminPaymentsClient() {
       const hay = [
         p.id,
         p.orderId,
+        p.orderNumber,
         p.serviceType,
         p.status,
         p.customerName,
@@ -321,7 +322,7 @@ export default function AdminPaymentsClient() {
             <thead className="bg-slate-50 text-slate-700">
               <tr>
                 <th className="p-3 text-left">Payment</th>
-                <th className="p-3 text-left">Order</th>
+                <th className="p-3 text-left">Order Number</th>
                 <th className="p-3 text-left">Payment Intent</th>
                 <th className="p-3 text-left">Service</th>
                 <th className="p-3 text-left">Status</th>
@@ -363,11 +364,11 @@ export default function AdminPaymentsClient() {
                     <td className="p-3">
                       {/* wire later to /admin/orders/[id] */}
                       <Link
-                        href="/admin/orders"
+                        href={`/admin/orders/${p.orderId}`}
                         className="font-mono text-xs text-emerald-700 hover:underline"
                         title="Wire to /admin/orders/[id] later"
                       >
-                        {p.orderId}
+                        {p.orderNumber}
                       </Link>
                     </td>
                     <td>

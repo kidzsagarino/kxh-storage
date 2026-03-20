@@ -151,6 +151,7 @@ export default async function SuccessPage({ searchParams }: Props) {
 
   const isMoving = order?.serviceType === "MOVING";
   const isStorage = order?.serviceType === "STORAGE";
+  const isReturn = order?.serviceType === "RETURN";
 
   const distanceMiles = isMoving ? (order.distanceMiles ?? 0) : 0;
   const distanceCostMinor = isMoving ? Math.max(0, distanceMiles) * movingPricePerMileMinor : 0;
@@ -175,8 +176,8 @@ export default async function SuccessPage({ searchParams }: Props) {
 
   const orderNumber = order?.orderNumber ?? order?.id ?? "—";
 
-  const pickup = isMoving ? order?.addresses?.find((a: any) => a.type === "PICKUP") : null;
-  const dropoff = isMoving ? order?.addresses?.find((a: any) => a.type === "DROPOFF") : null;
+  const pickup = isMoving || isReturn ? order?.addresses?.find((a: any) => a.type === "PICKUP") : null;
+  const dropoff = isMoving || isReturn ? order?.addresses?.find((a: any) => a.type === "DROPOFF") : null;
 
   // Adjust these field names to match your schema:
   const scheduledDate =
@@ -279,7 +280,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 </Link>
 
                 <a
-                  href={`mailto:hello@kxhlogistics.co.uk?subject=Order%20${encodeURIComponent(
+                  href={`mailto:help.kxhlogistics@gmail.com?subject=Order%20${encodeURIComponent(
                     String(orderNumber)
                   )}%20Support`}
                   className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
@@ -351,7 +352,7 @@ export default async function SuccessPage({ searchParams }: Props) {
               </h2>
 
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                {isMoving ? (
+                {isMoving || isReturn ? (
                   <>
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                       <div className="text-xs font-semibold text-slate-500">
@@ -370,8 +371,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                         {fmtAddr(dropoff)}
                       </div>
                     </div>
-
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+                    {isMoving && (<div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
                       <div className="text-xs font-semibold text-slate-500">
                         Distance
                       </div>
@@ -386,7 +386,8 @@ export default async function SuccessPage({ searchParams }: Props) {
                       <div className="mt-1 text-xs text-slate-500">
                         Calculated at {moneyGBP(movingPricePerMileMinor)} per mile
                       </div>
-                    </div>
+                    </div>)}
+
                   </>
                 ) : (
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">

@@ -1,4 +1,4 @@
-type ServiceType = "storage" | "moving" | "shredding";
+type ServiceType = "storage" | "moving" | "shredding" | "return";
 
 type SlotKey = "MORNING" | "AFTERNOON" | "EVENING";
 
@@ -94,7 +94,7 @@ export function isDayFull({
   volumesByTimeSlotId,
 }: {
   orderFlow: any;
-  service: "storage" | "moving" | "shredding";
+  service: "storage" | "moving" | "shredding" | "return";
   dateISO: string;
   volumesByTimeSlotId?: Record<string, number>; // timeSlotId -> volume
 }) {
