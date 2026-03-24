@@ -229,11 +229,15 @@ model Order {
   discountTierId      String?
   storageDiscountTier StorageDiscountTier? @relation(fields: [discountTierId], references: [id])
 
+  discountCodeId String?       @unique
+  discountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
+
   stripeSubscriptionId String?   @unique
   subscriptionStatus   String?
   nextBillingAt        DateTime?
   cancelAt             DateTime?
   cancelReason         String?
+  paymentLink          String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -446,4 +450,29 @@ enum EmailLogType {
 enum EmailLogStatus {
   SENT
   FAILED
+}
+
+model StripeEvent {
+  id        String   @id
+  createdAt DateTime @default(now())
+}
+
+model DiscountCode {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  description String?
+  type        String        @default("percentage") // "percentage" or "fixed"
+  valueMinor  Int // For percentage: store as 10 = 10%, for fixed: minor currency (e.g., 500 = £5)
+  scope       DiscountScope @default(GLOBAL)
+  maxUses     Int? // Optional max usage
+  usedCount   Int           @default(0)
+  active      Boolean       @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+
+  // Orders that use this discount
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
