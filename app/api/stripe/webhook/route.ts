@@ -1,10 +1,14 @@
 import Stripe from "stripe";
 import { prisma } from "@/src/lib/prisma";
-import { PaymentStatus, OrderStatus, ServiceType } from "@prisma/client";
+import { PaymentStatus, OrderStatus, ServiceType, Prisma } from "@prisma/client";
 import { generateOrderReceipt, getOrderEmailHtml } from "../../orders/generateReceipt";
 import { sendEmail } from "@/app/lib/mail";
 
 export const runtime = "nodejs";
+
+type PaymentWithOrder = Prisma.PaymentGetPayload<{
+  include: { order: true };
+}>;
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     //apiVersion: "2026-01-28.clover",
@@ -35,7 +39,7 @@ async function sendReceipt(paidOrderId: string) {
             });
 
             await sendEmail({
-                to: "help.kxhlogistics@gmail.com",
+                to: process.env.RECEIPT_TO_ADMIN ?? "",
                 subject: `New Order Received: #${order.orderNumber || order.id.slice(0, 8)}`,
                 html: `
                             <p>A new order has been placed by ${order.customer.fullName || "Unknown Customer"}.</p>
@@ -235,10 +239,41 @@ export async function POST(req: Request) {
                 session.customer_email?.trim().toLowerCase() ||
                 null;
 
-            const payment = await prisma.payment.findFirst({
+            let payment: PaymentWithOrder | null = await prisma.payment.findFirst({
                 where: { providerRef: session.id },
                 include: { order: true },
             });
+
+            if (!payment) {
+                const orderId =
+                    session.metadata?.orderId ||
+                    (session.payment_intent as any)?.metadata?.orderId;
+
+                if (!orderId) {
+                    console.error("No orderId found in session metadata");
+                    break;
+                }
+
+                const order = await prisma.order.findUnique({
+                    where: { id: orderId },
+                });
+
+                if (!order) {
+                    console.error("Order not found for orderId:", orderId);
+                    break;
+                }
+
+                payment = await prisma.payment.create({
+                    data: {
+                        orderId: order.id,
+                        provider: "STRIPE",
+                        providerRef: session.id,
+                        amountMinor: order.totalMinor,
+                        status: PaymentStatus.PROCESSING,
+                    },
+                    include: { order: true },
+                });
+            }
 
             if (!payment) break;
             if (payment.status === PaymentStatus.SUCCEEDED) break;
