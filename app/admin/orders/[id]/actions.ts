@@ -18,6 +18,7 @@ export async function getOrderById(id: string) {
       movingPackage: { include: { prices: { where: { isActive: true, currency: "GBP" } } } },
       storageDiscountTier: true,
       emailLogs: { orderBy: { createdAt: "desc" } },
+      discountCode: true,
     },
   });
 

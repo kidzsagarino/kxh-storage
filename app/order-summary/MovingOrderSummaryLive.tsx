@@ -5,11 +5,10 @@ import {
   useMovingCheckout,
   type TimeSlotId,
 } from "../components/checkout/CheckoutStore";
-import { to12Hour } from "../utils/utils";
-
-function money(n: number, sym = "£") {
-  return `${sym}${n.toFixed(2)}`;
-}
+import { money, to12Hour } from "../utils/utils";
+import { DiscountCodeInput } from "./DiscountCodeInput";
+import { useDiscount } from "../hooks/useDiscount";
+import { calculateDiscount } from "../lib/discount";
 
 type Props = {
   onProceed: () => void;
@@ -52,7 +51,9 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
 
   const canProceed = !!orderFlow?.ok && originOk && destinationOk && itemOk && packageOk && scheduleOk && !busy;
 
-  const { items, totalDueNow, currencySymbol } = React.useMemo(() => {
+  const discount = useDiscount("moving");
+
+  const { items, subTotal, codeDiscount, totalDueNow, currencySymbol } = React.useMemo(() => {
     const sym = orderFlow?.currency === "GBP" ? "£" : "£";
 
     const pricePerMileMinor =
@@ -62,7 +63,8 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
     const miles = Math.max(0, Math.round(milesRaw * 100) / 100); // 2dp number
 
     const distanceCostMinor = Math.round(miles * pricePerMileMinor);
-    const distanceCost = distanceCostMinor / 100;
+    const distanceCost = distanceCostMinor;
+
 
     const itemsById = Object.fromEntries(
       Object.values(orderFlow?.catalog?.moving?.itemsBySku ?? {}).map((item: any) => [item.id, item])
@@ -112,9 +114,16 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
       });
     }
 
-    const total = +(distanceCost + homeCost + pkgCost).toFixed(2);
+    const subTotal = +(distanceCost + homeCost + pkgCost).toFixed(2);
 
-    return { items: rows, totalDueNow: total, currencySymbol: sym };
+    const codeDiscount = calculateDiscount({
+      baseAmount: subTotal,
+      discountMeta: discount.discountMeta
+    });
+
+    const totalDueNow = Math.max(0, subTotal - codeDiscount);
+
+    return { items: rows, subTotal, codeDiscount, totalDueNow: totalDueNow, currencySymbol: sym };
   }, [state, orderFlow]);
 
   return (
@@ -122,6 +131,33 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
       <h2 className="text-xl font-medium text-slate-900 text-center">Your Order</h2>
 
       <div className="space-y-3">
+        <DiscountCodeInput
+          code={discount.code}
+          setCode={discount.setCode}
+          onApply={discount.apply}
+          onRemove={discount.remove}
+          loading={discount.loading}
+          error={discount.error}
+          applied={!!discount.discountMeta}
+          discountMeta={discount.discountMeta}
+          baseAmount={totalDueNow}
+        />
+        {codeDiscount > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Discount code</span>
+            <span className="text-emerald-600">
+              −{money(codeDiscount, currencySymbol)}
+            </span>
+          </div>
+        )}
+        {subTotal > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Original Total</span>
+            <span className="text-black-600">
+              {money(subTotal, currencySymbol)}
+            </span>
+          </div>
+        )}
         <div className="h-px bg-slate-200" />
         <div className="flex justify-between text-base font-medium text-slate-900">
           <span>Total due now</span>
@@ -158,7 +194,7 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
         {state.fromLocation?.houseNumber + " " + state.fromLocation?.streetAddress}
       </p>
       <p className="text-xs text-slate-500">{state.notes}</p>
-      
+
       {error ? (
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
           {error}

@@ -101,7 +101,7 @@ export default function RefundPolicyPage() {
         </Section>
 
         <Section title="8. CONTACT">
-          <p>Email: help.kxhlogistics@gmail.com</p>
+          <p>Email: help@kxhlogistics.co.uk</p>
           <p>Phone: +44 1474 396663</p>
         </Section>
       </div>

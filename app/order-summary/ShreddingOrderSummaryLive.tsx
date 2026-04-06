@@ -2,13 +2,12 @@
 
 import React, { useMemo } from "react";
 import { useShreddingCheckout } from "../components/checkout/CheckoutStore";
-import { to12Hour } from "../utils/utils";
+import { money, to12Hour } from "../utils/utils";
 import { isValidGBPhone } from "../lib/phone";
+import { calculateDiscount } from "../lib/discount";
+import { useDiscount } from "../hooks/useDiscount";
+import { DiscountCodeInput } from "./DiscountCodeInput";
 
-
-function money(n: number, sym = "£") {
-  return `${sym}${n.toFixed(2)}`;
-}
 
 
 type Props = {
@@ -24,16 +23,18 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
 
   const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
 
+  const discount = useDiscount("shredding");
+  
   const itemsOk = Object.values(state.quantities ?? {}).some((n) => (Number(n) || 0) > 0);
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
-const detailsOk =
+  const detailsOk =
     (state.address.houseNumber ?? "").trim().length > 0 &&
     (state.address.streetAddress ?? "").trim().length > 0 &&
     isValidGBPhone(state.customerDetails.phone ?? "");
 
   const canProceed = !!orderFlow?.ok && itemsOk && scheduleOk && detailsOk && !busy;
-  const { items, totalDueNow } =
+  const { items, subTotal, codeDiscount, totalDueNow } =
     React.useMemo(() => {
       const items = Object.entries(state.quantities)
         .filter(([_, qty]) => (qty ?? 0) > 0)
@@ -52,19 +53,53 @@ const detailsOk =
           };
         });
 
-      const totalDueNow = +items
+      const subTotal = +items
         .reduce((sum, it) => sum + it.total, 0)
         .toFixed(2);
 
-      return { items, totalDueNow };
+      const codeDiscount = calculateDiscount({
+        baseAmount: subTotal,
+        discountMeta: discount.discountMeta,
+      });
 
-    }, [state.quantities, itemsBySku]);
+      const totalDueNow = Math.max(0, subTotal - codeDiscount);
+
+      return { items, subTotal, codeDiscount, totalDueNow };
+
+    }, [state.quantities, discount.discountMeta, itemsBySku]);
 
   return (
     <aside className="space-y-5">
       <h2 className="text-xl font-medium text-slate-900 text-center">Your Order</h2>
 
       <div className="space-y-3">
+        <DiscountCodeInput
+          code={discount.code}
+          setCode={discount.setCode}
+          onApply={discount.apply}
+          onRemove={discount.remove}
+          loading={discount.loading}
+          error={discount.error}
+          applied={!!discount.discountMeta}
+           discountMeta={discount.discountMeta}
+          baseAmount={totalDueNow}
+        />
+        {codeDiscount > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Discount code</span>
+            <span className="text-emerald-600">
+              −{money(codeDiscount, currencySymbol)}
+            </span>
+          </div>
+        )}
+        {subTotal > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Original Total</span>
+            <span className="text-black-600">
+              {money(subTotal, currencySymbol)}
+            </span>
+          </div>
+        )}
         <div className="h-px bg-slate-200" />
 
         <div className="flex justify-between text-base font-medium text-slate-900">

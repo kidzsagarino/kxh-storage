@@ -144,7 +144,6 @@ export default function AdminSettingsClient() {
       setErrorMsg(null);
       try {
         const data = await getAdminSettings();
-        console.log("Loaded settings:", data);
         if (cancelled) return;
         setSettings(data);
         initialJsonRef.current = JSON.stringify(data);

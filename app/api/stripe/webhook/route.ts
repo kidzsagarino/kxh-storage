@@ -28,7 +28,7 @@ async function sendReceipt(paidOrderId: string) {
 
         try {
             await sendEmail({
-                to: order.customer.email || "help.kxhlogistics@gmail.com",
+                to: order.customer.email || "operations@kxhlogistics.co.uk",
                 subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
                 html: getOrderEmailHtml(hasContainer),
                 attachments: [{
@@ -61,7 +61,7 @@ async function sendReceipt(paidOrderId: string) {
                 data: {
                     orderId: order.id,
                     type: "RECEIPT",
-                    to: order.customer.email || "help.kxhlogistics@gmail.com",
+                    to: order.customer.email || "operations@kxhlogistics.co.uk",
                     subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
                     status: "SENT",
                     provider: "SEND GRID"
@@ -74,7 +74,7 @@ async function sendReceipt(paidOrderId: string) {
                 data: {
                     orderId: order.id,
                     type: "RECEIPT",
-                    to: order.customer.email || "help.kxhlogistics@gmail.com",
+                    to: order.customer.email || "operations@kxhlogistics.co.uk",
                     subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
                     status: "FAILED",
                     provider: "SENDGRID",

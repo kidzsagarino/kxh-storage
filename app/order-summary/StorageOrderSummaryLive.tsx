@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { use } from "react";
 import { useStorageCheckout } from "../components/checkout/CheckoutStore";
 import { money, to12Hour } from "../utils/utils";
 import { isValidGBPhone } from "../lib/phone";
+import { DiscountCodeInput } from "./DiscountCodeInput";
+import { useDiscount } from "../hooks/useDiscount";
+import { calculateDiscount, DiscountMeta } from "../lib/discount";
 
 type Props = {
   onProceed: () => void;
@@ -18,7 +21,9 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
   const discountTiers = orderFlow?.catalog?.storage?.discountTiers ?? [];
   const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
 
-  const { items, storagePerMonth, months, discountPerMonth, totalDueNow } =
+  const discount = useDiscount("storage");
+
+  const { items, storagePerMonth, months, discountPerMonth, codeDiscount, subTotal, totalDueNow } =
     React.useMemo(() => {
       const months = state.durationMonth > 0 ? state.durationMonth : 1;
 
@@ -51,10 +56,17 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
       const discountRate = percentOff / 100;
 
       const discountPerMonth = +(storagePerMonth * discountRate).toFixed(2);
-      const totalDueNow = +(storagePerMonth - discountPerMonth).toFixed(2);
+      const subTotal = +(storagePerMonth - discountPerMonth).toFixed(2);
 
-      return { items, storagePerMonth, months, discountPerMonth, totalDueNow };
-    }, [state.quantities, state.durationMonth, itemsBySku, discountTiers]);
+      const codeDiscount = calculateDiscount({
+        baseAmount: subTotal,
+        discountMeta: discount.discountMeta,
+      });
+
+      const totalDueNow = Math.max(0, subTotal - codeDiscount);
+      
+      return { items, storagePerMonth, months, discountPerMonth, codeDiscount, subTotal, totalDueNow };
+    }, [state.quantities, state.durationMonth, itemsBySku, discountTiers, discount.discountMeta]);
 
   const durationOk = (orderFlow?.catalog?.storage?.discountTiers ?? []).some(
     (d: any) => d.minMonths === state.durationMonth
@@ -89,7 +101,7 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
         </div>
 
         <div className="flex justify-between text-sm text-slate-700">
-          <span>Discount</span>
+          <span>Storage Discount</span>
           <span className={discountPerMonth > 0 ? "text-emerald-600" : ""}>
             {discountPerMonth > 0
               ? `−${money(discountPerMonth, currencySymbol)}`
@@ -97,6 +109,33 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
           </span>
         </div>
 
+        <DiscountCodeInput
+          code={discount.code}
+          setCode={discount.setCode}
+          onApply={discount.apply}
+          onRemove={discount.remove}
+          loading={discount.loading}
+          error={discount.error}
+          applied={!!discount.discountMeta}
+          discountMeta={discount.discountMeta}
+          baseAmount={totalDueNow}
+        />
+        {codeDiscount > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Discount code</span>
+            <span className="text-emerald-600">
+              −{money(codeDiscount, currencySymbol)}
+            </span>
+          </div>
+        )}
+        {subTotal > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Original Total</span>
+            <span className="text-black-600">
+              {money(subTotal, currencySymbol)}
+            </span>
+          </div>
+        )}
         <div className="h-px bg-slate-200" />
 
         <div className="flex justify-between text-base font-medium text-slate-900">

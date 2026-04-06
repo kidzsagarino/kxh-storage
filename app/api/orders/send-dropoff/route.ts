@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
         </div>
 
         <p style="margin:0 0 16px;">
-          If you have any questions or need to update anything, just reply to help.kxhlogistics@gmail.com.
+          If you have any questions or need to update anything, just reply to help@kxhlogistics.co.uk.
         </p>
 
         <p style="margin:0; color:#64748b; font-size:12px;">
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
         try {
 
             await sendEmail({
-                to: order.customer.email || "help.kxhlogistics@gmail.com",
+                to: order.customer.email || "help@kxhlogistics.co.uk",
                 subject: subject,
                 html: html
             });

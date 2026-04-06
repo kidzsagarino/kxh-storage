@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
         try {
             await sendEmail({
-                to: order.customer.email || "help.kxhlogistics@gmail.com",
+                to: order.customer.email || "operations@kxhlogistics.co.uk",
                 subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
                 html: getOrderEmailHtml(hasContainer),
                 attachments: [{
@@ -31,30 +31,11 @@ export async function POST(req: NextRequest) {
                 }],
             });
 
-            await sendEmail({
-                to: "help.kxhlogistics@gmail.com",
-                subject: `New Order Received: #${order.orderNumber || order.id.slice(0, 8)}`,
-                html: `
-                        <p>A new order has been placed by ${order.customer.fullName || "Unknown Customer"}.</p>
-                        <p>Order Number: <strong>${order.orderNumber || order.id.slice(0, 8)}</strong></p>
-                        <p>Customer Email: ${order.customer.email || "Not provided"}</p>
-                        ${hasContainer ? "<p><strong>Note:</strong> This order includes a container.</p>" : ""}
-                        <p>See attached receipt for details.</p>
-                    `,
-                attachments: [
-                    {
-                        filename: `receipt-${order.orderNumber || "order"}.pdf`,
-                        content: Buffer.from(pdfBytes),
-                        contentType: "application/pdf",
-                    },
-                ],
-            });
-
             await prisma.emailLog.create({
                 data: {
                     orderId: order.id,
                     type: "RECEIPT",
-                    to: order.customer.email || "help.kxhlogistics@gmail.com",
+                    to: order.customer.email || "operations@kxhlogistics.co.uk",
                     subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
                     status: "SENT",
                     provider: "SEND GRID"
@@ -67,7 +48,7 @@ export async function POST(req: NextRequest) {
                 data: {
                     orderId: order.id,
                     type: "RECEIPT",
-                    to: order.customer.email || "help.kxhlogistics@gmail.com",
+                    to: order.customer.email || "operations@kxhlogistics.co.uk",
                     subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
                     status: "FAILED",
                     provider: "SENDGRID",

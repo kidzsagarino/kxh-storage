@@ -169,6 +169,8 @@ export default function AdminOrderByIdClient() {
     const discountPercent = order.storageDiscountTier?.percentOff || 0;
     const durationMonths = order.items?.[0]?.months || 0;
 
+
+
     const getMapUrl = (addr: any) =>
         addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${addr.line1} ${addr.postalCode}`)}` : "#";
 
@@ -176,6 +178,8 @@ export default function AdminOrderByIdClient() {
     const storageDiscountAmountMinor = isStorage && order.storageDiscountTier
         ? Math.round((order.subtotalMinor || 0) * (order.storageDiscountTier.percentOff / 100))
         : 0;
+
+    let discountCodeMinor = order.promoDiscountMinor || 0;
 
     return (
         <main className="space-y-4">
@@ -335,7 +339,7 @@ export default function AdminOrderByIdClient() {
                                         {distanceMiles ? `${distanceMiles} mile${distanceMiles === 1 ? "" : "s"}` : "—"}
                                     </div>
                                     <div className="mt-1 text-xs text-slate-500">
-                                        Cost: {money(distanceCostMinor / 100)}
+                                        Cost: {money(distanceCostMinor)}
                                     </div>
                                 </div>
                             )}
@@ -418,7 +422,7 @@ export default function AdminOrderByIdClient() {
                                             </td>
                                             <td className="p-3 text-right text-slate-600">1</td>
                                             <td className="p-3 text-right font-semibold text-slate-900">
-                                                {money(distanceCostMinor / 100)}
+                                                {money(distanceCostMinor)}
                                             </td>
                                         </tr>
                                     )}
@@ -430,7 +434,7 @@ export default function AdminOrderByIdClient() {
                                             </td>
                                             <td className="p-3 text-right text-slate-600">1</td>
                                             <td className="p-3 text-right font-semibold text-slate-900">
-                                                {money(order.movingPackage.prices?.[0]?.priceMinor / 100)}
+                                                {money(order.movingPackage.prices?.[0]?.priceMinor)}
                                             </td>
                                         </tr>
                                     )}
@@ -439,7 +443,7 @@ export default function AdminOrderByIdClient() {
                                         <tr>
                                             <td className="p-3 font-medium text-slate-900">Discount Tier</td>
                                             <td className="p-3 text-right text-slate-600">{order.storageDiscountTier.minMonths} mo</td>
-                                            <td className="p-3 text-right font-semibold text-slate-900">{money(storageDiscountAmountMinor / 100)}</td>
+                                            <td className="p-3 text-right font-semibold text-slate-900">{money(storageDiscountAmountMinor)}</td>
                                         </tr>
                                     )}
                                     {/* Order items */}
@@ -448,7 +452,7 @@ export default function AdminOrderByIdClient() {
                                             <td className="p-3 font-medium text-slate-900">{it.name}</td>
                                             <td className="p-3 text-right text-slate-600">{it.quantity}</td>
                                             <td className="p-3 text-right font-semibold text-slate-900">
-                                                {money(it.lineTotalMinor / 100)}
+                                                {money(it.lineTotalMinor)}
                                             </td>
                                         </tr>
                                     ))}
@@ -466,24 +470,36 @@ export default function AdminOrderByIdClient() {
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
                                 <span className="text-slate-500">Subtotal</span>
-                                <span className="font-medium text-slate-900">{money(order.subtotalMinor / 100)}</span>
+                                <span className="font-medium text-slate-900">{money(order.subtotalMinor)}</span>
                             </div>
 
                             {/* Green Discount Card */}
                             <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-emerald-800 font-semibold">Discount Applied</span>
-                                    <span className="font-bold text-emerald-900">− {money(order.discountMinor / 100)}</span>
+                                    <span className="font-bold text-emerald-900">− {money(order.discountMinor)}</span>
                                 </div>
                                 <div className="text-xs text-emerald-700">
                                     {durationMonths} month plan • {discountPercent}% off
                                 </div>
 
                             </div>
+                            {/* Green Discount Card */}
+                            {order.discountCode && (
+                                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-emerald-800 font-semibold">Discount Code Applied</span>
+                                        <span className="font-bold text-emerald-900">− {money((discountCodeMinor ?? 0))}</span>
+                                    </div>
+                                    <div className="text-xs text-emerald-700">
+                                        {order.discountCode.code} • {order.discountCode.type === "percentage" ? `${order.discountCode.valueMinor}% off` : money(order.discountCode.valueMinor / 100) + " off"}  <br />
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="pt-2 border-t border-slate-100 flex justify-between items-baseline">
                                 <span className="font-bold text-slate-900">Total</span>
-                                <span className="font-bold text-xl text-slate-900">{money(order.totalMinor / 100)}</span>
+                                <span className="font-bold text-xl text-slate-900">{money(order.totalMinor)}</span>
                             </div>
                         </div>
                         {isStorage && (
@@ -562,13 +578,13 @@ export default function AdminOrderByIdClient() {
                                 Print Manifest
                             </button>
                             <button
-                               
+
                                 onClick={async () => {
                                     redirect(`/checkout?orderId=${order.id}`)
                                 }}
                                 className="h-10 rounded-xl border border-green-200 bg-green-50 px-4 text-sm font-semibold text-green-800 hover:bg-green-100 disabled:opacity-50"
                             >
-                            View Checkout Page
+                                View Checkout Page
                             </button>
                             <button
                                 disabled={sendDropoff}

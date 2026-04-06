@@ -8,7 +8,7 @@ function toSkuMap<T extends { sku: string }>(arr: T[]) {
 
 function minorToMoney(minor: number | null | undefined): number | null {
   if (minor == null) return null;
-  return Number((minor / 100).toFixed(2));
+  return Number((minor).toFixed(2));
 }
 
 function effectiveServiceItemPriceWhere(currency: string): Prisma.ServiceItemPriceWhereInput {

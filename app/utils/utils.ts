@@ -67,5 +67,5 @@ export function to12Hour(time: string): string {
 }
 
 export function money(n: number, sym = "£") {
-  return `${sym}${n.toFixed(2)}`;
+  return `${sym}${(n / 100).toFixed(2)}`;
 }

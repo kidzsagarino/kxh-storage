@@ -110,7 +110,7 @@ export default function PrivacyPage() {
         </Section>
 
         <Section title="11. CONTACT US">
-         <p>Email: help.kxhlogistics@gmail.com</p>
+         <p>Email: help@kxhlogistics.co.uk</p>
           <p>Phone: +44 1474 396663</p>
           <p>
             You also have the right to lodge a complaint with the UK Information Commissioner’s Office (ICO).

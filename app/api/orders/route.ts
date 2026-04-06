@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
             fromLocation,
             toLocation,
             originalOrderNumber,
+            discountMeta
         } = body;
 
 
@@ -141,7 +142,7 @@ export async function POST(req: NextRequest) {
                 totalMinor = storageCalc.dueNowMinor;
                 finalTierId = storageCalc.finalTierId;
             } else if (serviceType === "RETURN") {
-               
+
                 const returnIds = items.map((i: any) => i.serviceItemId as CatalogItemId);
 
                 const dbPrices = await tx.serviceItemPrice.findMany({
@@ -206,6 +207,31 @@ export async function POST(req: NextRequest) {
                 },
             });
 
+            let dbDiscount = null;
+            let discountCodeMinor = 0;
+
+            if (discountMeta && discountMeta.id) {
+                dbDiscount = await tx.discountCode.findUnique({
+                    where: { id: discountMeta.id },
+                });
+
+                if (dbDiscount && totalMinor > 0) {
+                    
+                    if (dbDiscount.type === "percentage") {
+                        discountCodeMinor = Math.round(
+                            (totalMinor * dbDiscount.valueMinor) / 100
+                        );
+                    } else if (dbDiscount.type === "fixed") {
+                        discountCodeMinor = Math.min(
+                            dbDiscount.valueMinor,
+                            totalMinor
+                        );
+                    }
+
+                    totalMinor = Math.max(totalMinor - discountCodeMinor, 0);
+                }
+            }
+
             // 3) Order Creation
             return tx.order.create({
                 data: {
@@ -250,6 +276,8 @@ export async function POST(req: NextRequest) {
                             country: addr.country || "GB",
                         })),
                     },
+                    promoDiscountMinor: discountCodeMinor,
+                    discountCodeId: dbDiscount ? dbDiscount.id : null,
                 },
                 include: {
                     items: true,

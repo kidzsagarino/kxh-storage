@@ -229,7 +229,8 @@ model Order {
   discountTierId      String?
   storageDiscountTier StorageDiscountTier? @relation(fields: [discountTierId], references: [id])
 
-  discountCodeId String?       @unique
+  promoDiscountMinor Int    @default(0)
+  discountCodeId String?
   discountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
 
   stripeSubscriptionId String?   @unique
