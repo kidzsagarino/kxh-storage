@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/src/lib/prisma";
 import { CheckoutClient } from "./CheckoutClient";
+import { money } from "../utils/utils";
 
 type Props = { searchParams: Promise<{ orderId?: string }> };
 type OrderTimeSlot = {
@@ -76,13 +77,12 @@ export default async function SuccessPage({
                 movingPackage: { include: { prices: true } },
                 storageDiscountTier: true,
                 timeSlot: true,
+                discountCode: true,
             },
         });
 
         session = null;
     }
-
-    console.log(order);
 
     // --- Pricing bits ---
     let movingPackagePrice: any = null;
@@ -171,6 +171,9 @@ export default async function SuccessPage({
         });
     }
 
+    
+    let discountCodeMinor = order.promoDiscountMinor || 0;
+
     return (
         <main className="min-h-screen bg-slate-50">
             <div className="mx-auto w-full max-w-6xl px-4 py-5">
@@ -185,7 +188,7 @@ export default async function SuccessPage({
                                 <div className="flex justify-between">
                                     <span className="text-slate-600">Subtotal</span>
                                     <span className="font-medium text-slate-900">
-                                        {moneyGBP(
+                                        {money(
                                             orderSubtotalMinor +
                                             (isMoving
                                                 ? (movingPackagePrice?.priceMinor ?? 0) + distanceCostMinor
@@ -198,16 +201,29 @@ export default async function SuccessPage({
                                     <div className="flex justify-between">
                                         <span className="text-emerald-700">Discount</span>
                                         <span className="font-semibold text-emerald-700">
-                                            − {moneyGBP(discountMinor)}
+                                            − {money(discountMinor)}
                                         </span>
                                     </div>
                                 ) : null}
+
+                                {order.discountCode && (
+                                    <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-emerald-800 font-semibold">Discount Code Applied</span>
+                                            <span className="font-bold text-emerald-900">− {money((discountCodeMinor ?? 0))}</span>
+                                        </div>
+                                        <div className="text-xs text-emerald-700">
+                                            {order.discountCode.code} • {order.discountCode.type === "percentage" ? `${order.discountCode.valueMinor}% off` : money(order.discountCode.valueMinor / 100) + " off"}  <br />
+                                        </div>
+                                    </div>
+                                )}
+
 
                                 <div className="my-2 h-px bg-slate-200" />
                                 <div className="flex items-baseline justify-between">
                                     <span className="font-semibold text-slate-900">Total payable</span>
                                     <span className="text-xl font-bold text-slate-900">
-                                        {moneyGBP(order.totalMinor)}
+                                        {money(order.totalMinor)}
                                     </span>
                                 </div>
                             </div>
@@ -306,11 +322,11 @@ export default async function SuccessPage({
                                                     {distanceMiles} mile{distanceMiles === 1 ? "" : "s"}
                                                 </div>
                                                 <div className="text-sm font-semibold text-slate-900">
-                                                    {moneyGBP(distanceCostMinor)}
+                                                    {money(distanceCostMinor)}
                                                 </div>
                                             </div>
                                             <div className="mt-1 text-xs text-slate-500">
-                                                Calculated at {moneyGBP(movingPricePerMileMinor)} per mile
+                                                Calculated at {money(movingPricePerMileMinor)} per mile
                                             </div>
                                         </div>)}
 
@@ -376,8 +392,8 @@ export default async function SuccessPage({
                                                     }`}
                                             >
                                                 {r.minor < 0
-                                                    ? `− ${moneyGBP(Math.abs(r.minor))}`
-                                                    : moneyGBP(r.minor)}
+                                                    ? `− ${money(Math.abs(r.minor))}`
+                                                    : money(r.minor)}
                                             </div>
                                         </div>
                                     ))

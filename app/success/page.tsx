@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { prisma } from "@/src/lib/prisma";
 import { EmailLive } from "./EmailLive";
+import { money } from "../utils/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   // apiVersion: "2024-06-20",
@@ -17,9 +18,6 @@ type OrderTimeSlot = {
   endTime: string;
   isActive: boolean;
 } | null;
-
-const moneyGBP = (minor?: number | null) =>
-  minor == null ? "—" : `£${(minor / 100).toFixed(2)}`;
 
 function fmtAddr(a?: any) {
   if (!a) return "—";
@@ -70,6 +68,7 @@ export default async function SuccessPage({ searchParams }: Props) {
         movingPackage: { include: { prices: true } },
         storageDiscountTier: true,
         timeSlot: true,
+        discountCode: true
       },
     });
 
@@ -92,6 +91,7 @@ export default async function SuccessPage({ searchParams }: Props) {
             items: true,
             movingPackage: true,
             storageDiscountTier: true,
+            discountCode: true
           },
         },
       },
@@ -167,6 +167,8 @@ export default async function SuccessPage({ searchParams }: Props) {
       ? Math.round(orderSubtotalMinor * (order.storageDiscountTier.percentOff / 100))
       : 0;
 
+  let discountCodeMinor = order.promoDiscountMinor;
+
   const totalMinor = payment?.amountMinor ?? session?.amount_total ?? null;
 
   const email =
@@ -227,6 +229,15 @@ export default async function SuccessPage({ searchParams }: Props) {
     });
   }
 
+  if (discountCodeMinor && discountCodeMinor > 0) {
+    rows.push({
+      key: "discountCode",
+      label: `Discount Code (${order.discountCode.code})`,
+      qty: 1,
+      minor: -discountCodeMinor,
+    });
+  }
+
   return (
     <main className="min-h-screen bg-slate-50">
       <div className="mx-auto w-full max-w-6xl px-4 py-10">
@@ -280,7 +291,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 </Link>
 
                 <a
-                  href={`mailto:help.kxhlogistics@gmail.com?subject=Order%20${encodeURIComponent(
+                  href={`mailto:help@kxhlogistics.co.uk?subject=Order%20${encodeURIComponent(
                     String(orderNumber)
                   )}%20Support`}
                   className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
@@ -380,11 +391,11 @@ export default async function SuccessPage({ searchParams }: Props) {
                           {distanceMiles} mile{distanceMiles === 1 ? "" : "s"}
                         </div>
                         <div className="text-sm font-semibold text-slate-900">
-                          {moneyGBP(distanceCostMinor)}
+                          {money(distanceCostMinor)}
                         </div>
                       </div>
                       <div className="mt-1 text-xs text-slate-500">
-                        Calculated at {moneyGBP(movingPricePerMileMinor)} per mile
+                        Calculated at {money(movingPricePerMileMinor)} per mile
                       </div>
                     </div>)}
 
@@ -450,8 +461,8 @@ export default async function SuccessPage({ searchParams }: Props) {
                           }`}
                       >
                         {r.minor < 0
-                          ? `− ${moneyGBP(Math.abs(r.minor))}`
-                          : moneyGBP(r.minor)}
+                          ? `− ${money(Math.abs(r.minor))}`
+                          : money(r.minor)}
                       </div>
                     </div>
                   ))
@@ -471,7 +482,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 <div className="flex justify-between">
                   <span className="text-slate-600">Subtotal</span>
                   <span className="font-medium text-slate-900">
-                    {moneyGBP(
+                    {money(
                       orderSubtotalMinor +
                       (isMoving
                         ? (movingPackagePrice?.priceMinor ?? 0) + distanceCostMinor
@@ -482,9 +493,19 @@ export default async function SuccessPage({ searchParams }: Props) {
 
                 {isStorage && discountMinor > 0 ? (
                   <div className="flex justify-between">
-                    <span className="text-emerald-700">Discount</span>
+                    <span className="text-emerald-700">Storage Discount</span>
                     <span className="font-semibold text-emerald-700">
-                      − {moneyGBP(discountMinor)}
+                      − {money(discountMinor)}
+                    </span>
+                  </div>
+                ) : null}
+
+                <div className="my-2 h-px bg-slate-200" />
+                {discountCodeMinor && discountCodeMinor > 0 ? (
+                  <div className="flex justify-between">
+                    <span className="text-emerald-700">Discount Code {order.discountCode.code}</span>
+                    <span className="font-semibold text-emerald-700">
+                      − {money(discountCodeMinor)}
                     </span>
                   </div>
                 ) : null}
@@ -494,7 +515,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 <div className="flex items-baseline justify-between">
                   <span className="font-semibold text-slate-900">Total paid</span>
                   <span className="text-xl font-bold text-slate-900">
-                    {moneyGBP(totalMinor)}
+                    {money(totalMinor)}
                   </span>
                 </div>
 

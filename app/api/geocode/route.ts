@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       {
         headers: {
           // REQUIRED by Nominatim policy
-          "User-Agent": "KXHStorageApp/1.0 (help.kxhlogistics@gmail.com)",
+          "User-Agent": "KXHStorageApp/1.0 (help@kxhlogistics.co.uk)",
         },
       }
     );

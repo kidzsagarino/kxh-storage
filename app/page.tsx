@@ -185,8 +185,8 @@ export default async function HomePage() {
                             <a href="tel:+441474396663" className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-600 shadow-lg">
                                 Call +44 1474 396663
                             </a>
-                            <a href="mailto:help.kxhlogistics@gmail.com" className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold hover:bg-slate-50">
-                                Email help.kxhlogistics@gmail.com
+                            <a href="mailto:help@kxhlogistics.co.uk" className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold hover:bg-slate-50">
+                                Email help@kxhlogistics.co.uk
                             </a>
                         </div>
                     </div>

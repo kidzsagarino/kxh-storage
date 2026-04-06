@@ -151,7 +151,7 @@ export default function TermsPage() {
         </Section>
 
         <Section title="11. CONTACT">
-          <p>Email: help.kxhlogistics@gmail.com</p>
+          <p>Email: help@kxhlogistics.co.uk</p>
           <p>Phone: +44 1474 396663</p>
         </Section>
       </div>

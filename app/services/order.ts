@@ -58,7 +58,8 @@ export async function submitOrderAction(checkoutState: any) {
         notes: state.notes,
         fromLocation: state.fromLocation,
         toLocation: state.toLocation,
-        originalOrderNumber: state.originalOrderNumber
+        originalOrderNumber: state.originalOrderNumber,
+        discountMeta: state.discountMeta
     };
 
     const res = await fetch("/api/orders", {

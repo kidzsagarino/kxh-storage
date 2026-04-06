@@ -52,7 +52,7 @@ export function getOrderEmailHtml(hasContainer: boolean) {
       <p>
         <strong>Action Required:</strong><br/>
         To help us manage your container efficiently, please send a detailed list of the items you will be storing to 
-        <a href="mailto:help.kxhlogistics@gmail.com">help.kxhlogistics@gmail.com</a> before your scheduled pickup.
+        <a href="mailto:help@kxhlogistics.co.uk">help@kxhlogistics.co.uk</a> before your scheduled pickup.
       </p>
 
       <p>
@@ -62,7 +62,7 @@ export function getOrderEmailHtml(hasContainer: boolean) {
 
       <p>
         If you need to make any changes to your schedule or require assistance, please contact our support team at 
-        <a href="mailto:help.kxhlogistics@gmail.com">help.kxhlogistics@gmail.com</a>.
+        <a href="mailto:help@kxhlogistics.co.uk">help@kxhlogistics.co.uk</a>.
       </p>
     ` : ""}
 
@@ -85,6 +85,7 @@ export async function generateOrderReceipt(
             movingPackage: { include: { prices: true } },
             addresses: true,
             timeSlot: true,
+            discountCode: true
         },
     });
 
@@ -154,22 +155,44 @@ export async function generateOrderReceipt(
     const dropoff = findAddr(order.addresses, AddressType.DROPOFF);
     const billing = findAddr(order.addresses, AddressType.BILLING);
 
-    const boxHeight = isMoving ? 75 : 45;
-    page.drawRectangle({
-        x: margin,
-        y: y - (boxHeight - 10),
-        width: width - (margin * 2),
-        height: boxHeight,
-        color: rgb(0.98, 0.98, 0.99),
-        borderColor: BORDER_COLOR,
-        borderWidth: 0.5
-    });
+    //const boxHeight = isMoving ? 75 : 45;
+    // page.drawRectangle({
+    //     x: margin,
+    //     y: y - (boxHeight - 10),
+    //     width: width - (margin * 2),
+    //     height: boxHeight,
+    //     color: rgb(0.98, 0.98, 0.99),
+    //     borderColor: BORDER_COLOR,
+    //     borderWidth: 0.5
+    // });
 
     let currentY = y - 15;
     const drawLogDetail = (label: string, value: string) => {
-        page.drawText(label, { x: margin + 10, y: currentY, font: fontBold, size: 9 });
-        page.drawText(value, { x: margin + 90, y: currentY, size: 9, color: SECONDARY_TEXT });
-        currentY -= 15;
+        const textX = margin + 90;
+        const maxWidth = width - textX - margin - 10; // Space remaining in the box
+        const fontSize = 9;
+        const lineHeight = 12;
+
+        page.drawText(label, {
+            x: margin + 10,
+            y: currentY,
+            font: fontBold,
+            size: fontSize
+        });
+
+        page.drawText(value, {
+            x: textX,
+            y: currentY,
+            size: fontSize,
+            color: SECONDARY_TEXT,
+            maxWidth: maxWidth,
+            lineHeight: lineHeight,
+        });
+
+        const textWidth = font.widthOfTextAtSize(value, fontSize);
+        const numberOfLines = Math.ceil(textWidth / maxWidth);
+
+        currentY -= (numberOfLines * lineHeight);
     };
 
     if (isMoving || isReturn) {
@@ -223,9 +246,6 @@ export async function generateOrderReceipt(
         lineItems.push({ description: `${it.name}${suffix}`, qty: it.quantity, unitMinor: it.unitPriceMinor, lineTotalMinor: it.lineTotalMinor });
     });
 
-    if (order.discountMinor > 0) {
-        lineItems.push({ description: "Promotional Discount", qty: 1, unitMinor: -order.discountMinor, lineTotalMinor: -order.discountMinor });
-    }
 
     y -= 25;
     lineItems.forEach(item => {
@@ -240,19 +260,38 @@ export async function generateOrderReceipt(
     // Totals
     y -= 20;
     const totalBoxX = width - margin - 160;
+
     const drawTotal = (label: string, val: string, rowY: number, isBold = false) => {
         page.drawText(label, { x: totalBoxX, y: rowY, font: isBold ? fontBold : font, size: 10 });
         drawRightText(val, width - margin - 10, rowY, { font: isBold ? fontBold : font, size: 10 });
     };
 
     drawTotal("Subtotal", moneyGBP(order.subtotalMinor), y);
-    drawTotal("Discount", `-${moneyGBP(order.discountMinor)}`, y - 18);
-    page.drawLine({ start: { x: totalBoxX, y: y - 28 }, end: { x: width - margin, y: y - 28 }, thickness: 1, color: PRIMARY_TEXT });
-    drawTotal("TOTAL PAID", moneyGBP(order.totalMinor), y - 45, true);
+
+    let nextY = y - 18;
+
+    if (order.discountMinor && order.discountMinor > 0) {
+        drawTotal("Storage Discount", `-${moneyGBP(order.discountMinor)}`, nextY);
+        nextY -= 18;
+    }
+
+    if (order.discountCode && order.promoDiscountMinor > 0) {
+        drawTotal(`Promo (${order.discountCode.code})`, `-${moneyGBP(order.promoDiscountMinor)}`, nextY);
+        nextY -= 18;
+    }
+
+    page.drawLine({
+        start: { x: totalBoxX, y: nextY + 8 },
+        end: { x: width - margin, y: nextY + 8 },
+        thickness: 1,
+        color: PRIMARY_TEXT
+    });
+
+    drawTotal("TOTAL PAID", moneyGBP(order.totalMinor), nextY - 10, true);
 
     // Footer
     page.drawText("Thank you for your order!", { x: margin, y: 70, font: fontBold, size: 10, color: ACCENT_GREEN });
-    page.drawText("KXH Storage and Logistics | help.kxhlogistics@gmail.com | +44 1474 396663", { x: margin, y: 58, size: 8, color: SECONDARY_TEXT });
+    page.drawText("KXH Storage and Logistics | help@kxhlogistics.co.uk | +44 1474 396663", { x: margin, y: 58, size: 8, color: SECONDARY_TEXT });
 
     const pdfBytes = await pdfDoc.save();
 

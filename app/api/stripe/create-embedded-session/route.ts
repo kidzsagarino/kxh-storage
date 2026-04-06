@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
       }
 
       const monthlyAmountMinor = order.totalMinor;
-      if (!Number.isInteger(monthlyAmountMinor) || monthlyAmountMinor <= 0) {
+      if (!Number.isInteger(monthlyAmountMinor) || monthlyAmountMinor < 0) {
         return NextResponse.json({ error: "Invalid monthly amount" }, { status: 400 });
       }
 
@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
     } else {
       const amountMinor = order.totalMinor;
 
-      if (!Number.isInteger(amountMinor) || amountMinor <= 0) {
+      if (!Number.isInteger(amountMinor) || amountMinor < 0) {
         return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
       }
 

@@ -130,10 +130,10 @@ export default function AdminOrdersClient() {
   }
 
   return (
-    <main className="space-y-4 p-4 max-w-7xl mx-auto">
+    <main className="space-y-4">
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xl font-bold text-slate-900">Orders</h1>
+          <h1 className="text-lg font-bold text-slate-900">Orders</h1>
 
           <div className="flex flex-wrap items-center gap-2">
             <select

@@ -94,6 +94,14 @@ export type CheckoutState = {
   orderFlow: OrderFlowData | null;
   enableProceedButton: boolean;
   resetNonce: number;
+  discountMeta: DiscountMeta | null;
+};
+
+type DiscountMeta = {
+  id: string;
+  type: "percentage" | "fixed";
+  valueMinor: number;
+  code: string;
 };
 
 /** ✅ FACTORIES (fresh objects every time) */
@@ -186,6 +194,7 @@ const makeInitialState = (initialOrderFlow?: any | null): CheckoutState => ({
   orderFlow: initialOrderFlow ?? null,
   enableProceedButton: false,
   resetNonce: 0,
+  discountMeta: null,
 });
 
 type CheckoutContextValue = {
@@ -208,6 +217,8 @@ type CheckoutContextValue = {
 
   setSettings: React.Dispatch<React.SetStateAction<CheckoutSettings>>;
   setOrderFlow: (data: OrderFlowData) => void;
+  applyDiscount: (discount: DiscountMeta) => void;
+  removeDiscount: () => void;
 
   resetAll: () => void;
 };
@@ -262,6 +273,18 @@ export function CheckoutProvider({
         settings: typeof updater === "function" ? (updater as any)(s.settings) : updater,
       }));
 
+    const applyDiscount = (discount: DiscountMeta) =>
+      setState((s) => ({
+        ...s,
+        discountMeta: discount,
+      }));
+
+    const removeDiscount = () =>
+      setState((s) => ({
+        ...s,
+        discountMeta: null,
+      }));
+
     return {
       state,
       setState,
@@ -281,6 +304,8 @@ export function CheckoutProvider({
       resetReturn: () => setState((s) => ({ ...s, return: makeEmptyReturn() })),
 
       setSettings,
+      applyDiscount,
+      removeDiscount,
 
       resetAll: () =>
         setState((prev) => ({
@@ -293,6 +318,7 @@ export function CheckoutProvider({
           orderFlow: prev.orderFlow, // keep server-loaded data
           enableProceedButton: false,
           resetNonce: prev.resetNonce + 1,
+          discountMeta: null,
         })),
     };
   }, [state]);
@@ -307,7 +333,7 @@ export function useCheckout() {
 }
 
 export function useStorageCheckout() {
-  const { state, setStorage, setServiceType, resetStorage } = useCheckout();
+  const { state, setStorage, setServiceType, resetStorage, applyDiscount, removeDiscount } = useCheckout();
   return {
     state: state.storage,
     setState: setStorage,
@@ -315,33 +341,41 @@ export function useStorageCheckout() {
     reset: resetStorage,
     orderFlow: state.orderFlow,
     resetNonce: state.resetNonce,
+    applyDiscount,
+    removeDiscount,
   };
 }
 
 export function useMovingCheckout() {
-  const { state, setMoving, setServiceType, resetMoving } = useCheckout();
+  const { state, setMoving, setServiceType, resetMoving, applyDiscount, removeDiscount } = useCheckout();
   return {
     state: state.moving,
     setState: setMoving,
     setServiceType,
     reset: resetMoving,
     orderFlow: state.orderFlow,
+    resetNonce: state.resetNonce,
+    applyDiscount,
+    removeDiscount,
   };
 }
 
 export function useShreddingCheckout() {
-  const { state, setShredding, setServiceType, resetShredding } = useCheckout();
+  const { state, setShredding, setServiceType, resetShredding, applyDiscount, removeDiscount } = useCheckout();
   return {
     state: state.shredding,
     setState: setShredding,
     setServiceType,
     reset: resetShredding,
     orderFlow: state.orderFlow,
+    resetNonce: state.resetNonce,
+    applyDiscount,
+    removeDiscount,
   };
 }
 
 export function useReturnCheckout() {
-  const { state, setReturn, setServiceType, resetReturn } = useCheckout();
+  const { state, setReturn, setServiceType, resetReturn, applyDiscount, removeDiscount } = useCheckout();
   return {
     state: state.return,
     setState: setReturn,
@@ -349,6 +383,8 @@ export function useReturnCheckout() {
     reset: resetReturn,
     resetNonce: state.resetNonce,
     orderFlow: state.orderFlow,
+    applyDiscount,
+    removeDiscount,
   };
 }
 
