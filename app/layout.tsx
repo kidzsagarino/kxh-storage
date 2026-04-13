@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import Script from "next/dist/client/script";
+import FloatingTrustpilot from "./components/trustpilot/FloatingTrustpilot";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -62,6 +64,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <CheckoutProvider>{children}</CheckoutProvider>
         <Toaster position="top-right" richColors />
+        <Script
+          src="https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js"
+          strategy="lazyOnload"
+        />
+        <FloatingTrustpilot />
       </body>
     </html>
 

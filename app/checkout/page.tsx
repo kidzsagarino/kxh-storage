@@ -97,6 +97,7 @@ export default async function SuccessPage({
     });
 
     const movingPricePerMileMinor = settings?.movingPricePerMileMinor ?? 58;
+    const movingAndCollectionFeeMinor = settings?.movingAndCollectionFeeMinor ?? 1495;
 
     const isMoving = order?.serviceType === "MOVING";
     const isStorage = order?.serviceType === "STORAGE";
@@ -159,6 +160,15 @@ export default async function SuccessPage({
             label: it.label || it.name || it.sku || it.id,
             qty: it.qty ?? it.quantity ?? 1,
             minor: it.lineTotalMinor ?? it.unitPriceMinor ?? 0,
+        });
+    }
+
+    if (isStorage && movingAndCollectionFeeMinor > 0) {
+        rows.push({
+            key: "fee",
+            label: "Packing Material & Collection Fee",
+            qty: 1,
+            minor: movingAndCollectionFeeMinor,
         });
     }
 

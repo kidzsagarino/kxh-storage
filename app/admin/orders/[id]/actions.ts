@@ -24,13 +24,14 @@ export async function getOrderById(id: string) {
 
   const settings = await prisma.adminSettings.findUnique({
     where: { id: "global_settings" },
-    select: { movingPricePerMileMinor: true },
+    select: { movingPricePerMileMinor: true, movingAndCollectionFeeMinor: true },
   });
 
   return {
     ...order,
     pricing: {
       movingPricePerMileMinor: settings?.movingPricePerMileMinor ?? 58,
+      movingAndCollectionFeeMinor: settings?.movingAndCollectionFeeMinor ?? 1495,
     },
   };
 }

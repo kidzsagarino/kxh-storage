@@ -229,9 +229,9 @@ model Order {
   discountTierId      String?
   storageDiscountTier StorageDiscountTier? @relation(fields: [discountTierId], references: [id])
 
-  promoDiscountMinor Int    @default(0)
-  discountCodeId String?
-  discountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  promoDiscountMinor Int           @default(0)
+  discountCodeId     String?
+  discountCode       DiscountCode? @relation(fields: [discountCodeId], references: [id])
 
   stripeSubscriptionId String?   @unique
   subscriptionStatus   String?
@@ -337,8 +337,9 @@ model AdminSettings {
   shreddingEnabled Boolean @default(true)
   returnEnabled    Boolean @default(true)
 
-  movingPricePerMileMinor Int @default(58)
-  packingAssistanceMinor  Int @default(29500)
+  movingPricePerMileMinor      Int @default(58)
+  packingAssistanceMinor       Int @default(29500)
+  movingAndCollectionFeeMinor Int @default(1495)
 
   timeSlotSettings TimeSlotSetting[]
   capacities       CapacitySetting[]

@@ -6,6 +6,8 @@ import { loadOrderFlow } from "@/server/order-flow/loadOrderFlow";
 import { CheckoutProvider } from "./components/checkout/CheckoutStore";
 import CrispChat from "./components/chat/CrispChat";
 import Nav from "./components/MobileNav";
+import FloatingTrustpilot from "./components/trustpilot/FloatingTrustpilot";
+import TrustpilotCollector from "./components/trustpilot/TrustPilotCollector";
 
 function JsonLd() {
     // Update phone/address/service area as needed
@@ -14,7 +16,7 @@ function JsonLd() {
         "@type": "LocalBusiness",
         name: "KXH Storage & Logistics",
         url: "https://kxhlogistics.co.uk",
-        telephone: "+44 0000 000000",
+        telephone: "+44 1474 396663",
         image: "https://kxhlogistics.co.uk/og.jpg",
         description:
             "Door-to-door storage with pickup & delivery. We collect, store, and return your items—simple, secure, and flexible.",
@@ -61,13 +63,14 @@ export default async function HomePage() {
 
     return (
         <CheckoutProvider initialOrderFlow={initialData}>
+            <FloatingTrustpilot />
             <CrispChat />
             <Nav />
 
             <main className="min-h-screen bg-white text-slate-900">
                 <JsonLd />
-
                 {/* Hero Section */}
+               
                 <section className="relative overflow-hidden bg-slate-50 py-12 lg:py-20">
                     <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
                         <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500 shadow-sm backdrop-blur">

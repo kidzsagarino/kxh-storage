@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useCheckout, type ServiceType } from "./checkout/CheckoutStore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { StorageForm } from "./ServicesForm/StorageServiceFlow";
 import { MovingForm } from "./ServicesForm/MovingServiceFlow";
@@ -59,6 +59,8 @@ export default function HomeClientControls({
     const [error, setError] = React.useState<string | null>(null);
     const checkoutRef = React.useRef<HTMLDivElement | null>(null);
 
+    const searchParams = useSearchParams();
+
     const handlePaymentDone = React.useCallback(async (paidOrderId?: string) => {
         if (paidOrderId) {
             router.push(`/success?orderId=${paidOrderId}`);
@@ -104,6 +106,8 @@ export default function HomeClientControls({
         }
     };
 
+
+
     if (variant === "hero") {
         return (
             <ServiceSelect
@@ -122,6 +126,13 @@ export default function HomeClientControls({
         }
     }, [orderId]);
 
+    React.useEffect(() => {
+        const serviceFromUrl = searchParams.get("service") as ServiceType | null;
+        if (serviceFromUrl) {
+            setServiceType(serviceFromUrl);
+        }
+    }, [searchParams, setServiceType]);
+    
     return (
         <div className="mx-auto max-w-screen-xl">
             <div className="space-y-5 lg:space-y-6">

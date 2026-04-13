@@ -1,31 +1,37 @@
+import Link from "next/link";
 import { Icon } from "./Icons";
+import { url } from "inspector";
 
 const services = [
   {
     key: "packaging",
     title: "Moving",
     desc: "Careful packing, safe transport, and smooth relocation for homes and businesses.",
+    url: "/logistics-moving-london",
   },
   {
     key: "removals",
     title: "Removals",
     desc: "Local London removal services designed for speed and security.",
+    url: "/logistics-moving-london",
   },
   {
     key: "storage",
     title: "Storage Solutions",
     desc: "Flexible, secure, and accessible storage facilities tailored to your needs.",
+    url: "/warehouse-storage-london",
   },
   {
     key: "shredding",
     title: "Shredding Solutions",
     desc: "Eco-friendly clearance and secure document disposal services.",
+    url: "/shredding-solutions-london",
   },
 ] as const;
 
 export function ServicesGrid() {
   return (
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {services.map((s) => (
         <div
           key={s.key}
@@ -61,10 +67,13 @@ export function ServicesGrid() {
           </p>
 
           {/* CTA */}
-          {/* <div className="mt-4 text-xs font-semibold text-slate-500 transition
+
+          <div className="mt-4 text-xs font-semibold text-slate-500 transition
                       group-hover:text-emerald-600">
-            Learn more →
-          </div> */}
+            <Link href={`${s.url}`} className="inset-0 rounded-2xl">
+              Learn more →
+            </Link>
+          </div>
         </div>
       ))}
     </div>

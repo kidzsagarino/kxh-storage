@@ -1,5 +1,6 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { PrismaClient, AddressType, ServiceType } from "@prisma/client";
+import { formatServiceDate } from "@/app/utils/utils";
 
 type LineItem = {
     description: string;
@@ -22,9 +23,6 @@ function findAddr(addresses: any[], type: AddressType) {
     return addresses.find((a) => String(a.type) === String(type)) ?? null;
 }
 
-function formatServiceDate(d?: Date | null) {
-    return d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
-}
 
 function formatTimeSlot(timeSlot?: any | null) {
     if (!timeSlot) return "";
@@ -101,11 +99,13 @@ export async function generateOrderReceipt(
 
     const settings = await prisma.adminSettings.findUnique({
         where: { id: "global_settings" },
-        select: { movingPricePerMileMinor: true },
+        select: { movingPricePerMileMinor: true, movingAndCollectionFeeMinor: true },
     });
     const pricePerMileMinor = settings?.movingPricePerMileMinor ?? 58;
     const distanceMiles = isMoving ? Number(order.distanceMiles ?? 0) : 0;
     const distanceCostMinor = distanceMiles * pricePerMileMinor;
+
+    const movingAndCollectionFeeMinor = isStorage ? (settings?.movingAndCollectionFeeMinor ?? 0) : 0;
 
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([595.28, 841.89]);
@@ -143,7 +143,7 @@ export async function generateOrderReceipt(
         drawRightText(value, width - margin, rowY, { size: 10, color: PRIMARY_TEXT });
     };
     drawMeta("ORDER NO.", String(order.orderNumber || order.id.slice(0, 8)), y);
-    drawMeta("DATE", order.createdAt.toLocaleDateString("en-GB"), y - 18);
+    drawMeta("DATE", formatServiceDate(order.createdAt), y - 18);
     drawMeta("SERVICE", order.serviceType, y - 36);
 
     // --- Logistics Section ---
@@ -246,6 +246,9 @@ export async function generateOrderReceipt(
         lineItems.push({ description: `${it.name}${suffix}`, qty: it.quantity, unitMinor: it.unitPriceMinor, lineTotalMinor: it.lineTotalMinor });
     });
 
+    if (isStorage && movingAndCollectionFeeMinor && movingAndCollectionFeeMinor > 0) {
+        lineItems.push({ description: `Packing Material & Collection Fee`, qty: 1, unitMinor: movingAndCollectionFeeMinor, lineTotalMinor: movingAndCollectionFeeMinor });
+    }
 
     y -= 25;
     lineItems.forEach(item => {

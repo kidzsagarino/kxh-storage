@@ -8,11 +8,11 @@ export default function Nav() {
     const [isOpen, setIsOpen] = useState(false);
 
     const navItems = [
-        { href: "#top", label: "Home", icon: Home },
-        { href: "#services", label: "Services", icon: Package },
-        { href: "#pricing", label: "Pricing", icon: Tag },
-        { href: "#faq", label: "FAQ", icon: HelpCircle },
-        { href: "#contact", label: "Contact", icon: Phone },
+        { href: "/#top", label: "Home", icon: Home },
+        { href: "/#services", label: "Services", icon: Package },
+        { href: "/#pricing", label: "Pricing", icon: Tag },
+        { href: "/#faq", label: "FAQ", icon: HelpCircle },
+        { href: "/#contact", label: "Contact", icon: Phone },
     ];
 
     return (
@@ -21,7 +21,7 @@ export default function Nav() {
             <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
                 <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
                     {/* Logo */}
-                    <a href="#top" className="text-lg font-black text-emerald-700">
+                    <a href="/#top" className="text-lg font-black text-emerald-700">
                         <Image src="/logo.png" alt="KXH Logo" width={125} height={30} />
                     </a>
 
@@ -47,7 +47,7 @@ export default function Nav() {
                             Call
                         </a>
                         <a
-                            href="#quote"
+                            href="/#pricing"
                             onClick={() => {
                                 document.getElementById("pricing")?.scrollIntoView({
                                     behavior: "smooth",
@@ -121,8 +121,15 @@ export default function Nav() {
                         Call
                     </a>
                     <a
-                        href="#quote"
+                        href="/#pricing"
                         className="mt-2 flex items-center justify-center rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm"
+                        onClick={() => {
+                            setIsOpen(false);
+                            document.getElementById("pricing")?.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                            });
+                        }}
                     >
                         Get Quote
                     </a>

@@ -22,8 +22,9 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
   const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
 
   const discount = useDiscount("storage");
+  const movingAndCollectionFee = orderFlow.settings.storage.movingAndCollectionFee;
 
-  const { items, storagePerMonth, months, discountPerMonth, codeDiscount, subTotal, totalDueNow } =
+  const { items, storagePerMonth, months, discountPerMonth, codeDiscount, subTotal, totalDueNow, originalTotal } =
     React.useMemo(() => {
       const months = state.durationMonth > 0 ? state.durationMonth : 1;
 
@@ -44,7 +45,7 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
           };
         });
 
-      const storagePerMonth = +items
+      let storagePerMonth = +items
         .reduce((sum, it) => sum + it.lineMonthly, 0)
         .toFixed(2);
 
@@ -55,17 +56,20 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
       const percentOff = tier?.percentOff ?? 0;
       const discountRate = percentOff / 100;
 
-      const discountPerMonth = +(storagePerMonth * discountRate).toFixed(2);
-      const subTotal = +(storagePerMonth - discountPerMonth).toFixed(2);
+      const discountPerMonth = +(storagePerMonth * discountRate);
 
-      const codeDiscount = calculateDiscount({
+      const subTotal = +((storagePerMonth + movingAndCollectionFee) - discountPerMonth);
+
+      const originalTotal = +((storagePerMonth + movingAndCollectionFee));
+      
+       const codeDiscount = calculateDiscount({
         baseAmount: subTotal,
         discountMeta: discount.discountMeta,
       });
 
       const totalDueNow = Math.max(0, subTotal - codeDiscount);
-      
-      return { items, storagePerMonth, months, discountPerMonth, codeDiscount, subTotal, totalDueNow };
+
+      return { items, storagePerMonth, months, discountPerMonth, codeDiscount, subTotal, totalDueNow, originalTotal };
     }, [state.quantities, state.durationMonth, itemsBySku, discountTiers, discount.discountMeta]);
 
   const durationOk = (orderFlow?.catalog?.storage?.discountTiers ?? []).some(
@@ -129,12 +133,20 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
           </div>
         )}
         {subTotal > 0 && (
-          <div className="flex justify-between text-sm text-slate-700">
-            <span>Original Total</span>
-            <span className="text-black-600">
-              {money(subTotal, currencySymbol)}
-            </span>
-          </div>
+          <>
+            <div className="flex justify-between text-sm text-slate-700">
+              <span>Packing Materials & Collection</span>
+              <span className="text-black-600">
+                {money(movingAndCollectionFee, currencySymbol)}
+              </span>
+            </div>
+            <div className="flex justify-between text-sm text-slate-700">
+              <span>Original Total</span>
+              <span className="text-black-600">
+                {money(originalTotal, currencySymbol)}
+              </span>
+            </div>
+          </>
         )}
         <div className="h-px bg-slate-200" />
 
@@ -142,6 +154,9 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
           <span>Total due now</span>
           <span>{money(totalDueNow, currencySymbol)}</span>
         </div>
+      </div>
+      <div>
+        <p className="flex justify-center text-center font-medium text-slate-500">Return charges apply</p>
       </div>
 
       <div className="rounded-xl bg-slate-50 p-4 space-y-3">

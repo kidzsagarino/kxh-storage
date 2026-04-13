@@ -1,6 +1,31 @@
 import { useEffect, useState } from "react";
 import { fetchNominatim, NominatimResult } from "../lib/address";
 
+const LONDON_KEYWORDS = [
+  "london",
+  "city of westminster",
+  "city of london",
+  "greater london",
+];
+
+function isLondon(item: any) {
+  const addr = item.address || {};
+
+  const fields = [
+    addr.city,
+    addr.town,
+    addr.county,
+    addr.state,
+    addr.state_district,
+    item.display_name,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return LONDON_KEYWORDS.some((k) => fields.includes(k));
+}
+
 export function AddressLookupField({
     value,
     onValueChange,
@@ -32,7 +57,9 @@ export function AddressLookupField({
                 setLoading(true);
                 setSearched(false);
                 const results = await fetchNominatim(`${q}`);
-                setSuggestions(results ?? []);
+                const filtered = (results ?? []).filter(isLondon);
+
+                setSuggestions(filtered);
                 setSearched(true);
             } catch {
                 setSuggestions([]);
