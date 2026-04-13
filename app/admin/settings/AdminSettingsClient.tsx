@@ -55,7 +55,7 @@ function typedEntries<T extends Record<string, any>>(obj: T) {
 }
 
 export default function AdminSettingsClient() {
-  
+
   const FALLBACK_DEFAULT = React.useMemo(
     () =>
       ({
@@ -110,6 +110,7 @@ export default function AdminSettingsClient() {
           basic_package: 0,
           move_and_pack: 295,
         },
+        movingAndCollectionFee: 14.95,
       }) as PricingSettings,
     []
   );
@@ -375,8 +376,20 @@ export default function AdminSettingsClient() {
             ))}
           </div>
         </div>
-      </div>
+        {/*moving and collection fee */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+          <SectionTitle title="Packing Material & Collection Fee" desc="Set the flat fee for moving and collection (storage orders)." />
 
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label="Packing Material & Collection Fee"
+              value={settings.movingAndCollectionFee}
+              suffix="£"
+              onChange={(n) => setSettings((s) => ({ ...s, movingAndCollectionFee: n }))}
+            />
+          </div>
+        </div>
+      </div>
       {/* Shredding */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
         <SectionTitle title="Shredding pricing" desc="Set unit prices for shredding items." />

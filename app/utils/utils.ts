@@ -69,3 +69,8 @@ export function to12Hour(time: string): string {
 export function money(n: number, sym = "£") {
   return `${sym}${(n / 100).toFixed(2)}`;
 }
+
+
+export function formatServiceDate(d?: Date | null) {
+    return d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
+}

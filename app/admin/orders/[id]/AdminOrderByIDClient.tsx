@@ -161,7 +161,7 @@ export default function AdminOrderByIdClient() {
     const movingPricePerMileMinor = order?.pricing?.movingPricePerMileMinor ?? 58;
     const distanceMiles = isMoving ? Number(order.distanceMiles ?? 0) : 0;
     const distanceCostMinor = isMoving ? Math.max(0, distanceMiles) * movingPricePerMileMinor : 0;
-
+    
     const isStorage = order.serviceType?.toUpperCase() === "STORAGE";
     const isShredding = order.serviceType?.toUpperCase() === "SHREDDING";
     const isReturn = order.serviceType?.toUpperCase() === "RETURN"
@@ -169,7 +169,7 @@ export default function AdminOrderByIdClient() {
     const discountPercent = order.storageDiscountTier?.percentOff || 0;
     const durationMonths = order.items?.[0]?.months || 0;
 
-
+    const movingAndCollectionFeeMinor = isStorage ? (order?.pricing?.movingAndCollectionFeeMinor ?? 1495) : 0;
 
     const getMapUrl = (addr: any) =>
         addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${addr.line1} ${addr.postalCode}`)}` : "#";
@@ -438,14 +438,8 @@ export default function AdminOrderByIdClient() {
                                             </td>
                                         </tr>
                                     )}
-                                    {/* Storage discount tier row if present */}
-                                    {isStorage && order.storageDiscountTier && (
-                                        <tr>
-                                            <td className="p-3 font-medium text-slate-900">Discount Tier</td>
-                                            <td className="p-3 text-right text-slate-600">{order.storageDiscountTier.minMonths} mo</td>
-                                            <td className="p-3 text-right font-semibold text-slate-900">{money(storageDiscountAmountMinor)}</td>
-                                        </tr>
-                                    )}
+                                    
+                                    
                                     {/* Order items */}
                                     {order.items?.map((it: any) => (
                                         <tr key={it.id}>
@@ -456,6 +450,23 @@ export default function AdminOrderByIdClient() {
                                             </td>
                                         </tr>
                                     ))}
+                                    {isStorage && (
+                                        <tr>
+                                            <td className="p-3 font-medium text-slate-900">Packing Material & Collection Fee</td>
+                                            <td className="p-3 text-right text-slate-600">1</td>
+                                            <td className="p-3 text-right font-semibold text-slate-900">
+                                                {money(movingAndCollectionFeeMinor)}
+                                            </td>
+                                        </tr>
+                                    )}
+                                    {/* Storage discount tier row if present */}
+                                    {isStorage && order.storageDiscountTier && (
+                                        <tr>
+                                            <td className="p-3 font-medium text-slate-900">Discount Tier</td>
+                                            <td className="p-3 text-right text-slate-600">{order.storageDiscountTier.minMonths} mo</td>
+                                            <td className="p-3 text-right font-semibold text-slate-900">{money(storageDiscountAmountMinor)}</td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>

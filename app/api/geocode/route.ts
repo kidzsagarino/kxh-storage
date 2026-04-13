@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q + ' London')}&format=jsonv2&polygon_geojson=1&addressdetails=1&limit=1`,
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q + ' London')}&format=jsonv2&polygon_geojson=1&addressdetails=1`,
       {
         headers: {
           // REQUIRED by Nominatim policy

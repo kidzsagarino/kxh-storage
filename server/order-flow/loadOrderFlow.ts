@@ -84,10 +84,11 @@ export async function loadOrderFlow(currency = "GBP") {
           shreddingEnabled: true,
           movingPricePerMileMinor: true,
           packingAssistanceMinor: true,
-          timeSlotSettings: { select: { key: true, label: true, enabled: true }},
+          timeSlotSettings: { select: { key: true, label: true, enabled: true } },
           capacities: { select: { serviceType: true, slotKey: true, capacity: true } },
           weekdayRules: { select: { serviceType: true, weekday: true, enabled: true } },
           blackoutDates: { select: { date: true }, orderBy: { date: "asc" } },
+          movingAndCollectionFeeMinor: true,
         },
       }),
     ]);
@@ -134,22 +135,25 @@ export async function loadOrderFlow(currency = "GBP") {
     timeSlots,
     settings: adminSettings
       ? {
-          serviceEnabled: {
-            storage: adminSettings.storageEnabled,
-            moving: adminSettings.movingEnabled,
-            shredding: adminSettings.shreddingEnabled,
-          },
-          moving: {
-            pricePerMile: minorToMoney(adminSettings.movingPricePerMileMinor),
-            packingAssistancePrice: minorToMoney(adminSettings.packingAssistanceMinor),
-          },
-          scheduling: {
-            capacities: adminSettings.capacities,
-            weekdayRules: adminSettings.weekdayRules,
-            blackoutDates,
-          },
-          timeSlotSettings: adminSettings.timeSlotSettings,
+        serviceEnabled: {
+          storage: adminSettings.storageEnabled,
+          moving: adminSettings.movingEnabled,
+          shredding: adminSettings.shreddingEnabled,
+        },
+        moving: {
+          pricePerMile: minorToMoney(adminSettings.movingPricePerMileMinor),
+          packingAssistancePrice: minorToMoney(adminSettings.packingAssistanceMinor),
+        },
+        scheduling: {
+          capacities: adminSettings.capacities,
+          weekdayRules: adminSettings.weekdayRules,
+          blackoutDates,
+        },
+        timeSlotSettings: adminSettings.timeSlotSettings,
+        storage: {
+          movingAndCollectionFee: minorToMoney(adminSettings.movingAndCollectionFeeMinor),
         }
+      }
       : null,
 
     catalog: {

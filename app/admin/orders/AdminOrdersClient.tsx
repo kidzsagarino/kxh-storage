@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useMemo, useState, useEffect } from "react";
 import { getAdminOrders, updateOrderStatus } from "./action";
-import { to12Hour } from "@/app/utils/utils";
+import { formatServiceDate, to12Hour } from "@/app/utils/utils";
 import { toast } from "sonner";
 
 type OrderWithCustomer = any;
@@ -208,7 +208,7 @@ export default function AdminOrdersClient() {
                         #{o.orderNumber}
                       </Link>
                       <div className="text-[10px] text-slate-400 mt-0.5">
-                        {new Date(o.createdAt).toLocaleDateString()}
+                        {formatServiceDate(o.createdAt)}
                       </div>
                     </td>
 

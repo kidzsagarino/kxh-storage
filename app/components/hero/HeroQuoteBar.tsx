@@ -158,7 +158,7 @@ export function HeroQuoteBar() {
         storage: {
             label: "Storage",
             tagline: "Secure & Climate Controlled",
-            bullets: ["24/7 CCTV Monitoring", "Flexible monthly terms", "Insurance included"]
+            bullets: ["24/7 CCTV Monitoring", "Flexible monthly terms", "Clean, secure, and organized facility"]
         },
         moving: {
             label: "Packing & Moving",
@@ -203,8 +203,8 @@ export function HeroQuoteBar() {
 
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
                 {/* top trust strip */}
-                <div className="bg-slate-900 px-6 py-2 text-center">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">
+                <div className="bg-slate-900 px-6 py-3 text-center">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400">
                         Guaranteed Secure • 5,000+ Londoners Served
                     </p>
                 </div>
