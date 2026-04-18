@@ -25,8 +25,88 @@ function JsonLd() {
     );
 }
 
+function FAQJsonLd() {
+    const data = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+            {
+                "@type": "Question",
+                name: "How much does a moving service in London cost?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "The cost depends on distance, volume of items, and service requirements. You can use our instant calculator to get an accurate quote.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Do you provide packing services?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we offer full packing services including wrapping, boxing, and securing your items for safe transport.",
+                },
+            },
+            // {
+            //     "@type": "Question",
+            //     name: "Are your movers insured?",
+            //     acceptedAnswer: {
+            //         "@type": "Answer",
+            //         text: "Yes, our moving services include protection to keep your belongings safe during the move.",
+            //     },
+            // },
+            {
+                "@type": "Question",
+                name: "Can you handle office and business relocations?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we provide professional moving services for offices and businesses, including equipment handling and relocation planning.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Do you offer same-day moving services in London?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Same-day or next-day moving may be available depending on your location and availability.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Can I book a moving service near me?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we operate across London. Enter your postcode to check availability and book a moving service near you.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Do I need to rent a van for moving?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "No, we handle transport, loading, and unloading so you don’t need to rent or drive a van.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Can you move a single item or furniture?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we offer single-item and furniture moving services as well as full home or office relocations.",
+                },
+            },
+        ],
+    };
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+        />
+    );
+}
+
 export default function MovingServicePage() {
-   
+
     return (
         <>
             <CrispChat />
@@ -34,6 +114,7 @@ export default function MovingServicePage() {
 
             <main className="min-h-screen bg-white text-slate-900">
                 <JsonLd />
+                <FAQJsonLd />
 
                 {/* HERO */}
                 <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">
@@ -169,7 +250,7 @@ export default function MovingServicePage() {
                                     How much does a moving service in London cost?
                                 </summary>
                                 <p className="mt-3 text-slate-600">
-                                    Pricing depends on distance, size, and requirements. Use our instant calculator for accurate pricing.
+                                    The cost depends on distance, volume of items, and service requirements. Use our instant calculator for accurate pricing.
                                 </p>
                             </details>
 
@@ -178,7 +259,61 @@ export default function MovingServicePage() {
                                     Do you provide packing services?
                                 </summary>
                                 <p className="mt-3 text-slate-600">
-                                    Yes — we can pack, wrap, and secure all items before transport.
+                                    Yes, we offer full packing services including wrapping, boxing, and securing your items.
+                                </p>
+                            </details>
+
+                            {/* <details className="border rounded-xl p-5 bg-white">
+                                <summary className="font-semibold cursor-pointer">
+                                    Are your movers insured?
+                                </summary>
+                                <p className="mt-3 text-slate-600">
+                                    Yes, your items are protected during the move for peace of mind.
+                                </p>
+                            </details> */}
+
+                            <details className="border rounded-xl p-5 bg-white">
+                                <summary className="font-semibold cursor-pointer">
+                                    Can you handle office and business relocations?
+                                </summary>
+                                <p className="mt-3 text-slate-600">
+                                    Yes, we handle office and business moves including equipment and planning.
+                                </p>
+                            </details>
+
+                            <details className="border rounded-xl p-5 bg-white">
+                                <summary className="font-semibold cursor-pointer">
+                                    Do you offer same-day moving services in London?
+                                </summary>
+                                <p className="mt-3 text-slate-600">
+                                    Same-day or next-day moves may be available depending on availability.
+                                </p>
+                            </details>
+
+                            <details className="border rounded-xl p-5 bg-white">
+                                <summary className="font-semibold cursor-pointer">
+                                    Can I book a moving service near me?
+                                </summary>
+                                <p className="mt-3 text-slate-600">
+                                    Yes, we cover all areas in London. Enter your postcode to check availability.
+                                </p>
+                            </details>
+
+                            <details className="border rounded-xl p-5 bg-white">
+                                <summary className="font-semibold cursor-pointer">
+                                    Do I need to rent a van for moving?
+                                </summary>
+                                <p className="mt-3 text-slate-600">
+                                    No, we handle transport, loading, and delivery for you.
+                                </p>
+                            </details>
+
+                            <details className="border rounded-xl p-5 bg-white">
+                                <summary className="font-semibold cursor-pointer">
+                                    Can you move a single item or furniture?
+                                </summary>
+                                <p className="mt-3 text-slate-600">
+                                    Yes, we offer single-item moves as well as full home or office relocations.
                                 </p>
                             </details>
                         </div>

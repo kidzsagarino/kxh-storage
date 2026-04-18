@@ -25,6 +25,86 @@ function JsonLd() {
   );
 }
 
+function FAQJsonLd() {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Is your shredding service GDPR compliant?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, all shredding processes follow GDPR standards with secure handling, strict chain of custody, and certified destruction.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you provide a certificate of destruction?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we provide an official certificate of destruction after shredding for compliance and record keeping.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer document shredding collection in London?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we provide secure collection services across London. We pick up your documents, transport them safely, and shred them securely.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What types of documents can be shredded?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "We shred financial records, legal documents, business paperwork, and personal files securely and safely.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How much does document shredding cost in London?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Pricing depends on the volume of documents and service type. You can use our instant quote tool for accurate pricing.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is your document shredding service secure?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we use secure handling, controlled processes, and certified destruction methods to ensure complete confidentiality.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer one-off and business shredding services?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we offer both one-time shredding for individuals and scheduled shredding services for businesses and offices.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can you collect documents for shredding near me?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we offer document collection services across London. Enter your postcode to check availability in your area.",
+        },
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 export default function ShreddingServicePage() {
   return (
     <>
@@ -33,6 +113,7 @@ export default function ShreddingServicePage() {
 
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
+        <FAQJsonLd />
 
         {/* HERO */}
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">
@@ -168,7 +249,7 @@ export default function ShreddingServicePage() {
                   Is your shredding service GDPR compliant?
                 </summary>
                 <p className="mt-3 text-slate-600">
-                  Yes — all shredding processes follow GDPR standards with secure handling and certified destruction.
+                  Yes, all shredding processes follow GDPR standards with secure handling, strict chain of custody, and certified destruction.
                 </p>
               </details>
 
@@ -177,7 +258,61 @@ export default function ShreddingServicePage() {
                   Do you provide a certificate of destruction?
                 </summary>
                 <p className="mt-3 text-slate-600">
-                  Yes, we provide official certification after shredding for compliance and records.
+                  Yes, we provide an official certificate of destruction after shredding for compliance and record keeping.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Do you offer document shredding collection in London?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we provide secure collection services across London. We pick up your documents and shred them securely.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  What types of documents can be shredded?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  We shred financial records, legal documents, business paperwork, and personal files securely and safely.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  How much does document shredding cost in London?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Pricing depends on the volume of documents and service type. Use our instant quote tool for accurate pricing.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Is your document shredding service secure?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we use secure handling, controlled processes, and certified destruction methods to ensure confidentiality.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Do you offer one-off and business shredding services?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we provide both one-time shredding and scheduled business shredding services.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Can you collect documents for shredding near me?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we offer document collection across London. Enter your postcode to check availability.
                 </p>
               </details>
             </div>

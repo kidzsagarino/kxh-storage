@@ -25,6 +25,86 @@ function JsonLd() {
   );
 }
 
+function FAQJsonLd() {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "How much does warehouse storage in London cost?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Pricing depends on the amount of space and duration. You can use our instant storage calculator to get an accurate price in seconds.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you provide pickup and delivery for warehouse storage?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we offer full collection and delivery. We pick up your items, store them securely in our warehouse, and deliver them back when needed.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is your warehouse storage secure?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, our warehouse facilities are monitored 24/7 with CCTV, controlled access, and secure handling processes.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can I store business inventory or bulk items?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we support ecommerce inventory, retail stock, pallet storage, and bulk warehouse storage for businesses of all sizes.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is warehouse storage in London cheaper than self-storage?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "In many cases, warehouse storage can be more cost-efficient because you only pay for the space you use and avoid transport or van hire costs.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer storage for ecommerce businesses?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we provide warehouse storage for ecommerce businesses, including stock holding, pallet storage, and fulfillment support.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How quickly can I access my stored items?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "You can request delivery of your stored items, and we will arrange fast return based on your schedule and location.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer short-term warehouse storage in London?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we offer both short-term and long-term warehouse storage options depending on your needs.",
+        },
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 export default function WarehouseStoragePage() {
   return (
     <>
@@ -33,7 +113,7 @@ export default function WarehouseStoragePage() {
 
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
-
+        <FAQJsonLd />
         {/* HERO */}
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">
           <div className="mx-auto max-w-5xl px-4 text-center">
@@ -67,7 +147,7 @@ export default function WarehouseStoragePage() {
             {/* CTA */}
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
               <Link
-                 href="/?service=storage#pricing"
+                href="/?service=storage#pricing"
                 className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
               >
                 Get Instant Storage Price
@@ -147,7 +227,7 @@ export default function WarehouseStoragePage() {
 
             <div className="mt-8">
               <Link
-                 href="/?service=storage#pricing"
+                href="/?service=storage#pricing"
                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
               >
                 Calculate Your Storage Cost
@@ -169,16 +249,70 @@ export default function WarehouseStoragePage() {
                   How much does warehouse storage in London cost?
                 </summary>
                 <p className="mt-3 text-slate-600">
-                  Pricing depends on space and duration. Use our instant calculator for accurate pricing in seconds.
+                  Pricing depends on the amount of space and duration. Use our instant storage calculator to get an accurate price in seconds.
                 </p>
               </details>
 
               <details className="border rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
-                  Do you provide pickup and delivery?
+                  Do you provide pickup and delivery for warehouse storage?
                 </summary>
                 <p className="mt-3 text-slate-600">
-                  Yes — we collect your items, store them securely, and deliver them back when needed.
+                  Yes, we offer full collection and delivery. We pick up your items, store them securely in our warehouse, and deliver them back when needed.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Is your warehouse storage secure?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, our warehouse facilities are monitored 24/7 with CCTV, controlled access, and secure handling processes.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Can I store business inventory or bulk items?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we support ecommerce inventory, retail stock, pallet storage, and bulk warehouse storage for businesses of all sizes.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Is warehouse storage in London cheaper than self-storage?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  In many cases, warehouse storage can be more cost-efficient because you only pay for the space you use and avoid transport or van hire costs.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Do you offer storage for ecommerce businesses?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we provide warehouse storage for ecommerce businesses, including stock holding, pallet storage, and fulfillment support.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  How quickly can I access my stored items?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  You can request delivery of your stored items, and we will arrange fast return based on your schedule and location.
+                </p>
+              </details>
+
+              <details className="border rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Do you offer short-term warehouse storage in London?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we offer both short-term and long-term warehouse storage options depending on your needs.
                 </p>
               </details>
             </div>
