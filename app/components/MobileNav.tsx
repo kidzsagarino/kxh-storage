@@ -11,7 +11,7 @@ export default function Nav() {
         { href: "/#top", label: "Home", icon: Home },
         { href: "/#services", label: "Services", icon: Package },
         { href: "/#pricing", label: "Pricing", icon: Tag },
-        { href: "/#faq", label: "FAQ", icon: HelpCircle },
+        { href: "/#faq", label: "FAQs", icon: HelpCircle },
         { href: "/#contact", label: "Contact", icon: Phone },
     ];
 

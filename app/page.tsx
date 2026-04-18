@@ -7,26 +7,74 @@ import { CheckoutProvider } from "./components/checkout/CheckoutStore";
 import CrispChat from "./components/chat/CrispChat";
 import Nav from "./components/MobileNav";
 import FloatingTrustpilot from "./components/trustpilot/FloatingTrustpilot";
-import TrustpilotCollector from "./components/trustpilot/TrustPilotCollector";
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Storage, Moving & Shredding Services London | KXH Logistics",
+    description:
+        "Affordable storage, moving, and document shredding in London. Get instant quotes with pickup, delivery, and secure handling.",
+    keywords: [
+        "storage London",
+        "moving service London",
+        "document shredding London",
+        "cheap storage London",
+        "removals London",
+        "warehouse storage London",
+    ],
+    openGraph: {
+        title: "KXH Storage & Logistics London",
+        description:
+            "Book storage, moving, and shredding services in London with instant pricing and flexible scheduling.",
+        url: "https://kxhlogistics.co.uk",
+        siteName: "KXH Storage & Logistics",
+        locale: "en_GB",
+        type: "website",
+    },
+    alternates: {
+        canonical: "https://kxhlogistics.co.uk",
+    },
+};
 
 function JsonLd() {
-    // Update phone/address/service area as needed
     const data = {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
+        "@id": "https://kxhlogistics.co.uk/#business",
         name: "KXH Storage & Logistics",
         url: "https://kxhlogistics.co.uk",
         telephone: "+44 1474 396663",
         image: "https://kxhlogistics.co.uk/og.jpg",
         description:
-            "Door-to-door storage with pickup & delivery. We collect, store, and return your items—simple, secure, and flexible.",
-        areaServed: "United Kingdom",
-        sameAs: [],
+            "Door-to-door storage, moving, and shredding services in London with pickup, delivery, and secure handling.",
+        areaServed: {
+            "@type": "Place",
+            name: "London, United Kingdom",
+        },
+        address: {
+            "@type": "PostalAddress",
+            addressCountry: "GB",
+        },
+        geo: {
+            "@type": "GeoCoordinates",
+            latitude: "51.5074",
+            longitude: "-0.1278",
+        },
+        sameAs: [
+            "https://uk.trustpilot.com/review/kxhlogistics.co.uk",
+        ],
         makesOffer: [
             {
                 "@type": "Offer",
-                name: "Pickup & Delivery Storage",
-                availability: "https://schema.org/InStock",
+                name: "Storage Service London",
+            },
+            {
+                "@type": "Offer",
+                name: "Moving Service London",
+            },
+            {
+                "@type": "Offer",
+                name: "Document Shredding London",
             },
         ],
     };
@@ -34,7 +82,6 @@ function JsonLd() {
     return (
         <script
             type="application/ld+json"
-            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
         />
     );
@@ -42,18 +89,142 @@ function JsonLd() {
 
 const faqs = [
     {
-        q: "How does pickup & delivery storage work?",
-        a: "Book a pickup, we collect your items, store them securely, then deliver them back when you need them.",
+        q: "How does pickup and delivery storage work?",
+        a: "We collect your items from your location, store them securely, and deliver them back whenever you need them.",
     },
     {
         q: "Is my storage secure?",
-        a: "Yes—items are stored in monitored facilities with controlled access. Inventory tracking is available.",
+        a: "Yes, your items are stored in secure, monitored facilities with controlled access and inventory tracking.",
     },
     {
-        q: "How fast can you deliver my items back?",
-        a: "Delivery time depends on your location and scheduling. Most returns can be arranged quickly once requested.",
+        q: "How much does storage cost in London?",
+        a: "Storage prices vary depending on the volume of items and duration. Use our instant quote tool for accurate pricing.",
+    },
+    {
+        q: "Where can I find cheap storage in London?",
+        a: "Affordable storage options are available depending on size and duration. You only pay for the space you use.",
+    },
+    {
+        q: "How much is storage per month in London?",
+        a: "Monthly storage costs depend on volume and service type. Smaller loads cost less, larger storage costs more.",
+    },
+    {
+        q: "What size storage do I need?",
+        a: "It depends on how many items you have. Our quote tool helps estimate the right storage size for you.",
+    },
+    {
+        q: "Is pickup storage cheaper than self-storage?",
+        a: "In many cases yes, because you avoid van hire, transport costs, and paying for unused space.",
+    },
+    {
+        q: "Can I book storage with collection near me?",
+        a: "Yes, we offer collection and delivery across London. Enter your postcode to check availability.",
+    },
+    {
+        q: "How quickly can I arrange storage?",
+        a: "Storage can often be arranged within 24–48 hours depending on availability.",
+    },
+    {
+        q: "Is there flexible short-term storage?",
+        a: "Yes, we offer both short-term and long-term storage options depending on your needs.",
     },
 ];
+
+function FAQJsonLd() {
+    const data = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+            {
+                "@type": "Question",
+                name: "How does pickup and delivery storage work?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "We collect your items from your location, store them securely, and deliver them back whenever you need them.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Is my storage secure?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Your items are stored in secure, monitored facilities with controlled access and inventory tracking.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "How much does storage cost in London?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Storage pricing depends on volume and duration. Use our instant quote tool for accurate pricing.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Where can I find cheap storage in London?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Affordable storage is available depending on size and duration. You only pay for the space you use.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "How much is storage per month in London?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Monthly storage costs depend on volume and service type. Smaller loads cost less, larger storage costs more.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "What size storage do I need?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "The size depends on your items. Our quote tool helps estimate the right storage size for you.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Is pickup storage cheaper than self-storage?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "In many cases yes, because you avoid van hire, transport costs, and paying for unused space.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Can I book storage with collection near me?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we offer collection and delivery across London. Enter your postcode to check availability.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "How quickly can I arrange storage?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Storage can often be arranged within 24–48 hours depending on availability.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Is there flexible short-term storage?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we offer both short-term and long-term storage options depending on your needs.",
+                },
+            }
+        ],
+    };
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+        />
+    );
+}
 
 export const dynamic = "force-dynamic";
 
@@ -69,8 +240,9 @@ export default async function HomePage() {
 
             <main className="min-h-screen bg-white text-slate-900">
                 <JsonLd />
+                <FAQJsonLd />
                 {/* Hero Section */}
-               
+
                 <section className="relative overflow-hidden bg-slate-50 py-12 lg:py-20">
                     <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
                         <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500 shadow-sm backdrop-blur">
@@ -79,12 +251,11 @@ export default async function HomePage() {
                         </div>
 
                         <h1 className="mt-5 max-w-3xl mx-auto text-4xl font-black sm:text-5xl lg:text-[56px] lg:leading-tight">
-                            Storage, moving, and shredding made simple
+                            Storage, Moving & Shredding Services in London
                         </h1>
                         <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-6">
-                            Book secure logistics in minutes with clear pricing, flexible scheduling, and support from a real team.
+                            Book storage, moving, and document shredding services in London with clear pricing, flexible scheduling, and reliable support.
                         </p>
-
                         <div className="mt-5 flex flex-wrap justify-center gap-3">
                             {["Instant quote", "Clear pricing", "Flexible scheduling"].map((item) => (
                                 <span
@@ -100,7 +271,17 @@ export default async function HomePage() {
                         <div className="mt-8 mx-auto max-w-4xl">
                             <HeroQuoteBar />
                         </div>
-
+                        <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
+                            <a href="/warehouse-storage-london" className="text-emerald-600 hover:underline">
+                                Storage in London
+                            </a>
+                            <a href="/logistics-moving-london" className="text-emerald-600 hover:underline">
+                                Moving Services London
+                            </a>
+                            <a href="/shredding-solutions-london" className="text-emerald-600 hover:underline">
+                                Document Shredding London
+                            </a>
+                        </div>
                         {/* Hero Stats */}
                         <div className="mt-6 grid gap-3 sm:grid-cols-3">
                             <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-center shadow-sm">
