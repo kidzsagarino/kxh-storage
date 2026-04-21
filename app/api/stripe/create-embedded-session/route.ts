@@ -118,108 +118,46 @@ export async function POST(req: NextRequest) {
 
     let session: Stripe.Checkout.Session;
 
-    if (order.serviceType === "STORAGE") {
-      const months = Number(order.storageDiscountTier?.minMonths ?? body.months ?? 0);
-      if (!Number.isInteger(months) || months <= 0 || months > 12) {
-        return NextResponse.json(
-          { error: "For STORAGE, months is required (1–12)." },
-          { status: 400 }
-        );
-      }
+    const amountMinor = order.totalMinor;
 
-      const monthlyAmountMinor = order.totalMinor;
-      if (!Number.isInteger(monthlyAmountMinor) || monthlyAmountMinor < 0) {
-        return NextResponse.json({ error: "Invalid monthly amount" }, { status: 400 });
-      }
-
-      const dynamicPriceId = await getOrCreateStorageMonthlyPriceId({
-        currency,
-        unitAmountMinor: monthlyAmountMinor,
-      });
-
-      let stripeCustomerId = order.customer.stripeCustomerId ?? null;
-
-      if (!stripeCustomerId) {
-        const created = await stripe.customers.create({
-          metadata: { customerId: order.customer.id },
-        });
-
-        stripeCustomerId = created.id;
-
-        await prisma.customer.update({
-          where: { id: order.customer.id },
-          data: { stripeCustomerId }, // ✅ requires Prisma field
-        });
-      }
-
-      session = await stripe.checkout.sessions.create({
-        ui_mode: "embedded",
-        mode: "subscription",
-        redirect_on_completion: "if_required",
-        return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
-
-        customer: stripeCustomerId,
-
-        line_items: [{ price: dynamicPriceId, quantity: 1 }],
-
-        client_reference_id: order.id,
-        metadata: {
-          orderId: order.id,
-          orderNumber: order.orderNumber,
-          serviceType: order.serviceType,
-          mode,
-          months: String(months),
-        },
-
-        subscription_data: {
-          metadata: {
-            orderId: order.id,
-            orderNumber: order.orderNumber,
-            serviceType: "STORAGE",
-            months: String(months),
-          },
-        },
-      });
-    } else {
-      const amountMinor = order.totalMinor;
-
-      if (!Number.isInteger(amountMinor) || amountMinor < 0) {
-        return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
-      }
-
-      session = await stripe.checkout.sessions.create({
-        ui_mode: "embedded",
-        mode: "payment",
-        redirect_on_completion: "if_required",
-        customer_creation: "if_required",
-        return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
-
-        line_items: [
-          {
-            price_data: {
-              currency,
-              unit_amount: amountMinor,
-              product_data: {
-                name: `Order ${order.orderNumber}`,
-                description:
-                  order.serviceType === "MOVING"
-                    ? "Moving service payment"
-                    : "Shredding service payment",
-              },
-            },
-            quantity: 1,
-          },
-        ],
-
-        client_reference_id: order.id,
-        metadata: {
-          orderId: order.id,
-          orderNumber: order.orderNumber,
-          serviceType: order.serviceType,
-          mode,
-        },
-      });
+    if (!Number.isInteger(amountMinor) || amountMinor < 0) {
+      return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
     }
+
+    session = await stripe.checkout.sessions.create({
+      ui_mode: "embedded",
+      mode: "payment",
+      redirect_on_completion: "if_required",
+      customer_creation: "if_required",
+      return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
+
+      line_items: [
+        {
+          price_data: {
+            currency,
+            unit_amount: amountMinor,
+            product_data: {
+              name: `Order ${order.orderNumber}`,
+              description:
+                order.serviceType === "MOVING"
+                  ? "Moving service payment"
+                  : order.serviceType === "STORAGE"
+                  ? "Storage service payment"
+                  : "Shredding service payment",
+            },
+          },
+          quantity: 1,
+        },
+      ],
+
+      client_reference_id: order.id,
+      metadata: {
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        serviceType: order.serviceType,
+        mode,
+      },
+    });
 
     if (!session.client_secret) {
       return NextResponse.json({ error: "Missing session client secret" }, { status: 500 });

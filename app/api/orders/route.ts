@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
                 }];
             } else if (serviceType === "STORAGE") {
                 // --- STORAGE CALCULATION ---
-                const [dbPrices, discountTiers] = await Promise.all([
+                const [dbPrices, discountTiers, collectionFee] = await Promise.all([
                     tx.serviceItemPrice.findMany({
                         where: {
                             serviceItemId: { in: items.map((i: any) => i.serviceItemId as CatalogItemId) },
@@ -111,14 +111,21 @@ export async function POST(req: NextRequest) {
                         where: { isActive: true },
                         orderBy: { minMonths: "desc" },
                     }),
+
+                    tx.adminSettings.findFirst({
+                        select: {
+                            movingAndCollectionFeeMinor: true,
+                        }
+                    })
                 ]);
 
-                const storageCalc = processOrderItems(items, dbPrices as any, discountTiers, discountTierId);
+                const storageCalc = processOrderItems(items, dbPrices as any, discountTiers, discountTierId, collectionFee?.movingAndCollectionFeeMinor || 0);
                 mappedItems = storageCalc.mappedItems;
                 subtotalMinor = storageCalc.subtotalMonthlyMinor;
                 discountMinor = storageCalc.discountMonthlyMinor;
                 totalMinor = storageCalc.dueNowMinor;
                 finalTierId = storageCalc.finalTierId;
+                
 
             } else if (serviceType === "SHREDDING") {
 
