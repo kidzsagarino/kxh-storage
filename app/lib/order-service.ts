@@ -10,7 +10,8 @@ export function processOrderItems(
   items: InputItem[],
   dbPrices: ServiceItemPrice[],
   discountTiers?: StorageDiscountTier[] | null,
-  requestedTierId?: string
+  requestedTierId?: string,
+  collectionFee: number = 0
 ) {
   let subtotalMonthlyMinor = 0;
   let discountMonthlyMinor = 0;
@@ -64,7 +65,8 @@ export function processOrderItems(
     finalTierId = activeTier.id;
   }
 
-  const dueNowMinor = Math.max(0, subtotalMonthlyMinor - discountMonthlyMinor);
+
+  const dueNowMinor = Math.max(0, (subtotalMonthlyMinor + collectionFee) - discountMonthlyMinor);
 
   return {
     mappedItems,
