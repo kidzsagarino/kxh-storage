@@ -1,6 +1,8 @@
 import CrispChat from "../components/chat/CrispChat";
+import MainFooter from "../components/footer/MainFooter";
 import Nav from "../components/MobileNav";
 import Link from "next/link";
+import { londonLocations } from "../lib/location";
 
 function JsonLd() {
     const data = {
@@ -320,7 +322,11 @@ export default function MovingServicePage() {
 
                     </div>
                 </section>
-
+                <MainFooter services={[
+                    { label: "Storage London", href: "/warehouse-storage-london" },
+                    { label: "Moving London", href: "/logistics-moving-london" },
+                    { label: "Shredding London", href: "/shredding-solutions-london" },
+                ]} locations={londonLocations} />
             </main>
         </>
     );
