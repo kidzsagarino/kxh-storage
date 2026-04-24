@@ -9,6 +9,10 @@ import Nav from "./components/MobileNav";
 import FloatingTrustpilot from "./components/trustpilot/FloatingTrustpilot";
 
 import type { Metadata } from "next";
+import Link from "next/link";
+import { londonLocations } from "./lib/location";
+import { Footer } from "react-day-picker";
+import MainFooter from "./components/footer/MainFooter";
 
 export const metadata: Metadata = {
     title: "Storage Pickup & Delivery London | Secure Warehousing | KXH Logistics",
@@ -416,16 +420,11 @@ export default async function HomePage() {
                     </div>
                 </section>
 
-                <footer className="bg-white border-t border-slate-200/70">
-                    <div className="mx-auto max-w-screen-xl px-4 py-8 flex flex-wrap items-center justify-between text-sm text-slate-500 sm:px-6 lg:px-8 gap-3">
-                        <span>© 2026 KXH Storage & Logistics</span>
-                        <div className="flex gap-4 flex-wrap">
-                            <a href="/privacy" className="hover:text-slate-700">Privacy</a>
-                            <a href="/terms" className="hover:text-slate-700">Terms</a>
-                            <a href="/refunds" className="hover:text-slate-700">Refunds</a>
-                        </div>
-                    </div>
-                </footer>
+                <MainFooter services={[
+                    { label: "Storage London", href: "/warehouse-storage-london" },
+                    { label: "Moving London", href: "/logistics-moving-london" },
+                    { label: "Shredding London", href: "/shredding-solutions-london" },
+                ]} locations={londonLocations} />
             </main>
         </CheckoutProvider>
     );

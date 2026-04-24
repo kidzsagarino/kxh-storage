@@ -1,5 +1,6 @@
 
 import CrispChat from "@/app/components/chat/CrispChat";
+import MainFooter from "@/app/components/footer/MainFooter";
 import Nav from "@/app/components/MobileNav";
 import { londonLocations } from "@/app/lib/location";
 import Link from "next/link";
@@ -147,7 +148,13 @@ export default async function LocationServicePage({ params }: any) {
                         ))}
                     </div>
                 </div>
+                
             </main>
+            <MainFooter services={[
+                { label: "Storage London", href: "/warehouse-storage-london" },
+                { label: "Moving London", href: "/logistics-moving-london" },
+                { label: "Shredding London", href: "/shredding-solutions-london" },
+            ]} locations={londonLocations} />
         </>
 
     );
