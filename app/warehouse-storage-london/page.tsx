@@ -1,6 +1,8 @@
 import CrispChat from "../components/chat/CrispChat";
+import MainFooter from "../components/footer/MainFooter";
 import Nav from "../components/MobileNav";
 import Link from "next/link";
+import { londonLocations } from "../lib/location";
 
 export const metadata = {
   title: "Managed Warehouse Storage in London with Pickup & Delivery | KXH Logistics",
@@ -98,23 +100,50 @@ export default function WarehouseStoragePage() {
         <FAQJsonLd />
 
         {/* HERO */}
-        <section className="py-20 text-center">
-          <h1 className="text-4xl font-bold">
-            Managed Warehouse Storage in London with Pickup & Delivery
-          </h1>
-          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            We collect your items, store them securely, and deliver them back when needed — no need to visit a storage unit.
-          </p>
+        <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">
+          <div className="mx-auto max-w-5xl px-4 text-center">
 
-          <div className="mt-8">
-            <Link
-              href="/?service=storage#pricing"
-              className="bg-black text-white px-6 py-3 rounded-lg"
-            >
-              Get Instant Price
-            </Link>
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Secure Warehouse Storage London
+            </div>
+
+            <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
+              Managed Warehouse Storage in London with Pickup & Delivery
+            </h1>
+
+            <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              We collect your items, store them securely, and deliver them back when needed — no need to visit a storage unit.
+            </p>
+
+            {/* TRUST BADGES */}
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {[
+                "Secure Warehouse Storage",
+                "Pickup & Delivery Included",
+                "Flexible Monthly Plans",
+              ].map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border bg-white px-4 py-2 text-sm text-slate-600 shadow-sm"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
+              <Link
+                href="/?service=storage#pricing"
+                className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+              >
+                Get Storage Quote
+              </Link>
+            </div>
           </div>
         </section>
+
 
         {/* CORE FEATURES */}
         <section className="py-16 max-w-5xl mx-auto px-4 space-y-12">
@@ -231,7 +260,11 @@ export default function WarehouseStoragePage() {
             </div>
           </div>
         </section>
-
+        <MainFooter services={[
+          { label: "Storage London", href: "/warehouse-storage-london" },
+          { label: "Moving London", href: "/logistics-moving-london" },
+          { label: "Shredding London", href: "/shredding-solutions-london" },
+        ]} locations={londonLocations} />
       </main>
     </>
   );
