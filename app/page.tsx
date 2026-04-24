@@ -11,7 +11,7 @@ import FloatingTrustpilot from "./components/trustpilot/FloatingTrustpilot";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Storage, Moving & Shredding Services London | KXH Logistics",
+    title: "Storage Pickup & Delivery London | Secure Warehousing | KXH Logistics",
     description:
         "Affordable storage, moving, and document shredding in London. Get instant quotes with pickup, delivery, and secure handling.",
     keywords: [
@@ -40,6 +40,13 @@ function JsonLd() {
     const data = {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
+        "priceRange": "££",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "London, UK",
+            "addressLocality": "London",
+            "addressCountry": "GB",
+        },
         "@id": "https://kxhlogistics.co.uk/#business",
         name: "KXH Storage & Logistics",
         url: "https://kxhlogistics.co.uk",
@@ -50,10 +57,6 @@ function JsonLd() {
         areaServed: {
             "@type": "Place",
             name: "London, United Kingdom",
-        },
-        address: {
-            "@type": "PostalAddress",
-            addressCountry: "GB",
         },
         geo: {
             "@type": "GeoCoordinates",
@@ -76,6 +79,10 @@ function JsonLd() {
                 "@type": "Offer",
                 name: "Document Shredding London",
             },
+            {
+                "@type": "Offer",
+                name: "Storage Pickup and Delivery London",
+            }
         ],
     };
 
@@ -94,7 +101,7 @@ const faqs = [
     },
     {
         q: "Is my storage secure?",
-        a: "Yes, your items are stored in secure, monitored facilities with controlled access and inventory tracking.",
+        a: "Yes, your items are stored in secure, monitored facilities with controlled access and inventory handling.",
     },
     {
         q: "How much does storage cost in London?",
@@ -251,10 +258,10 @@ export default async function HomePage() {
                         </div>
 
                         <h1 className="mt-5 max-w-3xl mx-auto text-4xl font-black sm:text-5xl lg:text-[56px] lg:leading-tight">
-                            Storage, Moving & Shredding Services in London
+                            Storage with Pickup & Delivery in London
                         </h1>
                         <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-6">
-                            Book storage, moving, and document shredding services in London with clear pricing, flexible scheduling, and reliable support.
+                            Book storage with pickup and delivery in London. We collect your items, store them securely in our warehouse, and deliver them back when needed — simple, flexible, and cost-effective.
                         </p>
                         <div className="mt-5 flex flex-wrap justify-center gap-3">
                             {["Instant quote", "Clear pricing", "Flexible scheduling"].map((item) => (
@@ -273,7 +280,7 @@ export default async function HomePage() {
                         </div>
                         <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
                             <a href="/warehouse-storage-london" className="text-emerald-600 hover:underline">
-                                Storage in London
+                                Secure warehouse storage in London
                             </a>
                             <a href="/logistics-moving-london" className="text-emerald-600 hover:underline">
                                 Moving Services London
@@ -303,7 +310,40 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
+                <section className="bg-gradient-to-b from-white to-slate-50/70 border-t border-slate-200/70">
+                    <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
 
+                        <h2 className="text-2xl font-black mb-4">
+                            Storage with Pickup and Delivery in London
+                        </h2>
+                        <p className="text-slate-600 leading-relaxed mb-6">
+                            Our fully managed storage service includes collection, secure warehouse storage, and return delivery. You don’t need to visit a storage unit — we handle everything for you.
+                        </p>
+
+                        <h3 className="text-xl font-bold mt-6 mb-2">
+                            Secure Warehouse Storage
+                        </h3>
+                        <p className="text-slate-600 leading-relaxed">
+                            Your items are stored in monitored facilities with controlled access and professional handling, ideal for personal and business storage.
+                        </p>
+
+                        <h3 className="text-xl font-bold mt-6 mb-2">
+                            Flexible Access with Delivery
+                        </h3>
+                        <p className="text-slate-600 leading-relaxed">
+                            Request your items anytime and we’ll deliver them back quickly — no need to travel to a storage unit.
+                        </p>
+
+                    </div>
+                </section>
+                <section className="py-10 text-center max-w-3xl mx-auto">
+                    <h2 className="text-xl font-bold">
+                        A Fully Managed Storage Service in London
+                    </h2>
+                    <p className="mt-3 text-slate-600">
+                        Unlike traditional self-storage, we handle everything for you — collection, secure storage, and delivery — so you never need to visit a storage unit.
+                    </p>
+                </section>
                 {/* Services Section */}
                 <section id="services" className="bg-gradient-to-b from-white to-slate-50/70 border-t border-slate-200/70">
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
