@@ -20,12 +20,11 @@ export async function generateMetadata({ params }: any) {
     const { service, location } = await params;
     const loc = londonLocations.find((l) => l.slug === location);
 
-    const serviceName =
-        service === "storage"
-            ? "Storage"
-            : service === "moving"
-                ? "Moving Service"
-                : "Document Shredding";
+    const serviceName = service === "warehouse-storage-london"
+        ? "Warehouse Storage"
+        : service === "logistics-moving-london"
+            ? "Moving Service"
+            : "Document Shredding";
 
     return {
         title: `${serviceName} in ${loc?.name} London with Pickup & Delivery | KXH`,
@@ -58,9 +57,9 @@ export default async function LocationServicePage({ params }: any) {
     const { service, location } = await params;
     const loc = londonLocations.find((l) => l.slug === location);
 
-    const serviceLabel = service === "storage"
-        ? "Storage"
-        : service === "moving"
+    const serviceLabel = service === "warehouse-storage-london"
+        ? "Warehouse Storage"
+        : service === "logistics-moving-london"
             ? "Moving Service"
             : "Document Shredding";
 
