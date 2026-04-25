@@ -51,17 +51,17 @@ export default function MainFooter({
                     {/* Locations */}
                     <div className="sm:col-span-2 lg:col-span-2">
                         <h3 className="text-sm font-black text-slate-900 mb-3">
-                            Storage Locations
+                            Warehouse Storage Locations
                         </h3>
 
                         <div className="flex flex-wrap gap-2">
                             {locations.map((loc) => (
                                 <Link
                                     key={loc.slug}
-                                    href={`/storage/${loc.slug}`}
+                                    href={`/warehouse-storage-london/${loc.slug}`}
                                     className="text-sm text-slate-600 hover:text-emerald-600"
                                 >
-                                    Storage {loc.name}
+                                    Warehouse Storage {loc.name}
                                 </Link>
                             ))}
                         </div>
