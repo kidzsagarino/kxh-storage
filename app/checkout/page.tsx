@@ -203,6 +203,7 @@ export default async function SuccessPage({
                                             (isMoving
                                                 ? (movingPackagePrice?.priceMinor ?? 0) + distanceCostMinor
                                                 : 0)
+                                                + (isStorage ? movingAndCollectionFeeMinor : 0)
                                         )}
                                     </span>
                                 </div>
