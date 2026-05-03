@@ -82,7 +82,7 @@ export default async function LocationServicePage({ params }: any) {
                 {/* CTA */}
                 <div className="mt-6 flex justify-center">
                     <Link
-                        href={`/?service=${service}#pricing`}
+                        href={`/?service=${service === "warehouse-storage-london" ? "storage" : service === "logistics-moving-london" ? "moving" : "shredding"}#pricing`}
                         className="bg-emerald-600 text-white px-6 py-3 rounded-xl"
                     >
                         Get Instant Quote
