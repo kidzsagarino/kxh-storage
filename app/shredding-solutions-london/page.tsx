@@ -321,6 +321,22 @@ export default function ShreddingServicePage() {
 
           </div>
         </section>
+        <section className="bg-slate-50 py-14 border-t border-slate-200/70">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="font-bold text-lg mb-3">Other areas we serve</h2>
+            <div className="flex flex-wrap gap-3">
+              {londonLocations.map((l) => (
+                <Link
+                  key={l.slug}
+                  href={`/shredding-solutions-london/${l.slug}`}
+                  className="text-emerald-600 hover:underline text-sm"
+                >
+                  Shredding Solutions in {l.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
         <MainFooter services={[
           { label: "Storage London", href: "/warehouse-storage-london" },
           { label: "Moving London", href: "/logistics-moving-london" },
