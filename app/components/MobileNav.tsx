@@ -9,7 +9,7 @@ export default function Nav() {
 
     const navItems = [
         { href: "/#top", label: "Home", icon: Home },
-        { href: "/#services", label: "Services", icon: Package },
+        { href: "/services", label: "Services", icon: Package },
         { href: "/#pricing", label: "Pricing", icon: Tag },
         { href: "/#faq", label: "FAQs", icon: HelpCircle },
         { href: "/#contact", label: "Contact", icon: Phone },
