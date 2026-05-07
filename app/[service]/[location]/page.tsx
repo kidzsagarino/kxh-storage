@@ -6,7 +6,11 @@ import { londonLocations } from "@/app/lib/location";
 import Link from "next/link";
 
 export async function generateStaticParams() {
-    const services = ["storage", "moving", "shredding"];
+    const services = [
+        "warehouse-storage-london",
+        "logistics-moving-london",
+        "shredding-solutions-london",
+    ];
 
     return services.flatMap((service) =>
         londonLocations.map((loc) => ({
@@ -29,6 +33,9 @@ export async function generateMetadata({ params }: any) {
     return {
         title: `${serviceName} in ${loc?.name} London with Pickup & Delivery | KXH`,
         description: `Book ${serviceName.toLowerCase()} in ${loc?.name}, London with collection and delivery. Secure, flexible, and fully managed service with instant pricing.`,
+        alternates: {
+            canonical: `https://kxhlogistics.co.uk/${service}/${location}`,
+        },
     };
 }
 
@@ -53,6 +60,61 @@ function JsonLd({ service, locationName }: any) {
     );
 }
 
+function Breadcrumbs({ service, location }: any) {
+    const serviceLabel =
+        service === "warehouse-storage-london"
+            ? "Warehouse Storage"
+            : service === "logistics-moving-london"
+                ? "Moving Service"
+                : "Document Shredding";
+
+    const locName = location?.name;
+
+    const breadcrumbs = [
+        { name: "Home", href: "/" },
+        { name: "Services", href: "/services" },
+        { name: serviceLabel, href: `/${service}` },
+        { name: locName, href: `/${service}/${location?.slug}` },
+    ];
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbs.map((b, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: b.name,
+            item: `https://kxhlogistics.co.uk${b.href}`,
+        })),
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(jsonLd),
+                }}
+            />
+
+            <nav className="text-sm text-slate-500 mb-6">
+                <ol className="flex flex-wrap items-center gap-2">
+                    {breadcrumbs.map((b, i) => (
+                        <li key={b.href} className="flex items-center gap-2">
+                            <Link href={b.href} className="hover:underline text-emerald-600">
+                                {b.name}
+                            </Link>
+                            {i < breadcrumbs.length - 1 && (
+                                <span className="text-slate-300">/</span>
+                            )}
+                        </li>
+                    ))}
+                </ol>
+            </nav>
+        </>
+    );
+}
+
 export default async function LocationServicePage({ params }: any) {
     const { service, location } = await params;
     const loc = londonLocations.find((l) => l.slug === location);
@@ -67,6 +129,9 @@ export default async function LocationServicePage({ params }: any) {
         <>
             <Nav />
             <main className="min-h-screen bg-white text-slate-900 px-4 py-16 max-w-4xl mx-auto">
+
+                <Breadcrumbs service={service} location={loc} />
+
                 <CrispChat />
 
                 <JsonLd service={serviceLabel} locationName={loc?.name} />
@@ -147,7 +212,7 @@ export default async function LocationServicePage({ params }: any) {
                         ))}
                     </div>
                 </div>
-                
+
             </main>
             <MainFooter services={[
                 { label: "Storage London", href: "/warehouse-storage-london" },

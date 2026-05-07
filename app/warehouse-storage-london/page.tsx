@@ -89,15 +89,59 @@ function FAQJsonLd() {
   );
 }
 
+function BreadcrumbJsonLd() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://kxhlogistics.co.uk",
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Services",
+              "item": "https://kxhlogistics.co.uk/services",
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Warehouse Storage London",
+              "item":
+                "https://kxhlogistics.co.uk/warehouse-storage-london",
+            },
+          ],
+        }),
+      }}
+    />
+  );
+}
+
 export default function WarehouseStoragePage() {
   return (
     <>
       <CrispChat />
       <Nav />
-
+      <nav className="max-w-5xl mx-auto px-4 pt-6 text-sm text-slate-500">
+        <Link href="/">Home</Link>
+        <span className="mx-2">/</span>
+        <Link href="/services">Services</Link>
+        <span className="mx-2">/</span>
+        <span className="text-slate-700 font-medium">
+          Warehouse Storage London
+        </span>
+      </nav>
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
         <FAQJsonLd />
+        <BreadcrumbJsonLd />
 
         {/* HERO */}
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">
@@ -206,7 +250,7 @@ export default function WarehouseStoragePage() {
         </section>
 
         {/* FAQ */}
-        <section className="py-16 bg-slate-50 border-t">
+        <section className="py-16 bg-slate-50">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-2xl font-semibold mb-6 text-center">
               Frequently Asked Questions

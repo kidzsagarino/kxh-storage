@@ -107,15 +107,61 @@ function FAQJsonLd() {
   );
 }
 
+function BreadcrumbJsonLd() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://kxhlogistics.co.uk",
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Services",
+              "item": "https://kxhlogistics.co.uk/services",
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Document Shredding London",
+              "item":
+                "https://kxhlogistics.co.uk/shredding-solutions-london",
+            },
+          ],
+        }),
+      }}
+    />
+  );
+}
+
 export default function ShreddingServicePage() {
   return (
     <>
       <CrispChat />
       <Nav />
 
+      <nav className="max-w-6xl mx-auto px-4 pt-6 text-sm text-slate-500">
+        <Link href="/">Home</Link>
+        <span className="mx-2">/</span>
+        <Link href="/services">Services</Link>
+        <span className="mx-2">/</span>
+        <span className="text-slate-700 font-medium">
+          Document Shredding London
+        </span>
+      </nav>
+
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
         <FAQJsonLd />
+        <BreadcrumbJsonLd />
 
         {/* HERO */}
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">

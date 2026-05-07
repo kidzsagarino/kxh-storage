@@ -1,4 +1,6 @@
 import type { NextConfig } from "next";
+import { serviceRedirectMap } from "./app/lib/redirectMap";
+
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -24,6 +26,32 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+  async redirects() {
+    const redirects: any[] = [];
+
+    for (const service of serviceRedirectMap) {
+      const patterns = [
+        `/${service.from}`,
+        `/${service.from}/:slug`,
+        `/services/${service.from}`,
+        `/services/${service.from}/:slug`,
+        `/service/${service.from}`,
+        `/service/${service.from}/:slug`,
+      ];
+
+      for (const source of patterns) {
+        redirects.push({
+          source,
+          destination: source.includes(":slug")
+            ? `/${service.to}/:slug`
+            : `/${service.to}`,
+          permanent: true,
+        });
+      }
+    }
+
+    return redirects;
   }
 };
 

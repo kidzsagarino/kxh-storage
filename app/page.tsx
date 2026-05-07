@@ -367,6 +367,14 @@ export default async function HomePage() {
                         <div className="mt-8 sm:mt-10">
                             <ServicesGrid />
                         </div>
+                        <div className="mt-6 flex justify-center">
+                            <Link
+                                href="/services"
+                                className="text-emerald-600 font-semibold hover:underline"
+                            >
+                                View all services →
+                            </Link>
+                        </div>
                     </div>
                 </section>
 
