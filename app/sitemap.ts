@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/privacy`, lastModified: new Date() },
     { url: `${base}/terms`, lastModified: new Date() },
     { url: `${base}/refunds`, lastModified: new Date() },
+    { url: `${base}/services`, lastModified: new Date() },
 
     // Service root pages
     { url: `${base}/warehouse-storage-london`, lastModified: new Date() },
