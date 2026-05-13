@@ -4,7 +4,7 @@ import TrustpilotCollector from "./TrustPilotCollector";
 
 export default function FloatingTrustpilot() {
     return (
-        <div className="fixed left-0 bottom-0 z-50">
+        <div className="">
 
             <TrustpilotCollector  />
             {/* Tooltip */}

@@ -6,13 +6,13 @@ import { loadOrderFlow } from "@/server/order-flow/loadOrderFlow";
 import { CheckoutProvider } from "./components/checkout/CheckoutStore";
 import CrispChat from "./components/chat/CrispChat";
 import Nav from "./components/MobileNav";
-import FloatingTrustpilot from "./components/trustpilot/FloatingTrustpilot";
 
 import type { Metadata } from "next";
 import Link from "next/link";
 import { londonLocations } from "./lib/location";
-import { Footer } from "react-day-picker";
 import MainFooter from "./components/footer/MainFooter";
+import TestimonialsSection from "./components/TestimonialsSection";
+import TrustpilotBadge from "./components/trustpilot/TrustPilotBadge";
 
 export const metadata: Metadata = {
     title: "Storage Pickup & Delivery London | Secure Warehousing | KXH Logistics",
@@ -52,6 +52,11 @@ function JsonLd() {
             "addressCountry": "GB",
         },
         "@id": "https://kxhlogistics.co.uk/#business",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "66"
+        },
         name: "KXH Storage & Logistics",
         url: "https://kxhlogistics.co.uk",
         telephone: "+44 1474 396663",
@@ -88,6 +93,7 @@ function JsonLd() {
                 name: "Storage Pickup and Delivery London",
             }
         ],
+
     };
 
     return (
@@ -245,7 +251,6 @@ export default async function HomePage() {
 
     return (
         <CheckoutProvider initialOrderFlow={initialData}>
-            <FloatingTrustpilot />
             <CrispChat />
             <Nav />
 
@@ -282,14 +287,34 @@ export default async function HomePage() {
                         <div className="mt-8 mx-auto max-w-4xl">
                             <HeroQuoteBar />
                         </div>
-                        <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-                            <a href="/warehouse-storage-london" className="text-emerald-600 hover:underline">
-                                Secure warehouse storage in London
+                        <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+                            <a
+                                href="/warehouse-storage-london"
+                                className="group flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-emerald-700 transition hover:bg-emerald-100 hover:shadow-sm"
+                            >
+                                <span className="text-emerald-600 transition group-hover:translate-x-0.5">
+                                    →
+                                </span>
+                                Secure Warehouse Storage in London
                             </a>
-                            <a href="/logistics-moving-london" className="text-emerald-600 hover:underline">
+
+                            <a
+                                href="/logistics-moving-london"
+                                className="group flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-emerald-700 transition hover:bg-emerald-100 hover:shadow-sm"
+                            >
+                                <span className="text-emerald-600 transition group-hover:translate-x-0.5">
+                                    →
+                                </span>
                                 Moving Services London
                             </a>
-                            <a href="/shredding-solutions-london" className="text-emerald-600 hover:underline">
+
+                            <a
+                                href="/shredding-solutions-london"
+                                className="group flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-emerald-700 transition hover:bg-emerald-100 hover:shadow-sm"
+                            >
+                                <span className="text-emerald-600 transition group-hover:translate-x-0.5">
+                                    →
+                                </span>
                                 Document Shredding London
                             </a>
                         </div>
@@ -300,12 +325,7 @@ export default async function HomePage() {
                                 <div className="mt-1 text-sm text-slate-500">Londoners served</div>
                             </div>
 
-                            <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
-                                <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-center shadow-sm">
-                                    <div className="text-2xl font-black text-slate-900">4.8★</div>
-                                    <div className="mt-1 text-sm text-slate-500">Excellent on Trustpilot</div>
-                                </div>
-                            </a>
+                            <TrustpilotBadge />
 
                             <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-center shadow-sm">
                                 <div className="text-2xl font-black text-slate-900">Under 1 min</div>
@@ -340,7 +360,7 @@ export default async function HomePage() {
 
                     </div>
                 </section>
-                <section className="py-10 text-center max-w-3xl mx-auto">
+                <section className="px-4 py-14 text-center max-w-3xl mx-auto sm:px-6 lg:px-8 lg:py-16">
                     <h2 className="text-xl font-bold">
                         A Fully Managed Storage Service in London
                     </h2>
@@ -377,6 +397,8 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
+                <TestimonialsSection />
+
 
                 {/* Pricing Section */}
                 <section id="pricing" className="relative bg-[#fbfbf9] border-t border-slate-200/70">

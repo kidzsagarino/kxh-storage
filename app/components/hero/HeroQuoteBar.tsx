@@ -3,6 +3,7 @@
 import React, { useMemo, useRef } from "react";
 import { useCheckout, type ServiceType } from "../checkout/CheckoutStore";
 import { HERO_BY_SERVICE } from "./hero.config";
+import TrustpilotPill from "../trustpilot/TrustpilotPill";
 
 const SERVICE_META: Record<
     ServiceType,
@@ -294,26 +295,7 @@ export function HeroQuoteBar() {
                             </div>
 
                             <div className="flex justify-center lg:justify-center">
-                                <a href="https://uk.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer">
-                                    <div className="flex items-center gap-2 rounded-full border border-slate-100 bg-slate-50 px-4 py-1.5">
-                                        <span>
-                                            <span className="inline-flex items-center gap-0.5">
-                                                {Array.from({ length: 5 }).map((_, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className="inline-flex h-4 w-4 items-center justify-center rounded-sm bg-[#00B67A] text-[10px] font-bold text-white"
-                                                    >
-                                                        ★
-                                                    </span>
-                                                ))}
-                                            </span>
-                                        </span>
-                                        <span className="text-xs font-bold text-slate-900">4.8/5</span>
-                                        <span className="text-[10px] font-medium text-slate-500">
-                                            Trustpilot Reviews
-                                        </span>
-                                    </div>
-                                </a>
+                                <TrustpilotPill />
                             </div>
                         </div>
                     </div>
