@@ -3,6 +3,8 @@ import MainFooter from "../components/footer/MainFooter";
 import Nav from "../components/MobileNav";
 import Link from "next/link";
 import { londonLocations } from "../lib/location";
+import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
+import TestimonialsSection from "../components/TestimonialsSection";
 
 function JsonLd() {
   const data = {
@@ -198,12 +200,60 @@ export default function ShreddingServicePage() {
                 href="/?service=shredding#pricing"
                 className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
               >
-                Get Shredding Quote
+                Get Quote
               </Link>
+            </div>
+            <div className="mt-6 flex justify-center">
+              <TrustpilotPill />
             </div>
           </div>
         </section>
+        {/* PROBLEM STATEMENT */}
+        <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-5xl mx-auto px-4 text-center">
 
+            <h2 className="text-3xl font-black">
+              Storing or disposing sensitive documents shouldn’t be risky or complicated
+            </h2>
+
+            <p className="mt-4 text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Many businesses and individuals still store or discard confidential documents without proper security, putting sensitive data at risk of leaks, fines, or compliance issues.
+            </p>
+
+            {/* PROBLEM CARDS */}
+            <div className="mt-10 grid md:grid-cols-3 gap-6 text-left">
+
+              <div className="p-6 rounded-xl border border-slate-200 bg-red-50">
+                <h3 className="font-semibold text-red-600 mb-2">
+                  Data breach risk
+                </h3>
+                <p className="text-sm text-slate-600">
+                  Improper disposal of documents can expose sensitive personal or business information.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl border border-slate-200 bg-red-50">
+                <h3 className="font-semibold text-red-600 mb-2">
+                  GDPR compliance issues
+                </h3>
+                <p className="text-sm text-slate-600">
+                  Failure to securely destroy records can lead to compliance penalties and legal risk.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl border border-slate-200 bg-red-50">
+                <h3 className="font-semibold text-red-600 mb-2">
+                  Time-consuming handling
+                </h3>
+                <p className="text-sm text-slate-600">
+                  Manual shredding or storage wastes time and increases operational hassle.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
         {/* FEATURES */}
         <section className="py-16 border-t border-slate-200/40 bg-white">
           <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12">
@@ -242,7 +292,58 @@ export default function ShreddingServicePage() {
 
           </div>
         </section>
+        {/* HOW IT WORKS */}
+        <section className="py-20 bg-slate-50 border-t border-slate-200/40">
+          <div className="max-w-5xl mx-auto px-4">
 
+            <div className="text-center">
+              <h2 className="text-3xl font-black">
+                How our shredding service works
+              </h2>
+              <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
+                A simple, secure 3-step process to safely destroy your confidential documents.
+              </p>
+            </div>
+
+            <div className="mt-12 grid md:grid-cols-3 gap-6">
+
+              {/* STEP 1 */}
+              <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="text-2xl font-black text-emerald-600">1</div>
+                <h3 className="mt-3 font-semibold">
+                  We collect your documents
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  We securely pick up your documents from your home or office anywhere in London.
+                </p>
+              </div>
+
+              {/* STEP 2 */}
+              <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="text-2xl font-black text-emerald-600">2</div>
+                <h3 className="mt-3 font-semibold">
+                  Secure transport & shredding
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  Your documents are transported under strict chain-of-custody and destroyed using certified shredding processes.
+                </p>
+              </div>
+
+              {/* STEP 3 */}
+              <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="text-2xl font-black text-emerald-600">3</div>
+                <h3 className="mt-3 font-semibold">
+                  Receive certificate of destruction
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  You receive an official certificate confirming secure and compliant destruction of your documents.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
         {/* USE CASES */}
         <section className="py-16 bg-slate-50 border-t border-slate-200/40">
           <div className="max-w-6xl mx-auto px-4">
@@ -252,14 +353,15 @@ export default function ShreddingServicePage() {
             </h2>
 
             <div className="grid md:grid-cols-2 gap-4 text-slate-700">
-              <div className="bg-white p-4 rounded-xl border shadow-sm">✔ Businesses handling sensitive data</div>
-              <div className="bg-white p-4 rounded-xl border shadow-sm">✔ Offices clearing old records</div>
-              <div className="bg-white p-4 rounded-xl border shadow-sm">✔ Legal & financial firms</div>
-              <div className="bg-white p-4 rounded-xl border shadow-sm">✔ Individuals protecting personal documents</div>
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Businesses handling sensitive data</div>
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Offices clearing old records</div>
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Legal & financial firms</div>
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Individuals protecting personal documents</div>
             </div>
 
           </div>
         </section>
+        <TestimonialsSection />
 
         {/* FINAL CTA */}
         <section className="py-16 text-center border-t border-slate-200/40 bg-white">
@@ -278,7 +380,7 @@ export default function ShreddingServicePage() {
                 href="/?service=shredding#pricing"
                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
               >
-                Get Your Shredding Quote
+                Get Quote
               </Link>
             </div>
 
@@ -292,7 +394,7 @@ export default function ShreddingServicePage() {
             <h2 className="text-2xl font-black mb-6 text-center">Frequently Asked Questions</h2>
 
             <div className="space-y-3">
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   Is your shredding service GDPR compliant?
                 </summary>
@@ -301,7 +403,7 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
 
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   Do you provide a certificate of destruction?
                 </summary>
@@ -310,7 +412,7 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
 
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   Do you offer document shredding collection in London?
                 </summary>
@@ -319,7 +421,7 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
 
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   What types of documents can be shredded?
                 </summary>
@@ -328,7 +430,7 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
 
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   How much does document shredding cost in London?
                 </summary>
@@ -337,7 +439,7 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
 
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   Is your document shredding service secure?
                 </summary>
@@ -346,7 +448,7 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
 
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   Do you offer one-off and business shredding services?
                 </summary>
@@ -355,7 +457,7 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
 
-              <details className="border rounded-xl p-5 bg-white">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
                 <summary className="font-semibold cursor-pointer">
                   Can you collect documents for shredding near me?
                 </summary>

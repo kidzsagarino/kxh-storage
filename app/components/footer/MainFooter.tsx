@@ -1,4 +1,5 @@
 import Link from "next/link";
+import FloatingTrustpilot from "../trustpilot/FloatingTrustpilot";
 
 type Location = {
     name: string;
@@ -21,12 +22,12 @@ export default function MainFooter({
     brandName = "KXH Storage & Logistics",
     year = new Date().getFullYear(),
     services = [],
-    locations = [],
+    locations = [{ name: "London, UK", slug: "london-uk" }],
 }: FooterProps) {
     return (
         <footer className="bg-white border-t border-slate-200/70">
             <div className="mx-auto max-w-screen-xl px-4 py-10 sm:px-6 lg:px-8">
-                
+
                 {/* TOP FOOTER GRID */}
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
@@ -65,14 +66,25 @@ export default function MainFooter({
                                 </Link>
                             ))}
                         </div>
+
+
                     </div>
+
 
                 </div>
             </div>
-
+            <div className="flex justify-center">
+                <FloatingTrustpilot />
+            </div>
             {/* BOTTOM BAR */}
             <div className="mx-auto max-w-screen-xl px-4 py-8 flex flex-wrap items-center justify-between text-sm text-slate-500 sm:px-6 lg:px-8 gap-3">
-                <span>© {year} {brandName}</span>
+                <div className="text-sm text-slate-500 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                    <span>© {year} {brandName}</span>
+                    <span className="hidden sm:inline">·</span>
+                    <span>10 Northridge Road, London DA12 5AY</span>
+                    <span className="hidden sm:inline">·</span>
+                    <span>01474 396663</span>
+                </div>
 
                 <div className="flex gap-4 flex-wrap">
                     <a href="/privacy" className="hover:text-slate-700">Privacy</a>

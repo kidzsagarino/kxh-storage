@@ -68,7 +68,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js"
           strategy="lazyOnload"
         />
-        <FloatingTrustpilot />
       </body>
     </html>
 
