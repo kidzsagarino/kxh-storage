@@ -8,7 +8,16 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-type IconName = "packaging" | "removals" | "storage" | "shredding";
+type IconName =
+  | "packaging"
+  | "removals"
+  | "businessStorage"
+  | "inventory"
+  | "pallet"
+  | "commercial"
+  | "shredding"
+  | "warehouseStorage";
+
 type IconSet = "lucide" | "kxh";
 
 type IconProps = {
@@ -20,104 +29,105 @@ type IconProps = {
   title?: string;
 };
 
-/** ---------- KXH custom angular icons (square caps & sharper joins) ---------- */
-function KxhPackaging({ size = 24, className }: { size?: number; className?: string }) {
+/** ---------- KXH ICONS ---------- */
+
+function KxhPackaging(props: any) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-    >
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
       <path d="M3 7l9 5 9-5" />
       <path d="M3 7l9-4 9 4v10l-9 4-9-4V7z" />
       <path d="M12 12v9" />
-      <path d="M7.5 5.5l9 5" opacity="0.4" />
     </svg>
   );
 }
 
-function KxhRemovals({ size = 24, className }: { size?: number; className?: string }) {
+function KxhRemovals(props: any) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-    >
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
       <path d="M2 8h12v8H2z" />
       <path d="M14 10h4l4 4v2h-8z" />
       <path d="M6 16a2 2 0 1 0 0 4a2 2 0 0 0 0-4z" />
       <path d="M18 16a2 2 0 1 0 0 4a2 2 0 0 0 0-4z" />
-      <path d="M3 6h6" opacity="0.4" />
-      <path d="M1 10h1" opacity="0.4" />
     </svg>
   );
 }
 
-function KxhStorage({ size = 24, className }: { size?: number; className?: string }) {
+function KxhStorage(props: any) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-    >
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
       <path d="M3 4h18v16H3z" />
       <path d="M7 8h4v4H7z" />
       <path d="M13 8h4v4h-4z" />
-      <path d="M7 14h10" opacity="0.5" />
-      <path d="M3 20h18" opacity="0.4" />
     </svg>
   );
 }
 
-function KxhShredding({ size = 24, className }: { size?: number; className?: string }) {
+function KxhShredding(props: any) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-    >
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
       <path d="M6 2h8l4 4v16H6z" />
-      <path d="M14 2v6h6" />
       <path d="M8 13v7M12 13v7M16 13v7" />
-      {/* small “cut” hint */}
-      <path d="M7.5 12l9 0" opacity="0.35" />
     </svg>
   );
 }
 
-/** ---------- Lucide mapping ---------- */
+function KxhBusinessStorage(props: any) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
+      <path d="M4 21V7l8-4 8 4v14" />
+      <path d="M9 21v-6h6v6" />
+    </svg>
+  );
+}
+
+function KxhInventory(props: any) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
+      <path d="M4 7h16v14H4z" />
+      <path d="M4 7l8-4 8 4" />
+    </svg>
+  );
+}
+
+function KxhPallet(props: any) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
+      <path d="M3 18h18" />
+      <path d="M5 18V9h14v9" />
+    </svg>
+  );
+}
+
+function KxhCommercial(props: any) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter">
+      <path d="M3 21h18" />
+      <path d="M5 21V5h14v16" />
+    </svg>
+  );
+}
+
+/** ---------- LUCIDE MAP ---------- */
 const lucideMap: Record<IconName, LucideIcon> = {
   packaging: Package,
   removals: Truck,
-  storage: Boxes, // (Warehouse is not guaranteed in every Lucide version)
-  shredding: FileText, // we’ll add a Scissors overlay for shredding
+  businessStorage: Boxes,
+  inventory: Boxes,
+  pallet: Boxes,
+  commercial: Boxes,
+  shredding: FileText,
+  warehouseStorage: Boxes,
 };
 
-/** ---------- Component ---------- */
+/** ---------- COMPONENT ---------- */
 export function Icon({
   name,
   set = "lucide",
@@ -132,15 +142,21 @@ export function Icon({
   const spinHint = name === "removals" ? "group-hover:translate-x-0.5" : "";
   const classNames = `${base} ${hover} ${spinHint} ${className}`;
 
-  // KXH angular style (matches your logo’s sharper geometry)
+  /** ---------- KXH MODE ---------- */
   if (set === "kxh") {
     const Kxh =
       name === "packaging"
         ? KxhPackaging
         : name === "removals"
         ? KxhRemovals
-        : name === "storage"
-        ? KxhStorage
+        : name === "businessStorage"
+        ? KxhBusinessStorage
+        : name === "inventory"
+        ? KxhInventory
+        : name === "pallet"
+        ? KxhPallet
+        : name === "commercial"
+        ? KxhCommercial
         : KxhShredding;
 
     return (
@@ -150,10 +166,12 @@ export function Icon({
     );
   }
 
-  // Lucide style (modern rounded outline)
+  /** ---------- LUCIDE MODE ---------- */
   const Lucide = lucideMap[name];
 
-  // For shredding, overlay scissors subtly (aligned + animated)
+  if (!Lucide) return null;
+
+  /** shredding special */
   if (name === "shredding") {
     return (
       <span className="relative inline-flex" aria-label={title ?? "Shredding"}>
@@ -161,16 +179,11 @@ export function Icon({
           size={size}
           strokeWidth={strokeWidth}
           className={classNames}
-          aria-hidden="true"
         />
         <Scissors
           size={Math.round(size * 0.72)}
           strokeWidth={strokeWidth}
-          className={
-            "absolute -right-1 -bottom-1 text-current opacity-70 " +
-            "transition-transform duration-200 ease-out group-hover:rotate-6"
-          }
-          aria-hidden="true"
+          className="absolute -right-1 -bottom-1 text-current opacity-70 transition-transform duration-200 ease-out group-hover:rotate-6"
         />
       </span>
     );

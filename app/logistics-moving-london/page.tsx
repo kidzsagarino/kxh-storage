@@ -454,11 +454,7 @@ export default function MovingServicePage() {
                         </div>
                     </div>
                 </section>
-                <MainFooter services={[
-                    { label: "Storage London", href: "/warehouse-storage-london" },
-                    { label: "Moving London", href: "/logistics-moving-london" },
-                    { label: "Shredding London", href: "/shredding-solutions-london" },
-                ]} locations={londonLocations} />
+                <MainFooter locations={londonLocations} />
             </main>
         </>
     );

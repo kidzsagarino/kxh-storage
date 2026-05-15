@@ -15,9 +15,9 @@ import TestimonialsSection from "./components/TestimonialsSection";
 import TrustpilotBadge from "./components/trustpilot/TrustPilotBadge";
 
 export const metadata: Metadata = {
-    title: "Storage Pickup & Delivery London | Secure Warehousing | KXH Logistics",
+    title: "Business Storage & Warehouse Logistics London | Pickup & Delivery Storage | KXH Logistics",
     description:
-        "Affordable storage, moving, and document shredding in London. Get instant quotes with pickup, delivery, and secure handling.",
+        "Secure warehouse storage, inventory management, business logistics, pickup and delivery storage, office moves, and document shredding services across London.",
     keywords: [
         "storage London",
         "moving service London",
@@ -91,8 +91,42 @@ function JsonLd() {
             {
                 "@type": "Offer",
                 name: "Storage Pickup and Delivery London",
-            }
+            },
+            {
+                "@type": "Offer",
+                name: "Business Warehouse Storage London",
+            },
+            {
+                "@type": "Offer",
+                name: "Inventory Management Services London",
+            },
+            {
+                "@type": "Offer",
+                name: "Commercial Storage Solutions London",
+            },
         ],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Storage & Logistics Services",
+            "itemListElement": [
+                {
+                    "@type": "OfferCatalog",
+                    "name": "Warehouse Storage"
+                },
+                {
+                    "@type": "OfferCatalog",
+                    "name": "Business Storage"
+                },
+                {
+                    "@type": "OfferCatalog",
+                    "name": "Inventory Management"
+                },
+                {
+                    "@type": "OfferCatalog",
+                    "name": "Document Shredding"
+                }
+            ]
+        },
 
     };
 
@@ -144,6 +178,14 @@ const faqs = [
     {
         q: "Is there flexible short-term storage?",
         a: "Yes, we offer both short-term and long-term storage options depending on your needs.",
+    },
+    {
+        q: "Do you offer inventory tracking for stored items?",
+        a: "Yes, we use organised inventory handling and internal warehouse management processes to track stored items for both personal and business customers."
+    },
+    {
+        q: "Do you provide business warehouse storage in London?",
+        a: "Yes, we provide flexible business warehouse storage solutions including inventory storage, stock management, office equipment storage, and pallet storage."
     },
 ];
 
@@ -231,6 +273,22 @@ function FAQJsonLd() {
                     "@type": "Answer",
                     text: "Yes, we offer both short-term and long-term storage options depending on your needs.",
                 },
+            },
+            {
+                "@type": "Question",
+                name: "Do you offer inventory tracking for stored items?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we use organised inventory handling and internal warehouse management processes to track stored items for both personal and business customers."
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Do you provide business warehouse storage in London?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we provide flexible business warehouse storage solutions including inventory storage, stock management, office equipment storage, and pallet storage."
+                },
             }
         ],
     };
@@ -267,10 +325,10 @@ export default async function HomePage() {
                         </div>
 
                         <h1 className="mt-5 max-w-3xl mx-auto text-4xl font-black sm:text-5xl lg:text-[56px] lg:leading-tight">
-                            Storage with Pickup & Delivery in London
+                            Secure Warehouse Storage with Pickup & Delivery in London
                         </h1>
                         <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-6">
-                            Book storage with pickup and delivery in London. We collect your items, store them securely in our warehouse, and deliver them back when needed — simple, flexible, and cost-effective.
+                            Book secure warehouse storage with pickup and delivery in London. We collect your items, store them safely in our monitored warehouse facilities, and deliver them back when needed — ideal for personal, business, and inventory management needs.
                         </p>
                         <div className="mt-5 flex flex-wrap justify-center gap-3">
                             {["Instant quote", "Clear pricing", "Flexible scheduling"].map((item) => (
@@ -368,6 +426,30 @@ export default async function HomePage() {
                         Unlike traditional self-storage, we handle everything for you — collection, secure storage, and delivery — so you never need to visit a storage unit.
                     </p>
                 </section>
+                <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+                    <Link
+                        href="/warehouse-storage-london"
+                        className="text-emerald-600 hover:underline"
+                    >
+                        Business warehouse storage London
+                    </Link>
+
+                    <Link
+                        href="/logistics-moving-london"
+                        className="text-emerald-600 hover:underline"
+                    >
+                        Office relocation logistics
+                    </Link>
+                    <Link href="/shredding-solutions-london" className="text-emerald-600 hover:underline">
+                        Secure document shredding
+                    </Link>
+                    <Link
+                        href="/services"
+                        className="text-emerald-600 hover:underline"
+                    >
+                        Logistics and storage services
+                    </Link>
+                </div>
                 {/* Services Section */}
                 <section id="services" className="bg-gradient-to-b from-white to-slate-50/70 border-t border-slate-200/70">
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
@@ -387,6 +469,29 @@ export default async function HomePage() {
                         <div className="mt-8 sm:mt-10">
                             <ServicesGrid />
                         </div>
+                        <section className="mt-10">
+                            <h3 className="text-xl font-bold mb-4">
+                                Business Storage & Warehouse Solutions
+                            </h3>
+
+                            <div className="flex flex-wrap gap-3 text-sm">
+                                <Link href="/business-storage-london" className="text-emerald-600 hover:underline">
+                                    Business Storage London
+                                </Link>
+
+                                <Link href="/inventory-management-london" className="text-emerald-600 hover:underline">
+                                    Inventory Management London
+                                </Link>
+
+                                <Link href="/pallet-storage-london" className="text-emerald-600 hover:underline">
+                                    Pallet Storage London
+                                </Link>
+
+                                <Link href="/commercial-storage-london" className="text-emerald-600 hover:underline">
+                                    Commercial Storage London
+                                </Link>
+                            </div>
+                        </section>
                         <div className="mt-6 flex justify-center">
                             <Link
                                 href="/services"
@@ -398,7 +503,58 @@ export default async function HomePage() {
                     </div>
                 </section>
                 <TestimonialsSection />
+                <section className="border-t border-slate-200/70 bg-white">
+                    <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
+                        <div className="max-w-4xl">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+                                <span className="h-2 w-2 rounded-full bg-emerald-600" />
+                                Business Storage & Inventory Solutions
+                            </div>
 
+                            <h2 className="mt-4 text-3xl font-black text-slate-900 sm:text-4xl">
+                                Warehouse Storage & Inventory Management for London Businesses
+                            </h2>
+
+                            <p className="mt-5 text-base sm:text-lg leading-7 text-slate-600">
+                                KXH Logistics provides secure warehouse storage, inventory management
+                                and stock handling services for businesses across London. Our
+                                commercial storage solutions help companies manage excess inventory,
+                                office equipment, retail stock, archived documents, and pallet storage
+                                efficiently.
+                            </p>
+
+                            <p className="mt-4 text-base sm:text-lg leading-7 text-slate-600">
+                                Whether you need short-term overflow storage or long-term business
+                                warehousing, our logistics team offers flexible pickup, inventory
+                                management, secure storage, and scheduled delivery services tailored to
+                                your operational needs.
+                            </p>
+
+                            <div className="mt-8 flex flex-wrap gap-3">
+                                <Link
+                                    href="/warehouse-storage-london"
+                                    className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                >
+                                    Warehouse Storage London
+                                </Link>
+
+                                <Link
+                                    href="/logistics-moving-london"
+                                    className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                >
+                                    Office Moving Services
+                                </Link>
+
+                                <Link
+                                    href="/services"
+                                    className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                >
+                                    Storage, Moving & Shredding Services
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Pricing Section */}
                 <section id="pricing" className="relative bg-[#fbfbf9] border-t border-slate-200/70">
@@ -450,11 +606,7 @@ export default async function HomePage() {
                     </div>
                 </section>
 
-                <MainFooter services={[
-                    { label: "Storage London", href: "/warehouse-storage-london" },
-                    { label: "Moving London", href: "/logistics-moving-london" },
-                    { label: "Shredding London", href: "/shredding-solutions-london" },
-                ]} locations={londonLocations} />
+                <MainFooter locations={londonLocations} />
             </main>
         </CheckoutProvider>
     );
