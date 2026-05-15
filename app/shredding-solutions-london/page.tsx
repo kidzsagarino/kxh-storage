@@ -5,12 +5,14 @@ import Link from "next/link";
 import { londonLocations } from "../lib/location";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
+import { title } from "process";
 
 function JsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: "Document Shredding Service London",
+    name: "Secure Document Shredding London",
+    title: "Secure Document Shredding London | Confidential Shredding Services | KXH Logistics",
     provider: {
       "@type": "LocalBusiness",
       name: "KXH Storage & Logistics",
@@ -175,7 +177,7 @@ export default function ShreddingServicePage() {
             </div>
 
             <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-              Secure Document Shredding in London, Done Right
+              Confidential Document Shredding Services in London
             </h1>
 
             <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
@@ -206,6 +208,24 @@ export default function ShreddingServicePage() {
             <div className="mt-6 flex justify-center">
               <TrustpilotPill />
             </div>
+          </div>
+        </section>
+        <section className="border-y border-slate-200 bg-white">
+          <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
+            {[
+              "GDPR-Compliant",
+              "Certificate of Destruction",
+              "Secure Collection",
+              "Business & Office Shredding",
+              "Confidential Disposal",
+            ].map((item) => (
+              <span
+                key={item}
+                className="rounded-full border px-4 py-2 bg-slate-50"
+              >
+                {item}
+              </span>
+            ))}
           </div>
         </section>
         {/* PROBLEM STATEMENT */}
@@ -281,6 +301,11 @@ export default function ShreddingServicePage() {
               <p className="text-slate-600 mb-6 leading-relaxed">
                 Whether you need one-time shredding or regular scheduled services, we adapt to your needs.
               </p>
+              <p className="mt-4 text-slate-600 leading-relaxed">
+                Our shredding services are suitable for offices, legal firms,
+                accountants, healthcare providers, retailers, and businesses
+                handling confidential information that requires secure disposal.
+              </p>
 
               <ul className="space-y-3 text-slate-700">
                 <li>✔ One-off shredding services</li>
@@ -291,6 +316,7 @@ export default function ShreddingServicePage() {
             </div>
 
           </div>
+
         </section>
         {/* HOW IT WORKS */}
         <section className="py-20 bg-slate-50 border-t border-slate-200/40">
@@ -349,7 +375,7 @@ export default function ShreddingServicePage() {
           <div className="max-w-6xl mx-auto px-4">
 
             <h2 className="text-2xl font-black mb-8 text-center">
-              Who Our Shredding Service Is For
+              Who Our Document Shredding Services Are For
             </h2>
 
             <div className="grid md:grid-cols-2 gap-4 text-slate-700">
@@ -361,6 +387,88 @@ export default function ShreddingServicePage() {
 
           </div>
         </section>
+        <section className="py-16 border-t border-slate-200/70 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-black">
+                Related business storage services
+              </h2>
+
+              <p className="mt-3 text-slate-600">
+                Explore more warehouse and logistics services across London.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <Link
+                href="/warehouse-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Warehouse Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Managed storage with pickup and delivery.
+                </p>
+              </Link>
+
+              <Link
+                href="/business-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Business Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Flexible warehouse storage for businesses.
+                </p>
+              </Link>
+
+              <Link
+                href="/inventory-management-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Inventory Management
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Organised stock handling and storage support.
+                </p>
+              </Link>
+
+              <Link
+                href="/commercial-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Commercial Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Scalable storage for growing businesses.
+                </p>
+              </Link>
+              <Link
+                href="/pallet-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Pallet Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Secure storage for palletised business goods.
+                </p>
+              </Link>
+
+            </div>
+          </div>
+        </section>
         <TestimonialsSection />
 
         {/* FINAL CTA */}
@@ -368,11 +476,11 @@ export default function ShreddingServicePage() {
           <div className="max-w-3xl mx-auto px-4">
 
             <h2 className="text-3xl font-black">
-              Dispose of Sensitive Documents Safely
+              Securely destroy confidential documents with trusted London shredding services
             </h2>
 
             <p className="mt-4 text-slate-600 leading-relaxed">
-              Get a fast, transparent shredding quote and ensure your data is securely destroyed.
+              Get a fast quote for secure document collection, confidential shredding, and certified destruction across London.
             </p>
 
             <div className="mt-8">
@@ -386,7 +494,23 @@ export default function ShreddingServicePage() {
 
           </div>
         </section>
+        <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-black">
+                Secure shredding for businesses and individuals
+              </h2>
 
+              <p className="mt-4 text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                Whether you need to destroy archived office files,
+                confidential financial records, legal paperwork,
+                employee documents, or personal paperwork,
+                our London shredding service provides secure,
+                compliant, and fully managed disposal.
+              </p>
+            </div>
+          </div>
+        </section>
         {/* FAQ */}
         <section className="bg-slate-50 py-14 border-t border-slate-200/40">
           <div className="max-w-4xl mx-auto px-4">
@@ -466,7 +590,6 @@ export default function ShreddingServicePage() {
                 </p>
               </details>
             </div>
-
           </div>
         </section>
         <section className="bg-slate-50 py-14 border-t border-slate-200/70">
@@ -485,11 +608,7 @@ export default function ShreddingServicePage() {
             </div>
           </div>
         </section>
-        <MainFooter services={[
-          { label: "Storage London", href: "/warehouse-storage-london" },
-          { label: "Moving London", href: "/logistics-moving-london" },
-          { label: "Shredding London", href: "/shredding-solutions-london" },
-        ]} locations={londonLocations} />
+        <MainFooter locations={londonLocations} />
       </main>
     </>
   );

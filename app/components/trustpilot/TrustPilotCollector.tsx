@@ -1,12 +1,27 @@
 "use client";
+import { useEffect } from "react";
 
+declare global {
+  interface Window {
+    Trustpilot?: {
+      loadFromElement: (element: HTMLElement, forceReload?: boolean) => void;
+    };
+  }
+}
 
 export default function TrustpilotCollector() {
-  
+
+  useEffect(() => {
+    const widget = document.querySelector(".trustpilot-widget");
+
+    if (widget instanceof HTMLElement && window.Trustpilot) {
+      window.Trustpilot.loadFromElement(widget, true);
+    }
+  }, []);
 
   return (
     <>
-      
+
       {/* Widget */}
       <div
         className="trustpilot-widget"

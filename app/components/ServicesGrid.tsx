@@ -15,9 +15,9 @@ const services = [
     url: "/logistics-moving-london",
   },
   {
-    key: "storage",
-    title: "Storage Solutions",
-    desc: "Flexible, secure, and accessible storage facilities tailored to your needs.",
+    key: "warehouseStorage",
+    title: "Warehouse Storage London",
+    desc: "Secure warehouse storage for personal and business goods with flexible access options.",
     url: "/warehouse-storage-london",
   },
   {
@@ -26,11 +26,35 @@ const services = [
     desc: "Eco-friendly clearance and secure document disposal services.",
     url: "/shredding-solutions-london",
   },
+  {
+    key: "businessStorage",
+    title: "Business Storage London",
+    desc: "Secure warehouse storage with pickup, delivery, and flexible business storage solutions.",
+    url: "/business-storage-london",
+  },
+  {
+    key: "inventory",
+    title: "Inventory Management London",
+    desc: "Organised warehouse inventory handling and structured stock management for businesses.",
+    url: "/inventory-management-london",
+  },
+  {
+    key: "pallet",
+    title: "Pallet Storage London",
+    desc: "Secure bulk pallet storage for retail, logistics, and commercial inventory.",
+    url: "/pallet-storage-london",
+  },
+  {
+    key: "commercial",
+    title: "Commercial Storage London",
+    desc: "Scalable warehouse storage solutions for growing businesses in London.",
+    url: "/commercial-storage-london",
+  },
 ] as const;
 
 export function ServicesGrid() {
   return (
-    <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {services.map((s) => (
         <Link
           key={s.key}
@@ -40,7 +64,6 @@ export function ServicesGrid() {
                      transition-all duration-200
                      hover:-translate-y-1 hover:border-emerald-300"
         >
-          {/* Icon */}
           <div
             className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl
                        bg-emerald-50 ring-1 ring-emerald-100
@@ -56,17 +79,14 @@ export function ServicesGrid() {
             />
           </div>
 
-          {/* Title */}
           <h3 className="text-base font-bold text-slate-900">
             {s.title}
           </h3>
 
-          {/* Description */}
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
             {s.desc}
           </p>
 
-          {/* CTA */}
           <div className="mt-4 text-xs font-semibold text-emerald-600">
             Learn more →
           </div>

@@ -263,14 +263,90 @@ export default function WarehouseStoragePage() {
           </div>
         </section>
 
-        {/* TESTIMONIALS (IMPORTANT POSITION) */}
-        <TestimonialsSection />
+        <section className="py-14 border-t border-slate-200/70 bg-slate-50">
+          <div className="max-w-5xl mx-auto px-4">
+
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-black">
+                Business & Inventory Storage Solutions
+              </h2>
+
+              <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
+                We also provide business warehouse storage, pallet storage,
+                inventory management, and commercial logistics support
+                across London.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <Link
+                href="/business-storage-london"
+                className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold text-slate-900">
+                  Business Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Flexible warehouse storage solutions for businesses.
+                </p>
+              </Link>
+
+              <Link
+                href="/inventory-management-london"
+                className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold text-slate-900">
+                  Inventory Management
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Organised stock handling and inventory tracking.
+                </p>
+              </Link>
+
+              <Link
+                href="/pallet-storage-london"
+                className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold text-slate-900">
+                  Pallet Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Secure bulk pallet storage for logistics and retail.
+                </p>
+              </Link>
+
+              <Link
+                href="/commercial-storage-london"
+                className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold text-slate-900">
+                  Commercial Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Scalable warehouse storage for growing businesses.
+                </p>
+              </Link>
+
+            </div>
+          </div>
+        </section>
+
 
         {/* HOW IT WORKS */}
         <section className="py-20 max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Simple 3-step process
+          <h2 className="text-3xl font-black text-center mb-4">
+            How our warehouse storage service works
           </h2>
+
+          <p className="text-center text-slate-600 max-w-2xl mx-auto mb-12">
+            A simple managed storage process with collection, secure warehouse handling,
+            and return delivery across London.
+          </p>
 
           <div className="grid md:grid-cols-3 gap-6 text-center">
             {[
@@ -300,7 +376,7 @@ export default function WarehouseStoragePage() {
             ))}
           </div>
         </section>
-
+        <TestimonialsSection />
         {/* CTA */}
         <section className="py-20 text-center bg-slate-50">
           <h2 className="text-3xl font-bold">
@@ -360,11 +436,6 @@ export default function WarehouseStoragePage() {
 
         {/* FOOTER */}
         <MainFooter
-          services={[
-            { label: "Storage London", href: "/warehouse-storage-london" },
-            { label: "Moving London", href: "/logistics-moving-london" },
-            { label: "Shredding London", href: "/shredding-solutions-london" },
-          ]}
           locations={londonLocations}
         />
       </main>

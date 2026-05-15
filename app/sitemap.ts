@@ -13,27 +13,56 @@ export const londonLocations = [
   { slug: "lambeth", name: "Lambeth" },
 ];
 
+const services = [
+  "warehouse-storage-london",
+  "logistics-moving-london",
+  "shredding-solutions-london",
+
+  // SEO cluster pages
+  "business-storage-london",
+  "inventory-management-london",
+  "pallet-storage-london",
+  "commercial-storage-london",
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date();
+
   const staticPages = [
-    { url: `${base}/`, lastModified: new Date() },
-    { url: `${base}/privacy`, lastModified: new Date() },
-    { url: `${base}/terms`, lastModified: new Date() },
-    { url: `${base}/refunds`, lastModified: new Date() },
-    { url: `${base}/services`, lastModified: new Date() },
+    "/",
+    "/privacy",
+    "/terms",
+    "/refunds",
+    "/services",
 
-    // Service root pages
-    { url: `${base}/warehouse-storage-london`, lastModified: new Date() },
-    { url: `${base}/logistics-moving-london`, lastModified: new Date() },
-    { url: `${base}/shredding-solutions-london`, lastModified: new Date() },
-  ];
+    // Core services
+    "/warehouse-storage-london",
+    "/logistics-moving-london",
+    "/shredding-solutions-london",
 
-  const services = ["warehouse-storage-london", "logistics-moving-london", "shredding-solutions-london"];
+    // SEO cluster pages
+    "/business-storage-london",
+    "/inventory-management-london",
+    "/pallet-storage-london",
+    "/commercial-storage-london",
+  ].map((path) => ({
+    url: `${base}${path}`,
+    lastModified: now,
+  }));
 
+  // Dynamic location pages
   const locationPages = londonLocations.flatMap((location) =>
-    services.map((service) => ({
-      url: `${base}/${service}/${location.slug}`,
-      lastModified: new Date(),
-    }))
+    services
+      .filter(
+        (service) =>
+          service === "warehouse-storage-london" ||
+          service === "logistics-moving-london" ||
+          service === "shredding-solutions-london"
+      )
+      .map((service) => ({
+        url: `${base}/${service}/${location.slug}`,
+        lastModified: now,
+      }))
   );
 
   return [...staticPages, ...locationPages];

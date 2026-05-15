@@ -21,7 +21,15 @@ type FooterProps = {
 export default function MainFooter({
     brandName = "KXH Storage & Logistics",
     year = new Date().getFullYear(),
-    services = [],
+    services = [
+        { label: "Warehouse Storage", href: "/warehouse-storage-london" },
+        { label: "Business Storage", href: "/business-storage-london" },
+        { label: "Inventory Management", href: "/inventory-management-london" },
+        { label: "Pallet Storage", href: "/pallet-storage-london" },
+        { label: "Commercial Storage", href: "/commercial-storage-london" },
+        { label: "Moving Services", href: "/logistics-moving-london" },
+        { label: "Document Shredding", href: "/shredding-solutions-london" },
+    ],
     locations = [{ name: "London, UK", slug: "london-uk" }],
 }: FooterProps) {
     return (
