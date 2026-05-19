@@ -18,6 +18,22 @@ type FooterProps = {
     locations?: Location[];
 };
 
+const locationServices = [
+    { label: "Warehouse Storage", href: "/warehouse-storage-london" },
+    { label: "Business Storage", href: "/business-storage-london" },
+    { label: "Inventory Management", href: "/inventory-management-london" },
+    { label: "Pallet Storage", href: "/pallet-storage-london" },
+    { label: "Commercial Storage", href: "/commercial-storage-london" },
+    {
+        label: "Moving Services",
+        href: "/logistics-moving-london",
+    },
+    {
+        label: "Document Shredding",
+        href: "/shredding-solutions-london",
+    },
+];
+
 export default function MainFooter({
     brandName = "KXH Storage & Logistics",
     year = new Date().getFullYear(),
@@ -60,25 +76,34 @@ export default function MainFooter({
                     {/* Locations */}
                     <div className="sm:col-span-2 lg:col-span-2">
                         <h3 className="text-sm font-black text-slate-900 mb-3">
-                            Warehouse Storage Locations
+                            Service Locations
                         </h3>
 
-                        <div className="flex flex-wrap gap-2">
-                            {locations.map((loc) => (
-                                <Link
-                                    key={loc.slug}
-                                    href={`/warehouse-storage-london/${loc.slug}`}
-                                    className="text-sm text-slate-600 hover:text-emerald-600"
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {locationServices.map((service) => (
+                                <details
+                                    key={service.href}
+                                    className="rounded-xl border border-slate-200 bg-slate-50 p-4"
                                 >
-                                    Warehouse Storage {loc.name}
-                                </Link>
+                                    <summary className="cursor-pointer text-sm font-bold text-slate-800 hover:text-emerald-600">
+                                        {service.label}
+                                    </summary>
+
+                                    <div className="mt-3 flex flex-col gap-1.5">
+                                        {locations.map((loc) => (
+                                            <Link
+                                                key={`${service.href}-${loc.slug}`}
+                                                href={`${service.href}/${loc.slug}`}
+                                                className="text-sm text-slate-600 hover:text-emerald-600"
+                                            >
+                                                {service.label} in {loc.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </details>
                             ))}
                         </div>
-
-
                     </div>
-
-
                 </div>
             </div>
             <div className="flex justify-center">
