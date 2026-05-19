@@ -52,17 +52,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Dynamic location pages
   const locationPages = londonLocations.flatMap((location) =>
-    services
-      .filter(
-        (service) =>
-          service === "warehouse-storage-london" ||
-          service === "logistics-moving-london" ||
-          service === "shredding-solutions-london"
-      )
-      .map((service) => ({
-        url: `${base}/${service}/${location.slug}`,
-        lastModified: now,
-      }))
+    services.map((service) => ({
+      url: `${base}/${service}/${location.slug}`,
+      lastModified: now,
+    }))
   );
 
   return [...staticPages, ...locationPages];
