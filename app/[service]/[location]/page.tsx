@@ -34,6 +34,9 @@ const serviceContent = {
             "Office equipment",
             "Student storage",
             "Moving or renovation storage",
+            "Student storage",
+            "Temporary renter storage",
+            "University accommodation moves",
         ],
         process: [
             "Book your storage quote online",
@@ -52,6 +55,10 @@ const serviceContent = {
             {
                 q: "Is this suitable for business storage?",
                 a: "Yes, this service is suitable for households, students, offices, and businesses needing flexible storage.",
+            },
+            {
+                q: "Do you offer storage and moving support for students?",
+                a: "Yes, KXH Logistics supports students needing temporary storage, moving assistance, collection, and delivery during accommodation changes or university breaks across London.",
             },
         ],
     },
@@ -77,6 +84,8 @@ const serviceContent = {
             "Office relocations",
             "Furniture transport",
             "Student accommodation moves",
+            "Apartment relocations",
+            "Temporary relocations",
         ],
         process: [
             "Book your moving quote online",
@@ -95,6 +104,10 @@ const serviceContent = {
             {
                 q: "Do I need to rent a van?",
                 a: "No, we handle transport, loading, and delivery for you.",
+            },
+            {
+                q: "Do you offer storage and moving support for students?",
+                a: "Yes, KXH Logistics supports students needing temporary storage, moving assistance, collection, and delivery during accommodation changes or university breaks across London.",
             },
         ],
     },
@@ -162,6 +175,7 @@ const serviceContent = {
             "Retail stock",
             "Ecommerce stock",
             "Archive storage",
+            "Temporary storage during relocation",
         ],
         process: [
             "Book your business storage quote online",
@@ -205,6 +219,7 @@ const serviceContent = {
             "Office assets",
             "Event equipment",
             "Business supplies",
+            "Temporary inventory overflow",
         ],
         process: [
             "Book your inventory storage quote online",
@@ -327,7 +342,7 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
             localIntro:
                 "Camden customers often use our warehouse storage service during apartment moves, student relocations, renovations, and temporary housing transitions.",
             localUseCase:
-                "This is especially useful around busy Camden areas where transporting furniture, boxes, and business items can be difficult without collection support.",
+                "This is especially useful for students, renters, flat moves, furniture storage, and business items where collection support makes storage easier around busy Camden areas.",
         },
         "business-storage-london": {
             localIntro:
@@ -357,7 +372,7 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
             localIntro:
                 "Our Camden moving services support apartment relocations, student moves, office transport, and furniture delivery throughout North and Central London.",
             localUseCase:
-                "This is useful for customers moving between flats, student accommodation, offices, or temporary storage.",
+                "This is useful for students, renters, and customers moving between flats, student accommodation, offices, or temporary storage.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -370,9 +385,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     westminster: {
         "warehouse-storage-london": {
             localIntro:
-                "Westminster customers use our managed warehouse storage for office furniture, commercial stock, archive storage, and temporary business storage.",
+                "Westminster customers use our managed warehouse storage for office furniture, commercial stock, archive storage, student storage, and temporary business storage.",
             localUseCase:
-                "This is helpful during office moves, refurbishments, event preparation, and short-term space issues in Central London.",
+                "This is helpful during office moves, refurbishments, student accommodation changes, event preparation, and short-term space issues in Central London.",
         },
         "business-storage-london": {
             localIntro:
@@ -400,9 +415,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
         },
         "logistics-moving-london": {
             localIntro:
-                "KXH Logistics supports Westminster home moves, office relocations, and furniture transport with flexible scheduling and professional handling.",
+                "KXH Logistics supports Westminster home moves, student moves, office relocations, and furniture transport with flexible scheduling and professional handling.",
             localUseCase:
-                "This is useful for Central London moves where access, timing, and handling need to be carefully managed.",
+                "This is useful for students, renters, and Central London moves where access, timing, and handling need to be carefully managed.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -415,10 +430,11 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     hackney: {
         "warehouse-storage-london": {
             localIntro:
-                "Customers in Hackney use our warehouse storage services for business inventory, apartment storage, furniture holding, and flexible collection and delivery.",
+                "Customers in Hackney use our warehouse storage services for business inventory, apartment storage, student storage, furniture holding, and flexible collection and delivery.",
             localUseCase:
-                "This suits startups, creatives, renters, and small businesses needing extra space.",
+                "This suits startups, creatives, students, renters, and small businesses needing extra space.",
         },
+
         "business-storage-london": {
             localIntro:
                 "Hackney startups and growing businesses use our commercial storage services for stock management, retail inventory, and overflow business storage.",
@@ -445,9 +461,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
         },
         "logistics-moving-london": {
             localIntro:
-                "Our Hackney moving services support apartment relocations, furniture delivery, office moves, and flexible transport solutions across London.",
+                "Our Hackney moving services support apartment relocations, student moves, furniture delivery, office moves, and flexible transport solutions across London.",
             localUseCase:
-                "This is useful for renters, offices, and businesses moving items across East and Central London.",
+                "This is useful for students, renters, offices, and businesses moving items across East and Central London.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -460,9 +476,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     islington: {
         "warehouse-storage-london": {
             localIntro:
-                "Islington customers use our managed warehouse storage services during home moves, renovations, office clearouts, and temporary storage needs.",
+                "Islington customers use our managed warehouse storage services during home moves, student moves, renovations, office clearouts, and temporary storage needs.",
             localUseCase:
-                "This is suitable for households, offices, and businesses needing collection and delivery included.",
+                "This is suitable for students, renters, households, offices, and businesses needing collection and delivery included.",
         },
         "business-storage-london": {
             localIntro:
@@ -490,9 +506,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
         },
         "logistics-moving-london": {
             localIntro:
-                "Our Islington moving services support flat moves, office relocations, furniture transport, and flexible moving assistance across London.",
+                "Our Islington moving services support flat moves, student accommodation moves, office relocations, furniture transport, and flexible moving assistance across London.",
             localUseCase:
-                "This is useful for residential and business moves requiring professional handling.",
+                "This is useful for students, renters, residential moves, and business moves requiring professional handling.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -505,9 +521,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     "kensington-chelsea": {
         "warehouse-storage-london": {
             localIntro:
-                "Customers in Kensington and Chelsea use our warehouse storage services during property renovations, relocations, and temporary storage situations.",
+                "Customers in Kensington and Chelsea use our warehouse storage services during property renovations, student moves, relocations, and temporary storage situations.",
             localUseCase:
-                "This is useful for households and businesses that need careful handling, secure storage, and return delivery.",
+                "This is useful for students, renters, households, and businesses that need careful handling, secure storage, and return delivery.",
         },
         "business-storage-london": {
             localIntro:
@@ -535,9 +551,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
         },
         "logistics-moving-london": {
             localIntro:
-                "Our moving services in Kensington and Chelsea support apartment relocations, office moves, and furniture transport with professional handling.",
+                "Our moving services in Kensington and Chelsea support apartment relocations, student moves, office moves, and furniture transport with professional handling.",
             localUseCase:
-                "This is useful for customers needing managed transport and careful item handling.",
+                "This is useful for students, renters, and customers needing managed transport and careful item handling.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -550,9 +566,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     "tower-hamlets": {
         "warehouse-storage-london": {
             localIntro:
-                "Tower Hamlets businesses use our warehouse storage services for ecommerce inventory, commercial stock holding, and flexible warehouse support.",
+                "Tower Hamlets businesses, students, and renters use our warehouse storage services for ecommerce inventory, commercial stock, furniture storage, and flexible warehouse support.",
             localUseCase:
-                "This is useful for businesses around East London needing storage with collection and delivery.",
+                "This is useful for businesses, students, and renters around East London needing storage with collection and delivery.",
         },
         "business-storage-london": {
             localIntro:
@@ -580,9 +596,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
         },
         "logistics-moving-london": {
             localIntro:
-                "KXH Logistics supports Tower Hamlets relocations with managed moving services for homes, offices, furniture, and commercial equipment.",
+                "KXH Logistics supports Tower Hamlets relocations with managed moving services for students, homes, offices, furniture, and commercial equipment.",
             localUseCase:
-                "This is useful for customers moving between apartments, offices, and commercial spaces.",
+                "This is useful for students, renters, and customers moving between apartments, offices, student accommodation, and commercial spaces.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -595,9 +611,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     southwark: {
         "warehouse-storage-london": {
             localIntro:
-                "Southwark customers use our warehouse storage services for business stock, household storage, office equipment, and temporary storage support.",
+                "Southwark customers use our warehouse storage services for business stock, student storage, household storage, office equipment, and temporary storage support.",
             localUseCase:
-                "This is useful during moves, renovations, business changes, and stock overflow periods.",
+                "This is useful during student moves, flat moves, renovations, business changes, and stock overflow periods.",
         },
         "business-storage-london": {
             localIntro:
@@ -625,9 +641,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
         },
         "logistics-moving-london": {
             localIntro:
-                "Our Southwark moving services support flat moves, office relocations, and furniture transport throughout London.",
+                "Our Southwark moving services support student moves, flat moves, office relocations, and furniture transport throughout London.",
             localUseCase:
-                "This is useful for residential moves, office changes, and furniture deliveries.",
+                "This is useful for students, renters, residential moves, office changes, and furniture deliveries.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -640,9 +656,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     lambeth: {
         "warehouse-storage-london": {
             localIntro:
-                "Customers in Lambeth use our warehouse storage services for home storage, office clearouts, temporary storage, and business inventory support.",
+                "Customers in Lambeth use our warehouse storage services for student storage, home storage, office clearouts, temporary storage, and business inventory support.",
             localUseCase:
-                "This is helpful for households and businesses needing secure storage with collection and return delivery.",
+                "This is helpful for students, renters, households, and businesses needing secure storage with collection and return delivery.",
         },
         "business-storage-london": {
             localIntro:
@@ -670,9 +686,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
         },
         "logistics-moving-london": {
             localIntro:
-                "Our Lambeth moving services support apartment relocations, office transport, furniture delivery, and flexible moving assistance.",
+                "Our Lambeth moving services support student moves, apartment relocations, office transport, furniture delivery, and flexible moving assistance.",
             localUseCase:
-                "This helps households, students, and businesses move items safely across London.",
+                "This helps students, renters, households, and businesses move items safely across London.",
         },
         "shredding-solutions-london": {
             localIntro:
@@ -915,6 +931,16 @@ export default async function LocationServicePage({ params }: any) {
                                 {localContent?.localUseCase ??
                                     `Whether you are a household, student, office, or business, our team can collect, handle, and deliver your items through a simple quote-based process.`}
                             </p>
+                            {(
+                                service === "warehouse-storage-london" ||
+                                service === "logistics-moving-london"
+                            ) && (
+                                    <p className="mt-4 text-slate-600 leading-relaxed">
+                                        Our services are also suitable for students, renters, and temporary
+                                        relocations needing flexible collection, storage, moving support,
+                                        and return delivery across London.
+                                    </p>
+                                )}
                         </div>
 
                         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">

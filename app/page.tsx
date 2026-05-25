@@ -13,11 +13,12 @@ import { londonLocations } from "./lib/location";
 import MainFooter from "./components/footer/MainFooter";
 import TestimonialsSection from "./components/TestimonialsSection";
 import TrustpilotBadge from "./components/trustpilot/TrustPilotBadge";
+import TrustpilotPill from "./components/trustpilot/TrustpilotPill";
 
 export const metadata: Metadata = {
     title: "Business Storage & Warehouse Logistics London | Pickup & Delivery Storage | KXH Logistics",
     description:
-        "Secure warehouse storage, inventory management, business logistics, pickup and delivery storage, office moves, and document shredding services across London.",
+        "Secure warehouse storage, inventory management, moving services, student storage, renter storage, pickup and delivery storage, and business logistics services across London.",
     keywords: [
         "storage London",
         "moving service London",
@@ -187,6 +188,10 @@ const faqs = [
         q: "Do you provide business warehouse storage in London?",
         a: "Yes, we provide flexible business warehouse storage solutions including inventory storage, stock management, office equipment storage, and pallet storage."
     },
+    {
+        q: "Do you offer storage for students and renters in London?",
+        a: "Yes, KXH Logistics supports students, renters, apartment moves, temporary relocations, and short-term storage with collection and delivery services across London.",
+    },
 ];
 
 function FAQJsonLd() {
@@ -289,6 +294,14 @@ function FAQJsonLd() {
                     "@type": "Answer",
                     text: "Yes, we provide flexible business warehouse storage solutions including inventory storage, stock management, office equipment storage, and pallet storage."
                 },
+            },
+            {
+                "@type": "Question",
+                name: "Do you offer storage for students and renters in London?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, KXH Logistics supports students, renters, apartment moves, temporary relocations, and short-term storage with collection and delivery services across London."
+                },
             }
         ],
     };
@@ -317,82 +330,88 @@ export default async function HomePage() {
                 <FAQJsonLd />
                 {/* Hero Section */}
 
-                <section className="relative overflow-hidden bg-slate-50 py-12 lg:py-20">
-                    <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500 shadow-sm backdrop-blur">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                            Trusted Storage & Logistics in London
-                        </div>
+                <section className="relative overflow-hidden bg-gradient-to-b from-white to-emerald-50/30 min-h-[85vh] lg:min-h-screen">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
 
-                        <h1 className="mt-5 max-w-3xl mx-auto text-4xl font-black sm:text-5xl lg:text-[56px] lg:leading-tight">
-                            Secure Warehouse Storage with Pickup & Delivery in London
-                        </h1>
-                        <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-6">
-                            Book secure warehouse storage with pickup and delivery in London. We collect your items, store them safely in our monitored warehouse facilities, and deliver them back when needed — ideal for personal, business, and inventory management needs.
-                        </p>
-                        <div className="mt-5 flex flex-wrap justify-center gap-3">
-                            {["Instant quote", "Clear pricing", "Flexible scheduling"].map((item) => (
-                                <span
-                                    key={item}
-                                    className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-sm text-slate-600 shadow ring-1 ring-slate-200"
-                                >
-                                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                                    {item}
-                                </span>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 mx-auto max-w-4xl">
-                            <HeroQuoteBar />
-                        </div>
-                        <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
-                            <a
-                                href="/warehouse-storage-london"
-                                className="group flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-emerald-700 transition hover:bg-emerald-100 hover:shadow-sm"
-                            >
-                                <span className="text-emerald-600 transition group-hover:translate-x-0.5">
-                                    →
-                                </span>
-                                Secure Warehouse Storage in London
-                            </a>
-
-                            <a
-                                href="/logistics-moving-london"
-                                className="group flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-emerald-700 transition hover:bg-emerald-100 hover:shadow-sm"
-                            >
-                                <span className="text-emerald-600 transition group-hover:translate-x-0.5">
-                                    →
-                                </span>
-                                Moving Services London
-                            </a>
-
-                            <a
-                                href="/shredding-solutions-london"
-                                className="group flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-emerald-700 transition hover:bg-emerald-100 hover:shadow-sm"
-                            >
-                                <span className="text-emerald-600 transition group-hover:translate-x-0.5">
-                                    →
-                                </span>
-                                Document Shredding London
-                            </a>
-                        </div>
-                        {/* Hero Stats */}
-                        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                            <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-center shadow-sm">
-                                <div className="text-2xl font-black text-slate-900">5,000+</div>
-                                <div className="mt-1 text-sm text-slate-500">Londoners served</div>
+                        {/* LEFT CONTENT */}
+                        <div className="mt-4 self-start">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold uppercase tracking-wide text-emerald-700 shadow-sm">
+                                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                                Trusted Storage & Logistics in London
                             </div>
 
-                            <TrustpilotBadge />
+                            <h1 className="mt-6 text-5xl font-black leading-tight tracking-tight text-slate-950 sm:text-6xl">
+                                Storage. Moving.
+                                <span className="block bg-gradient-to-r from-emerald-500 to-emerald-700 bg-clip-text text-transparent">
+                                    Logistics.
+                                </span>
+                            </h1>
 
-                            <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-center shadow-sm">
-                                <div className="text-2xl font-black text-slate-900">Under 1 min</div>
-                                <div className="mt-1 text-sm text-slate-500">To get your quote</div>
+                            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+                                Secure warehouse storage with pickup & delivery across London for
+                                businesses, students, renters, apartment moves, inventory management,
+                                and temporary relocations.
+                            </p>
+
+                            <div className="mt-8 flex flex-wrap gap-4">
+                                <a
+                                    href="#pricing"
+                                    className="rounded-2xl bg-emerald-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500"
+                                >
+                                    Get Instant Quote
+                                </a>
+
+                                <a
+                                    href="/services"
+                                    className="rounded-2xl border border-emerald-200 bg-white px-7 py-4 text-sm font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50"
+                                >
+                                    Learn More
+                                </a>
+                            </div>
+
+                            <div className="mt-8 flex flex-wrap gap-3 text-sm">
+                                {[
+                                    "Warehouse Storage",
+                                    "Moving Services",
+                                    "Student Storage",
+                                    "Business Inventory",
+                                    "Pickup & Delivery",
+                                ].map((item) => (
+                                    <span
+                                        key={item}
+                                        className="rounded-full border border-emerald-100 bg-white px-4 py-2 text-slate-700 shadow-sm"
+                                    >
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                            <TrustpilotPill className="mt-4" />
+                        </div>
+
+                        {/* RIGHT IMAGE */}
+                        <div className="relative">
+                            <div className="overflow-hidden bg-white shadow-2xl shadow-emerald-100/40 rounded-b-2xl">
+                                <img
+                                    src="/images/home-hero-storage.webp"
+                                    alt="Warehouse storage with pickup and delivery in London"
+                                    className="aspect-[4/5] w-full object-cover object-center" />
                             </div>
                         </div>
                     </div>
                 </section>
+                <section className="bg-white py-6 sm:py-8">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="overflow-hidden border border-slate-200 bg-white shadow-2xl shadow-emerald-100/20">
+                            <img
+                                src="/images/warehouse-team.webp"
+                                alt="KXH warehouse team handling storage and logistics in London"
+                                className="h-[260px] w-full object-cover sm:h-[360px] lg:h-[260px]"
+                            />
+                        </div>
+                    </div>
+                </section>
                 <section className="bg-gradient-to-b from-white to-slate-50/70 border-t border-slate-200/70">
+
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
 
                         <h2 className="text-2xl font-black mb-4">
@@ -406,8 +425,7 @@ export default async function HomePage() {
                             Secure Warehouse Storage
                         </h3>
                         <p className="text-slate-600 leading-relaxed">
-                            Your items are stored in monitored facilities with controlled access and professional handling, ideal for personal and business storage.
-                        </p>
+                            Your items are stored in monitored facilities with controlled access and professional handling, ideal for businesses, students, renters, apartment moves, and personal storage needs.                        </p>
 
                         <h3 className="text-xl font-bold mt-6 mb-2">
                             Flexible Access with Delivery
@@ -424,6 +442,17 @@ export default async function HomePage() {
                     </h2>
                     <p className="mt-3 text-slate-600">
                         Unlike traditional self-storage, we handle everything for you — collection, secure storage, and delivery — so you never need to visit a storage unit.
+                    </p>
+                </section>
+                <section className="px-4 py-10 text-center max-w-3xl mx-auto sm:px-6 lg:px-8">
+                    <h2 className="text-xl font-bold">
+                        Flexible Storage for Students & Renters
+                    </h2>
+
+                    <p className="mt-3 text-slate-600 leading-relaxed">
+                        KXH Logistics also supports students, renters, apartment moves,
+                        temporary relocations, and short-term storage needs across London
+                        with collection, secure warehouse storage, and return delivery.
                     </p>
                 </section>
                 <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
@@ -450,6 +479,27 @@ export default async function HomePage() {
                         Logistics and storage services
                     </Link>
                 </div>
+                <section className="bg-white py-8">
+                    <div className="mx-auto grid max-w-screen-xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+
+                        <div className="overflow-hidden rounded-2xl shadow-xl">
+                            <img
+                                src="/images/moving-team.webp"
+                                alt="Professional moving services in London"
+                                className="h-[320px] w-full object-cover"
+                            />
+                        </div>
+
+                        <div className="overflow-hidden rounded-2xl shadow-xl">
+                            <img
+                                src="/images/student-storage.webp"
+                                alt="Student storage and renter storage in London"
+                                className="h-[320px] w-full object-cover"
+                            />
+                        </div>
+
+                    </div>
+                </section>
                 {/* Services Section */}
                 <section id="services" className="bg-gradient-to-b from-white to-slate-50/70 border-t border-slate-200/70">
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
@@ -467,6 +517,7 @@ export default async function HomePage() {
                         </div>
 
                         <div className="mt-8 sm:mt-10">
+
                             <ServicesGrid />
                         </div>
                         <section className="mt-10">
@@ -524,10 +575,7 @@ export default async function HomePage() {
                             </p>
 
                             <p className="mt-4 text-base sm:text-lg leading-7 text-slate-600">
-                                Whether you need short-term overflow storage or long-term business
-                                warehousing, our logistics team offers flexible pickup, inventory
-                                management, secure storage, and scheduled delivery services tailored to
-                                your operational needs.
+                                Whether you need short-term overflow storage, student storage, renter storage, temporary relocation support, or long-term business warehousing
                             </p>
 
                             <div className="mt-8 flex flex-wrap gap-3">
@@ -555,7 +603,17 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
-
+                <section className="bg-white py-8">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="overflow-hidden rounded-2xl shadow-2xl">
+                            <img
+                                src="/images/delivery-warehouse.webp"
+                                alt="KXH pickup and delivery logistics"
+                                className="h-[320px] w-full object-cover sm:h-[420px]"
+                            />
+                        </div>
+                    </div>
+                </section>
                 {/* Pricing Section */}
                 <section id="pricing" className="relative bg-[#fbfbf9] border-t border-slate-200/70">
                     <div className="relative mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">

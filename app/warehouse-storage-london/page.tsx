@@ -9,7 +9,7 @@ import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 export const metadata = {
   title: "Managed Warehouse Storage in London with Pickup & Delivery | KXH Logistics",
   description:
-    "Secure warehouse storage in London with pickup & delivery. Fully managed storage for businesses and individuals with flexible pricing.",
+    "Secure warehouse storage in London with pickup & delivery. Fully managed storage for businesses, students, renters, apartment moves, and individuals with flexible pricing."
 };
 
 function JsonLd() {
@@ -78,6 +78,14 @@ function FAQJsonLd() {
         acceptedAnswer: {
           "@type": "Answer",
           text: "Yes, we offer flexible short-term and long-term storage options.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer storage for students and renters?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, KXH Logistics supports students, renters, apartment moves, temporary relocations, and short-term storage with collection and delivery services across London.",
         },
       },
     ],
@@ -162,8 +170,7 @@ export default function WarehouseStoragePage() {
 
             {/* Subtext */}
             <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-              We collect your items, store them securely, and deliver them back when needed — no need to visit a storage unit.
-            </p>
+              We collect your items, store them securely, and deliver them back when needed — ideal for businesses, students, renters, apartment moves, and temporary storage needs across London.            </p>
 
             {/* CTA */}
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
@@ -191,7 +198,7 @@ export default function WarehouseStoragePage() {
               "Secure Warehouse Storage",
               "Pickup & Delivery Included",
               "Flexible Monthly Plans",
-              "Business Inventory Ready",
+              "Business, Student & Personal Storage",
             ].map((item) => (
               <span
                 key={item}
@@ -227,6 +234,7 @@ export default function WarehouseStoragePage() {
               <ul className="space-y-2 text-slate-700 text-sm">
                 <li>• We collect everything from you</li>
                 <li>• Secure warehouse storage</li>
+                <li>• Flexible student & renter storage</li>
                 <li>• Request delivery anytime</li>
                 <li>• Fully managed for convenience</li>
               </ul>
@@ -262,7 +270,25 @@ export default function WarehouseStoragePage() {
             ))}
           </div>
         </section>
+        <section className="py-16 max-w-5xl mx-auto px-4 border-t border-slate-200">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold">
+              Flexible Storage for Students & Renters
+            </h2>
 
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              KXH Logistics also supports students, renters, apartment moves,
+              temporary relocations, and short-term storage needs across London
+              with collection, secure warehouse storage, and return delivery.
+            </p>
+
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              Whether you are moving between flats, storing belongings during
+              university breaks, or needing temporary storage during relocation,
+              our managed service helps make storage simpler and more convenient.
+            </p>
+          </div>
+        </section>
         <section className="py-14 border-t border-slate-200/70 bg-slate-50">
           <div className="max-w-5xl mx-auto px-4">
 
@@ -272,7 +298,8 @@ export default function WarehouseStoragePage() {
               </h2>
 
               <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
-                We also provide business warehouse storage, pallet storage,
+                We also provide business warehouse storage, student storage,
+                temporary relocation storage, pallet storage,
                 inventory management, and commercial logistics support
                 across London.
               </p>

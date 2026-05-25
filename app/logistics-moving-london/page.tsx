@@ -6,6 +6,14 @@ import { londonLocations } from "../lib/location";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
 
+
+export const metadata = {
+    title:
+        "Moving Services London | Student, Apartment & Business Relocations | KXH Logistics",
+    description:
+        "Professional moving services in London for businesses, students, renters, apartment moves, office relocations, and temporary storage support.",
+};
+
 function JsonLd() {
     const data = {
         "@context": "https://schema.org",
@@ -18,7 +26,7 @@ function JsonLd() {
         },
         areaServed: "London",
         description:
-            "Professional moving services in London with fast, safe, and fully managed relocation for homes and businesses.",
+            "Professional moving services in London with fast, safe, and fully managed relocation for homes, businesses, students, renters, and apartment moves."
     };
 
     return (
@@ -96,6 +104,14 @@ function FAQJsonLd() {
                 acceptedAnswer: {
                     "@type": "Answer",
                     text: "Yes, we offer single-item and furniture moving services as well as full home or office relocations.",
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Do you support student and renter moves in London?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, KXH Logistics supports student accommodation moves, renter relocations, apartment moves, and temporary storage needs across London.",
                 },
             },
         ],
@@ -177,8 +193,7 @@ export default function MovingServicePage() {
                         </h1>
 
                         <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-                            We handle packing, loading, transport, and delivery — so you don’t have to.
-                        </p>
+                            We handle packing, loading, transport, and delivery for businesses, students, renters, apartment moves, and home relocations across London.                        </p>
 
                         <div className="mt-10">
                             <Link
@@ -248,7 +263,7 @@ export default function MovingServicePage() {
                                 Flexible Moving Solutions
                             </h2>
                             <p className="text-slate-600 mb-6 leading-relaxed">
-                                Whether you're moving a flat, house, or office, we tailor the service to your needs.
+                                Whether you're moving a flat, student accommodation, rented apartment, house, or office, we tailor the service to your needs.
                             </p>
 
                             <ul className="space-y-3 text-slate-700">
@@ -325,13 +340,34 @@ export default function MovingServicePage() {
                             <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Homeowners relocating</div>
                             <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Office & business moves</div>
                             <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Students moving accommodation</div>
+                            <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Apartment & renter relocations</div>
                             <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Furniture & large item transport</div>
                         </div>
 
                     </div>
                 </section>
                 <TestimonialsSection />
+                <section className="py-16 border-t border-slate-200/70 bg-white">
+                    <div className="max-w-4xl mx-auto px-4 text-center">
 
+                        <h2 className="text-3xl font-black">
+                            Moving & Temporary Storage Support
+                        </h2>
+
+                        <p className="mt-4 text-slate-600 leading-relaxed">
+                            KXH Logistics also supports students, renters, apartment moves,
+                            and temporary relocations needing both moving services and
+                            secure warehouse storage across London.
+                        </p>
+
+                        <p className="mt-4 text-slate-600 leading-relaxed">
+                            We can collect, transport, store, and redeliver your items
+                            when you are ready — ideal for accommodation changes,
+                            renovation periods, and flexible moving schedules.
+                        </p>
+
+                    </div>
+                </section>
                 {/* FINAL CTA */}
                 <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
                     <div className="max-w-3xl mx-auto px-4">
@@ -432,6 +468,14 @@ export default function MovingServicePage() {
                                 </summary>
                                 <p className="mt-3 text-slate-600">
                                     Yes, we offer single-item moves as well as full home or office relocations.
+                                </p>
+                            </details>
+                             <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                                <summary className="font-semibold cursor-pointer">
+                                    Do you support student and renter moves in London?
+                                </summary>
+                                <p className="mt-3 text-slate-600">
+                                    Yes, KXH Logistics supports student accommodation moves, renter relocations, apartment moves, and temporary storage needs across London.
                                 </p>
                             </details>
                         </div>

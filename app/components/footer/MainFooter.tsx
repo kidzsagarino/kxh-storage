@@ -114,7 +114,7 @@ export default function MainFooter({
                 <div className="text-sm text-slate-500 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                     <span>© {year} {brandName}</span>
                     <span className="hidden sm:inline">·</span>
-                    <span>10 Northridge Road, London DA12 5AY</span>
+                    <span>9 New City Road, London E13 9LL</span>
                     <span className="hidden sm:inline">·</span>
                     <span>01474 396663</span>
                 </div>
