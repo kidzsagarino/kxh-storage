@@ -390,22 +390,23 @@ export default async function HomePage() {
 
                         {/* RIGHT IMAGE */}
                         <div className="relative">
-                            <div className="overflow-hidden bg-white shadow-2xl shadow-emerald-100/40 rounded-b-2xl">
+                            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                                 <img
                                     src="/images/home-hero-storage.webp"
                                     alt="Warehouse storage with pickup and delivery in London"
-                                    className="aspect-[4/5] w-full object-cover object-center" />
+                                    className="aspect-[4/5] w-full object-cover object-center sm:aspect-[3/4] lg:aspect-[4/5]"
+                                />
                             </div>
                         </div>
                     </div>
                 </section>
                 <section className="bg-white py-6 sm:py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden border border-slate-200 bg-white shadow-2xl shadow-emerald-100/20">
+                        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                             <img
                                 src="/images/warehouse-team.webp"
                                 alt="KXH warehouse team handling storage and logistics in London"
-                                className="h-[260px] w-full object-cover sm:h-[360px] lg:h-[260px]"
+                                className="h-[200px] w-full object-cover sm:h-[300px] lg:h-[360px]"
                             />
                         </div>
                     </div>
@@ -482,19 +483,20 @@ export default async function HomePage() {
                 <section className="bg-white py-8">
                     <div className="mx-auto grid max-w-screen-xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
 
-                        <div className="overflow-hidden rounded-2xl shadow-xl">
+                        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                             <img
                                 src="/images/moving-team.webp"
                                 alt="Professional moving services in London"
-                                className="h-[320px] w-full object-cover"
+                                className="h-[220px] w-full object-cover sm:h-[300px] lg:h-[320px]"
+
                             />
                         </div>
-
-                        <div className="overflow-hidden rounded-2xl shadow-xl">
+ 
+                        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                             <img
                                 src="/images/student-storage.webp"
                                 alt="Student storage and renter storage in London"
-                                className="h-[320px] w-full object-cover"
+                                className="h-[220px] w-full object-cover object-center sm:h-[300px] lg:h-[320px]"
                             />
                         </div>
 
@@ -605,11 +607,11 @@ export default async function HomePage() {
                 </section>
                 <section className="bg-white py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden rounded-2xl shadow-2xl">
+                        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                             <img
                                 src="/images/delivery-warehouse.webp"
                                 alt="KXH pickup and delivery logistics"
-                                className="h-[320px] w-full object-cover sm:h-[420px]"
+                                className="h-[220px] w-full object-cover sm:h-[320px] lg:h-[420px]"
                             />
                         </div>
                     </div>
