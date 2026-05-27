@@ -7,9 +7,9 @@ import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
 
 export const metadata = {
-    title: "Our Services | Storage, Moving & Shredding London | KXH",
+    title: "Storage, Inventory, Pallet & Moving Services London | KXH",
     description:
-        "Explore KXH Logistics services including warehouse storage, moving services, and secure document shredding across London.",
+        "Explore KXH Logistics services including warehouse storage, inventory management, pallet storage, business storage, moving services, and secure document shredding across London.",
     alternates: {
         canonical: "https://kxhlogistics.co.uk/services",
     },
@@ -34,12 +34,36 @@ function JsonLd() {
                         {
                             "@type": "Service",
                             position: 2,
+                            name: "Business Storage London",
+                            url: "https://kxhlogistics.co.uk/business-storage-london",
+                        },
+                        {
+                            "@type": "Service",
+                            position: 3,
+                            name: "Inventory Management London",
+                            url: "https://kxhlogistics.co.uk/inventory-management-london",
+                        },
+                        {
+                            "@type": "Service",
+                            position: 4,
+                            name: "Pallet Storage London",
+                            url: "https://kxhlogistics.co.uk/pallet-storage-london",
+                        },
+                        {
+                            "@type": "Service",
+                            position: 5,
+                            name: "Commercial Storage London",
+                            url: "https://kxhlogistics.co.uk/commercial-storage-london",
+                        },
+                        {
+                            "@type": "Service",
+                            position: 6,
                             name: "Logistics Moving London",
                             url: "https://kxhlogistics.co.uk/logistics-moving-london",
                         },
                         {
                             "@type": "Service",
-                            position: 3,
+                            position: 7,
                             name: "Document Shredding London",
                             url: "https://kxhlogistics.co.uk/shredding-solutions-london",
                         },
@@ -95,6 +119,26 @@ export default function ServicesPage() {
             desc: "GDPR-compliant secure shredding with certified destruction and collection.",
             href: "/shredding-solutions-london",
         },
+        {
+            title: "Business Storage London",
+            desc: "Flexible storage for business stock, office equipment, inventory, and archives.",
+            href: "/business-storage-london",
+        },
+        {
+            title: "Inventory Management London",
+            desc: "Managed inventory storage with item tracking, warehouse handling, collection, and delivery.",
+            href: "/inventory-management-london",
+        },
+        {
+            title: "Pallet Storage London",
+            desc: "Secure pallet storage for retail, wholesale, ecommerce, and commercial stock.",
+            href: "/pallet-storage-london",
+        },
+        {
+            title: "Commercial Storage London",
+            desc: "Commercial warehouse support for offices, equipment, stock overflow, and business storage.",
+            href: "/commercial-storage-london",
+        },
     ];
 
     return (
@@ -140,7 +184,7 @@ export default function ServicesPage() {
                         Explore our core services
                     </h2>
 
-                    <div className="mt-10 grid md:grid-cols-3 gap-6">
+                    <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {services.map((service) => (
                             <Link
                                 key={service.href}
