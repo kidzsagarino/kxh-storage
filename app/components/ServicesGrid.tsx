@@ -50,6 +50,12 @@ const services = [
     desc: "Scalable warehouse storage solutions for growing businesses in London.",
     url: "/commercial-storage-london",
   },
+  {
+    key: "thirdPartyLogistics",
+    title: "Third Party Logistics London",
+    desc: "3PL warehouse support including inventory handling, pallet storage, fulfilment coordination, collection, and delivery services.",
+    url: "/third-party-logistics-london",
+  },
 ] as const;
 
 export function ServicesGrid() {

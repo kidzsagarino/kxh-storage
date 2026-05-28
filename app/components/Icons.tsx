@@ -6,6 +6,7 @@ import {
   FileText,
   Scissors,
   type LucideIcon,
+  PackageCheck,
 } from "lucide-react";
 
 type IconName =
@@ -15,6 +16,7 @@ type IconName =
   | "inventory"
   | "pallet"
   | "commercial"
+  | "thirdPartyLogistics"
   | "shredding"
   | "warehouseStorage";
 
@@ -115,6 +117,26 @@ function KxhCommercial(props: any) {
   );
 }
 
+function KxhThirdPartyLogistics(props: any) {
+  return (
+    <svg
+      {...props}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+    >
+      <path d="M3 8h10v8H3z" />
+      <path d="M13 10h4l4 4v2h-8z" />
+      <path d="M7 16a2 2 0 1 0 0 4a2 2 0 0 0 0-4z" />
+      <path d="M18 16a2 2 0 1 0 0 4a2 2 0 0 0 0-4z" />
+      <path d="M6 8V4h10v4" />
+    </svg>
+  );
+}
+
 /** ---------- LUCIDE MAP ---------- */
 const lucideMap: Record<IconName, LucideIcon> = {
   packaging: Package,
@@ -123,6 +145,8 @@ const lucideMap: Record<IconName, LucideIcon> = {
   inventory: Boxes,
   pallet: Boxes,
   commercial: Boxes,
+  thirdPartyLogistics: PackageCheck,
+
   shredding: FileText,
   warehouseStorage: Boxes,
 };
@@ -148,16 +172,18 @@ export function Icon({
       name === "packaging"
         ? KxhPackaging
         : name === "removals"
-        ? KxhRemovals
-        : name === "businessStorage"
-        ? KxhBusinessStorage
-        : name === "inventory"
-        ? KxhInventory
-        : name === "pallet"
-        ? KxhPallet
-        : name === "commercial"
-        ? KxhCommercial
-        : KxhShredding;
+          ? KxhRemovals
+          : name === "businessStorage"
+            ? KxhBusinessStorage
+            : name === "inventory"
+              ? KxhInventory
+              : name === "pallet"
+                ? KxhPallet
+                : name === "commercial"
+                  ? KxhCommercial
+                  : name === "thirdPartyLogistics"
+                    ? KxhThirdPartyLogistics
+                    : KxhShredding;
 
     return (
       <span className="relative inline-flex" aria-label={title ?? name}>
