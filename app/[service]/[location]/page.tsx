@@ -327,6 +327,50 @@ const serviceContent = {
             },
         ],
     },
+    "third-party-logistics-london": {
+        label: "Third Party Logistics",
+        quoteService: "storage",
+        h1: (loc: string) =>
+            `Third Party Logistics in ${loc}, London`,
+        intro: (loc: string) =>
+            `Need third party logistics support in ${loc}? KXH Logistics provides 3PL warehouse support, inventory handling, pallet storage, collection, and delivery coordination across London.`,
+        description:
+            "Third party logistics support with warehouse storage, inventory handling, pallet coordination, collection, and delivery.",
+        benefits: [
+            "3PL warehouse support",
+            "Inventory handling",
+            "Pallet coordination",
+            "Collection & delivery",
+            "Business logistics support",
+        ],
+        idealFor: [
+            "Ecommerce businesses",
+            "Retail inventory",
+            "Palletised goods",
+            "Warehouse overflow",
+            "Business stock",
+            "Commercial logistics",
+        ],
+        process: [
+            "Book your third party logistics quote online",
+            "We collect, handle, and coordinate your inventory",
+            "Your stock is stored securely and delivered when needed",
+        ],
+        faqs: [
+            {
+                q: "Do you offer third party logistics in London?",
+                a: "Yes, KXH Logistics provides third party logistics support across London including warehouse storage, inventory handling, pallet coordination, collection, and delivery.",
+            },
+            {
+                q: "Is this suitable for ecommerce businesses?",
+                a: "Yes, our 3PL support is suitable for ecommerce sellers, retailers, and businesses needing flexible warehouse and inventory support.",
+            },
+            {
+                q: "Can you support pallet storage and delivery?",
+                a: "Yes, we can support pallet storage, warehouse handling, and delivery coordination for business stock and commercial goods.",
+            },
+        ],
+    },
 } as const;
 
 type ServiceSlug = keyof typeof serviceContent;
@@ -738,6 +782,8 @@ export async function generateMetadata({ params }: any) {
 
         "shredding-solutions-london":
             `Document Shredding in ${locName}, London | Secure Collection | KXH`,
+        "third-party-logistics-london":
+            `Third Party Logistics in ${locName}, London | 3PL Warehouse Support | KXH`,
     };
 
     const descriptionMap: Partial<Record<ServiceSlug, string>> = {
@@ -761,6 +807,8 @@ export async function generateMetadata({ params }: any) {
 
         "shredding-solutions-london":
             `Secure document shredding in ${locName}, London with confidential collection and compliant disposal support.`,
+        "third-party-logistics-london":
+            `Third party logistics in ${locName}, London with 3PL warehouse support, inventory handling, pallet storage, collection, and delivery coordination.`,
     };
 
     return {
@@ -1051,7 +1099,7 @@ export default async function LocationServicePage({ params }: any) {
                                 service === "inventory-management-london"
                             ) && (
                                     <p className="mt-4 text-slate-600 leading-relaxed">
-                                        For larger commercial goods and wholesale inventory, customers can also
+                                        For larger commercial goods, wholesale inventory, and business stock overflow,
                                         use our{" "}
                                         <Link
                                             href={`/pallet-storage-london/${loc.slug}`}
@@ -1061,6 +1109,25 @@ export default async function LocationServicePage({ params }: any) {
                                         </Link>
                                         {" "}with warehouse handling, pallet coordination, secure storage,
                                         and flexible collection and delivery support.
+                                    </p>
+                                )}
+                            {(
+                                service === "warehouse-storage-london" ||
+                                service === "inventory-management-london" ||
+                                service === "pallet-storage-london" ||
+                                service === "business-storage-london" ||
+                                service === "commercial-storage-london"
+                            ) && (
+                                    <p className="mt-4 text-slate-600 leading-relaxed">
+                                        Businesses requiring outsourced warehouse operations can also explore our{" "}
+                                        <Link
+                                            href="/third-party-logistics-london"
+                                            className="text-emerald-600 hover:underline font-medium"
+                                        >
+                                            third party logistics services
+                                        </Link>
+                                        {" "}for inventory coordination, pallet handling, fulfilment support,
+                                        collection, and delivery across London.
                                     </p>
                                 )}
                             {(
@@ -1220,6 +1287,19 @@ export default async function LocationServicePage({ params }: any) {
 
                                 <p className="mt-2 text-sm text-slate-600">
                                     Secure collection and confidential document destruction services.
+                                </p>
+                            </Link>
+                            <Link
+                                href="/third-party-logistics-london"
+                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
+                            >
+                                <h3 className="font-semibold">
+                                    Third Party Logistics London
+                                </h3>
+
+                                <p className="mt-2 text-sm text-slate-600">
+                                    3PL warehouse support including inventory handling,
+                                    pallet storage, fulfilment support, and delivery coordination.
                                 </p>
                             </Link>
 
