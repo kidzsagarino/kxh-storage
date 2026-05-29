@@ -152,6 +152,13 @@ export default function InventoryManagementPage() {
             <div className="mt-6 flex justify-center">
               <TrustpilotPill />
             </div>
+            <div className="mt-12">
+              <img
+                src="/images/inventory-management/inventory-management-london-warehouse-stock-handling.webp"
+                alt="Warehouse inventory management and stock handling in London"
+                className="w-full rounded-3xl border border-slate-200 shadow-xl"
+              />
+            </div>
           </div>
         </section>
 
@@ -192,21 +199,37 @@ export default function InventoryManagementPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <h3 className="font-bold text-lg">Useful for:</h3>
-              <ul className="mt-4 space-y-3 text-slate-700">
-                <li>✔ Ecommerce stock storage</li>
-                <li>✔ Retail inventory overflow</li>
-                <li>✔ Office supplies and equipment</li>
-                <li>✔ Archived stock and documents</li>
-                <li>✔ Seasonal business inventory</li>
-              </ul>
+            <div>
+              <img
+                src="/images/inventory-management/business-inventory-organisation-london.webp"
+                alt="Business inventory organisation and warehouse stock management"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              />
+
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <h3 className="font-bold text-lg">Useful for:</h3>
+
+                <ul className="mt-4 space-y-3 text-slate-700">
+                  <li>✔ Ecommerce stock storage</li>
+                  <li>✔ Retail inventory overflow</li>
+                  <li>✔ Office supplies and equipment</li>
+                  <li>✔ Archived stock and documents</li>
+                  <li>✔ Seasonal business inventory</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
 
         <section className="py-16 border-t border-slate-200/70 bg-slate-50">
           <div className="max-w-6xl mx-auto px-4">
+            <div className="max-w-6xl mx-auto px-4 pb-12">
+              <img
+                src="/images/inventory-management/warehouse-inventory-support-london.webp"
+                alt="Warehouse worker organising inventory and stock storage"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              />
+            </div>
             <div className="text-center mb-10">
               <h2 className="text-3xl font-black">
                 Inventory support built around managed storage
@@ -309,9 +332,25 @@ export default function InventoryManagementPage() {
             </div>
           </div>
         </section>
-
+        <section className="py-16 bg-white border-t border-slate-200/70">
+          <div className="max-w-6xl mx-auto px-4">
+            <img
+              src="/images/inventory-management/inventory-collection-delivery-london.webp"
+              alt="Business inventory pickup and delivery service in London"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
+        </section>
         <TestimonialsSection />
-
+        <section className="py-16 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <img
+              src="/images/inventory-management/kxh-inventory-management-team.webp"
+              alt="KXH Logistics inventory management warehouse team"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
+        </section>
         <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
           <div className="max-w-3xl mx-auto px-4">
             <h2 className="text-3xl font-black">

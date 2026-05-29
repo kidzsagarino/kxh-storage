@@ -214,6 +214,13 @@ export default function BusinessStoragePage() {
             <div className="mt-6 flex justify-center">
               <TrustpilotPill />
             </div>
+            <div className="mt-12">
+              <img
+                src="images/business-storage/business-storage-london-warehouse-inventory.webp"
+                alt="Business inventory storage inside a secure London warehouse"
+                className="w-full rounded-3xl border border-slate-200 shadow-xl"
+              />
+            </div>
           </div>
         </section>
 
@@ -234,7 +241,7 @@ export default function BusinessStoragePage() {
         </section>
 
         <section className="py-20 max-w-6xl mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-black">
                 Business storage without extra premises
@@ -243,8 +250,8 @@ export default function BusinessStoragePage() {
               <p className="mt-4 text-slate-600 leading-relaxed">
                 Renting more office or warehouse space can be expensive and
                 inflexible. KXH Logistics gives London businesses a simpler
-                option: managed storage with collection, secure handling, and
-                return delivery.
+                option: managed storage with collection, secure handling,
+                and return delivery.
               </p>
 
               <p className="mt-4 text-slate-600 leading-relaxed">
@@ -252,23 +259,41 @@ export default function BusinessStoragePage() {
                 document storage, or equipment storage during an office move,
                 our team helps keep your business organised.
               </p>
+
+              <div className="mt-8">
+                <h3 className="font-bold text-lg">Ideal for:</h3>
+
+                <ul className="mt-4 space-y-3 text-slate-700">
+                  <li>✔ Retail stock and ecommerce inventory</li>
+                  <li>✔ Office furniture and equipment</li>
+                  <li>✔ Archived business documents</li>
+                  <li>✔ Event materials and marketing stock</li>
+                  <li>✔ Seasonal or overflow business items</li>
+                </ul>
+              </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <h3 className="font-bold text-lg">Ideal for:</h3>
-              <ul className="mt-4 space-y-3 text-slate-700">
-                <li>✔ Retail stock and ecommerce inventory</li>
-                <li>✔ Office furniture and equipment</li>
-                <li>✔ Archived business documents</li>
-                <li>✔ Event materials and marketing stock</li>
-                <li>✔ Seasonal or overflow business items</li>
-              </ul>
+            <div>
+              <img
+                src="/images/business-storage/business-storage-office-equipment-archive-storage.webp"
+                alt="Office equipment, archived business documents and commercial inventory stored in a secure London warehouse"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+                loading="lazy"
+              />
             </div>
           </div>
         </section>
 
         <section className="py-16 border-t border-slate-200/70 bg-slate-50">
+
           <div className="max-w-6xl mx-auto px-4">
+            <div className="mb-10">
+              <img
+                src="/images/business-storage/business-storage-pickup-delivery-london.webp"
+                alt="KXH Logistics collecting business storage items from a London office"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              />
+            </div>
             <div className="text-center mb-10">
               <h2 className="text-3xl font-black">
                 Why businesses choose KXH Logistics
@@ -321,6 +346,13 @@ export default function BusinessStoragePage() {
         </section>
 
         <section className="py-20 max-w-5xl mx-auto px-4">
+          <div className="mb-12">
+            <img
+              src="/images/business-storage/inventory-management-business-storage-london.webp"
+              alt="Warehouse worker scanning business inventory in a managed storage facility"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
           <div className="text-center">
             <h2 className="text-3xl font-black">
               How business storage works
@@ -407,6 +439,15 @@ export default function BusinessStoragePage() {
           </div>
         </section>
 
+        <section className="py-16 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <img
+              src="/images/business-storage/business-storage-warehouse-team-london.webp"
+              alt="KXH Storage and Logistics warehouse team"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
+        </section>
         <TestimonialsSection />
 
         <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
