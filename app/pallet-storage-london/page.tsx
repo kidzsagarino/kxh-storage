@@ -151,6 +151,13 @@ export default function PalletStoragePage() {
             <div className="mt-6 flex justify-center">
               <TrustpilotPill />
             </div>
+            <div className="mt-12">
+              <img
+                src="/images/pallet-storage/pallet-storage-london-bulk-warehouse.webp"
+                alt="Pallet storage warehouse in London with pallet racking and bulk inventory"
+                className="w-full rounded-3xl border border-slate-200 shadow-xl"
+              />
+            </div>
           </div>
         </section>
 
@@ -193,19 +200,36 @@ export default function PalletStoragePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <h3 className="font-bold text-lg">Ideal for:</h3>
-              <ul className="mt-4 space-y-3 text-slate-700">
-                <li>✔ Retail stock overflow</li>
-                <li>✔ Ecommerce inventory</li>
-                <li>✔ Bulk goods and boxed stock</li>
-                <li>✔ Commercial equipment</li>
-                <li>✔ Seasonal business storage</li>
-              </ul>
+            <div>
+              <img
+                src="/images/pallet-storage/commercial-pallet-storage-business-stock.webp"
+                alt="Commercial pallet storage for business stock and inventory"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              />
+
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <h3 className="font-bold text-lg">Ideal for:</h3>
+
+                <ul className="mt-4 space-y-3 text-slate-700">
+                  <li>✔ Retail stock overflow</li>
+                  <li>✔ Ecommerce inventory</li>
+                  <li>✔ Bulk goods and boxed stock</li>
+                  <li>✔ Commercial equipment</li>
+                  <li>✔ Seasonal business storage</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
-
+        <section className="py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <img
+              src="/images/pallet-storage/warehouse-pallet-handling-london.webp"
+              alt="Warehouse worker handling palletised inventory"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
+        </section>
         <section className="py-16 border-t border-slate-200/70 bg-slate-50">
           <div className="max-w-6xl mx-auto px-4">
             <div className="text-center mb-10">
@@ -310,9 +334,25 @@ export default function PalletStoragePage() {
             </div>
           </div>
         </section>
-
+        <section className="py-16 bg-white border-t border-slate-200/70">
+          <div className="max-w-6xl mx-auto px-4">
+            <img
+              src="/images/pallet-storage/pallet-storage-collection-delivery-london.webp"
+              alt="Pallet storage collection and delivery service"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
+        </section>
         <TestimonialsSection />
-
+        <section className="py-16 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <img
+              src="/images/pallet-storage/kxh-pallet-storage-team.webp"
+              alt="KXH Logistics pallet storage warehouse team"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
+        </section>
         <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
           <div className="max-w-3xl mx-auto px-4">
             <h2 className="text-3xl font-black">
