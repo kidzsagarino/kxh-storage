@@ -543,12 +543,9 @@ export default async function HomePage() {
                                 <Link href="/commercial-storage-london" className="text-emerald-600 hover:underline">
                                     Commercial Storage London
                                 </Link>
-                                <Link
-                                    href="/third-party-logistics-london"
-                                    className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                                >
-                                    Third Party Logistics London
-                                </Link>
+                               <Link href="/third-party-logistics-london" className="text-emerald-600 hover:underline">
+                                   Third Party Logistics London
+                               </Link>
                             </div>
                         </section>
                         <div className="mt-6 flex justify-center">
