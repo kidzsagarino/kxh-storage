@@ -23,6 +23,7 @@ const services = [
   "inventory-management-london",
   "pallet-storage-london",
   "commercial-storage-london",
+  "third-party-logistics-london",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
