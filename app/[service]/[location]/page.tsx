@@ -923,7 +923,7 @@ function Breadcrumbs({
                     {breadcrumbs.map((b, i) => (
                         <li key={b.href} className="flex items-center gap-2">
                             {i < breadcrumbs.length - 1 ? (
-                                <Link href={b.href} className="hover:underline text-emerald-600">
+                                <Link href={b.href} className="hover:underline text-emerald-700">
                                     {b.name}
                                 </Link>
                             ) : (
@@ -975,7 +975,7 @@ export default async function LocationServicePage({ params }: any) {
 
                 <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-24">
                     <div className="max-w-5xl mx-auto px-4 text-center">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
                             <span className="h-2 w-2 rounded-full bg-emerald-500" />
                             {content.label} in {loc.name}
                         </div>
@@ -991,7 +991,7 @@ export default async function LocationServicePage({ params }: any) {
                         <div className="mt-8">
                             <Link
                                 href={`/?service=${content.quoteService}#pricing`}
-                                className="inline-block rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+                                className="inline-block rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
                             >
                                 Get Instant Quote
                             </Link>
@@ -1086,7 +1086,7 @@ export default async function LocationServicePage({ params }: any) {
                                         Businesses needing organised stock handling can also use our{" "}
                                         <Link
                                             href={`/inventory-management-london/${loc.slug}`}
-                                            className="text-emerald-600 hover:underline font-medium"
+                                            className="text-emerald-700 hover:underline font-medium"
                                         >
                                             inventory management storage in {loc.name}
                                         </Link>
@@ -1103,7 +1103,7 @@ export default async function LocationServicePage({ params }: any) {
                                         use our{" "}
                                         <Link
                                             href={`/pallet-storage-london/${loc.slug}`}
-                                            className="text-emerald-600 hover:underline font-medium"
+                                            className="text-emerald-700 hover:underline font-medium"
                                         >
                                             pallet storage services in {loc.name}
                                         </Link>
@@ -1122,7 +1122,7 @@ export default async function LocationServicePage({ params }: any) {
                                         Businesses requiring outsourced warehouse operations can also explore our{" "}
                                         <Link
                                             href="/third-party-logistics-london"
-                                            className="text-emerald-600 hover:underline font-medium"
+                                            className="text-emerald-700 hover:underline font-medium"
                                         >
                                             third party logistics services
                                         </Link>
@@ -1172,7 +1172,7 @@ export default async function LocationServicePage({ params }: any) {
                                     key={step}
                                     className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                                 >
-                                    <div className="text-2xl font-black text-emerald-600">
+                                    <div className="text-2xl font-black text-emerald-700">
                                         {index + 1}
                                     </div>
                                     <p className="mt-3 text-sm text-slate-600">{step}</p>
@@ -1360,7 +1360,7 @@ export default async function LocationServicePage({ params }: any) {
                                 <Link
                                     key={l.slug}
                                     href={`/${service}/${l.slug}`}
-                                    className="text-emerald-600 hover:underline text-sm"
+                                    className="text-emerald-700 hover:underline text-sm"
                                 >
                                     {content.label} in {l.name}
                                 </Link>

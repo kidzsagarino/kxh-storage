@@ -299,7 +299,7 @@ export default function HomeClientControls({
                         className="overflow-hidden rounded-[28px] border border-slate-200 bg-white animate-fadeIn"
                     >
                         <div className="border-b border-slate-100 px-5 py-4 sm:px-6">
-                            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-600">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
                                 Secure payment
                             </p>
                             <h3 className="mt-1 text-lg font-black tracking-tight text-slate-900">

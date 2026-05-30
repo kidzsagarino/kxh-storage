@@ -183,7 +183,7 @@ export default function MovingServicePage() {
                 <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
                     <div className="mx-auto max-w-5xl px-4 text-center">
 
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
                             <span className="h-2 w-2 rounded-full bg-emerald-500" />
                             Professional Moving Service in London
                         </div>
@@ -198,7 +198,7 @@ export default function MovingServicePage() {
                         <div className="mt-10">
                             <Link
                                 href="/?service=moving#pricing"
-                                className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+                                className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
                             >
                                 Get Quote
                             </Link>
@@ -228,7 +228,7 @@ export default function MovingServicePage() {
                         </div>
 
                         <div className="p-6 rounded-xl border border-slate-200 bg-emerald-50">
-                            <h3 className="font-semibold text-emerald-600 mb-3">Our Service</h3>
+                            <h3 className="font-semibold text-emerald-700 mb-3">Our Service</h3>
                             <ul className="space-y-2 text-sm text-slate-700">
                                 <li>• We pack and protect your items</li>
                                 <li>• We handle transport & logistics</li>
@@ -293,7 +293,7 @@ export default function MovingServicePage() {
 
                             {/* STEP 1 */}
                             <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
-                                <div className="text-2xl font-black text-emerald-600">1</div>
+                                <div className="text-2xl font-black text-emerald-700">1</div>
                                 <h3 className="mt-3 font-semibold">
                                     Book your move
                                 </h3>
@@ -304,7 +304,7 @@ export default function MovingServicePage() {
 
                             {/* STEP 2 */}
                             <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
-                                <div className="text-2xl font-black text-emerald-600">2</div>
+                                <div className="text-2xl font-black text-emerald-700">2</div>
                                 <h3 className="mt-3 font-semibold">
                                     We pack & load everything
                                 </h3>
@@ -315,7 +315,7 @@ export default function MovingServicePage() {
 
                             {/* STEP 3 */}
                             <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
-                                <div className="text-2xl font-black text-emerald-600">3</div>
+                                <div className="text-2xl font-black text-emerald-700">3</div>
                                 <h3 className="mt-3 font-semibold">
                                     Safe delivery to your new location
                                 </h3>
@@ -490,7 +490,7 @@ export default function MovingServicePage() {
                                 <Link
                                     key={l.slug}
                                     href={`/logistics-moving-london/${l.slug}`}
-                                    className="text-emerald-600 hover:underline text-sm"
+                                    className="text-emerald-700 hover:underline text-sm"
                                 >
                                     Moving Service in {l.name}
                                 </Link>

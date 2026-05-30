@@ -31,7 +31,7 @@ export default function PaymentSuccessPage({ searchParams }: Props) {
           </Link>
         </div>
 
-        <p className="text-xs text-slate-500">
+        <p className="text-sm text-slate-500">
           Status may take a few seconds to update while webhooks process.
         </p>
       </div>

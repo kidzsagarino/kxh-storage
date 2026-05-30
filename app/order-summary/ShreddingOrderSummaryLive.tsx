@@ -87,7 +87,7 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
         {codeDiscount > 0 && (
           <div className="flex justify-between text-sm text-slate-700">
             <span>Discount code</span>
-            <span className="text-emerald-600">
+            <span className="text-emerald-700">
               −{money(codeDiscount, currencySymbol)}
             </span>
           </div>
@@ -124,7 +124,7 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
           ))
         )}
       </div>
-      <p className="text-xs text-slate-500">
+      <p className="text-sm text-slate-500">
         {items.length === 0
           ? "Add items on the left to see your order summary."
           : (() => {
@@ -136,8 +136,8 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
           })()}
       </p>
       {/* 
-      <p className="text-xs text-slate-500">{note}</p> */}
-      <p className="text-xs text-slate-500">
+      <p className="text-sm text-slate-500">{note}</p> */}
+      <p className="text-sm text-slate-500">
         {state.address.houseNumber + " " + state.address.streetAddress}
       </p>
       {error ? (

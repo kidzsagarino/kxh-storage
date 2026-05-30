@@ -86,15 +86,15 @@ export function DiscountCodeInput({
       </div>
 
       {disabled && !applied && (
-        <div className="text-xs text-slate-500">
+        <div className="text-sm text-slate-500">
           No amount due to apply discount to
         </div>
       )}
 
-      {error && <div className="text-xs text-red-500">{error}</div>}
+      {error && <div className="text-sm text-red-500">{error}</div>}
 
       {applied && !error && (
-        <div className="text-xs text-emerald-600">Code applied</div>
+        <div className="text-sm text-emerald-700">Code applied</div>
       )}
     </div>
   );

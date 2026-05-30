@@ -335,7 +335,7 @@ export default async function HomePage() {
 
                         {/* LEFT CONTENT */}
                         <div className="mt-4 self-start">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold uppercase tracking-wide text-emerald-700 shadow-sm">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold uppercase tracking-wide text-emerald-700 shadow-sm">
                                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
                                 Trusted Storage & Logistics in London
                             </div>
@@ -356,7 +356,7 @@ export default async function HomePage() {
                             <div className="mt-8 flex flex-wrap gap-4">
                                 <a
                                     href="#pricing"
-                                    className="rounded-2xl bg-emerald-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500"
+                                    className="rounded-2xl bg-emerald-700 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500"
                                 >
                                     Get Instant Quote
                                 </a>
@@ -365,7 +365,7 @@ export default async function HomePage() {
                                     href="/services"
                                     className="rounded-2xl border border-emerald-200 bg-white px-7 py-4 text-sm font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50"
                                 >
-                                    Learn More
+                                    View All Services
                                 </a>
                             </div>
 
@@ -459,23 +459,22 @@ export default async function HomePage() {
                 <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
                     <Link
                         href="/warehouse-storage-london"
-                        className="text-emerald-600 hover:underline"
-                    >
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"                    >
                         Business warehouse storage London
                     </Link>
 
                     <Link
                         href="/logistics-moving-london"
-                        className="text-emerald-600 hover:underline"
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
                     >
                         Office relocation logistics
                     </Link>
-                    <Link href="/shredding-solutions-london" className="text-emerald-600 hover:underline">
+                    <Link href="/shredding-solutions-london" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">
                         Secure document shredding
                     </Link>
                     <Link
                         href="/services"
-                        className="text-emerald-600 hover:underline"
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
                     >
                         Logistics and storage services
                     </Link>
@@ -507,7 +506,7 @@ export default async function HomePage() {
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
                         <div className="max-w-3xl">
                             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
-                                <span className="h-2 w-2 rounded-full bg-emerald-600" />
+                                <span className="h-2 w-2 rounded-full bg-emerald-700" />
                                 Services
                             </div>
                             <h2 className="mt-4 text-3xl font-black text-slate-900 sm:text-4xl lg:text-5xl">
@@ -528,30 +527,30 @@ export default async function HomePage() {
                             </h3>
 
                             <div className="flex flex-wrap gap-3 text-sm">
-                                <Link href="/business-storage-london" className="text-emerald-600 hover:underline">
+                                <Link href="/business-storage-london" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">
                                     Business Storage London
                                 </Link>
 
-                                <Link href="/inventory-management-london" className="text-emerald-600 hover:underline">
+                                <Link href="/inventory-management-london" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">
                                     Inventory Management London
                                 </Link>
 
-                                <Link href="/pallet-storage-london" className="text-emerald-600 hover:underline">
+                                <Link href="/pallet-storage-london" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">
                                     Pallet Storage London
                                 </Link>
 
-                                <Link href="/commercial-storage-london" className="text-emerald-600 hover:underline">
+                                <Link href="/commercial-storage-london" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">
                                     Commercial Storage London
                                 </Link>
-                               <Link href="/third-party-logistics-london" className="text-emerald-600 hover:underline">
-                                   Third Party Logistics London
-                               </Link>
+                                <Link href="/third-party-logistics-london" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">
+                                    Third Party Logistics London
+                                </Link>
                             </div>
                         </section>
                         <div className="mt-6 flex justify-center">
                             <Link
                                 href="/services"
-                                className="text-emerald-600 font-semibold hover:underline"
+                                className="text-emerald-700 font-semibold hover:underline"
                             >
                                 View all services →
                             </Link>
@@ -563,7 +562,7 @@ export default async function HomePage() {
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
                         <div className="max-w-4xl">
                             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
-                                <span className="h-2 w-2 rounded-full bg-emerald-600" />
+                                <span className="h-2 w-2 rounded-full bg-emerald-700" />
                                 Business Storage & Inventory Solutions
                             </div>
 
@@ -659,7 +658,7 @@ export default async function HomePage() {
                         </p>
 
                         <div className="mt-6 flex flex-wrap gap-3">
-                            <a href="tel:+441474396663" className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-600 shadow-lg">
+                            <a href="tel:+441474396663" className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-700 shadow-lg">
                                 Call +44 1474 396663
                             </a>
                             <a href="mailto:help@kxhlogistics.co.uk" className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold hover:bg-slate-50">

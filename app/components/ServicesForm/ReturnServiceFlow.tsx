@@ -65,13 +65,13 @@ function Stepper({
                         >
                             <div className="flex items-center gap-2">
                                 <div
-                                    className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
+                                    className={`grid h-7 w-7 place-items-center rounded-full border text-sm font-semibold transition
                   ${isActive && isCompleted
-                                            ? "border-emerald-600 bg-emerald-600 text-white ring-2 ring-emerald-200"
+                                            ? "border-emerald-600 bg-emerald-700 text-white ring-2 ring-emerald-200"
                                             : isActive
-                                                ? "border-emerald-600 bg-emerald-600 text-white"
+                                                ? "border-emerald-600 bg-emerald-700 text-white"
                                                 : isCompleted
-                                                    ? "border-emerald-600 bg-emerald-600 text-white"
+                                                    ? "border-emerald-600 bg-emerald-700 text-white"
                                                     : "border-slate-200 bg-white text-slate-700"
                                         }`}
                                 >
@@ -271,7 +271,7 @@ export function ReturnForm({
                     onGo={setStep}
                     allCompleted={itemsOk && scheduleOk && orderOk && detailsOk}
                 />
-                <div className="text-xs text-slate-600">
+                <div className="text-sm text-slate-600">
                     {step === 0 && "Choose your return type."}
                     {step === 1 && "Pick the preferred return date and time slot."}
                     {step === 2 && "Enter the original order number."}
@@ -283,7 +283,7 @@ export function ReturnForm({
                 <div>
                     <div className="flex items-end justify-between gap-4">
                         <p className="text-sm font-medium text-slate-700">Return Type</p>
-                        <div className="text-xs text-slate-600">
+                        <div className="text-sm text-slate-600">
                             Total:{" "}
                             <span className="font-medium text-slate-900">
                                 {totalItems}
@@ -315,7 +315,7 @@ export function ReturnForm({
                                                 {item.name}
                                             </div>
 
-                                            <div className="mt-1 text-xs text-slate-500 line-clamp-2">
+                                            <div className="mt-1 text-sm text-slate-500 line-clamp-2">
                                                 {item.desc}
                                             </div>
 
@@ -366,7 +366,7 @@ export function ReturnForm({
 
                         {/* Validation */}
                         {!itemsOk && (
-                            <div className="mt-2 text-xs text-rose-600">
+                            <div className="mt-2 text-sm text-rose-600">
                                 Add at least 1 return type to continue.
                             </div>
                         )}
@@ -509,7 +509,7 @@ export function ReturnForm({
                         </div>
 
                         {!scheduleOk && (
-                            <div className="mt-2 text-xs text-rose-600">
+                            <div className="mt-2 text-sm text-rose-600">
                                 Select a date and time slot to continue.
                             </div>
                         )}
@@ -533,7 +533,7 @@ export function ReturnForm({
                     />
 
                     {!orderOk && (
-                        <div className="text-xs text-rose-600">Enter the order number to continue.</div>
+                        <div className="text-sm text-rose-600">Enter the order number to continue.</div>
                     )}
                 </div>
             )}
@@ -771,12 +771,12 @@ export function ReturnForm({
 
                         {normalizeGBPhone(state.customerDetails.phone ?? "").length >= 10 &&
                             !isValidGBPhone(state.customerDetails.phone ?? "") && (
-                                <div className="text-xs text-rose-600">Enter a valid UK phone number.</div>
+                                <div className="text-sm text-rose-600">Enter a valid UK phone number.</div>
                             )}
                     </div>
 
                     {!detailsOk && (
-                        <div className="text-xs text-rose-600">
+                        <div className="text-sm text-rose-600">
                             Fill in the required customer details and both addresses to continue.
                         </div>
                     )}

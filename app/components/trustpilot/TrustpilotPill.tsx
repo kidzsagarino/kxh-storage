@@ -53,7 +53,7 @@ export default function TrustpilotPill({
       </span>
 
       {/* rating */}
-      <span className="text-xs font-semibold text-slate-900">
+      <span className="text-sm font-semibold text-slate-900">
         {rating.toFixed(1)}/5
       </span>
 

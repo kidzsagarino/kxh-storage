@@ -159,7 +159,7 @@ export default function WarehouseStoragePage() {
           <div className="mx-auto max-w-5xl px-4 text-center">
 
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
               Secure Warehouse Storage London
             </div>
@@ -177,7 +177,7 @@ export default function WarehouseStoragePage() {
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link
                 href="/?service=storage#pricing"
-                className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+                className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
               >
                 Get Quote
               </Link>
@@ -241,7 +241,7 @@ export default function WarehouseStoragePage() {
             </div>
 
             <div className="p-6 border border-slate-200 rounded-xl bg-emerald-50">
-              <h3 className="font-semibold text-emerald-600 mb-3">Our Managed Storage</h3>
+              <h3 className="font-semibold text-emerald-700 mb-3">Our Managed Storage</h3>
               <ul className="space-y-2 text-slate-700 text-sm">
                 <li>• We collect everything from you</li>
                 <li>• Secure warehouse storage</li>
@@ -314,7 +314,7 @@ export default function WarehouseStoragePage() {
               explore our{" "}
               <Link
                 href="/inventory-management-london"
-                className="text-emerald-600 hover:underline font-medium"
+                className="text-emerald-700 hover:underline font-medium"
               >
                 inventory management storage services
               </Link>
@@ -326,14 +326,14 @@ export default function WarehouseStoragePage() {
               Explore our{" "}
               <Link
                 href="/pallet-storage-london"
-                className="text-emerald-600 hover:underline font-medium"
+                className="text-emerald-700 hover:underline font-medium"
               >
                 pallet storage services
               </Link>
               {" "}and{" "}
               <Link
                 href="/third-party-logistics-london"
-                className="text-emerald-600 hover:underline font-medium"
+                className="text-emerald-700 hover:underline font-medium"
               >
                 third party logistics solutions
               </Link>
@@ -478,7 +478,7 @@ export default function WarehouseStoragePage() {
               },
             ].map((s) => (
               <div key={s.step} className="p-6 border border-slate-200 rounded-xl">
-                <div className="text-2xl font-black text-emerald-600">
+                <div className="text-2xl font-black text-emerald-700">
                   {s.step}
                 </div>
                 <h3 className="font-semibold mt-2">{s.title}</h3>

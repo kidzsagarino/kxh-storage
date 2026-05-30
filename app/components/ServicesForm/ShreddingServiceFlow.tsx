@@ -70,11 +70,11 @@ function Stepper({
             >
               <div className="flex items-center gap-2">
                 <div
-                  className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
+                  className={`grid h-7 w-7 place-items-center rounded-full border text-sm font-semibold transition
                   ${isCompleted
-                      ? "border-emerald-600 bg-emerald-600 text-white"
+                      ? "border-emerald-600 bg-emerald-700 text-white"
                       : isActive
-                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        ? "border-emerald-600 bg-emerald-700 text-white"
                         : "border-slate-200 bg-white text-slate-700"
                     }
                   ${isActive ? "ring-2 ring-emerald-200" : ""}`}
@@ -266,7 +266,7 @@ export function ShreddingForm({
           onGo={setStep}
           allCompleted={itemsOk && scheduleOk && detailsOk}
         />
-        <div className="text-xs text-slate-600">
+        <div className="text-sm text-slate-600">
           {step === 0 && "Choose what you want to shred and quantities."}
           {step === 1 && "Pick a collection date and time slot."}
           {step === 2 && "Enter your address and contact details."}
@@ -295,7 +295,7 @@ export function ShreddingForm({
                       {item.name}
                     </div>
 
-                    <div className="mt-1 text-xs text-slate-500 line-clamp-2">
+                    <div className="mt-1 text-sm text-slate-500 line-clamp-2">
                       {item.desc}
                     </div>
 
@@ -345,7 +345,7 @@ export function ShreddingForm({
           })}
 
           {!itemsOk && (
-            <div className="mt-2 text-xs text-rose-600">
+            <div className="mt-2 text-sm text-rose-600">
               Add at least 1 shredding item to continue.
             </div>
           )}
@@ -470,7 +470,7 @@ export function ShreddingForm({
           </div>
 
           {!scheduleOk && (
-            <div className="mt-2 text-xs text-rose-600">
+            <div className="mt-2 text-sm text-rose-600">
               Select a date and time slot.
             </div>
           )}
@@ -584,7 +584,7 @@ export function ShreddingForm({
 
               {normalizeGBPhone(state.customerDetails.phone ?? "").length >= 10 &&
                 !isValidGBPhone(state.customerDetails.phone ?? "") && (
-                  <div className="text-xs text-rose-600">
+                  <div className="text-sm text-rose-600">
                     Enter a valid UK phone number.
                   </div>
                 )}
@@ -605,7 +605,7 @@ export function ShreddingForm({
           </div>
 
           {!detailsOk && (
-            <div className="text-xs text-rose-600">
+            <div className="text-sm text-rose-600">
               Fill in phone number, house/flat number, and street address to continue.
               (Pick an address from the dropdown.)
             </div>

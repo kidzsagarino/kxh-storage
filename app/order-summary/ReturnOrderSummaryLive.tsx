@@ -104,7 +104,7 @@ export function ReturnOrderSummary({ onProceed, busy, error }: Props) {
                 )}
             </div>
 
-            <div className="space-y-2 text-xs text-slate-500">
+            <div className="space-y-2 text-sm text-slate-500">
                 <p>
                     <span className="font-medium text-slate-700">Collection:</span>{" "}
                     {state.fromLocation.houseNumber || state.fromLocation.streetAddress

@@ -137,7 +137,7 @@ export function OrderSummary({
 
 
             {/* Note */}
-            <p className="text-xs text-slate-500">{note}</p>
+            <p className="text-sm text-slate-500">{note}</p>
 
             {/* CTA */}
             <Cta enableButton={enableButton} />

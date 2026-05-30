@@ -56,13 +56,13 @@ function Stepper({
                         >
                             <div className="flex items-center gap-2">
                                 <div
-                                    className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
+                                    className={`grid h-7 w-7 place-items-center rounded-full border text-sm font-semibold transition
                                         ${isActive && isCompleted
-                                            ? "border-emerald-600 bg-emerald-600 text-white ring-2 ring-emerald-200"
+                                            ? "border-emerald-600 bg-emerald-700 text-white ring-2 ring-emerald-200"
                                             : isActive
-                                                ? "border-emerald-600 bg-emerald-600 text-white"
+                                                ? "border-emerald-600 bg-emerald-700 text-white"
                                                 : isCompleted
-                                                    ? "border-emerald-600 bg-emerald-600 text-white"
+                                                    ? "border-emerald-600 bg-emerald-700 text-white"
                                                     : "border-slate-200 bg-white text-slate-700"
                                         }
 `}
@@ -272,7 +272,7 @@ export function StorageForm({
                     onGo={setStep}
                     allCompleted={durationOk && itemsOk && scheduleOk && detailsOk}
                 />
-                <div className="text-xs text-slate-600">
+                <div className="text-sm text-slate-600">
                     {step === 0 && "Choose how long you want to store your items."}
                     {step === 1 && "Select what you’re storing and quantities."}
                     {step === 2 && "Pick a collection date and time slot."}
@@ -285,7 +285,10 @@ export function StorageForm({
                         Storage Duration
                     </label>
 
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div
+                        role="radiogroup"
+                        aria-label="Storage duration"
+                        className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                         {duration.map((m: any) => {
                             const isActive = state.durationMonth === m.minMonths;
 
@@ -323,14 +326,6 @@ export function StorageForm({
 
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300`}
                                 >
-                                    {/* Hidden radio */}
-                                    <input
-                                        type="radio"
-                                        className="sr-only"
-                                        name="durationMonths"
-                                        checked={isActive}
-                                        readOnly
-                                    />
 
                                     {/* Badge (discount highlight) */}
                                     {m.percentOff > 0 && (
@@ -345,19 +340,19 @@ export function StorageForm({
                                             }`}
                                     >
                                         {m.minMonths}{" "}
-                                        <span className="text-xs font-medium text-slate-500">
+                                        <span className="text-sm font-medium text-slate-500">
                                             months
                                         </span>
                                     </div>
 
                                     {/* Description */}
-                                    <div className="mt-1 text-xs text-slate-500">
+                                    <div className="mt-1 text-sm text-slate-500">
                                         {m.percentOff === 0 ? "Standard plan" : "Discounted rate"}
                                     </div>
 
                                     {/* Active indicator */}
                                     {isActive && (
-                                        <div className="absolute bottom-2 h-1 w-6 rounded-full bg-emerald-600" />
+                                        <div className="absolute bottom-2 h-1 w-6 rounded-full bg-emerald-700" />
                                     )}
                                 </div>
                             );
@@ -369,7 +364,7 @@ export function StorageForm({
                 <div>
                     <div className="flex items-end justify-between gap-4">
                         <p className="text-sm font-medium text-slate-700">What are you storing?</p>
-                        <div className="text-xs text-slate-600">
+                        <div className="text-sm text-slate-600">
                             Total items: <span className="font-medium text-slate-900">{totalItems}</span>
                         </div>
                     </div>
@@ -394,7 +389,7 @@ export function StorageForm({
                                                 {item.name}
                                             </div>
 
-                                            <div className="mt-1 text-xs text-slate-500 line-clamp-2">
+                                            <div className="mt-1 text-sm text-slate-500 line-clamp-2">
                                                 {item.desc}
                                             </div>
 
@@ -445,7 +440,7 @@ export function StorageForm({
                     </div>
 
                     {!itemsOk && (
-                        <div className="mt-2 text-xs text-rose-600">Add at least 1 item to continue.</div>
+                        <div className="mt-2 text-sm text-rose-600">Add at least 1 item to continue.</div>
                     )}
                 </div>
             )}
@@ -594,7 +589,7 @@ export function StorageForm({
 
                         </div>
                         {!scheduleOk && (
-                            <div className="mt-2 text-xs text-rose-600">
+                            <div className="mt-2 text-sm text-rose-600">
                                 Select a date and a time slot to continue.
                             </div>
                         )}
@@ -709,7 +704,7 @@ export function StorageForm({
                             {/* Error (optional) */}
                             {normalizeGBPhone(state.customerDetails.phone ?? "").length >= 10 &&
                                 !isValidGBPhone(state.customerDetails.phone ?? "") && (
-                                    <div className="text-xs text-rose-600">Enter a valid UK phone number.</div>
+                                    <div className="text-sm text-rose-600">Enter a valid UK phone number.</div>
                                 )}
                         </div>
                         <input
@@ -730,7 +725,7 @@ export function StorageForm({
                     </div>
 
                     {!detailsOk && (
-                        <div className="text-xs text-rose-600">
+                        <div className="text-sm text-rose-600">
                             Fill in postal code, phone number, house/flat number and street address to continue.
                         </div>
                     )}

@@ -56,13 +56,13 @@ export default function TrustpilotBadge({
 
         {/* reviews */}
         {reviewCount && (
-          <div className="mt-0.5 text-xs text-slate-400">
+          <div className="mt-0.5 text-sm text-slate-400">
             Based on {reviewCount.toLocaleString()} reviews
           </div>
         )}
 
         {/* trustpilot hint */}
-        <div className="mt-2 text-xs font-semibold text-green-600 opacity-80 group-hover:opacity-100 transition">
+        <div className="mt-2 text-sm font-semibold text-green-600 opacity-80 group-hover:opacity-100 transition">
           View reviews →
         </div>
       </div>

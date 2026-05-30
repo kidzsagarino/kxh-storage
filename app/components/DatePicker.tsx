@@ -35,10 +35,10 @@ export function DatePicker({ value, onChange, disabled }: Props) {
         table: "w-full table-fixed border-collapse",
         head_row: "w-full",
         row: "w-full",
-        head_cell: "w-[14.285%] text-xs text-slate-500 text-center",
+        head_cell: "w-[14.285%] text-sm text-slate-500 text-center",
         cell: "w-[14.285%] p-0 text-center",
         day: "mx-auto h-9 w-9 rounded-md text-sm hover:bg-emerald-50",
-        day_selected: "bg-emerald-600 text-white hover:bg-emerald-600",
+        day_selected: "bg-emerald-700 text-white hover:bg-emerald-700",
         day_today: "border border-emerald-500",
         day_outside: "text-slate-400 opacity-40",
       }}

@@ -59,7 +59,7 @@ function niceDate(iso?: string) {
 }
 
 function payBadge(status: string) {
-    const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold";
+    const base = "inline-flex rounded-full border px-2 py-1 text-sm font-semibold";
     switch (status) {
         case "paid":
             return `${base} bg-emerald-50 text-emerald-800 border-emerald-200`;
@@ -169,13 +169,13 @@ export default function AdminPaymentByIdClient() {
                     <div>
                         <div className="flex flex-wrap items-center gap-2">
                             <h1 className="text-lg font-semibold text-slate-900">Payment</h1>
-                            <span className="font-mono text-xs text-slate-600">{payment.id}</span>
+                            <span className="font-mono text-sm text-slate-600">{payment.id}</span>
                             <span className={payBadge(payment.status)}>{payment.status}</span>
-                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 capitalize">
+                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-sm font-semibold text-slate-700 capitalize">
                                 {payment.serviceType}
                             </span>
                         </div>
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-sm text-slate-500">
                             {/* Created: {niceDate(payment.createdAt)} • Updated: {niceDate(payment.updatedAt)} */}
                             Created: {niceDate(payment.createdAt)}
                         </p>
@@ -226,32 +226,32 @@ export default function AdminPaymentByIdClient() {
 
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Amount</div>
+                                <div className="text-sm font-semibold text-slate-500">Amount</div>
                                 <div className="mt-1 text-base font-semibold text-slate-900">
                                     {moneyGBP(payment.amount)}{" "}
-                                    <span className="text-xs font-semibold text-slate-500">
+                                    <span className="text-sm font-semibold text-slate-500">
                                         ({payment.currency})
                                     </span>
                                 </div>
                             </div>
 
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Method</div>
+                                <div className="text-sm font-semibold text-slate-500">Method</div>
                                 <div className="mt-1 text-sm font-semibold text-slate-900 capitalize">
                                     {payment.method.replace("_", " ")}
                                 </div>
                             </div>
 
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
-                                <div className="text-xs font-semibold text-slate-500">Order</div>
+                                <div className="text-sm font-semibold text-slate-500">Order</div>
                                 <div className="mt-1 flex items-center justify-between gap-3">
                                     <Link
                                         href={`/admin/orders/${payment.orderId}`}
-                                        className="font-mono text-xs text-emerald-700 hover:underline"
+                                        className="font-mono text-sm text-emerald-700 hover:underline"
                                     >
                                         {payment.orderId}
                                     </Link>
-                                    <span className="text-xs text-slate-500 capitalize">
+                                    <span className="text-sm text-slate-500 capitalize">
                                         {payment.serviceType}
                                     </span>
                                 </div>
@@ -261,15 +261,15 @@ export default function AdminPaymentByIdClient() {
                         {payment.method === "stripe" && (
                             <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <div className="rounded-xl border border-slate-200 bg-white p-3">
-                                    <div className="text-xs font-semibold text-slate-500">Stripe session</div>
-                                    <div className="mt-1 font-mono text-xs text-slate-800 word-wrap break-all">
+                                    <div className="text-sm font-semibold text-slate-500">Stripe session</div>
+                                    <div className="mt-1 font-mono text-sm text-slate-800 word-wrap break-all">
                                         {payment.stripeSessionId || "—"}
                                     </div>
                                 </div>
 
                                 <div className="rounded-xl border border-slate-200 bg-white p-3">
-                                    <div className="text-xs font-semibold text-slate-500">Payment intent</div>
-                                    <div className="mt-1 font-mono text-xs text-slate-800 word-wrap break-all">
+                                    <div className="text-sm font-semibold text-slate-500">Payment intent</div>
+                                    <div className="mt-1 font-mono text-sm text-slate-800 word-wrap break-all">
                                         {payment.stripePaymentIntentId || "—"}
                                     </div>
                                 </div>
@@ -277,7 +277,7 @@ export default function AdminPaymentByIdClient() {
                         )}
 
                         <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
-                            <div className="text-xs font-semibold text-slate-500">Notes</div>
+                            <div className="text-sm font-semibold text-slate-500">Notes</div>
                             <p className="mt-1 text-sm text-slate-700">{payment.notes || "—"}</p>
                         </div>
                     </section>
@@ -288,21 +288,21 @@ export default function AdminPaymentByIdClient() {
 
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Name</div>
+                                <div className="text-sm font-semibold text-slate-500">Name</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">
                                     {payment.customer.name}
                                 </div>
                             </div>
 
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
-                                <div className="text-xs font-semibold text-slate-500">Email</div>
+                                <div className="text-sm font-semibold text-slate-500">Email</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">
                                     {payment.customer.email}
                                 </div>
                             </div>
 
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
-                                <div className="text-xs font-semibold text-slate-500">Phone</div>
+                                <div className="text-sm font-semibold text-slate-500">Phone</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">
                                     {payment.customer.phone || "—"}
                                 </div>
@@ -384,7 +384,7 @@ export default function AdminPaymentByIdClient() {
                     </div>
 
                     {/* Developer note */}
-                    {/* <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">
+                    {/* <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
             When you wire this to Stripe later, replace alerts with:
             <ul className="mt-2 list-disc pl-5 space-y-1">
               <li>GET /api/admin/payments/:id</li>

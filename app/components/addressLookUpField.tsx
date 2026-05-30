@@ -116,7 +116,7 @@ export function AddressLookupField({
                                         }}
                                     >
                                         <div className="truncate font-medium text-slate-900">{sug.displayName}</div>
-                                        <div className="text-xs text-slate-500 truncate">
+                                        <div className="text-sm text-slate-500 truncate">
                                             {addr?.postcode ? `Postcode: ${addr.postcode}` : ""}
                                             {city ? (addr?.postcode ? ` • ${city}` : city) : ""}
                                         </div>
@@ -129,7 +129,7 @@ export function AddressLookupField({
             )}
 
             {open && searched && !loading && suggestions.length === 0 && (
-                <div className="mt-2 text-xs text-rose-600">
+                <div className="mt-2 text-sm text-rose-600">
                     No results found. Try a postcode or a street name.
                 </div>
             )}

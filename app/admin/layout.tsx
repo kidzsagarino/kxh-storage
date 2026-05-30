@@ -39,7 +39,7 @@ function AdminTopBar() {
           </div>
           <div>
             <div className="text-sm font-semibold text-slate-900">Admin</div>
-            <div className="text-xs text-slate-500">Internal portal</div>
+            <div className="text-sm text-slate-500">Internal portal</div>
           </div>
         </div>
 
@@ -56,19 +56,19 @@ function AdminMobileNav() {
       <div className="mx-auto grid grid-cols-3 gap-1 px-2 py-2">
         <Link
           href="/admin/orders"
-          className="rounded-xl px-2 py-2 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100"
+          className="rounded-xl px-2 py-2 text-center text-sm font-semibold text-slate-700 hover:bg-slate-100"
         >
           Orders
         </Link>
         <Link
           href="/admin/payments"
-          className="rounded-xl px-2 py-2 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100"
+          className="rounded-xl px-2 py-2 text-center text-sm font-semibold text-slate-700 hover:bg-slate-100"
         >
           Payments
         </Link>
         <Link
           href="/admin/settings"
-          className="rounded-xl px-2 py-2 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100"
+          className="rounded-xl px-2 py-2 text-center text-sm font-semibold text-slate-700 hover:bg-slate-100"
         >
           Settings
         </Link>
@@ -100,12 +100,12 @@ export default async function AdminLayout({
         <div className="grid gap-3 md:grid-cols-[260px_1fr] items-start">
           <aside className="hidden md:block">
             <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-              <div className="px-3 pb-2 text-xs font-semibold text-slate-500">
+              <div className="px-3 pb-2 text-sm font-semibold text-slate-500">
                 Navigation
               </div>
               <AdminNav />
               <div className="mt-3 border-t border-slate-200 pt-3">
-                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
                   Tip: Use Orders to confirm pickups and update statuses.
                 </div>
               </div>

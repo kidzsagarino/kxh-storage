@@ -80,7 +80,7 @@ export function ServicesGrid() {
               name={s.key}
               set="lucide"
               size={22}
-              className="text-emerald-600"
+              className="text-emerald-700"
               title={s.title}
             />
           </div>
@@ -93,7 +93,7 @@ export function ServicesGrid() {
             {s.desc}
           </p>
 
-          <div className="mt-4 text-xs font-semibold text-emerald-600">
+          <div className="mt-4 text-sm font-semibold text-emerald-800">
             Learn more →
           </div>
         </Link>

@@ -71,7 +71,7 @@ function ServiceOption(props: {
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <div className="text-sm font-extrabold text-slate-900">{props.title}</div>
-                    <div className="mt-0.5 text-xs font-semibold text-slate-600">{props.subtitle}</div>
+                    <div className="mt-0.5 text-sm font-semibold text-slate-600">{props.subtitle}</div>
                 </div>
 
                 <span
@@ -189,7 +189,7 @@ export function HeroQuoteBar() {
         >
             <div className="flex flex-col">
                 <span className={`text-sm font-bold ${active ? "text-emerald-900" : "text-slate-900"}`}>{title}</span>
-                <span className="text-xs text-slate-500 mt-0.5">{subtitle}</span>
+                <span className="text-sm text-slate-500 mt-0.5">{subtitle}</span>
             </div>
             <div className={`flex h-5 w-5 items-center justify-center rounded-full border-2 transition-colors ${active ? "border-emerald-500 bg-emerald-500" : "border-slate-200 bg-white"
                 }`}>
@@ -245,7 +245,7 @@ export function HeroQuoteBar() {
                         {/* right */}
                         <div className="space-y-5">
                             <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
-                                <p className="mb-4 text-[11px] font-bold uppercase tracking-wider text-emerald-600">
+                                <p className="mb-4 text-[11px] font-bold uppercase tracking-wider text-emerald-700">
                                     Included with {SERVICE_DATA[state.serviceType as keyof typeof SERVICE_DATA].label}
                                 </p>
 

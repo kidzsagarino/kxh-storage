@@ -110,7 +110,7 @@ export default function CommercialStoragePage() {
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
           <div className="max-w-5xl mx-auto px-4 text-center">
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
               Commercial Warehouse Storage London
             </div>
@@ -127,7 +127,7 @@ export default function CommercialStoragePage() {
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link
                 href="/?service=storage#pricing"
-                className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+                className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
               >
                 Get Commercial Quote
               </Link>

@@ -104,7 +104,7 @@ export default function ThirdPartyLogisticsPage() {
                 <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-24">
                     <div className="max-w-5xl mx-auto px-4 text-center">
 
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
                             <span className="h-2 w-2 rounded-full bg-emerald-500" />
                             Third Party Logistics London
                         </div>
@@ -123,7 +123,7 @@ export default function ThirdPartyLogisticsPage() {
                         <div className="mt-8">
                             <Link
                                 href="/?service=storage#pricing"
-                                className="inline-block rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+                                className="inline-block rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
                             >
                                 Get Instant Quote
                             </Link>
@@ -201,14 +201,14 @@ export default function ThirdPartyLogisticsPage() {
                                 also explore our{" "}
                                 <Link
                                     href="/inventory-management-london"
-                                    className="text-emerald-600 hover:underline font-medium"
+                                    className="text-emerald-700 hover:underline font-medium"
                                 >
                                     inventory management services
                                 </Link>
                                 {" "}and{" "}
                                 <Link
                                     href="/pallet-storage-london"
-                                    className="text-emerald-600 hover:underline font-medium"
+                                    className="text-emerald-700 hover:underline font-medium"
                                 >
                                     pallet storage solutions
                                 </Link>
@@ -315,7 +315,7 @@ export default function ThirdPartyLogisticsPage() {
                                     key={step}
                                     className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                                 >
-                                    <div className="text-2xl font-black text-emerald-600">
+                                    <div className="text-2xl font-black text-emerald-700">
                                         {index + 1}
                                     </div>
 
@@ -478,7 +478,7 @@ export default function ThirdPartyLogisticsPage() {
                                 <Link
                                     key={l.slug}
                                     href={`/warehouse-storage-london/${l.slug}`}
-                                    className="text-emerald-600 hover:underline text-sm"
+                                    className="text-emerald-700 hover:underline text-sm"
                                 >
                                     Warehouse storage in {l.name}
                                 </Link>
