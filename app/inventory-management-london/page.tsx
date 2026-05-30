@@ -121,6 +121,17 @@ export default function InventoryManagementPage() {
               Organised warehouse stock handling, item categorisation, secure
               storage, pickup, and return delivery for London businesses.
             </p>
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              Businesses needing outsourced warehouse operations can also explore our{" "}
+              <Link
+                href="/third-party-logistics-london"
+                className="text-emerald-600 hover:underline font-medium"
+              >
+                third party logistics services
+              </Link>
+              {" "}for inventory handling, pallet coordination, collection,
+              and flexible delivery support across London.
+            </p>
 
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link
@@ -280,6 +291,11 @@ export default function InventoryManagementPage() {
                   href: "/commercial-storage-london",
                   desc: "Scalable storage for growing companies.",
                 },
+                {
+                  title: "Third Party Logistics",
+                  href: "/third-party-logistics-london",
+                  desc: "3PL warehouse support including inventory handling and delivery coordination.",
+                }
               ].map((item) => (
                 <Link
                   key={item.href}

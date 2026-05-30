@@ -24,6 +24,8 @@ const locationServices = [
     { label: "Inventory Management", href: "/inventory-management-london" },
     { label: "Pallet Storage", href: "/pallet-storage-london" },
     { label: "Commercial Storage", href: "/commercial-storage-london" },
+    { label: "Third Party Logistics", href: "/third-party-logistics-london" },
+
     {
         label: "Moving Services",
         href: "/logistics-moving-london",
@@ -43,6 +45,7 @@ export default function MainFooter({
         { label: "Inventory Management", href: "/inventory-management-london" },
         { label: "Pallet Storage", href: "/pallet-storage-london" },
         { label: "Commercial Storage", href: "/commercial-storage-london" },
+        { label: "Third Party Logistics", href: "/third-party-logistics-london" },
         { label: "Moving Services", href: "/logistics-moving-london" },
         { label: "Document Shredding", href: "/shredding-solutions-london" },
     ],

@@ -121,7 +121,17 @@ export default function PalletStoragePage() {
               Secure warehouse storage for palletised stock, bulk goods,
               ecommerce inventory, retail overflow, and commercial items.
             </p>
-
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              For businesses managing larger stock volumes, our{" "}
+              <Link
+                href="/third-party-logistics-london"
+                className="text-emerald-600 hover:underline font-medium"
+              >
+                third party logistics warehouse services
+              </Link>
+              {" "}can support pallet coordination, inventory storage,
+              warehouse overflow, and delivery handling.
+            </p>
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link
                 href="/?service=storage#pricing"
@@ -282,6 +292,11 @@ export default function PalletStoragePage() {
                   href: "/commercial-storage-london",
                   desc: "Scalable storage for growing businesses.",
                 },
+                {
+                  title: "Third Party Logistics",
+                  href: "/third-party-logistics-london",
+                  desc: "3PL warehouse support including inventory handling and delivery coordination.",
+                }
               ].map((item) => (
                 <Link
                   key={item.href}

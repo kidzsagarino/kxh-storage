@@ -5,6 +5,7 @@ import Link from "next/link";
 import { londonLocations } from "../lib/location";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
+import Image from "next/image";
 
 export const metadata = {
   title: "Managed Warehouse Storage in London with Pickup & Delivery | KXH Logistics",
@@ -187,6 +188,16 @@ export default function WarehouseStoragePage() {
             <div className="mt-6 flex justify-center">
               <TrustpilotPill />
             </div>
+            <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
+              <Image
+                src="/images/warehouse-storage/warehouse-hero.webp"
+                alt="Managed warehouse storage in London with pickup and delivery"
+                width={1400}
+                height={800}
+                priority
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
         </section>
 
@@ -256,7 +267,7 @@ export default function WarehouseStoragePage() {
               },
               {
                 title: "Inventory Management",
-                desc: "We organize and track your stored items for easy access.",
+                desc: "We organize, track, and manage stored inventory for businesses and commercial storage needs.",
               },
               {
                 title: "Secure Storage",
@@ -268,6 +279,17 @@ export default function WarehouseStoragePage() {
                 <p className="text-sm text-slate-600">{f.desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+        <section className="pb-16 max-w-5xl mx-auto px-4">
+          <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
+            <Image
+              src="/images/warehouse-storage/inventory-management.webp"
+              alt="Inventory management warehouse storage"
+              width={1200}
+              height={700}
+              className="w-full h-auto object-cover"
+            />
           </div>
         </section>
         <section className="py-16 max-w-5xl mx-auto px-4 border-t border-slate-200">
@@ -287,6 +309,46 @@ export default function WarehouseStoragePage() {
               university breaks, or needing temporary storage during relocation,
               our managed service helps make storage simpler and more convenient.
             </p>
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              Businesses looking for organised stock handling can also
+              explore our{" "}
+              <Link
+                href="/inventory-management-london"
+                className="text-emerald-600 hover:underline font-medium"
+              >
+                inventory management storage services
+              </Link>
+              {" "}for ecommerce inventory, warehouse handling,
+              and flexible delivery support across London.
+            </p>
+            <p className="mt-8 text-center text-slate-600 max-w-3xl mx-auto">
+              Need support for larger commercial stock or palletised goods?
+              Explore our{" "}
+              <Link
+                href="/pallet-storage-london"
+                className="text-emerald-600 hover:underline font-medium"
+              >
+                pallet storage services
+              </Link>
+              {" "}and{" "}
+              <Link
+                href="/third-party-logistics-london"
+                className="text-emerald-600 hover:underline font-medium"
+              >
+                third party logistics solutions
+              </Link>
+              {" "}for warehouse overflow, inventory coordination,
+              and business delivery support.
+            </p>
+            <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
+              <Image
+                src="/images/warehouse-storage/student-storage.webp"
+                alt="Student storage and apartment relocation services"
+                width={1200}
+                height={700}
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
         </section>
         <section className="py-14 border-t border-slate-200/70 bg-slate-50">
@@ -303,9 +365,18 @@ export default function WarehouseStoragePage() {
                 inventory management, and commercial logistics support
                 across London.
               </p>
-            </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            </div>
+            <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
+              <Image
+                src="/images/warehouse-storage/business-storage.webp"
+                alt="Business inventory warehouse storage in London"
+                width={1200}
+                height={700}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
               <Link
                 href="/business-storage-london"
@@ -358,6 +429,19 @@ export default function WarehouseStoragePage() {
                   Scalable warehouse storage for growing businesses.
                 </p>
               </Link>
+              <Link
+                href="/third-party-logistics-london"
+                className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold text-slate-900">
+                  Third Party Logistics
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  3PL warehouse support including inventory handling,
+                  pallet storage, and delivery coordination.
+                </p>
+              </Link>
 
             </div>
           </div>
@@ -401,6 +485,17 @@ export default function WarehouseStoragePage() {
                 <p className="text-sm text-slate-600 mt-2">{s.desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+        <section className="pb-16 max-w-5xl mx-auto px-4">
+          <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
+            <Image
+              src="/images/warehouse-storage/warehouse-team.webp"
+              alt="KXH Storage and Logistics warehouse team"
+              width={1200}
+              height={700}
+              className="w-full h-auto object-cover"
+            />
           </div>
         </section>
         <TestimonialsSection />

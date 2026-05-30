@@ -491,7 +491,7 @@ export default async function HomePage() {
 
                             />
                         </div>
- 
+
                         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                             <img
                                 src="/images/student-storage.webp"
@@ -542,6 +542,12 @@ export default async function HomePage() {
 
                                 <Link href="/commercial-storage-london" className="text-emerald-600 hover:underline">
                                     Commercial Storage London
+                                </Link>
+                                <Link
+                                    href="/third-party-logistics-london"
+                                    className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                >
+                                    Third Party Logistics London
                                 </Link>
                             </div>
                         </section>

@@ -139,6 +139,11 @@ export default function ServicesPage() {
             desc: "Commercial warehouse support for offices, equipment, stock overflow, and business storage.",
             href: "/commercial-storage-london",
         },
+        {
+            title: "Third Party Logistics London",
+            desc: "3PL warehouse support including inventory handling, pallet storage, collection, and delivery coordination.",
+            href: "/third-party-logistics-london",
+        },
     ];
 
     return (

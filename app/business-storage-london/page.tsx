@@ -184,7 +184,17 @@ export default function BusinessStoragePage() {
               archived documents, and commercial items. We collect, store, and
               deliver your items when needed.
             </p>
-
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              KXH Logistics also supports businesses needing{" "}
+              <Link
+                href="/third-party-logistics-london"
+                className="text-emerald-600 hover:underline font-medium"
+              >
+                third party logistics support
+              </Link>
+              {" "}for inventory management, warehouse handling,
+              pallet storage, and collection and delivery coordination.
+            </p>
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link
                 href="/?service=storage#pricing"
