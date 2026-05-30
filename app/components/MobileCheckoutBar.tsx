@@ -17,7 +17,7 @@ export function MobileCheckoutBar() {
             <div className="mx-auto max-w-6xl px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                        <div className="text-xs text-slate-600">{totals.title}</div>
+                        <div className="text-sm text-slate-600">{totals.title}</div>
                         <div className="truncate text-lg font-medium text-slate-900">
                             {totals.amountText}
                         </div>

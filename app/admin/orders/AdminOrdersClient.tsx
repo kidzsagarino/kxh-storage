@@ -203,7 +203,7 @@ export default function AdminOrdersClient() {
                     <td className="px-4 py-4">
                       <Link
                         href={`/admin/orders/${o.id}`}
-                        className="font-mono text-xs font-bold text-emerald-600 hover:underline"
+                        className="font-mono text-sm font-bold text-emerald-700 hover:underline"
                       >
                         #{o.orderNumber}
                       </Link>
@@ -218,8 +218,8 @@ export default function AdminOrdersClient() {
 
                     <td className="px-4 py-4">
                       <div className="font-semibold text-slate-900">{o.customer.fullName}</div>
-                      <div className="text-xs text-slate-500">{o.customer.email}</div>
-                      <div className="text-xs text-slate-500">{o.customer.phone}</div>
+                      <div className="text-sm text-slate-500">{o.customer.email}</div>
+                      <div className="text-sm text-slate-500">{o.customer.phone}</div>
                     </td>
 
                     <td className="px-4 py-4">
@@ -227,8 +227,8 @@ export default function AdminOrdersClient() {
                         <div key={address.id}>
                           <div className="text-[11px] font-bold">{address?.type}</div>
                           <div className="text-slate-700 truncate max-w-[200px]">{address?.line1}</div>
-                          <div className="text-xs text-slate-500">{address?.line2}</div>
-                          <div className="text-xs text-slate-500">{address?.postalCode}</div>
+                          <div className="text-sm text-slate-500">{address?.line2}</div>
+                          <div className="text-sm text-slate-500">{address?.postalCode}</div>
                         </div>
                       ))}
                     </td>
@@ -269,7 +269,7 @@ export default function AdminOrdersClient() {
                         £{(o.totalMinor / 100).toFixed(2)}
                       </div>
                       {o.discountMinor > 0 && (
-                        <div className="text-[10px] text-emerald-600 font-medium">Disc. Applied</div>
+                        <div className="text-[10px] text-emerald-700 font-medium">Disc. Applied</div>
                       )}
                     </td>
                   </tr>

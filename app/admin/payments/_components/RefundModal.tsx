@@ -106,7 +106,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
           <div className="flex items-start justify-between gap-4">
             <div>
               <h3 className="text-base font-semibold text-slate-900">Refund payment</h3>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-sm text-slate-500">
                 Available to refund:{" "}
                 <span className="font-semibold text-slate-700">
                   {money(maxAmount)} {currency}
@@ -135,7 +135,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
               />
               <div className="min-w-0">
                 <div className="text-sm font-semibold text-slate-900">Full refund</div>
-                <div className="text-xs text-slate-600">
+                <div className="text-sm text-slate-600">
                   Refund the full amount ({money(maxAmount)}).
                 </div>
               </div>
@@ -160,7 +160,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
               </div>
 
               {touched && !amountOk && (
-                <div className="text-xs text-rose-600">
+                <div className="text-sm text-rose-600">
                   Enter a valid amount between £0.01 and {money(maxAmount)}.
                 </div>
               )}
@@ -185,7 +185,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
             {/* Optional note */}
             {/* <div className="grid gap-2">
               <label className="text-sm font-semibold text-slate-700">
-                Note <span className="text-xs font-normal text-slate-500">(optional)</span>
+                Note <span className="text-sm font-normal text-slate-500">(optional)</span>
               </label>
               <textarea
                 value={note}
@@ -218,7 +218,7 @@ export function RefundModal({ open, onClose, maxAmount, currency = "GBP", onConf
             </div>
 
             {/* Warning */}
-            <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+            <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
               Refunds should be confirmed with the customer when necessary. This action is not reversible.
             </div>
           </div>

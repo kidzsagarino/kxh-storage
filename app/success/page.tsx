@@ -126,7 +126,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 Contact support
               </Link> */}
             </div>
-            <p className="mt-4 text-xs text-slate-500">
+            <p className="mt-4 text-sm text-slate-500">
               Stripe session: <span className="font-mono">{session_id}</span>
             </p>
           </div>
@@ -378,7 +378,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 {isMoving || isReturn ? (
                   <>
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                      <div className="text-xs font-semibold text-slate-500">
+                      <div className="text-sm font-semibold text-slate-500">
                         Pickup
                       </div>
                       <div className="mt-2 text-sm font-medium text-slate-900">
@@ -387,7 +387,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                     </div>
 
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                      <div className="text-xs font-semibold text-slate-500">
+                      <div className="text-sm font-semibold text-slate-500">
                         Drop-off
                       </div>
                       <div className="mt-2 text-sm font-medium text-slate-900">
@@ -395,7 +395,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                       </div>
                     </div>
                     {isMoving && (<div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                      <div className="text-xs font-semibold text-slate-500">
+                      <div className="text-sm font-semibold text-slate-500">
                         Distance
                       </div>
                       <div className="mt-2 flex flex-wrap items-baseline justify-between gap-2">
@@ -406,7 +406,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                           {money(distanceCostMinor)}
                         </div>
                       </div>
-                      <div className="mt-1 text-xs text-slate-500">
+                      <div className="mt-1 text-sm text-slate-500">
                         Calculated at {money(movingPricePerMileMinor)} per mile
                       </div>
                     </div>)}
@@ -414,7 +414,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                   </>
                 ) : (
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                    <div className="text-xs font-semibold text-slate-500">
+                    <div className="text-sm font-semibold text-slate-500">
                       Address
                     </div>
                     <div className="mt-2 text-sm font-medium text-slate-900">
@@ -425,7 +425,7 @@ export default async function SuccessPage({ searchParams }: Props) {
 
                 {order?.notes ? (
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                    <div className="text-xs font-semibold text-slate-500">
+                    <div className="text-sm font-semibold text-slate-500">
                       Notes
                     </div>
                     <div className="mt-2 text-sm text-slate-700">
@@ -435,7 +435,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 ) : null}
               </div>
 
-              <p className="mt-4 text-xs text-slate-500">
+              <p className="mt-4 text-sm text-slate-500">
                 Payment processed by Stripe. If you don&apos;t see the email in 2
                 minutes, check spam/junk.
               </p>
@@ -447,7 +447,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 <h2 className="text-sm font-semibold text-slate-900">
                   Order details
                 </h2>
-                <div className="text-xs text-slate-500">
+                <div className="text-sm text-slate-500">
                   {rows.length} item{rows.length === 1 ? "" : "s"}
                 </div>
               </div>
@@ -463,7 +463,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                         <div className="truncate text-sm font-medium text-slate-900">
                           {r.label}
                         </div>
-                        <div className="mt-1 text-xs text-slate-500">
+                        <div className="mt-1 text-sm text-slate-500">
                           Qty: {r.qty}
                         </div>
                       </div>

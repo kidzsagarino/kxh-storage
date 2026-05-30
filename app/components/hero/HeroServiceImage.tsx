@@ -24,7 +24,7 @@ export function HeroServiceImage() {
       <div className="absolute inset-x-0 bottom-0 z-20 p-4 sm:p-6">
         <div className="flex flex-wrap items-center gap-2">
           {hero.secondaryPill && (
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/85 px-4 py-2 text-xs font-semibold text-slate-800 shadow-lg backdrop-blur-md">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/85 px-4 py-2 text-sm font-semibold text-slate-800 shadow-lg backdrop-blur-md">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -33,7 +33,7 @@ export function HeroServiceImage() {
             </span>
           )}
 
-          <span className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-900/20">
+          <span className="inline-flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-900/20">
             <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
             {hero.primaryPill}
           </span>

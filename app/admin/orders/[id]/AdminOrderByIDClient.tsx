@@ -10,7 +10,7 @@ import { toast } from "sonner";
 // ---- UI Helpers ----
 
 function statusBadge(status: string) {
-    const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold uppercase";
+    const base = "inline-flex rounded-full border px-2 py-1 text-sm font-semibold uppercase";
     const s = status?.toLowerCase();
     switch (s) {
         case "draft":
@@ -30,7 +30,7 @@ function statusBadge(status: string) {
 }
 
 function payBadge(status: string) {
-    const base = "inline-flex rounded-full border px-2 py-1 text-xs font-semibold uppercase";
+    const base = "inline-flex rounded-full border px-2 py-1 text-sm font-semibold uppercase";
     const s = status?.toLowerCase();
     switch (s) {
         case "paid":
@@ -104,7 +104,7 @@ export default function AdminOrderByIdClient() {
         return (
             <main className="p-10 text-center">
                 <h1 className="text-xl font-bold">Order not found</h1>
-                <Link href="/admin/orders" className="text-emerald-600 hover:underline">Back to list</Link>
+                <Link href="/admin/orders" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">Back to list</Link>
             </main>
         );
     }
@@ -229,7 +229,7 @@ export default function AdminOrderByIdClient() {
                         </div>
 
                         {/* Bottom Row: Metadata */}
-                        <div className="flex items-center gap-3 text-xs text-slate-500">
+                        <div className="flex items-center gap-3 text-sm text-slate-500">
                             <div className="flex items-center gap-1">
                                 <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -287,15 +287,15 @@ export default function AdminOrderByIdClient() {
                         <h2 className="text-sm font-semibold text-slate-900">Customer</h2>
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Name</div>
+                                <div className="text-sm font-semibold text-slate-500">Name</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">{order.customer?.fullName}</div>
                             </div>
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Phone</div>
+                                <div className="text-sm font-semibold text-slate-500">Phone</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">{order.customer?.phone || "N/A"}</div>
                             </div>
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
-                                <div className="text-xs font-semibold text-slate-500">Email</div>
+                                <div className="text-sm font-semibold text-slate-500">Email</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">{order.customer?.email}</div>
                             </div>
                         </div>
@@ -305,47 +305,47 @@ export default function AdminOrderByIdClient() {
                     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                         <div className="flex justify-between items-center">
                             <h2 className="text-sm font-semibold text-slate-900">Collection Details</h2>
-                            <a href={getMapUrl(pickupAddress)} target="_blank" className="text-xs text-emerald-600 font-bold hover:underline">VIEW MAP</a>
+                            <a href={getMapUrl(pickupAddress)} target="_blank" className="text-sm text-emerald-700 font-bold hover:underline">VIEW MAP</a>
                         </div>
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">House Number</div>
+                                <div className="text-sm font-semibold text-slate-500">House Number</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.line1}</div>
                             </div>
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Address</div>
+                                <div className="text-sm font-semibold text-slate-500">Address</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.line2}</div>
                             </div>
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Postcode</div>
+                                <div className="text-sm font-semibold text-slate-500">Postcode</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">{pickupAddress?.postalCode}</div>
                             </div>
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Date</div>
+                                <div className="text-sm font-semibold text-slate-500">Date</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">
                                     {order.serviceDate ? new Date(order.serviceDate).toLocaleDateString('en-GB', { dateStyle: 'long' }) : "—"}
                                 </div>
                             </div>
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="text-xs font-semibold text-slate-500">Time slot</div>
+                                <div className="text-sm font-semibold text-slate-500">Time slot</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">
                                     {slot ? `${to12Hour(slot.startTime)} – ${to12Hour(slot.endTime)}` : "—"}
                                 </div>
                             </div>
                             {isMoving && (
                                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                    <div className="text-xs font-semibold text-slate-500">Distance</div>
+                                    <div className="text-sm font-semibold text-slate-500">Distance</div>
                                     <div className="mt-1 text-sm font-medium text-slate-900">
                                         {distanceMiles ? `${distanceMiles} mile${distanceMiles === 1 ? "" : "s"}` : "—"}
                                     </div>
-                                    <div className="mt-1 text-xs text-slate-500">
+                                    <div className="mt-1 text-sm text-slate-500">
                                         Cost: {money(distanceCostMinor)}
                                     </div>
                                 </div>
                             )}
                             {order.notes && (
                                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                    <div className="text-xs font-semibold text-slate-500">Notes</div>
+                                    <div className="text-sm font-semibold text-slate-500">Notes</div>
                                     <div className="mt-1 text-sm font-medium text-slate-900">
                                         {order.notes}
                                     </div>
@@ -360,15 +360,15 @@ export default function AdminOrderByIdClient() {
                         <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-sm font-semibold text-blue-700">Delivery Details</h2>
-                                <a href={getMapUrl(deliveryAddress)} target="_blank" className="text-xs text-blue-600 font-bold hover:underline">VIEW MAP</a>
+                                <a href={getMapUrl(deliveryAddress)} target="_blank" className="text-sm text-blue-600 font-bold hover:underline">VIEW MAP</a>
                             </div>
                             <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:col-span-1">
-                                    <div className="text-xs font-semibold text-slate-500">Address</div>
+                                    <div className="text-sm font-semibold text-slate-500">Address</div>
                                     <div className="mt-1 text-sm font-medium text-slate-900">{deliveryAddress.line1}</div>
                                 </div>
                                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                    <div className="text-xs font-semibold text-slate-500">Address</div>
+                                    <div className="text-sm font-semibold text-slate-500">Address</div>
                                     <div className="mt-1 text-sm font-medium text-slate-900">{deliveryAddress.line2}</div>
                                 </div>
                             </div>
@@ -385,7 +385,7 @@ export default function AdminOrderByIdClient() {
                             <p className="text-sm text-emerald-50 font-medium mb-4">The customer has requested packing assistance.</p>
                             <div className="grid grid-cols-2 gap-3">
                                 {['Large Boxes', 'Bubble Wrap', 'Packing Tape', 'Marker Pens'].map(tool => (
-                                    <div key={tool} className="flex items-center gap-2 text-xs text-emerald-200">
+                                    <div key={tool} className="flex items-center gap-2 text-sm text-emerald-200">
                                         <div className="w-4 h-4 rounded border border-emerald-700 flex items-center justify-center text-[8px]">✓</div>
                                         {tool}
                                     </div>
@@ -490,7 +490,7 @@ export default function AdminOrderByIdClient() {
                                     <span className="text-emerald-800 font-semibold">Discount Applied</span>
                                     <span className="font-bold text-emerald-900">− {money(order.discountMinor)}</span>
                                 </div>
-                                <div className="text-xs text-emerald-700">
+                                <div className="text-sm text-emerald-700">
                                     {durationMonths} month plan • {discountPercent}% off
                                 </div>
 
@@ -502,7 +502,7 @@ export default function AdminOrderByIdClient() {
                                         <span className="text-emerald-800 font-semibold">Discount Code Applied</span>
                                         <span className="font-bold text-emerald-900">− {money((discountCodeMinor ?? 0))}</span>
                                     </div>
-                                    <div className="text-xs text-emerald-700">
+                                    <div className="text-sm text-emerald-700">
                                         {order.discountCode.code} • {order.discountCode.type === "percentage" ? `${order.discountCode.valueMinor}% off` : money(order.discountCode.valueMinor / 100) + " off"}  <br />
                                     </div>
                                 </div>
@@ -521,7 +521,7 @@ export default function AdminOrderByIdClient() {
                                         {formatNextBilling(nextBillingAt)}
                                     </span>
                                 </div>
-                                <div className="mt-1 text-xs text-slate-500">
+                                <div className="mt-1 text-sm text-slate-500">
                                     Based on the active subscription period end
                                 </div>
                             </div>
@@ -558,7 +558,7 @@ export default function AdminOrderByIdClient() {
 
                                             {/* Right Side: Date & Time */}
                                             <div className="flex flex-col items-end shrink-0"> {/* shrink-0 keeps the date from squishing */}
-                                                <span className="text-xs font-medium text-slate-500 whitespace-nowrap">
+                                                <span className="text-sm font-medium text-slate-500 whitespace-nowrap">
                                                     {payment.createdAt
                                                         ? new Date(payment.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
                                                         : "N/A"}
@@ -706,12 +706,12 @@ export default function AdminOrderByIdClient() {
                                     order.emailLogs.map((l: any) => (
                                         <div key={l.id} className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
                                             <div className="min-w-0">
-                                                <div className="text-xs font-bold text-slate-900">
+                                                <div className="text-sm font-bold text-slate-900">
                                                     {l.type} • {l.status}
                                                 </div>
-                                                <div className="text-xs text-slate-600 break-all">To: {l.to}</div>
-                                                {l.subject && <div className="text-xs text-slate-600">Subject: {l.subject}</div>}
-                                                {l.error && <div className="text-xs text-rose-600 mt-1 break-all">Error: {l.error}</div>}
+                                                <div className="text-sm text-slate-600 break-all">To: {l.to}</div>
+                                                {l.subject && <div className="text-sm text-slate-600">Subject: {l.subject}</div>}
+                                                {l.error && <div className="text-sm text-rose-600 mt-1 break-all">Error: {l.error}</div>}
                                             </div>
 
                                             <div className="shrink-0 text-[10px] text-slate-500">

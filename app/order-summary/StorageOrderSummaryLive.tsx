@@ -106,7 +106,7 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
 
         <div className="flex justify-between text-sm text-slate-700">
           <span>Storage Discount</span>
-          <span className={discountPerMonth > 0 ? "text-emerald-600" : ""}>
+          <span className={discountPerMonth > 0 ? "text-emerald-700" : ""}>
             {discountPerMonth > 0
               ? `−${money(discountPerMonth, currencySymbol)}`
               : money(0, currencySymbol)}
@@ -127,7 +127,7 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
         {codeDiscount > 0 && (
           <div className="flex justify-between text-sm text-slate-700">
             <span>Discount code</span>
-            <span className="text-emerald-600">
+            <span className="text-emerald-700">
               −{money(codeDiscount, currencySymbol)}
             </span>
           </div>
@@ -175,10 +175,10 @@ export function StorageOrderSummary({ onProceed, busy, error }: Props) {
           ))
         )}
       </div>
-      <p className="text-xs text-slate-500">
+      <p className="text-sm text-slate-500">
         {state.address.houseNumber + " " + state.address.streetAddress}
       </p>
-      <p className="text-xs text-slate-500">
+      <p className="text-sm text-slate-500">
         {items.length === 0
           ? "Add items on the left to see your order summary."
           : (() => {

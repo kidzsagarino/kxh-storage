@@ -170,7 +170,7 @@ export default function BusinessStoragePage() {
 
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
           <div className="max-w-5xl mx-auto px-4 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
               Secure Business Storage in London
             </div>
@@ -188,7 +188,7 @@ export default function BusinessStoragePage() {
               KXH Logistics also supports businesses needing{" "}
               <Link
                 href="/third-party-logistics-london"
-                className="text-emerald-600 hover:underline font-medium"
+                className="text-emerald-700 hover:underline font-medium"
               >
                 third party logistics support
               </Link>
@@ -198,7 +198,7 @@ export default function BusinessStoragePage() {
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link
                 href="/?service=storage#pricing"
-                className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+                className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
               >
                 Get Business Quote
               </Link>
@@ -382,7 +382,7 @@ export default function BusinessStoragePage() {
               },
             ].map((s) => (
               <div key={s.step} className="rounded-2xl border border-slate-200 p-6">
-                <div className="text-2xl font-black text-emerald-600">
+                <div className="text-2xl font-black text-emerald-700">
                   {s.step}
                 </div>
                 <h3 className="mt-3 font-bold">{s.title}</h3>
@@ -501,7 +501,7 @@ export default function BusinessStoragePage() {
                 <Link
                   key={l.slug}
                   href={`/warehouse-storage-london/${l.slug}`}
-                  className="text-emerald-600 hover:underline text-sm"
+                  className="text-emerald-700 hover:underline text-sm"
                 >
                   Business Storage in {l.name}
                 </Link>

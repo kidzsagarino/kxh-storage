@@ -145,7 +145,7 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
         {codeDiscount > 0 && (
           <div className="flex justify-between text-sm text-slate-700">
             <span>Discount code</span>
-            <span className="text-emerald-600">
+            <span className="text-emerald-700">
               −{money(codeDiscount, currencySymbol)}
             </span>
           </div>
@@ -179,7 +179,7 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
           </div>
         ))}
       </div>
-      <p className="text-xs text-slate-500">
+      <p className="text-sm text-slate-500">
         {items.length === 0
           ? "Add items on the left to see your order summary."
           : (() => {
@@ -190,10 +190,10 @@ export function MovingOrderSummary({ onProceed, busy, error }: Props) {
             return `${state.collectionDate} ${slotLabel}`;
           })()}
       </p>
-      <p className="text-xs text-slate-500">
+      <p className="text-sm text-slate-500">
         {state.fromLocation?.houseNumber + " " + state.fromLocation?.streetAddress}
       </p>
-      <p className="text-xs text-slate-500">{state.notes}</p>
+      <p className="text-sm text-slate-500">{state.notes}</p>
 
       {error ? (
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">

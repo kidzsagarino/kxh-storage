@@ -223,7 +223,7 @@ export default async function SuccessPage({
                                             <span className="text-emerald-800 font-semibold">Discount Code Applied</span>
                                             <span className="font-bold text-emerald-900">− {money((discountCodeMinor ?? 0))}</span>
                                         </div>
-                                        <div className="text-xs text-emerald-700">
+                                        <div className="text-sm text-emerald-700">
                                             {order.discountCode.code} • {order.discountCode.type === "percentage" ? `${order.discountCode.valueMinor}% off` : money(order.discountCode.valueMinor / 100) + " off"}  <br />
                                         </div>
                                     </div>
@@ -308,7 +308,7 @@ export default async function SuccessPage({
                                 {isMoving || isReturn ? (
                                     <>
                                         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                                            <div className="text-xs font-semibold text-slate-500">
+                                            <div className="text-sm font-semibold text-slate-500">
                                                 Pickup
                                             </div>
                                             <div className="mt-2 text-sm font-medium text-slate-900">
@@ -317,7 +317,7 @@ export default async function SuccessPage({
                                         </div>
 
                                         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                                            <div className="text-xs font-semibold text-slate-500">
+                                            <div className="text-sm font-semibold text-slate-500">
                                                 Drop-off
                                             </div>
                                             <div className="mt-2 text-sm font-medium text-slate-900">
@@ -325,7 +325,7 @@ export default async function SuccessPage({
                                             </div>
                                         </div>
                                         {isMoving && (<div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                                            <div className="text-xs font-semibold text-slate-500">
+                                            <div className="text-sm font-semibold text-slate-500">
                                                 Distance
                                             </div>
                                             <div className="mt-2 flex flex-wrap items-baseline justify-between gap-2">
@@ -336,7 +336,7 @@ export default async function SuccessPage({
                                                     {money(distanceCostMinor)}
                                                 </div>
                                             </div>
-                                            <div className="mt-1 text-xs text-slate-500">
+                                            <div className="mt-1 text-sm text-slate-500">
                                                 Calculated at {money(movingPricePerMileMinor)} per mile
                                             </div>
                                         </div>)}
@@ -344,7 +344,7 @@ export default async function SuccessPage({
                                     </>
                                 ) : (
                                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                                        <div className="text-xs font-semibold text-slate-500">
+                                        <div className="text-sm font-semibold text-slate-500">
                                             Address
                                         </div>
                                         <div className="mt-2 text-sm font-medium text-slate-900">
@@ -355,7 +355,7 @@ export default async function SuccessPage({
 
                                 {order?.notes ? (
                                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                                        <div className="text-xs font-semibold text-slate-500">
+                                        <div className="text-sm font-semibold text-slate-500">
                                             Notes
                                         </div>
                                         <div className="mt-2 text-sm text-slate-700">
@@ -365,7 +365,7 @@ export default async function SuccessPage({
                                 ) : null}
                             </div>
 
-                            <p className="mt-4 text-xs text-slate-500">
+                            <p className="mt-4 text-sm text-slate-500">
                                 Payment processed by Stripe. If you don&apos;t see the email in 2
                                 minutes, check spam/junk.
                             </p>
@@ -377,7 +377,7 @@ export default async function SuccessPage({
                                 <h2 className="text-sm font-semibold text-slate-900">
                                     Order details
                                 </h2>
-                                <div className="text-xs text-slate-500">
+                                <div className="text-sm text-slate-500">
                                     {rows.length} item{rows.length === 1 ? "" : "s"}
                                 </div>
                             </div>
@@ -393,7 +393,7 @@ export default async function SuccessPage({
                                                 <div className="truncate text-sm font-medium text-slate-900">
                                                     {r.label}
                                                 </div>
-                                                <div className="mt-1 text-xs text-slate-500">
+                                                <div className="mt-1 text-sm text-slate-500">
                                                     Qty: {r.qty}
                                                 </div>
                                             </div>

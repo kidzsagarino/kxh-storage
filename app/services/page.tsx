@@ -172,7 +172,7 @@ export default function ServicesPage() {
                         <div className="mt-8 flex justify-center">
                             <Link
                                 href="/#pricing"
-                                className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-emerald-700 transition"
+                                className="bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-emerald-700 transition"
                             >
                                 Get Quote
                             </Link>
@@ -196,7 +196,7 @@ export default function ServicesPage() {
                                 href={service.href}
                                 className="group border border-slate-200 rounded-2xl p-6 hover:border-emerald-500 hover:shadow-sm transition bg-white"
                             >
-                                <h3 className="text-lg font-bold group-hover:text-emerald-600 transition">
+                                <h3 className="text-lg font-bold group-hover:text-emerald-700 transition">
                                     {service.title}
                                 </h3>
 
@@ -204,7 +204,7 @@ export default function ServicesPage() {
                                     {service.desc}
                                 </p>
 
-                                <div className="mt-4 text-sm text-emerald-600 font-medium">
+                                <div className="mt-4 text-sm text-emerald-700 font-medium">
                                     Learn more →
                                 </div>
                             </Link>
@@ -290,7 +290,7 @@ export default function ServicesPage() {
                                 <Link
                                     key={s.href}
                                     href={s.href}
-                                    className="text-emerald-600 hover:underline text-sm"
+                                    className="text-emerald-700 hover:underline text-sm"
                                 >
                                     {s.title}
                                 </Link>

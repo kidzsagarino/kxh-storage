@@ -28,7 +28,7 @@ export default function PricingSwitcher({
                     p-3 sm:p-4">
                 <div>
                     <div className="text-sm font-medium text-slate-900">Service</div>
-                    <div className="text-xs text-slate-500">Choose a service to continue</div>
+                    <div className="text-sm text-slate-500">Choose a service to continue</div>
                 </div>
 
                 <select

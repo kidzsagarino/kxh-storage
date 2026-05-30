@@ -49,7 +49,7 @@ function niceDate(iso: string) {
 
 function badgeClass(s: string) {
   const base =
-    "inline-flex items-center rounded-full border px-2 py-1 text-xs font-semibold";
+    "inline-flex items-center rounded-full border px-2 py-1 text-sm font-semibold";
 
   switch (s) {
     case "paid":
@@ -275,27 +275,27 @@ export default function AdminPaymentsClient() {
         {/* Stats cards (reflect current filter) */}
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <div className="text-xs font-semibold text-slate-500">Paid</div>
+            <div className="text-sm font-semibold text-slate-500">Paid</div>
             <div className="mt-1 text-2xl font-semibold text-slate-900">
               {moneyGBP(stats.paid)}
             </div>
-            <div className="mt-1 text-xs text-slate-600">{stats.paidCount} payments</div>
+            <div className="mt-1 text-sm text-slate-600">{stats.paidCount} payments</div>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <div className="text-xs font-semibold text-slate-500">Unpaid</div>
+            <div className="text-sm font-semibold text-slate-500">Unpaid</div>
             <div className="mt-1 text-2xl font-semibold text-slate-900">
               {moneyGBP(stats.unpaid)}
             </div>
-            <div className="mt-1 text-xs text-slate-600">{stats.unpaidCount} payments</div>
+            <div className="mt-1 text-sm text-slate-600">{stats.unpaidCount} payments</div>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <div className="text-xs font-semibold text-slate-500">Refunded</div>
+            <div className="text-sm font-semibold text-slate-500">Refunded</div>
             <div className="mt-1 text-2xl font-semibold text-slate-900">
               {moneyGBP(stats.refunded)}
             </div>
-            <div className="mt-1 text-xs text-slate-600">{stats.refundedCount} payments</div>
+            <div className="mt-1 text-sm text-slate-600">{stats.refundedCount} payments</div>
           </div>
         </div>
 
@@ -307,7 +307,7 @@ export default function AdminPaymentsClient() {
             placeholder="Search: payment id, order id, email, postcode, session id…"
             className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
           />
-          <div className="text-xs text-slate-600 sm:text-right">
+          <div className="text-sm text-slate-600 sm:text-right">
             Showing{" "}
             <span className="font-semibold text-slate-900">{filtered.length}</span>{" "}
             of{" "}
@@ -349,8 +349,8 @@ export default function AdminPaymentsClient() {
                         href={`/admin/payments/${p.id}`}
                         className="font-medium text-slate-900 hover:underline"
                       >
-                        <div className="font-mono text-xs text-slate-700">{p.id}</div>
-                        <div className="mt-1 text-xs text-slate-500">
+                        <div className="font-mono text-sm text-slate-700">{p.id}</div>
+                        <div className="mt-1 text-sm text-slate-500">
                           Session:{" "}
                           {p.stripeSessionId ? (
                             <span className="font-mono">{p.stripeSessionId}</span>
@@ -365,14 +365,14 @@ export default function AdminPaymentsClient() {
                       {/* wire later to /admin/orders/[id] */}
                       <Link
                         href={`/admin/orders/${p.orderId}`}
-                        className="font-mono text-xs text-emerald-700 hover:underline"
+                        className="font-mono text-sm text-emerald-700 hover:underline"
                         title="Wire to /admin/orders/[id] later"
                       >
                         {p.orderNumber}
                       </Link>
                     </td>
                     <td>
-                      <div className="font-mono text-xs text-slate-700">{p.paymentIntentId}</div>
+                      <div className="font-mono text-sm text-slate-700">{p.paymentIntentId}</div>
                     </td>
 
                     <td className="p-3 capitalize">{p.serviceType}</td>
@@ -383,14 +383,14 @@ export default function AdminPaymentsClient() {
 
                     <td className="p-3">
                       <div className="font-medium text-slate-900">{p.customerName}</div>
-                      <div className="text-xs text-slate-500">{p.customerEmail}</div>
+                      <div className="text-sm text-slate-500">{p.customerEmail}</div>
                     </td>
                     <td className="p-3 text-right font-semibold text-slate-900">
                       {moneyGBP(p.amount)}
                     </td>
 
                     <td className="p-3">
-                      <span className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700">
+                      <span className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm font-semibold text-slate-700">
                         {p.method.replace("_", " ")}
                       </span>
                     </td>
@@ -402,14 +402,14 @@ export default function AdminPaymentsClient() {
                         {/* <button
                           type="button"
                           onClick={() => markAsPaid(p.id)}
-                          className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-800 hover:bg-slate-50"
+                          className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
                         >
                           Mark paid
                         </button>
                         <button
                           type="button"
                           onClick={() => markAsUnpaid(p.id)}
-                          className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-800 hover:bg-slate-50"
+                          className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
                         >
                           Mark unpaid
                         </button> */}
@@ -417,7 +417,7 @@ export default function AdminPaymentsClient() {
                         <button
                           type="button"
                           disabled={!p.stripeSessionId}
-                          className="h-9 rounded-xl bg-slate-900 px-3 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-40"
+                          className="h-9 rounded-xl bg-slate-900 px-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-40"
                           title={p.stripeSessionId ? "Wire to Stripe dashboard URL later" : "No Stripe session"}
                         >
                           Open Stripe
@@ -431,7 +431,7 @@ export default function AdminPaymentsClient() {
           </table>
         </div>
 
-        <div className="border-t border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
+        <div className="border-t border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
           Week/month/year range options are generated dynamically from today.
         </div>
       </div>

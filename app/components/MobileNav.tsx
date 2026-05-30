@@ -22,7 +22,7 @@ export default function Nav() {
                 <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
                     {/* Logo */}
                     <a href="/#top" className="text-lg font-black text-emerald-700">
-                        <Image src="/logo.png" alt="KXH Logo" width={125} height={30} />
+                        <Image src="/logo.webp" alt="KXH Logo" width={125} height={30} />
                     </a>
 
                     {/* Desktop Nav */}

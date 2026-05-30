@@ -68,7 +68,7 @@ export default function MainFooter({
                                 <Link
                                     key={service.href}
                                     href={service.href}
-                                    className="hover:text-emerald-600"
+                                    className="hover:text-emerald-700"
                                 >
                                     {service.label}
                                 </Link>
@@ -88,7 +88,7 @@ export default function MainFooter({
                                     key={service.href}
                                     className="rounded-xl border border-slate-200 bg-slate-50 p-4"
                                 >
-                                    <summary className="cursor-pointer text-sm font-bold text-slate-800 hover:text-emerald-600">
+                                    <summary className="cursor-pointer text-sm font-bold text-slate-800 hover:text-emerald-700">
                                         {service.label}
                                     </summary>
 
@@ -97,7 +97,7 @@ export default function MainFooter({
                                             <Link
                                                 key={`${service.href}-${loc.slug}`}
                                                 href={`${service.href}/${loc.slug}`}
-                                                className="text-sm text-slate-600 hover:text-emerald-600"
+                                                className="text-sm text-slate-600 hover:text-emerald-700"
                                             >
                                                 {service.label} in {loc.name}
                                             </Link>

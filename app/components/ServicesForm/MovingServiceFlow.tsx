@@ -71,11 +71,11 @@ function Stepper({
                         >
                             <div className="flex items-center gap-2">
                                 <div
-                                    className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition
+                                    className={`grid h-7 w-7 place-items-center rounded-full border text-sm font-semibold transition
                                     ${isCompleted
-                                            ? "border-emerald-600 bg-emerald-600 text-white"
+                                            ? "border-emerald-600 bg-emerald-700 text-white"
                                             : isActive
-                                                ? "border-emerald-600 bg-emerald-600 text-white"
+                                                ? "border-emerald-600 bg-emerald-700 text-white"
                                                 : "border-slate-200 bg-white text-slate-700"
                                         }
                                     ${isActive ? "ring-2 ring-emerald-200" : ""}`}
@@ -323,7 +323,7 @@ export function MovingForm({
                         placeholder="From House Number"
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
-                    {!originOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address. Pick address from the dropdown.</div>}
+                    {!originOk && <div className="sm:col-span-2 text-sm text-rose-600">Enter house number and address. Pick address from the dropdown.</div>}
                 </div>
             )}
 
@@ -390,7 +390,7 @@ export function MovingForm({
                         placeholder="To House Number"
                         className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                     />
-                    {!destinationOk && <div className="sm:col-span-2 text-xs text-rose-600">Enter house number and address. Pick address from the dropdown.</div>}
+                    {!destinationOk && <div className="sm:col-span-2 text-sm text-rose-600">Enter house number and address. Pick address from the dropdown.</div>}
                 </div>
             )}
 
@@ -423,7 +423,7 @@ export function MovingForm({
                                             {it.name}
                                         </div>
 
-                                        <div className="mt-1 text-xs text-slate-500 line-clamp-2">
+                                        <div className="mt-1 text-sm text-slate-500 line-clamp-2">
                                             {it.desc || it.description}
                                         </div>
                                     </div>
@@ -436,14 +436,14 @@ export function MovingForm({
 
                                 {/* Active indicator */}
                                 {isActive && (
-                                    <div className="mt-3 h-1 w-10 rounded-full bg-emerald-600" />
+                                    <div className="mt-3 h-1 w-10 rounded-full bg-emerald-700" />
                                 )}
                             </div>
                         );
                     })}
 
                     {!itemOk && (
-                        <div className="text-xs text-rose-600 mt-2">
+                        <div className="text-sm text-rose-600 mt-2">
                             Select a move size.
                         </div>
                     )}
@@ -479,7 +479,7 @@ export function MovingForm({
                                             {pk.name}
                                         </div>
 
-                                        <div className="mt-1 text-xs text-slate-500 line-clamp-2">
+                                        <div className="mt-1 text-sm text-slate-500 line-clamp-2">
                                             {pk.desc || pk.description}
                                         </div>
                                     </div>
@@ -492,14 +492,14 @@ export function MovingForm({
 
                                 {/* Selection indicator */}
                                 {isActive && (
-                                    <div className="mt-3 h-1 w-10 rounded-full bg-emerald-600" />
+                                    <div className="mt-3 h-1 w-10 rounded-full bg-emerald-700" />
                                 )}
                             </div>
                         );
                     })}
 
                     {!packageOk && (
-                        <div className="text-xs text-rose-600 mt-2">
+                        <div className="text-sm text-rose-600 mt-2">
                             Select a package.
                         </div>
                     )}
@@ -635,7 +635,7 @@ export function MovingForm({
                             placeholder="Additional Address Details"
                             className="h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-800 outline-none"
                         />
-                        {!scheduleOk && <div className="mt-2 text-xs text-rose-600">Select a date and time slot.</div>}
+                        {!scheduleOk && <div className="mt-2 text-sm text-rose-600">Select a date and time slot.</div>}
                     </div>
                 </div>
             )}

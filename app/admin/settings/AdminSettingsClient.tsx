@@ -15,7 +15,7 @@ function SectionTitle({ title, desc }: { title: string; desc?: string }) {
     <div className="flex items-start justify-between gap-3">
       <div>
         <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-        {desc ? <p className="mt-1 text-xs text-slate-500">{desc}</p> : null}
+        {desc ? <p className="mt-1 text-sm text-slate-500">{desc}</p> : null}
       </div>
     </div>
   );
@@ -34,7 +34,7 @@ function Field({
 }) {
   return (
     <label className="grid gap-1">
-      <span className="text-xs font-semibold text-slate-600">{label}</span>
+      <span className="text-sm font-semibold text-slate-600">{label}</span>
       <div className="flex items-center gap-2">
         <input
           inputMode="decimal"
@@ -43,7 +43,7 @@ function Field({
           className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
         />
         {suffix ? (
-          <span className="whitespace-nowrap text-xs font-semibold text-slate-500">{suffix}</span>
+          <span className="whitespace-nowrap text-sm font-semibold text-slate-500">{suffix}</span>
         ) : null}
       </div>
     </label>
@@ -197,7 +197,7 @@ export default function AdminSettingsClient() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-lg font-semibold text-slate-900">Settings</h1>
-            <p className="text-xs text-slate-500">Stored in DB via server actions.</p>
+            <p className="text-sm text-slate-500">Stored in DB via server actions.</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -220,7 +220,7 @@ export default function AdminSettingsClient() {
           </div>
         </div>
 
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
           <span
             className={`inline-flex rounded-full border px-2 py-1 font-semibold ${loading
               ? "bg-slate-50 text-slate-700 border-slate-200"
@@ -359,7 +359,7 @@ export default function AdminSettingsClient() {
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {settings.storageDiscounts.map((d, idx) => (
               <label key={d.months} className="grid gap-1">
-                <span className="text-xs font-semibold text-slate-600">{d.months} months (% off)</span>
+                <span className="text-sm font-semibold text-slate-600">{d.months} months (% off)</span>
                 <input
                   inputMode="numeric"
                   value={String(d.percentOff)}
@@ -433,7 +433,7 @@ export default function AdminSettingsClient() {
               </div>
 
               <label className="grid gap-1">
-                <span className="text-xs font-semibold text-slate-600">Label</span>
+                <span className="text-sm font-semibold text-slate-600">Label</span>
                 <input
                   value={t.label}
                   onChange={(e) =>
@@ -447,7 +447,7 @@ export default function AdminSettingsClient() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-xs font-semibold text-slate-600">Range</span>
+                <span className="text-sm font-semibold text-slate-600">Range</span>
                 <input
                   value={t.range}
                   onChange={(e) =>
@@ -479,7 +479,7 @@ export default function AdminSettingsClient() {
                     key={w.key}
                     className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2"
                   >
-                    <span className="text-xs font-semibold text-slate-800">{w.label}</span>
+                    <span className="text-sm font-semibold text-slate-800">{w.label}</span>
                     <input
                       type="checkbox"
                       checked={settings.scheduling.weekdaysByService[svc][w.key]}
@@ -517,7 +517,7 @@ export default function AdminSettingsClient() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-sm font-semibold text-slate-900">Blackout dates</div>
-              <p className="mt-1 text-xs text-slate-500">Disable booking for specific dates (YYYY-MM-DD).</p>
+              <p className="mt-1 text-sm text-slate-500">Disable booking for specific dates (YYYY-MM-DD).</p>
             </div>
           </div>
 
@@ -554,13 +554,13 @@ export default function AdminSettingsClient() {
 
           <div className="mt-3 space-y-2">
             {settings.scheduling.blackoutDates.length === 0 ? (
-              <div className="text-xs text-slate-500">No blackout dates.</div>
+              <div className="text-sm text-slate-500">No blackout dates.</div>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {settings.scheduling.blackoutDates.map((d) => (
                   <span
                     key={d}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-800"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-800"
                   >
                     {d}
                     <button
@@ -589,7 +589,7 @@ export default function AdminSettingsClient() {
         {/* Capacity grid */}
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <div className="text-sm font-semibold text-slate-900">Capacity per slot</div>
-          <p className="mt-1 text-xs text-slate-500">Orders allowed per service per time slot.</p>
+          <p className="mt-1 text-sm text-slate-500">Orders allowed per service per time slot.</p>
 
           <div className="mt-3 grid gap-3 lg:grid-cols-3">
             {(["storage", "moving", "shredding"] as const).map((svc) => (
@@ -599,7 +599,7 @@ export default function AdminSettingsClient() {
                 <div className="grid gap-3">
                   {(["morning", "afternoon", "evening"] as const).map((slot) => (
                     <label key={slot} className="grid gap-1">
-                      <span className="text-xs font-semibold text-slate-600">{slot} cap</span>
+                      <span className="text-sm font-semibold text-slate-600">{slot} cap</span>
                       <input
                         inputMode="numeric"
                         value={String(settings.scheduling.capacityPerService[svc][slot])}

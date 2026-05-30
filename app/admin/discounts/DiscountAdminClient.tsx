@@ -217,7 +217,7 @@ export default function DiscountAdminClient({ initialCodes }: any) {
 
           <button
             onClick={() => { resetForm(); setIsEdit(false); setEditOpen(true); }}
-            className="h-10 px-4 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition"
+            className="h-10 px-4 rounded-xl bg-emerald-700 text-white text-sm font-medium hover:bg-emerald-700 transition"
           >
             Create
           </button>
