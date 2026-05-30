@@ -93,7 +93,7 @@ export default function Nav() {
 
                 {/* Logo centered */}
                 <div className="flex justify-center py-6 border-b border-slate-200">
-                    <Image src="/logo.png" alt="KXH Logo" width={125} height={30} />
+                    <Image src="/logo.webp" alt="KXH Logo" width={125} height={30} />
                 </div>
 
                 {/* Nav Items */}
