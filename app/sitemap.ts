@@ -46,6 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/inventory-management-london",
     "/pallet-storage-london",
     "/commercial-storage-london",
+    "/third-party-logistics-london",
   ].map((path) => ({
     url: `${base}${path}`,
     lastModified: now,
