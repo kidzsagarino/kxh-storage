@@ -335,7 +335,7 @@ export default async function HomePage() {
 
                         {/* LEFT CONTENT */}
                         <div className="mt-4 self-start">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold uppercase tracking-wide text-emerald-700 shadow-sm">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-[11px] sm:text-sm font-bold uppercase tracking-wide text-emerald-700 shadow-sm">
                                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
                                 Trusted Storage & Logistics in London
                             </div>
