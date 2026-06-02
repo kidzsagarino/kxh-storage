@@ -6,6 +6,7 @@ import MainFooter from "../components/footer/MainFooter";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../sitemap";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title:
@@ -143,6 +144,16 @@ export default function CommercialStoragePage() {
             <div className="mt-6 flex justify-center">
               <TrustpilotPill />
             </div>
+            <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
+              <Image
+                src="/images/commercial-storage/commercial-storage-hero.webp"
+                alt="Commercial warehouse storage for London businesses"
+                width={1400}
+                height={800}
+                priority
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
         </section>
 
@@ -171,6 +182,15 @@ export default function CommercialStoragePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
 
             <div>
+              <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200">
+                <Image
+                  src="/images/commercial-storage/commercial-storage-business-inventory.webp"
+                  alt="Business inventory and commercial warehouse storage"
+                  width={900}
+                  height={600}
+                  className="w-full h-auto object-cover"
+                />
+              </div>
               <h2 className="text-3xl font-black">
                 Flexible commercial storage without long-term warehouse leases
               </h2>
@@ -211,7 +231,15 @@ export default function CommercialStoragePage() {
                 Commercial storage built for business operations
               </h2>
             </div>
-
+            <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200">
+              <Image
+                src="/images/commercial-storage/commercial-storage-inventory-management.webp"
+                alt="Commercial inventory management and warehouse operations"
+                width={1400}
+                height={700}
+                className="w-full h-auto object-cover"
+              />
+            </div>
             <div className="grid md:grid-cols-3 gap-6">
               {[
                 {
@@ -266,8 +294,16 @@ export default function CommercialStoragePage() {
                 Explore more storage and logistics solutions for London businesses.
               </p>
             </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200">
+              <Image
+                src="/images/commercial-storage/commercial-storage-collection-delivery.webp"
+                alt="Commercial storage collection and delivery service"
+                width={1400}
+                height={700}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
               <Link
                 href="/warehouse-storage-london"
@@ -308,11 +344,34 @@ export default function CommercialStoragePage() {
                   Bulk pallet storage for logistics and retail.
                 </p>
               </Link>
+              <Link
+                href="/third-party-logistics-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Third Party Logistics
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  3PL warehouse support including inventory handling,
+                  pallet storage, fulfilment coordination, and delivery services.
+                </p>
+              </Link>
 
             </div>
           </div>
         </section>
-
+        <section className="py-16 border-t border-slate-200/70 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <Image
+              src="/images/commercial-storage/commercial-storage-team.webp"
+              alt="KXH Storage and Logistics commercial warehouse team"
+              width={1400}
+              height={700}
+              className="w-full rounded-3xl border border-slate-200 object-cover"
+            />
+          </div>
+        </section>
         <TestimonialsSection />
 
         {/* CTA */}

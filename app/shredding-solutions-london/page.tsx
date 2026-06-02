@@ -5,7 +5,7 @@ import Link from "next/link";
 import { londonLocations } from "../lib/location";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
-import { title } from "process";
+import Image from "next/image";
 
 function JsonLd() {
   const data = {
@@ -208,6 +208,16 @@ export default function ShreddingServicePage() {
             <div className="mt-6 flex justify-center">
               <TrustpilotPill />
             </div>
+            <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
+              <Image
+                src="/images/shredding/document-shredding-hero.webp"
+                alt="Confidential document shredding services in London"
+                width={1400}
+                height={800}
+                priority
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
         </section>
         <section className="border-y border-slate-200 bg-white">
@@ -239,7 +249,15 @@ export default function ShreddingServicePage() {
             <p className="mt-4 text-slate-600 max-w-2xl mx-auto leading-relaxed">
               Many businesses and individuals still store or discard confidential documents without proper security, putting sensitive data at risk of leaks, fines, or compliance issues.
             </p>
-
+            <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200">
+              <Image
+                src="/images/shredding/document-shredding-security-risk.webp"
+                alt="Confidential business documents awaiting secure destruction"
+                width={1400}
+                height={700}
+                className="w-full h-auto object-cover"
+              />
+            </div>
             {/* PROBLEM CARDS */}
             <div className="mt-10 grid md:grid-cols-3 gap-6 text-left">
 
@@ -276,6 +294,15 @@ export default function ShreddingServicePage() {
         </section>
         {/* FEATURES */}
         <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-6xl mx-auto px-4 mb-12">
+            <Image
+              src="/images/shredding/document-shredding-compliance.webp"
+              alt="GDPR compliant document destruction process"
+              width={1400}
+              height={700}
+              className="w-full rounded-3xl border border-slate-200 object-cover"
+            />
+          </div>
           <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12">
 
             <div>
@@ -317,6 +344,17 @@ export default function ShreddingServicePage() {
 
           </div>
 
+        </section>
+        <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <Image
+              src="/images/shredding/document-shredding-collection.webp"
+              alt="Secure document collection service in London"
+              width={1400}
+              height={700}
+              className="w-full rounded-3xl border border-slate-200 object-cover"
+            />
+          </div>
         </section>
         {/* HOW IT WORKS */}
         <section className="py-20 bg-slate-50 border-t border-slate-200/40">
@@ -467,6 +505,17 @@ export default function ShreddingServicePage() {
               </Link>
 
             </div>
+          </div>
+        </section>
+        <section className="py-16 border-t border-slate-200/70 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <Image
+              src="/images/shredding/document-shredding-team.webp"
+              alt="KXH Storage and Logistics secure shredding team"
+              width={1400}
+              height={700}
+              className="w-full rounded-3xl border border-slate-200 object-cover"
+            />
           </div>
         </section>
         <TestimonialsSection />
