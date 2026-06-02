@@ -5,7 +5,7 @@ import Link from "next/link";
 import { londonLocations } from "../lib/location";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
-
+import Image from "next/image";
 
 export const metadata = {
     title:
@@ -203,10 +203,19 @@ export default function MovingServicePage() {
                                 Get Quote
                             </Link>
                         </div>
-
-                    </div>
-                    <div className="mt-6 flex justify-center">
-                        <TrustpilotPill />
+                        <div className="mt-6 flex justify-center">
+                            <TrustpilotPill />
+                        </div>
+                        <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
+                            <Image
+                                src="/images/moving-services/moving-services-hero.webp"
+                                alt="Professional moving services in London"
+                                width={1400}
+                                height={800}
+                                priority
+                                className="w-full h-auto object-cover"
+                            />
+                        </div>
                     </div>
                 </section>
                 <section className="py-20 max-w-5xl mx-auto px-4">
@@ -215,7 +224,15 @@ export default function MovingServicePage() {
                             Moving doesn’t need to be stressful
                         </h2>
                     </div>
-
+                    <div className="mt-8 mb-10 overflow-hidden rounded-3xl border border-slate-200">
+                        <Image
+                            src="/images/moving-services/moving-services-packing-loading.webp"
+                            alt="Professional packing and loading service"
+                            width={1400}
+                            height={700}
+                            className="w-full h-auto object-cover"
+                        />
+                    </div>
                     <div className="grid md:grid-cols-2 gap-8">
                         <div className="p-6 rounded-xl border border-slate-200 bg-red-50">
                             <h3 className="font-semibold text-red-600 mb-3">Traditional Moving</h3>
@@ -240,6 +257,15 @@ export default function MovingServicePage() {
                 </section>
                 {/* FEATURES */}
                 <section className="py-16 border-t border-slate-200/70 bg-white">
+                    <div className="max-w-6xl mx-auto px-4 mb-12">
+                        <Image
+                            src="/images/moving-services/moving-services-team-working.webp"
+                            alt="Professional moving team handling furniture"
+                            width={1400}
+                            height={700}
+                            className="w-full rounded-3xl border border-slate-200 object-cover"
+                        />
+                    </div>
                     <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12">
 
                         <div>
@@ -335,7 +361,15 @@ export default function MovingServicePage() {
                         <h2 className="text-2xl font-black mb-8 text-center">
                             Who Our Moving Service Is For
                         </h2>
-
+                        <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200">
+                            <Image
+                                src="/images/moving-services/moving-services-student-move.webp"
+                                alt="Student accommodation and apartment moving service"
+                                width={1400}
+                                height={700}
+                                className="w-full h-auto object-cover"
+                            />
+                        </div>
                         <div className="grid md:grid-cols-2 gap-4 text-slate-700">
                             <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Homeowners relocating</div>
                             <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Office & business moves</div>
@@ -344,6 +378,17 @@ export default function MovingServicePage() {
                             <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Furniture & large item transport</div>
                         </div>
 
+                    </div>
+                </section>
+                <section className="py-16 border-t border-slate-200/70 bg-white">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <Image
+                            src="/images/moving-services/moving-services-team.webp"
+                            alt="KXH Storage and Logistics moving team"
+                            width={1400}
+                            height={700}
+                            className="w-full rounded-3xl border border-slate-200 object-cover"
+                        />
                     </div>
                 </section>
                 <TestimonialsSection />
@@ -470,7 +515,7 @@ export default function MovingServicePage() {
                                     Yes, we offer single-item moves as well as full home or office relocations.
                                 </p>
                             </details>
-                             <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                            <details className="border border-slate-200 rounded-xl p-5 bg-white">
                                 <summary className="font-semibold cursor-pointer">
                                     Do you support student and renter moves in London?
                                 </summary>
