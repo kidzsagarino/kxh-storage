@@ -5,6 +5,8 @@ import TestimonialsSection from "@/app/components/TestimonialsSection";
 import TrustpilotPill from "@/app/components/trustpilot/TrustpilotPill";
 import { londonLocations } from "@/app/lib/location";
 import Link from "next/link";
+import Image from "next/image"
+
 
 type FAQ = {
     q: string;
@@ -743,6 +745,17 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     },
 };
 
+const serviceImages = {
+    "warehouse-storage-london": "/images/location-service/warehouse-storage-location.webp",
+    "business-storage-london": "/images/location-service/business-storage-location.webp",
+    "inventory-management-london": "/images/location-service/inventory-management-location.webp",
+    "pallet-storage-london": "/images/location-service/pallet-storage-location.webp",
+    "commercial-storage-london": "/images/location-service/business-storage-location.webp",
+    "third-party-logistics-london": "/images/location-service/third-party-logistics-location.webp",
+    "logistics-moving-london": "/images/location-service/moving-services-location.webp",
+    "shredding-solutions-london": "/images/location-service/document-shredding-location.webp",
+};
+
 export async function generateStaticParams() {
     const services = Object.keys(serviceContent) as ServiceSlug[];
 
@@ -999,6 +1012,14 @@ export default async function LocationServicePage({ params }: any) {
                         <div className="mt-6 flex justify-center">
                             <TrustpilotPill />
                         </div>
+                        <Image
+                            src={serviceImages[service as ServiceSlug]}
+                            alt={`${content.label} in ${loc.name}, London`}
+                            width={1200}
+                            height={700}
+                            className="mt-10 rounded-2xl shadow-xl"
+                            priority
+                        />
                     </div>
                 </section>
 
@@ -1041,7 +1062,13 @@ export default async function LocationServicePage({ params }: any) {
                                     delivery flexible across London.
                                 </p>
                             </div>
-
+                            <Image
+                                src="/images/location-service/location-business-support.webp"
+                                alt={`Business storage and logistics support in ${loc.name}`}
+                                width={900}
+                                height={700}
+                                className="rounded-2xl shadow-lg"
+                            />
                             <div className="rounded-2xl border border-slate-200 bg-white p-6">
                                 <h3 className="text-xl font-bold">
                                     Common use cases in {loc.name}
@@ -1143,6 +1170,13 @@ export default async function LocationServicePage({ params }: any) {
                         </div>
 
                         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                            <Image
+                                src="/images/location-service/location-storage-logistics-support.webp"
+                                alt={`${content.label} support in ${loc.name}`}
+                                width={900}
+                                height={700}
+                                className="rounded-2xl shadow-lg mb-6"
+                            />
                             <h3 className="font-bold text-lg">Ideal for:</h3>
                             <ul className="mt-4 space-y-3 text-slate-700">
                                 {content.idealFor.map((item) => (
@@ -1179,6 +1213,17 @@ export default async function LocationServicePage({ params }: any) {
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </section>
+                <section className="py-12 bg-white">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <Image
+                            src="/images/location-service/location-team-photo.webp"
+                            alt="KXH Storage & Logistics team"
+                            width={1400}
+                            height={800}
+                            className="rounded-3xl shadow-xl"
+                        />
                     </div>
                 </section>
                 <TestimonialsSection />
