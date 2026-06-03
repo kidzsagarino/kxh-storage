@@ -10,7 +10,10 @@ import Image from "next/image";
 export const metadata = {
   title: "Managed Warehouse Storage in London with Pickup & Delivery | KXH Logistics",
   description:
-    "Secure warehouse storage in London with pickup & delivery. Fully managed storage for businesses, students, renters, apartment moves, and individuals with flexible pricing."
+    "Secure warehouse storage in London with pickup & delivery. Fully managed storage for businesses, students, renters, apartment moves, and individuals with flexible pricing.",
+  alternates: {
+    canonical: "https://kxhlogistics.co.uk/warehouse-storage-london",
+  },
 };
 
 function JsonLd() {
