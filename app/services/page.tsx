@@ -5,6 +5,7 @@ import Link from "next/link";
 import { londonLocations } from "../sitemap";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
+import Image from "next/image";
 
 export const metadata = {
     title: "Storage, Inventory, Pallet & Moving Services London | KXH",
@@ -102,6 +103,59 @@ function BreadcrumbJsonLd() {
     );
 }
 
+const faqs = [
+    {
+        q: "What logistics services does KXH offer in London?",
+        a: "KXH provides warehouse storage, business storage, inventory management, pallet storage, commercial storage, moving services, document shredding, and collection and delivery support across London.",
+    },
+    {
+        q: "Do you provide pickup and delivery?",
+        a: "Yes. KXH can collect items, transport them securely, store them, and return or deliver them when needed.",
+    },
+    {
+        q: "Can businesses store inventory with KXH?",
+        a: "Yes. KXH supports ecommerce stock, retail inventory, office equipment, archive boxes, pallets, and commercial overflow storage.",
+    },
+    {
+        q: "Do you offer short-term and long-term storage?",
+        a: "Yes. KXH offers flexible storage options for both short-term and long-term requirements.",
+    },
+    {
+        q: "Do you cover different London boroughs?",
+        a: "Yes. KXH serves businesses and homes across London, including Camden, Westminster, Hackney, Islington, Southwark, Lambeth, Tower Hamlets, and Kensington & Chelsea.",
+    },
+    {
+        q: "Do you offer student storage in London?",
+        a: "Yes. Students can store boxes, luggage, books, bicycles, and personal belongings during holidays, accommodation changes, internships, or study abroad periods."
+    },
+    {
+        q: "Can renters use KXH for temporary storage?",
+        a: "Yes. Many renters use KXH while moving house, renovating, downsizing, or waiting for a tenancy to begin."
+    }
+];
+
+function FaqJsonLd() {
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    mainEntity: faqs.map((faq) => ({
+                        "@type": "Question",
+                        name: faq.q,
+                        acceptedAnswer: {
+                            "@type": "Answer",
+                            text: faq.a,
+                        },
+                    })),
+                }),
+            }}
+        />
+    );
+}
+
 export default function ServicesPage() {
     const services = [
         {
@@ -155,6 +209,7 @@ export default function ServicesPage() {
 
                 <JsonLd />
                 <BreadcrumbJsonLd />
+                <FaqJsonLd />
 
                 {/* HERO */}
                 <section className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-200/50">
@@ -180,11 +235,120 @@ export default function ServicesPage() {
                         <div className="mt-4 flex justify-center">
                             <TrustpilotPill />
                         </div>
+                        <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
+                            <Image
+                                src="/images/services/services-hero.webp"
+                                alt="Warehouse storage, inventory management and logistics services in London"
+                                width={1400}
+                                height={800}
+                                priority
+                                className="w-full h-auto object-cover"
+                            />
+                        </div>
                     </div>
                 </section>
+                <section className="max-w-5xl mx-auto px-4 py-16">
+                    <div className="prose prose-slate max-w-none">
+                        <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200">
+                            <Image
+                                src="/images/services/services-overview.webp"
+                                alt="Warehouse storage and logistics services"
+                                width={1400}
+                                height={700}
+                                className="w-full h-auto object-cover"
+                            />
+                        </div>
+                        <h2>Storage, Moving & Logistics Services Across London</h2>
 
+                        <p>
+                            KXH Storage & Logistics provides flexible storage, moving, inventory,
+                            pallet, commercial, and document handling services for homes and
+                            businesses across London. Whether you need short-term storage during a
+                            move, long-term warehouse space for business stock, or a reliable team to
+                            collect, store, and return your items, KXH helps manage the full process
+                            from collection to delivery.
+                        </p>
+
+                        <p>
+                            Our warehouse storage services are designed for customers who need secure
+                            space without the stress of transporting everything themselves. We can
+                            collect boxes, suitcases, containers, office items, business stock, and
+                            other goods, then keep them organised until you need them returned.
+                        </p>
+
+                        <p>
+                            For businesses, KXH offers inventory management, pallet storage, and
+                            commercial storage support. This is useful for ecommerce sellers, retail
+                            brands, offices, contractors, and companies that need extra space for
+                            stock, equipment, archive boxes, or seasonal overflow.
+                        </p>
+
+                        <p>
+                            KXH also provides logistics moving services for homes and offices,
+                            including packing support, transport, and delivery. For companies handling
+                            confidential records, our document shredding service helps manage secure
+                            collection and compliant destruction.
+                        </p>
+                    </div>
+                </section>
+                <section className="bg-slate-50 border-t border-slate-200 py-16">
+                    <div className="max-w-5xl mx-auto px-4">
+                        <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200">
+                            <Image
+                                src="/images/services/services-student-storage.webp"
+                                alt="Student and renter storage services in London"
+                                width={1400}
+                                height={700}
+                                className="w-full h-auto object-cover"
+                            />
+                        </div>
+                        <h2 className="text-2xl font-bold text-center">
+                            Flexible Storage for Students, Renters & London Residents
+                        </h2>
+
+                        <div className="mt-6 space-y-4 text-slate-700 leading-relaxed">
+
+                            <p>
+                                Whether you're moving between university accommodation, relocating to a
+                                new rental property, travelling abroad, or simply running out of space,
+                                KXH provides affordable storage solutions with collection and delivery
+                                across London.
+                            </p>
+
+                            <p>
+                                Students can store suitcases, boxes, books, bicycles, and personal
+                                belongings during summer breaks, internships, study abroad programmes,
+                                or accommodation changes without needing to transport everything
+                                themselves.
+                            </p>
+
+                            <p>
+                                Renters and apartment residents often use our storage services during
+                                house moves, renovations, downsizing, or while waiting for tenancy
+                                agreements to begin. Our flexible storage options help free up valuable
+                                living space while keeping belongings secure and accessible.
+                            </p>
+
+                            <p>
+                                With pickup, secure warehouse storage, and return delivery available,
+                                KXH makes temporary storage simple for students, renters, professionals,
+                                and families throughout London.
+                            </p>
+
+                        </div>
+                    </div>
+                </section>
                 {/* SERVICES GRID */}
                 <section className="max-w-5xl mx-auto px-4 py-16">
+                    <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200">
+                        <Image
+                            src="/images/services/services-business-logistics.webp"
+                            alt="Business storage, pallet storage and logistics support"
+                            width={1400}
+                            height={700}
+                            className="w-full h-auto object-cover"
+                        />
+                    </div>
                     <h2 className="text-2xl font-bold text-center">
                         Explore our core services
                     </h2>
@@ -222,7 +386,15 @@ export default function ServicesPage() {
                                 Real reviews from people who use our storage, moving, and shredding services.
                             </p>
                         </div>
-
+                        <div className="mb-10 overflow-hidden rounded-3xl border border-slate-200">
+                            <Image
+                                src="/images/services/services-team.webp"
+                                alt="KXH Storage and Logistics team"
+                                width={1400}
+                                height={700}
+                                className="w-full h-auto object-cover"
+                            />
+                        </div>
                         <TestimonialsSection />
 
                     </div>
@@ -259,7 +431,27 @@ export default function ServicesPage() {
 
                     </div>
                 </section>
+                <section className="bg-white border-t border-slate-200/50 py-16">
+                    <div className="max-w-4xl mx-auto px-4">
+                        <h2 className="text-2xl font-bold text-center">
+                            Frequently Asked Questions
+                        </h2>
 
+                        <div className="mt-8 space-y-4">
+                            {faqs.map((faq) => (
+                                <div
+                                    key={faq.q}
+                                    className="border border-slate-200 rounded-xl p-5 bg-slate-50"
+                                >
+                                    <h3 className="font-semibold text-slate-900">{faq.q}</h3>
+                                    <p className="mt-2 text-slate-600 text-sm leading-relaxed">
+                                        {faq.a}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
                 {/* SECOND CTA */}
                 <section className="py-16 text-center">
                     <h2 className="text-2xl font-bold">
