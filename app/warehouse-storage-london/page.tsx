@@ -6,6 +6,7 @@ import { londonLocations } from "../lib/location";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import Image from "next/image";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata = {
   title: "Managed Warehouse Storage in London with Pickup & Delivery | KXH Logistics",
@@ -158,6 +159,7 @@ export default function WarehouseStoragePage() {
         <JsonLd />
         <FAQJsonLd />
         <BreadcrumbJsonLd />
+        <TrustpilotJsonLd />
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
           <div className="mx-auto max-w-5xl px-4 text-center">
 

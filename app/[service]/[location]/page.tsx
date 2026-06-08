@@ -5,7 +5,8 @@ import TestimonialsSection from "@/app/components/TestimonialsSection";
 import TrustpilotPill from "@/app/components/trustpilot/TrustpilotPill";
 import { londonLocations } from "@/app/lib/location";
 import Link from "next/link";
-import Image from "next/image"
+import Image from "next/image";
+import TrustpilotJsonLd from "@/app/components/seo/TrustPilotJsonLD";
 
 
 type FAQ = {
@@ -985,7 +986,7 @@ export default async function LocationServicePage({ params }: any) {
                     description={content.description}
                 />
                 <FAQJsonLd faqs={content.faqs} />
-
+                <TrustpilotJsonLd />
                 <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-24">
                     <div className="max-w-5xl mx-auto px-4 text-center">
                         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
@@ -1148,13 +1149,13 @@ export default async function LocationServicePage({ params }: any) {
                                     <p className="mt-4 text-slate-600 leading-relaxed">
                                         Businesses requiring outsourced warehouse operations can also explore our{" "}
                                         <Link
-                                            href="/third-party-logistics-london"
+                                            href={`/third-party-logistics-london/${loc.slug}`}
                                             className="text-emerald-700 hover:underline font-medium"
                                         >
-                                            third party logistics services
+                                            third party logistics services in {loc.name}
                                         </Link>
                                         {" "}for inventory coordination, pallet handling, fulfilment support,
-                                        collection, and delivery across London.
+                                        collection, and delivery support.
                                     </p>
                                 )}
                             {(
@@ -1242,7 +1243,7 @@ export default async function LocationServicePage({ params }: any) {
                             </p>
                         </div>
 
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
 
                             <Link
                                 href="/warehouse-storage-london"

@@ -6,6 +6,7 @@ import Link from "next/link";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
 import { londonLocations } from "../lib/location";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata: Metadata = {
   title:
@@ -145,6 +146,10 @@ const faqs = [
     q: "Is business storage suitable for growing companies?",
     a: "Yes, it is ideal for growing businesses that need flexible storage without committing to larger premises or long commercial leases.",
   },
+  {
+    q: "How does inventory tracking work?",
+    a: "Stored items are organised through warehouse handling processes that help businesses manage inventory, identify stored stock, and request items back through our collection and return delivery service.",
+  },
 ];
 
 export default function BusinessStoragePage() {
@@ -167,6 +172,7 @@ export default function BusinessStoragePage() {
         <JsonLd />
         <FAQJsonLd />
         <BreadcrumbJsonLd />
+        <TrustpilotJsonLd />
 
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
           <div className="max-w-5xl mx-auto px-4 text-center">
@@ -220,6 +226,34 @@ export default function BusinessStoragePage() {
                 alt="Business inventory storage inside a secure London warehouse"
                 className="w-full rounded-3xl border border-slate-200 shadow-xl"
               />
+            </div>
+            <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <h2 className="text-2xl font-black">
+                Inventory Tracking & Return Requests
+              </h2>
+
+              <p className="mt-4 text-slate-600 leading-relaxed">
+                Businesses often need more than storage space. Our managed storage
+                service helps organise inventory, maintain item records,
+                coordinate collection, and arrange return delivery when items
+                are needed back.
+              </p>
+
+              <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  "Inventory Tracking",
+                  "Return Requests",
+                  "Collection & Delivery",
+                  "Business Stock Storage",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm font-medium text-emerald-700"
+                  >
+                    ✓ {item}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -319,8 +353,8 @@ export default function BusinessStoragePage() {
                   desc: "Request your items back when needed and we arrange scheduled delivery.",
                 },
                 {
-                  title: "Organised Item Handling",
-                  desc: "Items are labelled, grouped, and handled through internal warehouse processes.",
+                  title: "Inventory Tracking & Organisation",
+                  desc: "Items are labelled, categorised, and organised through warehouse handling processes, making stored inventory easier to identify and retrieve.",
                 },
                 {
                   title: "Flexible Capacity",
@@ -391,51 +425,151 @@ export default function BusinessStoragePage() {
             ))}
           </div>
         </section>
-
-        <section className="py-16 border-t border-slate-200/70 bg-white">
+        <section className="py-20 border-t border-slate-200/70 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-black">
-                Related warehouse services
+
+            <div className="text-center">
+              <h2 className="text-3xl font-black">
+                Why Businesses Use Inventory Storage
               </h2>
-              <p className="mt-3 text-slate-600">
-                Explore more business storage and logistics solutions.
+
+              <p className="mt-4 text-slate-600 max-w-3xl mx-auto">
+                Inventory storage helps businesses free up workspace, improve stock
+                organisation, and access stored items when needed. Instead of paying
+                for larger premises, companies can use managed warehouse storage with
+                collection and return delivery.
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="mt-12 grid md:grid-cols-2 gap-6">
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Inventory Tracking & Organisation
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Organised stock handling and inventory categorisation help
+                  businesses keep stored items easier to identify, manage,
+                  and retrieve when required.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Collection & Return Delivery
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  We collect inventory from your premises, store it securely,
+                  and arrange return delivery when items are needed back.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Business Stock Storage
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Suitable for retail stock, ecommerce inventory, office supplies,
+                  archived documents, marketing materials, and operational equipment.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Flexible Warehouse Capacity
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Scale storage space up or down without committing to larger office
+                  or warehouse premises, helping reduce operational costs.
+                </p>
+              </div>
+
+            </div>
+
+            <div className="mt-10 rounded-3xl bg-emerald-50 border border-emerald-100 p-6">
+              <p className="text-center text-emerald-800 font-medium">
+                Looking for dedicated inventory handling? Explore our{" "}
+                <Link
+                  href="/inventory-management-london"
+                  className="underline font-semibold"
+                >
+                  Inventory Management service
+                </Link>{" "}
+                for organised stock handling, warehouse support, and inventory
+                tracking workflows.
+              </p>
+            </div>
+
+          </div>
+        </section>
+        <section className="py-16 border-t border-slate-200/70 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+
+            <div className="text-center">
+              <h2 className="text-3xl font-black">
+                Related Business Storage & Logistics Services
+              </h2>
+
+              <p className="mt-4 text-slate-600 max-w-3xl mx-auto">
+                Businesses using our storage solutions often combine storage with
+                inventory management, pallet storage, warehouse storage, and third
+                party logistics services to improve stock organisation, inventory
+                tracking, collection, and delivery across London.
+              </p>
+            </div>
+
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
               {[
-                {
-                  title: "Warehouse Storage",
-                  href: "/warehouse-storage-london",
-                  desc: "Managed storage with pickup and delivery.",
-                },
                 {
                   title: "Inventory Management",
                   href: "/inventory-management-london",
-                  desc: "Organised stock and item handling.",
+                  desc: "Inventory tracking, stock organisation, and warehouse support.",
                 },
                 {
                   title: "Pallet Storage",
                   href: "/pallet-storage-london",
-                  desc: "Bulk storage for business goods.",
+                  desc: "Bulk pallet storage with collection and delivery options.",
+                },
+                {
+                  title: "Third Party Logistics",
+                  href: "/third-party-logistics-london",
+                  desc: "Flexible 3PL support for inventory and stock handling.",
+                },
+                {
+                  title: "Warehouse Storage",
+                  href: "/warehouse-storage-london",
+                  desc: "Managed warehouse storage for business inventory and equipment.",
                 },
                 {
                   title: "Commercial Storage",
                   href: "/commercial-storage-london",
-                  desc: "Scalable storage for growing companies.",
+                  desc: "Scalable storage solutions for growing London businesses.",
                 },
               ].map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
                 >
-                  <h3 className="font-semibold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+                  <h3 className="font-semibold text-slate-900">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-2 text-sm text-slate-600">
+                    {item.desc}
+                  </p>
+
+                  <div className="mt-3 text-xs font-semibold text-emerald-700">
+                    Learn more →
+                  </div>
                 </Link>
               ))}
             </div>
+
           </div>
         </section>
 

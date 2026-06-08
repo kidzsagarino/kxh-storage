@@ -6,6 +6,7 @@ import { londonLocations } from "../lib/location";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
 import Image from "next/image";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata = {
     title:
@@ -179,6 +180,7 @@ export default function MovingServicePage() {
                 <JsonLd />
                 <FAQJsonLd />
                 <BreadcrumbJsonLd />
+                <TrustpilotJsonLd />
                 {/* HERO */}
                 <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
                     <div className="mx-auto max-w-5xl px-4 text-center">

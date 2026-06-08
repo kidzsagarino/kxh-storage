@@ -8,6 +8,7 @@ import TrustpilotPill from "@/app/components/trustpilot/TrustpilotPill";
 import { londonLocations } from "@/app/lib/location";
 import Link from "next/link";
 import Image from "next/image";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata = {
     title:
@@ -100,6 +101,7 @@ export default function ThirdPartyLogisticsPage() {
             <main className="min-h-screen bg-white text-slate-900">
                 <JsonLd />
                 <FAQJsonLd />
+                <TrustpilotJsonLd />
 
                 <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-24">
                     <div className="max-w-5xl mx-auto px-4 text-center">
@@ -359,59 +361,65 @@ export default function ThirdPartyLogisticsPage() {
 
                 <section className="py-16 border-t border-slate-200/70 bg-white">
                     <div className="max-w-6xl mx-auto px-4">
-
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-black">
-                                Related warehouse & logistics services
+                                Related Warehouse, Storage & Logistics Services
                             </h2>
 
-                            <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
-                                Explore inventory management, pallet storage,
-                                business storage, and commercial warehouse support.
+                            <p className="mt-4 text-slate-600 max-w-3xl mx-auto">
+                                Businesses using third party logistics often combine 3PL support with
+                                inventory management, pallet storage, business storage, commercial
+                                storage, and managed warehouse storage to improve stock handling,
+                                collection, and delivery across London.
                             </p>
                         </div>
 
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+                            {[
+                                {
+                                    title: "Inventory Management",
+                                    href: "/inventory-management-london",
+                                    desc: "Inventory tracking, stock organisation, and warehouse handling support.",
+                                },
+                                {
+                                    title: "Pallet Storage",
+                                    href: "/pallet-storage-london",
+                                    desc: "Secure pallet storage for bulk stock, retail goods, and commercial inventory.",
+                                },
+                                {
+                                    title: "Business Storage",
+                                    href: "/business-storage-london",
+                                    desc: "Flexible business storage for stock, equipment, archives, and overflow items.",
+                                },
+                                {
+                                    title: "Commercial Storage",
+                                    href: "/commercial-storage-london",
+                                    desc: "Scalable commercial storage for offices, stock, equipment, and operations.",
+                                },
+                                {
+                                    title: "Warehouse Storage",
+                                    href: "/warehouse-storage-london",
+                                    desc: "Managed warehouse storage with collection, secure handling, and delivery.",
+                                },
+                            ].map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
+                                >
+                                    <h3 className="font-semibold text-slate-900">
+                                        {item.title}
+                                    </h3>
 
-                            <Link
-                                href="/inventory-management-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Inventory Management London
-                                </h3>
+                                    <p className="mt-2 text-sm text-slate-600">
+                                        {item.desc}
+                                    </p>
 
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Organised inventory storage with warehouse handling support.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/pallet-storage-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Pallet Storage London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Secure pallet storage for commercial and retail stock.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/business-storage-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Business Storage London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Flexible warehouse storage for business inventory and equipment.
-                                </p>
-                            </Link>
-
+                                    <div className="mt-3 text-xs font-semibold text-emerald-700">
+                                        Learn more →
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </section>

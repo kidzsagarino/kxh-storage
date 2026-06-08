@@ -6,10 +6,11 @@ import MainFooter from "../components/footer/MainFooter";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../sitemap";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata: Metadata = {
   title:
-    "Inventory Management London | Warehouse Stock Handling | KXH Logistics",
+    "Inventory Management & Storage London | Business Inventory Tracking & Delivery",
   description:
     "Organised inventory management in London with secure warehouse storage, stock handling, item organisation, pickup & delivery, and business logistics support.",
   alternates: {
@@ -87,8 +88,8 @@ const faqs = [
     a: "Yes, we provide organised warehouse inventory handling and storage support for businesses across London.",
   },
   {
-    q: "Is this a customer-facing inventory dashboard?",
-    a: "No. Inventory handling is managed through our internal warehouse and order management processes to help organise, handle, and retrieve stored items efficiently.",
+    q: "How does inventory tracking work?",
+    a: "Stored items are organised through internal warehouse handling processes, helping businesses manage inventory, identify stored stock, and arrange return delivery when required.",
   },
   {
     q: "Can you store business stock?",
@@ -105,6 +106,7 @@ export default function InventoryManagementPage() {
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
         <FAQJsonLd />
+        <TrustpilotJsonLd />
 
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
           <div className="max-w-5xl mx-auto px-4 text-center">
@@ -118,8 +120,9 @@ export default function InventoryManagementPage() {
             </h1>
 
             <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-              Organised warehouse stock handling, item categorisation, secure
-              storage, pickup, and return delivery for London businesses.
+              Organised inventory management and storage in London with
+              inventory tracking support, warehouse stock handling,
+              business storage, collection, and return delivery.
             </p>
             <p className="mt-4 text-slate-600 leading-relaxed">
               Businesses needing outsourced warehouse operations can also explore our{" "}
@@ -158,6 +161,34 @@ export default function InventoryManagementPage() {
                 alt="Warehouse inventory management and stock handling in London"
                 className="w-full rounded-3xl border border-slate-200 shadow-xl"
               />
+            </div>
+            <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <h2 className="text-2xl font-black">
+                Inventory Tracking & Return Requests
+              </h2>
+
+              <p className="mt-4 text-slate-600 leading-relaxed">
+                Businesses often need more than storage space. Our managed storage
+                process helps organise stored inventory, maintain item records,
+                coordinate collection, and arrange return delivery when items are
+                needed back.
+              </p>
+
+              <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  "Inventory Tracking",
+                  "Return Requests",
+                  "Collection & Delivery",
+                  "Business Stock Storage",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm font-medium text-emerald-700"
+                  >
+                    ✓ {item}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -280,7 +311,46 @@ export default function InventoryManagementPage() {
             </div>
           </div>
         </section>
+        <section className="py-16 border-t border-slate-200">
+          <div className="max-w-5xl mx-auto px-4">
 
+            <h2 className="text-3xl font-black text-center">
+              Why Businesses Use Inventory Storage
+            </h2>
+
+            <p className="mt-4 text-center text-slate-600 max-w-3xl mx-auto">
+              Inventory management and storage can help businesses free up
+              workspace, organise stock, improve inventory visibility,
+              and access stored items when required.
+            </p>
+
+            <div className="mt-10 grid md:grid-cols-2 gap-6">
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold">
+                  Inventory Tracking
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Organised stock records and warehouse handling
+                  help businesses keep inventory easier to manage.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold">
+                  Collection & Return Delivery
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Stored inventory can be collected, stored,
+                  and returned when needed.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
         <section className="py-16 border-t border-slate-200/70 bg-white">
           <div className="max-w-5xl mx-auto px-4">
             <div className="text-center mb-8">
