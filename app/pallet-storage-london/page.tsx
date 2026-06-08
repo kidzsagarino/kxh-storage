@@ -105,6 +105,7 @@ export default function PalletStoragePage() {
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
         <FAQJsonLd />
+        <TrustpilotPill />
 
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
           <div className="max-w-5xl mx-auto px-4 text-center">
@@ -282,7 +283,86 @@ export default function PalletStoragePage() {
             </div>
           </div>
         </section>
+        <section className="py-16 border-t border-slate-200/70 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
 
+            <div className="text-center">
+              <h2 className="text-3xl font-black">
+                Why Businesses Use Pallet Storage
+              </h2>
+
+              <p className="mt-4 text-slate-600 max-w-3xl mx-auto">
+                Pallet storage helps businesses manage bulk inventory, reduce warehouse
+                pressure, and keep stock organised without committing to larger premises.
+                It is commonly used for retail inventory, ecommerce stock, seasonal goods,
+                and commercial overflow storage.
+              </p>
+            </div>
+
+            <div className="mt-10 grid md:grid-cols-2 gap-6">
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Pallet Tracking & Organisation
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Palletised goods can be organised, categorised, and stored through
+                  structured warehouse handling processes to improve stock visibility
+                  and retrieval.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Collection & Delivery Support
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Businesses can arrange collection and return delivery as part of a
+                  managed storage workflow for palletised inventory.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Overflow Warehouse Capacity
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Ideal for businesses needing additional warehouse space during busy
+                  periods, seasonal peaks, or inventory growth.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-bold text-lg">
+                  Retail & Ecommerce Stock Storage
+                </h3>
+
+                <p className="mt-3 text-slate-600">
+                  Suitable for palletised retail goods, ecommerce inventory,
+                  distribution stock, and operational supplies.
+                </p>
+              </div>
+
+            </div>
+
+            <div className="mt-10 rounded-3xl bg-emerald-50 border border-emerald-100 p-6">
+              <p className="text-center text-emerald-800 font-medium">
+                Need organised stock handling? Explore our{" "}
+                <Link
+                  href="/inventory-management-london"
+                  className="font-semibold underline"
+                >
+                  Inventory Management
+                </Link>{" "}
+                service for inventory tracking, warehouse support, and stock organisation.
+              </p>
+            </div>
+
+          </div>
+        </section>
         <section className="py-16 border-t border-slate-200/70 bg-white">
           <div className="max-w-5xl mx-auto px-4">
             <div className="text-center mb-8">
@@ -290,7 +370,9 @@ export default function PalletStoragePage() {
                 Related warehouse services
               </h2>
               <p className="mt-3 text-slate-600">
-                Explore more storage and logistics services for business stock.
+                Explore related services including inventory management, warehouse storage,
+                third party logistics, and commercial storage to support palletised stock,
+                inventory tracking, collection, and delivery across London.
               </p>
             </div>
 
@@ -299,7 +381,7 @@ export default function PalletStoragePage() {
                 {
                   title: "Warehouse Storage",
                   href: "/warehouse-storage-london",
-                  desc: "Managed storage with pickup and delivery.",
+                  desc: "Managed warehouse storage for palletised inventory and business stock.",
                 },
                 {
                   title: "Business Storage",
@@ -309,7 +391,7 @@ export default function PalletStoragePage() {
                 {
                   title: "Inventory Management",
                   href: "/inventory-management-london",
-                  desc: "Organised item and stock handling.",
+                  desc: "Inventory tracking, stock organisation, and warehouse support.",
                 },
                 {
                   title: "Commercial Storage",
@@ -319,7 +401,7 @@ export default function PalletStoragePage() {
                 {
                   title: "Third Party Logistics",
                   href: "/third-party-logistics-london",
-                  desc: "3PL warehouse support including inventory handling and delivery coordination.",
+                  desc: "3PL support for pallet storage, inventory handling, and delivery coordination.",
                 }
               ].map((item) => (
                 <Link

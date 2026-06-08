@@ -6,6 +6,7 @@ import { londonLocations } from "../lib/location";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
 import Image from "next/image";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 function JsonLd() {
   const data = {
@@ -166,6 +167,7 @@ export default function ShreddingServicePage() {
         <JsonLd />
         <FAQJsonLd />
         <BreadcrumbJsonLd />
+        <TrustpilotJsonLd />
 
         {/* HERO */}
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">

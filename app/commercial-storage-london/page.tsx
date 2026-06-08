@@ -7,6 +7,7 @@ import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../sitemap";
 import Image from "next/image";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata: Metadata = {
   title:
@@ -106,6 +107,7 @@ export default function CommercialStoragePage() {
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
         <FAQJsonLd />
+        <TrustpilotJsonLd />
 
         {/* HERO */}
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
