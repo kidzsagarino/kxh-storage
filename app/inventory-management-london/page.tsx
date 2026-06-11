@@ -95,6 +95,11 @@ const faqs = [
     q: "Can you store business stock?",
     a: "Yes, we can support business stock, ecommerce inventory, retail goods, office supplies, equipment, and operational items.",
   },
+  {
+    q: "Can stored inventory be returned on request?",
+    a: "Yes, stored inventory can be returned when needed through our collection and return delivery process, helping businesses access stock without managing warehouse space directly.",
+
+  }
 ];
 
 export default function InventoryManagementPage() {
@@ -174,7 +179,7 @@ export default function InventoryManagementPage() {
                 needed back.
               </p>
 
-              <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
                   "Inventory Tracking",
                   "Return Requests",
@@ -311,43 +316,42 @@ export default function InventoryManagementPage() {
             </div>
           </div>
         </section>
-        <section className="py-16 border-t border-slate-200">
+        <section className="py-16 border-t border-slate-200 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-
             <h2 className="text-3xl font-black text-center">
               Why Businesses Use Inventory Storage
             </h2>
 
             <p className="mt-4 text-center text-slate-600 max-w-3xl mx-auto">
-              Inventory management and storage can help businesses free up
-              workspace, organise stock, improve inventory visibility,
-              and access stored items when required.
+              Inventory management and storage can help businesses free up workspace,
+              organise stock, improve inventory visibility, and access stored items
+              when required.
             </p>
 
             <div className="mt-10 grid md:grid-cols-2 gap-6">
-
-              <div className="rounded-2xl border border-slate-200 p-6">
-                <h3 className="font-bold">
-                  Inventory Tracking
-                </h3>
-
-                <p className="mt-3 text-slate-600">
-                  Organised stock records and warehouse handling
-                  help businesses keep inventory easier to manage.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 p-6">
-                <h3 className="font-bold">
-                  Collection & Return Delivery
-                </h3>
-
-                <p className="mt-3 text-slate-600">
-                  Stored inventory can be collected, stored,
-                  and returned when needed.
-                </p>
-              </div>
-
+              {[
+                {
+                  title: "Inventory Tracking",
+                  desc: "Organised stock records and warehouse handling help businesses keep inventory easier to identify, manage, and retrieve.",
+                },
+                {
+                  title: "Inventory Records & Item Manifests",
+                  desc: "Stored stock can be organised through item records, inventory manifests, and stock categorisation for better visibility.",
+                },
+                {
+                  title: "Collection & Return Delivery",
+                  desc: "Stored inventory can be collected, securely stored, and returned when needed through a managed delivery process.",
+                },
+                {
+                  title: "Business Stock Storage",
+                  desc: "Suitable for ecommerce inventory, retail stock, office supplies, equipment, archived documents, and seasonal business goods.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="rounded-2xl border border-slate-200 p-6">
+                  <h3 className="font-bold text-lg">{item.title}</h3>
+                  <p className="mt-3 text-slate-600">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -355,14 +359,16 @@ export default function InventoryManagementPage() {
           <div className="max-w-5xl mx-auto px-4">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-black">
-                Related warehouse services
+                Related Business Storage & Logistics Services
+
               </h2>
               <p className="mt-3 text-slate-600">
-                Explore more storage and logistics solutions.
+                Explore warehouse storage, business storage, pallet storage, commercial storage,
+                and third party logistics services connected to inventory management.
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
               {[
                 {
                   title: "Warehouse Storage",
