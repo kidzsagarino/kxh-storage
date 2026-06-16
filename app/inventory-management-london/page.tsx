@@ -9,10 +9,9 @@ import { londonLocations } from "../sitemap";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata: Metadata = {
-  title:
-    "Inventory Management & Storage London | Business Inventory Tracking & Delivery",
+  title: "Business Inventory Storage London | Stock Storage & Collection",
   description:
-    "Organised inventory management in London with secure warehouse storage, stock handling, item organisation, pickup & delivery, and business logistics support.",
+    "Secure business inventory storage in London with stock handling, pallet storage, item organisation, collection and return delivery for ecommerce, retail and growing businesses.",
   alternates: {
     canonical: "https://kxhlogistics.co.uk/inventory-management-london",
   },
@@ -121,7 +120,7 @@ export default function InventoryManagementPage() {
             </div>
 
             <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-              Inventory Management London for Business Storage
+              Business Inventory Storage London
             </h1>
 
             <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
@@ -179,7 +178,7 @@ export default function InventoryManagementPage() {
                 needed back.
               </p>
 
-              <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   "Inventory Tracking",
                   "Return Requests",
@@ -194,6 +193,54 @@ export default function InventoryManagementPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+        <section className="py-16 bg-white border-t border-slate-200/70">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center max-w-3xl mx-auto">
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Collection, Storage & Return Delivery
+              </p>
+              <h2 className="mt-2 text-3xl font-black">
+                We Collect, Store & Return Your Business Inventory
+              </h2>
+              <p className="mt-4 text-slate-600">
+                KXH helps London businesses store stock without leasing extra warehouse
+                space. We can collect your inventory, store it securely, organise it,
+                and return items when required.
+              </p>
+            </div>
+
+            <div className="mt-10 grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  step: "1",
+                  title: "We Collect",
+                  desc: "Book a collection and our team picks up your boxes, stock, pallets, or business items.",
+                },
+                {
+                  step: "2",
+                  title: "We Store",
+                  desc: "Your items are kept in secure London warehouse storage with organised stock handling.",
+                },
+                {
+                  step: "3",
+                  title: "We Return",
+                  desc: "Request return delivery when your business needs access to stored inventory.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                >
+                  <div className="text-3xl font-black text-emerald-700">
+                    {item.step}
+                  </div>
+                  <h3 className="mt-4 text-xl font-bold">{item.title}</h3>
+                  <p className="mt-3 text-slate-600">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -316,6 +363,57 @@ export default function InventoryManagementPage() {
             </div>
           </div>
         </section>
+        <section className="py-16 bg-slate-50 border-t border-slate-200/70">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center max-w-3xl mx-auto">
+              <h2 className="text-3xl font-black">
+                Who Uses Our Inventory Storage?
+              </h2>
+              <p className="mt-4 text-slate-600">
+                Our inventory storage service is designed for businesses that need
+                secure space, better stock organisation, and flexible collection or
+                delivery support.
+              </p>
+            </div>
+
+            <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  title: "Ecommerce Businesses",
+                  desc: "Store products, packaging, returns, and seasonal stock without managing your own warehouse.",
+                },
+                {
+                  title: "Retail Shops",
+                  desc: "Keep overflow stock, promotional displays, and seasonal inventory outside your main premises.",
+                },
+                {
+                  title: "Event Companies",
+                  desc: "Store exhibition stands, branded materials, equipment, and event stock between projects.",
+                },
+                {
+                  title: "Construction & Trade",
+                  desc: "Store tools, materials, fixtures, and project equipment with flexible access options.",
+                },
+                {
+                  title: "Offices",
+                  desc: "Store archive boxes, office equipment, documents, and business supplies securely.",
+                },
+                {
+                  title: "Growing Businesses",
+                  desc: "Free up workspace while keeping stock organised and available when required.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                >
+                  <h3 className="font-bold text-lg">{item.title}</h3>
+                  <p className="mt-3 text-slate-600">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
         <section className="py-16 border-t border-slate-200 bg-white">
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="text-3xl font-black text-center">
@@ -352,6 +450,50 @@ export default function InventoryManagementPage() {
                   <p className="mt-3 text-slate-600">{item.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+        <section className="py-16 bg-white border-t border-slate-200/70">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-10 items-center">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  Pallet & Bulk Stock Storage
+                </p>
+                <h2 className="mt-2 text-3xl font-black">
+                  Need Space for Pallets or Bulk Inventory?
+                </h2>
+                <p className="mt-4 text-slate-600 leading-relaxed">
+                  For larger stock volumes, KXH also supports pallet storage and bulk
+                  business storage. This is useful for ecommerce stock, retail inventory,
+                  seasonal goods, and commercial overflow storage.
+                </p>
+
+                <ul className="mt-6 space-y-3 text-slate-700">
+                  <li>✔ Pallet storage for business stock</li>
+                  <li>✔ Overflow inventory storage</li>
+                  <li>✔ Ecommerce and retail stock storage</li>
+                  <li>✔ Collection and return delivery available</li>
+                </ul>
+
+                <Link
+                  href="/pallet-storage-london"
+                  className="mt-8 inline-block rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800 transition"
+                >
+                  View Pallet Storage
+                </Link>
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8">
+                <h3 className="text-2xl font-black">
+                  Inventory storage that can scale
+                </h3>
+                <p className="mt-4 text-slate-600">
+                  If your business is outgrowing office space, shop storage, or small
+                  self-storage units, pallet storage gives you a more practical option
+                  for larger volumes of stock.
+                </p>
+              </div>
             </div>
           </div>
         </section>

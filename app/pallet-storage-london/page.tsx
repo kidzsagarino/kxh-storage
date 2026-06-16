@@ -105,8 +105,7 @@ export default function PalletStoragePage() {
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
         <FAQJsonLd />
-        <TrustpilotPill />
-
+       
         <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
           <div className="max-w-5xl mx-auto px-4 text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
