@@ -19,11 +19,11 @@ const serviceContent = {
         label: "Warehouse Storage",
         quoteService: "storage",
         h1: (loc: string) =>
-            `Warehouse Storage in ${loc}, London with Pickup & Delivery`,
+            `Storage Space to Rent in ${loc}, London with Pickup & Delivery`,
         intro: (loc: string) =>
-            `Need secure storage in ${loc}? KXH Logistics provides managed warehouse storage with collection, secure handling, and return delivery across London.`,
+            `Looking for storage space in ${loc}? KXH Logistics provides secure warehouse storage with collection, flexible storage terms, and return delivery across London.`,
         description:
-            "Managed warehouse storage with pickup, secure handling, and return delivery.",
+            "Secure storage space to rent with pickup, managed warehouse storage, flexible terms, and return delivery.",
         benefits: [
             "Pickup & delivery",
             "Secure warehouse storage",
@@ -789,7 +789,7 @@ export async function generateMetadata({ params }: any) {
             `Commercial Storage in ${locName}, London | Business Warehouse Support | KXH`,
 
         "warehouse-storage-london":
-            `Warehouse Storage in ${locName}, London | Pickup & Delivery | KXH`,
+            `Storage Space to Rent in ${locName}, London | Pickup & Delivery | KXH`,
 
         "logistics-moving-london":
             `Moving Services in ${locName}, London | Business & Home Moves | KXH`,
@@ -814,7 +814,7 @@ export async function generateMetadata({ params }: any) {
             `Commercial warehouse storage in ${locName}, London for office equipment, stock, inventory, and business storage needs.`,
 
         "warehouse-storage-london":
-            `Managed warehouse storage in ${locName}, London with collection, secure handling, and return delivery support.`,
+            `Secure storage space to rent in ${locName}, London with pickup, managed warehouse storage, flexible terms, and return delivery support for businesses, students, and renters.`,
 
         "logistics-moving-london":
             `Professional moving services in ${locName}, London for homes, offices, furniture, and business relocations.`,
@@ -1089,6 +1089,48 @@ export default async function LocationServicePage({ params }: any) {
                         </div>
                     </div>
                 </section>
+                <section className="py-16 bg-white border-t border-slate-200/70">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="text-center max-w-3xl mx-auto">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                Storage for Local Customers
+                            </p>
+                            <h2 className="mt-2 text-3xl font-black">
+                                Storage for Students, Renters & Businesses in {loc.name}
+                            </h2>
+                            <p className="mt-4 text-slate-600">
+                                KXH supports customers in {loc.name} who need flexible storage with
+                                collection and return delivery, whether they are moving home, changing
+                                student accommodation, storing business stock, or managing temporary space.
+                            </p>
+                        </div>
+
+                        <div className="mt-10 grid md:grid-cols-3 gap-6">
+                            {[
+                                {
+                                    title: "Student Storage",
+                                    desc: `Useful for students in ${loc.name} needing storage during summer breaks, accommodation changes, or temporary moves.`,
+                                },
+                                {
+                                    title: "Renter & Flat Move Storage",
+                                    desc: `Ideal for renters in ${loc.name} who need short-term storage during flat moves, renovations, or delayed move-in dates.`,
+                                },
+                                {
+                                    title: "Business Storage",
+                                    desc: `Suitable for businesses in ${loc.name} storing stock, office equipment, ecommerce inventory, documents, or commercial items.`,
+                                },
+                            ].map((item) => (
+                                <div
+                                    key={item.title}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                >
+                                    <h3 className="text-xl font-bold">{item.title}</h3>
+                                    <p className="mt-3 text-slate-600">{item.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
                 <section className="py-16 max-w-6xl mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-12 items-start">
                         <div>
@@ -1187,7 +1229,42 @@ export default async function LocationServicePage({ params }: any) {
                         </div>
                     </div>
                 </section>
+                <section className="py-16 bg-slate-50 border-t border-slate-200/70">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="grid lg:grid-cols-2 gap-10 items-center">
+                            <div>
+                                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                    Pickup & Return Delivery
+                                </p>
+                                <h2 className="mt-2 text-3xl font-black">
+                                    We Collect, Store & Deliver in {loc.name}
+                                </h2>
+                                <p className="mt-4 text-slate-600 leading-relaxed">
+                                    Instead of arranging transport and storage separately, KXH can collect
+                                    your items from {loc.name}, store them securely, and return them when
+                                    you need them back.
+                                </p>
 
+                                <ul className="mt-6 space-y-3 text-slate-700">
+                                    <li>✔ Collection from homes, offices, student accommodation, and businesses</li>
+                                    <li>✔ Secure managed warehouse storage</li>
+                                    <li>✔ Flexible short-term or long-term storage</li>
+                                    <li>✔ Return delivery available when needed</li>
+                                </ul>
+                            </div>
+
+                            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+                                <h3 className="text-2xl font-black">
+                                    No need to rent a van
+                                </h3>
+                                <p className="mt-4 text-slate-600">
+                                    Our collection and delivery model makes storage easier for customers
+                                    who do not want to move items into a storage unit themselves.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section className="py-16 bg-slate-50 border-t border-slate-200/70">
                     <div className="max-w-5xl mx-auto px-4">
                         <div className="text-center">
