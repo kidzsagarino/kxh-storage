@@ -387,9 +387,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     camden: {
         "warehouse-storage-london": {
             localIntro:
-                "Camden customers often use our warehouse storage service during apartment moves, student relocations, renovations, and temporary housing transitions.",
+                "Looking for storage space in Camden? KXH Logistics provides secure warehouse storage with collection and delivery for students, renters, households, and businesses across Camden and surrounding areas.",
             localUseCase:
-                "This is especially useful for students, renters, flat moves, furniture storage, and business items where collection support makes storage easier around busy Camden areas.",
+                "Many Camden customers use our service during flat moves, university accommodation changes, property renovations, business relocations, and temporary storage needs. Collection and return delivery make storage easier without hiring a van or visiting a storage facility.",
         },
         "business-storage-london": {
             localIntro:
@@ -789,8 +789,9 @@ export async function generateMetadata({ params }: any) {
             `Commercial Storage in ${locName}, London | Business Warehouse Support | KXH`,
 
         "warehouse-storage-london":
-            `Storage Space to Rent in ${locName}, London | Pickup & Delivery | KXH`,
-
+            location === "camden"
+                ? `Storage Camden | Storage Space to Rent in Camden London | KXH`
+                : `Storage Space to Rent in ${locName}, London | Pickup & Delivery | KXH`,
         "logistics-moving-london":
             `Moving Services in ${locName}, London | Business & Home Moves | KXH`,
 
@@ -814,8 +815,9 @@ export async function generateMetadata({ params }: any) {
             `Commercial warehouse storage in ${locName}, London for office equipment, stock, inventory, and business storage needs.`,
 
         "warehouse-storage-london":
-            `Secure storage space to rent in ${locName}, London with pickup, managed warehouse storage, flexible terms, and return delivery support for businesses, students, and renters.`,
-
+            location === "camden"
+                ? `Looking for storage in Camden? KXH provides secure storage space with collection and delivery for students, renters, households, and businesses across Camden.`
+                : `Secure storage space to rent in ${locName}, London with pickup, managed warehouse storage, flexible terms, and return delivery support for businesses, students, and renters.`,
         "logistics-moving-london":
             `Professional moving services in ${locName}, London for homes, offices, furniture, and business relocations.`,
 
@@ -1131,6 +1133,64 @@ export default async function LocationServicePage({ params }: any) {
                         </div>
                     </div>
                 </section>
+                {service === "warehouse-storage-london" && (
+                    <section className="py-16 bg-slate-50 border-t border-slate-200/70">
+                        <div className="max-w-6xl mx-auto px-4">
+                            <h2 className="text-3xl font-black">
+                                Why Customers Choose KXH Storage in {loc.name}
+                            </h2>
+
+                            <p className="mt-4 text-slate-600">
+                                Finding storage in {loc.name} can be challenging due to limited space,
+                                apartment living, student accommodation changes, business growth, and
+                                temporary relocation needs. KXH simplifies storage with collection,
+                                secure warehouse storage, and return delivery across London.
+                            </p>
+
+                            <div className="mt-8 grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h3 className="font-bold text-lg">
+                                        Student Storage in {loc.name}
+                                    </h3>
+                                    <p className="mt-2 text-slate-600">
+                                        Ideal for students moving between university accommodation,
+                                        summer breaks, internships, and temporary housing.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-lg">
+                                        Business Storage in {loc.name}
+                                    </h3>
+                                    <p className="mt-2 text-slate-600">
+                                        Flexible storage for stock, inventory, office equipment,
+                                        documents, retail products, and ecommerce inventory.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-lg">
+                                        Flat Move & Household Storage
+                                    </h3>
+                                    <p className="mt-2 text-slate-600">
+                                        Useful during delayed move-ins, renovations, downsizing,
+                                        apartment relocations, and temporary storage needs.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-lg">
+                                        Storage with Collection & Delivery
+                                    </h3>
+                                    <p className="mt-2 text-slate-600">
+                                        We collect, store, and return your items without requiring
+                                        you to rent a van or visit a storage facility.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
                 <section className="py-16 max-w-6xl mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-12 items-start">
                         <div>
