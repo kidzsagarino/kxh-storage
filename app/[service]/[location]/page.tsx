@@ -432,9 +432,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     westminster: {
         "warehouse-storage-london": {
             localIntro:
-                "Westminster customers use our managed warehouse storage for office furniture, commercial stock, archive storage, student storage, and temporary business storage.",
+                "Need storage space in Westminster? KXH Logistics provides secure managed warehouse storage with collection and return delivery for offices, students, renters, households, and commercial customers.",
             localUseCase:
-                "This is helpful during office moves, refurbishments, student accommodation changes, event preparation, and short-term space issues in Central London.",
+                "Westminster customers use our storage service during office moves, refurbishments, student accommodation changes, event preparation, archive storage, and short-term space issues in Central London.",
         },
         "business-storage-london": {
             localIntro:
@@ -477,9 +477,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     hackney: {
         "warehouse-storage-london": {
             localIntro:
-                "Customers in Hackney use our warehouse storage services for business inventory, apartment storage, student storage, furniture holding, and flexible collection and delivery.",
+                "Looking for storage space to rent in Hackney? KXH Logistics provides secure warehouse storage with collection and delivery for startups, renters, students, households, and businesses across Hackney and East London.",
             localUseCase:
-                "This suits startups, creatives, students, renters, and small businesses needing extra space.",
+                "Hackney customers use our storage service for ecommerce inventory, apartment moves, student storage, furniture holding, office equipment, and short-term overflow storage. Collection and return delivery make storage easier without hiring a van or visiting a storage unit.",
         },
 
         "business-storage-london": {
@@ -568,9 +568,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     "kensington-chelsea": {
         "warehouse-storage-london": {
             localIntro:
-                "Customers in Kensington and Chelsea use our warehouse storage services during property renovations, student moves, relocations, and temporary storage situations.",
+                "Looking for storage space in Kensington and Chelsea? KXH Logistics provides secure warehouse storage with collection, flexible terms, and return delivery for households, students, renters, and businesses.",
             localUseCase:
-                "This is useful for students, renters, households, and businesses that need careful handling, secure storage, and return delivery.",
+                "Customers in Kensington and Chelsea use our storage service during property renovations, student moves, relocations, furniture storage, household storage, and temporary business storage needs.",
         },
         "business-storage-london": {
             localIntro:
@@ -658,9 +658,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     southwark: {
         "warehouse-storage-london": {
             localIntro:
-                "Southwark customers use our warehouse storage services for business stock, student storage, household storage, office equipment, and temporary storage support.",
+                "Looking for secure storage space in Southwark? KXH Logistics provides managed warehouse storage with collection and delivery for business stock, student storage, household items, and office equipment.",
             localUseCase:
-                "This is useful during student moves, flat moves, renovations, business changes, and stock overflow periods.",
+                "Southwark customers use our service for flat moves, business storage, ecommerce stock, office furniture, student accommodation changes, and temporary storage needs with convenient pickup and return delivery.",
         },
         "business-storage-london": {
             localIntro:
@@ -703,9 +703,9 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
     lambeth: {
         "warehouse-storage-london": {
             localIntro:
-                "Customers in Lambeth use our warehouse storage services for student storage, home storage, office clearouts, temporary storage, and business inventory support.",
+                "Need storage space to rent in Lambeth? KXH Logistics provides secure warehouse storage with pickup, flexible storage terms, and return delivery for students, renters, households, and businesses.",
             localUseCase:
-                "This is helpful for students, renters, households, and businesses needing secure storage with collection and return delivery.",
+                "Lambeth customers use our storage service during student moves, flat moves, office clearouts, renovations, business stock overflow, and temporary storage periods. We collect, store, and return items when needed.",
         },
         "business-storage-london": {
             localIntro:
@@ -789,8 +789,15 @@ export async function generateMetadata({ params }: any) {
             `Commercial Storage in ${locName}, London | Business Warehouse Support | KXH`,
 
         "warehouse-storage-london":
-            location === "camden"
-                ? `Storage Camden | Storage Space to Rent in Camden London | KXH`
+            [
+                "camden",
+                "hackney",
+                "lambeth",
+                "southwark",
+                "westminster",
+                "kensington-chelsea",
+            ].includes(location)
+                ? `Storage ${locName} | Storage Space to Rent in ${locName} London | KXH`
                 : `Storage Space to Rent in ${locName}, London | Pickup & Delivery | KXH`,
         "logistics-moving-london":
             `Moving Services in ${locName}, London | Business & Home Moves | KXH`,
@@ -815,8 +822,15 @@ export async function generateMetadata({ params }: any) {
             `Commercial warehouse storage in ${locName}, London for office equipment, stock, inventory, and business storage needs.`,
 
         "warehouse-storage-london":
-            location === "camden"
-                ? `Looking for storage in Camden? KXH provides secure storage space with collection and delivery for students, renters, households, and businesses across Camden.`
+            [
+                "camden",
+                "hackney",
+                "lambeth",
+                "southwark",
+                "westminster",
+                "kensington-chelsea",
+            ].includes(location)
+                ? `Looking for storage in ${locName}? KXH provides secure storage space with collection and delivery for students, renters, households, and businesses across ${locName}.`
                 : `Secure storage space to rent in ${locName}, London with pickup, managed warehouse storage, flexible terms, and return delivery support for businesses, students, and renters.`,
         "logistics-moving-london":
             `Professional moving services in ${locName}, London for homes, offices, furniture, and business relocations.`,
