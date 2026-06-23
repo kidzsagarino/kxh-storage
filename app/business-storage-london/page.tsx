@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title:
     "Business Storage London | Secure Warehouse Storage for Companies | KXH Logistics",
   description:
-    "Secure business storage in London with pickup, delivery, warehouse handling, stock storage, office equipment storage, and flexible commercial storage solutions.",
+    "Secure business storage in London with pickup, delivery, ecommerce storage, retail stock storage, office equipment storage, warehouse handling, and flexible commercial storage solutions.",
   alternates: {
     canonical: "https://kxhlogistics.co.uk/business-storage-london",
   },
@@ -317,7 +317,160 @@ export default function BusinessStoragePage() {
             </div>
           </div>
         </section>
+        <section className="py-20 border-t border-slate-200/70 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center max-w-3xl mx-auto">
+              <h2 className="text-3xl font-black">
+                Industries We Serve
+              </h2>
+              <p className="mt-4 text-slate-600">
+                KXH Logistics supports London businesses that need flexible storage,
+                stock handling, collection, and return delivery without taking on
+                larger premises or long warehouse leases.
+              </p>
+            </div>
 
+            <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  title: "Ecommerce Businesses",
+                  desc: "Storage for products, packaging, returns, seasonal stock, and online retail inventory.",
+                },
+                {
+                  title: "Retail Shops",
+                  desc: "Flexible storage for excess stock, promotional materials, shop fittings, and seasonal inventory.",
+                },
+                {
+                  title: "Offices & Corporate Teams",
+                  desc: "Secure storage for office furniture, archive boxes, IT equipment, and business assets.",
+                },
+                {
+                  title: "Event & Exhibition Companies",
+                  desc: "Storage for exhibition stands, marketing materials, event equipment, and display stock.",
+                },
+                {
+                  title: "Construction & Trade",
+                  desc: "Storage for tools, materials, fixtures, and project equipment with collection and delivery available.",
+                },
+                {
+                  title: "Professional Services",
+                  desc: "Archive storage for documents, files, records, equipment, and office supplies.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                >
+                  <h3 className="font-bold text-lg text-slate-900">{item.title}</h3>
+                  <p className="mt-3 text-slate-600">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="py-20 border-t border-slate-200/70 bg-slate-50">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  Ecommerce & Retail Stock Storage
+                </p>
+                <h2 className="mt-2 text-3xl font-black">
+                  Flexible Storage for Ecommerce and Retail Businesses
+                </h2>
+                <p className="mt-4 text-slate-600 leading-relaxed">
+                  Growing ecommerce and retail businesses often need extra space for
+                  stock, packaging, returns, and seasonal inventory. KXH provides secure
+                  business storage with collection and delivery across London.
+                </p>
+
+                <ul className="mt-6 space-y-3 text-slate-700">
+                  <li>✔ Ecommerce inventory storage</li>
+                  <li>✔ Retail stock and overflow storage</li>
+                  <li>✔ Packaging and returns storage</li>
+                  <li>✔ Seasonal inventory storage</li>
+                  <li>✔ Collection and return delivery available</li>
+                </ul>
+
+                <div className="mt-8">
+                  <Link
+                    href="/inventory-management-london"
+                    className="inline-block rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800 transition"
+                  >
+                    View Inventory Storage
+                  </Link>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+                <h3 className="text-2xl font-black">
+                  Scale storage as your business grows
+                </h3>
+                <p className="mt-4 text-slate-600">
+                  Instead of renting larger premises, businesses can use flexible
+                  warehouse storage and increase or reduce storage space as stock levels
+                  change.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="py-20 border-t border-slate-200/70 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8">
+                <h2 className="text-3xl font-black">
+                  Office Equipment Storage
+                </h2>
+                <p className="mt-4 text-slate-600 leading-relaxed">
+                  Store office furniture, IT equipment, archive boxes, documents,
+                  fixtures, and business supplies during office moves, refurbishments,
+                  downsizing, or temporary relocations.
+                </p>
+
+                <ul className="mt-6 space-y-3 text-slate-700">
+                  <li>✔ Office furniture storage</li>
+                  <li>✔ Archive box and document storage</li>
+                  <li>✔ IT equipment and business asset storage</li>
+                  <li>✔ Storage during office moves or renovations</li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  Collection & Delivery
+                </p>
+                <h2 className="mt-2 text-3xl font-black">
+                  We Collect, Store & Deliver
+                </h2>
+                <p className="mt-4 text-slate-600 leading-relaxed">
+                  KXH makes business storage easier by collecting items from your office,
+                  shop, warehouse, or site, storing them securely, and returning them
+                  when needed.
+                </p>
+
+                <div className="mt-8 grid gap-4">
+                  {[
+                    "Book a collection from your business location",
+                    "We collect stock, equipment, documents, or office items",
+                    "Your items are stored securely in managed warehouse storage",
+                    "Request return delivery when your business needs them back",
+                  ].map((item, index) => (
+                    <div
+                      key={item}
+                      className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                    >
+                      <span className="font-black text-emerald-700">
+                        {index + 1}.
+                      </span>{" "}
+                      <span className="text-slate-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         <section className="py-16 border-t border-slate-200/70 bg-slate-50">
 
           <div className="max-w-6xl mx-auto px-4">

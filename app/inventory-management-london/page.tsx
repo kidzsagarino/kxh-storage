@@ -30,7 +30,7 @@ function JsonLd() {
     areaServed: "London",
     serviceType: "Inventory Management",
     description:
-      "Warehouse inventory management in London with organised stock handling, item categorisation, secure storage, pickup, and delivery support.",
+      "Business inventory storage in London with organised stock handling, item categorisation, secure warehouse storage, pickup, pallet storage, and return delivery support.",
   };
 
   return (
@@ -410,6 +410,48 @@ export default function InventoryManagementPage() {
                   <h3 className="font-bold text-lg">{item.title}</h3>
                   <p className="mt-3 text-slate-600">{item.desc}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="py-16 bg-white border-t border-slate-200/70">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center max-w-3xl mx-auto">
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                London Inventory Storage
+              </p>
+              <h2 className="text-3xl font-black">
+                Inventory Storage for Businesses Across London
+              </h2>
+              <p className="mt-4 text-slate-600">
+                KXH Logistics supports London businesses that need secure inventory
+                storage, organised stock handling, collection, and return delivery
+                across key boroughs.
+              </p>
+            </div>
+
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { name: "Tower Hamlets", href: "/warehouse-storage-london/tower-hamlets" },
+                { name: "Camden", href: "/warehouse-storage-london/camden" },
+                { name: "Hackney", href: "/warehouse-storage-london/hackney" },
+                { name: "Lambeth", href: "/warehouse-storage-london/lambeth" },
+                { name: "Southwark", href: "/warehouse-storage-london/southwark" },
+                { name: "Westminster", href: "/warehouse-storage-london/westminster" },
+              ].map((area) => (
+                <Link
+                  key={area.href}
+                  href={area.href}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
+                >
+                  <h3 className="font-semibold text-slate-900">
+                    Inventory & Storage Support in {area.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600">
+                    Secure storage space with collection and delivery for local
+                    businesses, stock, equipment, and inventory overflow.
+                  </p>
+                </Link>
               ))}
             </div>
           </div>

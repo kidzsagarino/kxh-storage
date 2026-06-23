@@ -16,9 +16,9 @@ import TrustpilotBadge from "./components/trustpilot/TrustPilotBadge";
 import TrustpilotPill from "./components/trustpilot/TrustpilotPill";
 
 export const metadata: Metadata = {
-    title: "Business Storage & Warehouse Logistics London | Pickup & Delivery Storage | KXH Logistics",
+    title: "Business Storage, Warehouse Storage & Pickup Delivery London | KXH Logistics",
     description:
-        "Secure warehouse storage, inventory management, moving services, student storage, renter storage, pickup and delivery storage, and business logistics services across London.",
+        "Business storage, warehouse storage, inventory storage, pallet storage, moving services, and pickup & delivery across London. Flexible storage solutions for businesses, students, renters, and households.",
     keywords: [
         "storage London",
         "moving service London",
@@ -341,16 +341,11 @@ export default async function HomePage() {
                             </div>
 
                             <h1 className="mt-6 text-5xl font-black leading-tight tracking-tight text-slate-950 sm:text-6xl">
-                                Storage. Moving.
-                                <span className="block bg-gradient-to-r from-emerald-500 to-emerald-700 bg-clip-text text-transparent">
-                                    Logistics.
-                                </span>
+                                Warehouse Storage & Logistics in London
                             </h1>
 
                             <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-                                Secure warehouse storage with pickup & delivery across London for
-                                businesses, students, renters, apartment moves, inventory management,
-                                and temporary relocations.
+                                Secure storage space with pickup and delivery for businesses, students, renters, apartment moves, inventory storage, and temporary relocations across London.
                             </p>
 
                             <div className="mt-8 flex flex-wrap gap-4">
@@ -456,28 +451,64 @@ export default async function HomePage() {
                         with collection, secure warehouse storage, and return delivery.
                     </p>
                 </section>
-                <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+                <div className="mx-auto flex max-w-screen-xl gap-6 px-4 sm:px-6 lg:px-8">
+
+                    <Link
+                        href="/business-storage-london"
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                    >
+                        Business Storage London
+                    </Link>
+
+                    <Link
+                        href="/inventory-management-london"
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                    >
+                        Inventory Storage London
+                    </Link>
+
+                    <Link
+                        href="/pallet-storage-london"
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                    >
+                        Pallet Storage London
+                    </Link>
+
+                    <Link
+                        href="/third-party-logistics-london"
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                    >
+                        Third Party Logistics London
+                    </Link>
+
                     <Link
                         href="/warehouse-storage-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"                    >
-                        Business warehouse storage London
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                    >
+                        Warehouse Storage London
                     </Link>
 
                     <Link
                         href="/logistics-moving-london"
                         className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
                     >
-                        Office relocation logistics
+                        Office Relocation Logistics
                     </Link>
-                    <Link href="/shredding-solutions-london" className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline">
-                        Secure document shredding
+
+                    <Link
+                        href="/shredding-solutions-london"
+                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                    >
+                        Secure Document Shredding
                     </Link>
+
                     <Link
                         href="/services"
                         className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
                     >
-                        Logistics and storage services
+                        Logistics & Storage Services
                     </Link>
+
                 </div>
                 <section className="bg-white py-8">
                     <div className="mx-auto grid max-w-screen-xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
@@ -557,6 +588,78 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
+                <section className="border-t border-slate-200/70 bg-slate-50 py-16">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="max-w-4xl">
+                            <h2 className="text-3xl font-black">
+                                Business Storage Solutions Across London
+                            </h2>
+
+                            <p className="mt-4 text-slate-600 leading-relaxed">
+                                KXH Logistics provides flexible warehouse storage, inventory storage,
+                                pallet storage, office equipment storage, and collection & delivery
+                                services for businesses throughout London.
+                            </p>
+                        </div>
+
+                        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                            <Link href="/business-storage-london" className="rounded-2xl border bg-white p-6 hover:border-emerald-300">
+                                <h3 className="font-bold">Business Storage</h3>
+                                <p className="mt-2 text-sm text-slate-600">
+                                    Flexible storage for stock, inventory, office equipment, and archives.
+                                </p>
+                            </Link>
+
+                            <Link href="/inventory-management-london" className="rounded-2xl border bg-white p-6 hover:border-emerald-300">
+                                <h3 className="font-bold">Inventory Storage</h3>
+                                <p className="mt-2 text-sm text-slate-600">
+                                    Organised inventory handling with collection and return delivery.
+                                </p>
+                            </Link>
+
+                            <Link href="/pallet-storage-london" className="rounded-2xl border bg-white p-6 hover:border-emerald-300">
+                                <h3 className="font-bold">Pallet Storage</h3>
+                                <p className="mt-2 text-sm text-slate-600">
+                                    Secure pallet storage for retail, wholesale, and commercial goods.
+                                </p>
+                            </Link>
+
+                            <Link href="/third-party-logistics-london" className="rounded-2xl border bg-white p-6 hover:border-emerald-300">
+                                <h3 className="font-bold">Third Party Logistics</h3>
+                                <p className="mt-2 text-sm text-slate-600">
+                                    3PL support including inventory handling and warehouse coordination.
+                                </p>
+                            </Link>
+
+                        </div>
+                    </div>
+                </section>
+                <section className="border-t border-slate-200/70 bg-white py-16">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+
+                        <h2 className="text-3xl font-black">
+                            Storage Services Across London Boroughs
+                        </h2>
+
+                        <p className="mt-4 text-slate-600 max-w-3xl">
+                            KXH Logistics provides warehouse storage, business storage,
+                            inventory storage, pallet storage, and collection services
+                            across London's major boroughs.
+                        </p>
+
+                        <div className="mt-8 flex flex-wrap gap-3">
+                            <Link href="/warehouse-storage-london/tower-hamlets">Storage Tower Hamlets</Link>
+                            <Link href="/warehouse-storage-london/camden">Storage Camden</Link>
+                            <Link href="/warehouse-storage-london/hackney">Storage Hackney</Link>
+                            <Link href="/warehouse-storage-london/lambeth">Storage Lambeth</Link>
+                            <Link href="/warehouse-storage-london/southwark">Storage Southwark</Link>
+                            <Link href="/warehouse-storage-london/westminster">Storage Westminster</Link>
+                            <Link href="/warehouse-storage-london/kensington-chelsea">Storage Kensington & Chelsea</Link>
+                        </div>
+
+                    </div>
+                </section>
                 <TestimonialsSection />
                 <section className="border-t border-slate-200/70 bg-white">
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
@@ -579,7 +682,7 @@ export default async function HomePage() {
                             </p>
 
                             <p className="mt-4 text-base sm:text-lg leading-7 text-slate-600">
-                                Whether you need short-term overflow storage, student storage, renter storage, temporary relocation support, or long-term business warehousing
+                                Whether you need short-term overflow storage, student storage, renter storage, temporary relocation support, or long-term business warehousing, KXH provides flexible collection, secure storage, and return delivery across London.
                             </p>
 
                             <div className="mt-8 flex flex-wrap gap-3">
