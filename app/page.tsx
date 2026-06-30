@@ -334,7 +334,7 @@ export default async function HomePage() {
                     <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
 
                         {/* LEFT CONTENT */}
-                        <div className="mt-4 self-start">
+                        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
                             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-[11px] sm:text-sm font-bold uppercase tracking-wide text-emerald-700 shadow-sm">
                                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
                                 Trusted Storage & Logistics in London
@@ -348,17 +348,17 @@ export default async function HomePage() {
                                 Secure storage space with pickup and delivery for businesses, students, renters, apartment moves, inventory storage, and temporary relocations across London.
                             </p>
 
-                            <div className="mt-8 flex flex-wrap gap-4">
+                            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
                                 <a
                                     href="#pricing"
-                                    className="rounded-2xl bg-emerald-700 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500"
+                                    className="w-full rounded-2xl bg-emerald-700 px-7 py-4 text-center text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500 sm:w-auto"
                                 >
                                     Get Instant Quote
                                 </a>
 
                                 <a
                                     href="/services"
-                                    className="rounded-2xl border border-emerald-200 bg-white px-7 py-4 text-sm font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50"
+                                    className="w-full rounded-2xl border border-emerald-200 bg-white px-7 py-4 text-center text-sm font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50 sm:w-auto"
                                 >
                                     View All Services
                                 </a>
@@ -451,62 +451,62 @@ export default async function HomePage() {
                         with collection, secure warehouse storage, and return delivery.
                     </p>
                 </section>
-                <div className="mx-auto flex max-w-screen-xl gap-6 px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto grid max-w-screen-xl grid-cols-2 gap-3 px-4 py-4 sm:grid-cols-3 lg:grid-cols-4">
 
                     <Link
                         href="/business-storage-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Business Storage London
+                        Business Storage
                     </Link>
 
                     <Link
                         href="/inventory-management-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Inventory Storage London
+                        Inventory Storage
                     </Link>
 
                     <Link
                         href="/pallet-storage-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Pallet Storage London
+                        Pallet Storage
                     </Link>
 
                     <Link
                         href="/third-party-logistics-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Third Party Logistics London
+                        3PL Logistics
                     </Link>
 
                     <Link
                         href="/warehouse-storage-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Warehouse Storage London
+                        Warehouse Storage
                     </Link>
 
                     <Link
                         href="/logistics-moving-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Office Relocation Logistics
+                        Office Relocation
                     </Link>
 
                     <Link
                         href="/shredding-solutions-london"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Secure Document Shredding
+                        Secure Shredding
                     </Link>
 
                     <Link
                         href="/services"
-                        className="font-medium text-emerald-800 hover:text-emerald-900 hover:underline"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
                     >
-                        Logistics & Storage Services
+                        All Services
                     </Link>
 
                 </div>
