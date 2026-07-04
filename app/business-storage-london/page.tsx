@@ -186,9 +186,7 @@ export default function BusinessStoragePage() {
             </h1>
 
             <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-              Secure warehouse storage for business stock, office equipment,
-              archived documents, and commercial items. We collect, store, and
-              deliver your items when needed.
+              Managed business storage in London with collection, secure warehouse storage, inventory organisation, and scheduled return delivery—all without the hassle of self-storage.
             </p>
             <p className="mt-4 text-slate-600 leading-relaxed">
               KXH Logistics also supports businesses needing{" "}
@@ -227,37 +225,9 @@ export default function BusinessStoragePage() {
                 className="w-full rounded-3xl border border-slate-200 shadow-xl"
               />
             </div>
-            <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-2xl font-black">
-                Inventory Tracking & Return Requests
-              </h2>
 
-              <p className="mt-4 text-slate-600 leading-relaxed">
-                Businesses often need more than storage space. Our managed storage
-                service helps organise inventory, maintain item records,
-                coordinate collection, and arrange return delivery when items
-                are needed back.
-              </p>
-
-              <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  "Inventory Tracking",
-                  "Return Requests",
-                  "Collection & Delivery",
-                  "Business Stock Storage",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm font-medium text-emerald-700"
-                  >
-                    ✓ {item}
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
-
         <section className="border-y border-slate-200 bg-white">
           <div className="mx-auto max-w-6xl px-4 py-6 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
             {[
@@ -273,7 +243,112 @@ export default function BusinessStoragePage() {
             ))}
           </div>
         </section>
+        <section className="py-16 border-t border-slate-200/70 bg-slate-50">
 
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="mb-10">
+              <img
+                src="/images/business-storage/business-storage-pickup-delivery-london.webp"
+                alt="KXH Logistics collecting business storage items from a London office"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              />
+            </div>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-black">
+                Managed Business Storage Built Around Your Business
+              </h2>
+              <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
+                A managed storage service designed for business convenience,
+                security, and flexibility.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  title: "Managed Collection",
+                  desc: "We collect your business items from your office, shop, or site across London.",
+                },
+                {
+                  title: "Secure Warehouse Storage",
+                  desc: "Items are stored in monitored facilities with professional handling and controlled access.",
+                },
+                {
+                  title: "Return Delivery",
+                  desc: "Request your items back when needed and we arrange scheduled delivery.",
+                },
+                {
+                  title: "Inventory Tracking & Organisation",
+                  desc: "Items are labelled, categorised, and organised through warehouse handling processes, making stored inventory easier to identify and retrieve.",
+                },
+                {
+                  title: "Flexible Capacity",
+                  desc: "Store a few items, office equipment, stock, or larger business loads.",
+                },
+                {
+                  title: "Commercial Support",
+                  desc: "Useful for office moves, stock overflow, seasonal storage, and operational storage needs.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                >
+                  <h3 className="font-bold text-slate-900">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="py-20 max-w-5xl mx-auto px-4">
+          <div className="mb-12">
+            <img
+              src="/images/business-storage/inventory-management-business-storage-london.webp"
+              alt="Warehouse worker scanning business inventory in a managed storage facility"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+            />
+          </div>
+          <div className="text-center">
+            <h2 className="text-3xl font-black">
+              How business storage works
+            </h2>
+            <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
+              A simple process for London companies that need space without the
+              hassle of self-storage.
+            </p>
+          </div>
+
+          <div className="mt-12 grid md:grid-cols-3 gap-6 text-center">
+            {[
+              {
+                step: "1",
+                title: "Book collection",
+                desc: "Tell us what you need stored and choose a convenient pickup time.",
+              },
+              {
+                step: "2",
+                title: "We store securely",
+                desc: "Your business items are handled, organised, and stored in our warehouse.",
+              },
+              {
+                step: "3",
+                title: "Request delivery",
+                desc: "When you need items back, we arrange delivery to your chosen London location.",
+              },
+            ].map((s) => (
+              <div key={s.step} className="rounded-2xl border border-slate-200 p-6">
+                <div className="text-2xl font-black text-emerald-700">
+                  {s.step}
+                </div>
+                <h3 className="mt-3 font-bold">{s.title}</h3>
+                <p className="mt-2 text-sm text-slate-600">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
         <section className="py-20 max-w-6xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -419,9 +494,8 @@ export default function BusinessStoragePage() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-start">
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8">
-                <h2 className="text-3xl font-black">
-                  Office Equipment Storage
-                </h2>
+                <h2 className="text-3xl font-black">Office Equipment Storage</h2>
+
                 <p className="mt-4 text-slate-600 leading-relaxed">
                   Store office furniture, IT equipment, archive boxes, documents,
                   fixtures, and business supplies during office moves, refurbishments,
@@ -440,9 +514,11 @@ export default function BusinessStoragePage() {
                 <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
                   Collection & Delivery
                 </p>
+
                 <h2 className="mt-2 text-3xl font-black">
-                  We Collect, Store & Deliver
+                  Managed Collection & Return Delivery
                 </h2>
+
                 <p className="mt-4 text-slate-600 leading-relaxed">
                   KXH makes business storage easier by collecting items from your office,
                   shop, warehouse, or site, storing them securely, and returning them
@@ -460,10 +536,36 @@ export default function BusinessStoragePage() {
                       key={item}
                       className="rounded-xl border border-slate-200 bg-slate-50 p-4"
                     >
-                      <span className="font-black text-emerald-700">
-                        {index + 1}.
-                      </span>{" "}
+                      <span className="font-black text-emerald-700">{index + 1}.</span>{" "}
                       <span className="text-slate-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:col-span-2 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+                <h2 className="text-2xl font-black">
+                  Inventory Tracking & Return Requests
+                </h2>
+
+                <p className="mt-4 text-slate-600 leading-relaxed max-w-3xl">
+                  Businesses often need more than storage space. Our managed storage
+                  service helps organise inventory, maintain item records, coordinate
+                  collection, and arrange return delivery when items are needed back.
+                </p>
+
+                <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {[
+                    "Inventory Tracking",
+                    "Return Requests",
+                    "Collection & Delivery",
+                    "Business Stock Storage",
+                  ].map((item) => (
+                    <div
+                      key={item}
+                      className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm font-medium text-emerald-700"
+                    >
+                      ✓ {item}
                     </div>
                   ))}
                 </div>
@@ -471,119 +573,12 @@ export default function BusinessStoragePage() {
             </div>
           </div>
         </section>
-        <section className="py-16 border-t border-slate-200/70 bg-slate-50">
-
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="mb-10">
-              <img
-                src="/images/business-storage/business-storage-pickup-delivery-london.webp"
-                alt="KXH Logistics collecting business storage items from a London office"
-                className="w-full rounded-3xl border border-slate-200 shadow-lg"
-              />
-            </div>
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-black">
-                Why businesses choose KXH Logistics
-              </h2>
-              <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
-                A managed storage service designed for business convenience,
-                security, and flexibility.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Managed Collection",
-                  desc: "We collect your business items from your office, shop, or site across London.",
-                },
-                {
-                  title: "Secure Warehouse Storage",
-                  desc: "Items are stored in monitored facilities with professional handling and controlled access.",
-                },
-                {
-                  title: "Return Delivery",
-                  desc: "Request your items back when needed and we arrange scheduled delivery.",
-                },
-                {
-                  title: "Inventory Tracking & Organisation",
-                  desc: "Items are labelled, categorised, and organised through warehouse handling processes, making stored inventory easier to identify and retrieve.",
-                },
-                {
-                  title: "Flexible Capacity",
-                  desc: "Store a few items, office equipment, stock, or larger business loads.",
-                },
-                {
-                  title: "Commercial Support",
-                  desc: "Useful for office moves, stock overflow, seasonal storage, and operational storage needs.",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-                >
-                  <h3 className="font-bold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-20 max-w-5xl mx-auto px-4">
-          <div className="mb-12">
-            <img
-              src="/images/business-storage/inventory-management-business-storage-london.webp"
-              alt="Warehouse worker scanning business inventory in a managed storage facility"
-              className="w-full rounded-3xl border border-slate-200 shadow-lg"
-            />
-          </div>
-          <div className="text-center">
-            <h2 className="text-3xl font-black">
-              How business storage works
-            </h2>
-            <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
-              A simple process for London companies that need space without the
-              hassle of self-storage.
-            </p>
-          </div>
-
-          <div className="mt-12 grid md:grid-cols-3 gap-6 text-center">
-            {[
-              {
-                step: "1",
-                title: "Book collection",
-                desc: "Tell us what you need stored and choose a convenient pickup time.",
-              },
-              {
-                step: "2",
-                title: "We store securely",
-                desc: "Your business items are handled, organised, and stored in our warehouse.",
-              },
-              {
-                step: "3",
-                title: "Request delivery",
-                desc: "When you need items back, we arrange delivery to your chosen London location.",
-              },
-            ].map((s) => (
-              <div key={s.step} className="rounded-2xl border border-slate-200 p-6">
-                <div className="text-2xl font-black text-emerald-700">
-                  {s.step}
-                </div>
-                <h3 className="mt-3 font-bold">{s.title}</h3>
-                <p className="mt-2 text-sm text-slate-600">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
         <section className="py-20 border-t border-slate-200/70 bg-white">
           <div className="max-w-5xl mx-auto px-4">
 
             <div className="text-center">
               <h2 className="text-3xl font-black">
-                Why Businesses Use Inventory Storage
+                Managed Inventory Storage Benefits
               </h2>
 
               <p className="mt-4 text-slate-600 max-w-3xl mx-auto">
@@ -659,6 +654,7 @@ export default function BusinessStoragePage() {
 
           </div>
         </section>
+
         <section className="py-16 border-t border-slate-200/70 bg-white">
           <div className="max-w-5xl mx-auto px-4">
 
@@ -740,7 +736,7 @@ export default function BusinessStoragePage() {
         <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
           <div className="max-w-3xl mx-auto px-4">
             <h2 className="text-3xl font-black">
-              Need secure storage for your business?
+              Need Business Storage with Collection & Delivery?
             </h2>
             <p className="mt-4 text-slate-600">
               Get a fast quote for business storage, collection, and return
