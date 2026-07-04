@@ -9,9 +9,9 @@ import { londonLocations } from "../sitemap";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata: Metadata = {
-  title: "Business Inventory Storage London | Stock Storage & Collection",
+  title: "Inventory Management & Storage London | Business Stock Storage",
   description:
-    "Secure business inventory storage in London with stock handling, pallet storage, item organisation, collection and return delivery for ecommerce, retail and growing businesses.",
+    "Inventory management and storage in London with secure warehouse storage, organised stock handling, collection, pallet storage, and return delivery for businesses.",
   alternates: {
     canonical: "https://kxhlogistics.co.uk/inventory-management-london",
   },
@@ -120,14 +120,36 @@ export default function InventoryManagementPage() {
             </div>
 
             <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-              Business Inventory Storage London
+              Inventory Management & Storage London
             </h1>
 
             <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-              Organised inventory management and storage in London with
-              inventory tracking support, warehouse stock handling,
-              business storage, collection, and return delivery.
+              Secure inventory management and storage in London for businesses that need
+              organised stock handling, warehouse storage, collection, pallet support,
+              and return delivery.
             </p>
+            <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto">
+              {[
+                "Collection from Your Business",
+                "Secure Warehouse Storage",
+                "Organised Stock Handling",
+                "Return Delivery Available",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
+                >
+                  ✓ {item}
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 text-slate-600 leading-relaxed max-w-3xl mx-auto">
+              Unlike inventory software, our inventory management service focuses on
+              physical stock storage, warehouse organisation, item handling, and return
+              delivery for London businesses. We help companies securely store inventory,
+              organise stock, and access stored items when required.
+            </p>
+
             <p className="mt-4 text-slate-600 leading-relaxed">
               Businesses needing outsourced warehouse operations can also explore our{" "}
               <Link
@@ -627,7 +649,7 @@ export default function InventoryManagementPage() {
                 href="/?service=storage#pricing"
                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
               >
-                Get Storage Quote
+                Get Inventory Storage Quote
               </Link>
             </div>
           </div>

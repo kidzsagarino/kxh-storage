@@ -105,6 +105,10 @@ function JsonLd() {
                 "@type": "Offer",
                 name: "Commercial Storage Solutions London",
             },
+            {
+                "@type": "Offer",
+                name: "Student Storage London",
+            },
         ],
         "hasOfferCatalog": {
             "@type": "OfferCatalog",
@@ -125,7 +129,11 @@ function JsonLd() {
                 {
                     "@type": "OfferCatalog",
                     "name": "Document Shredding"
-                }
+                },
+                {
+                    "@type": "OfferCatalog",
+                    "name": "Student Storage"
+                },
             ]
         },
 
@@ -452,7 +460,12 @@ export default async function HomePage() {
                     </p>
                 </section>
                 <div className="mx-auto grid max-w-screen-xl grid-cols-2 gap-3 px-4 py-4 sm:grid-cols-3 lg:grid-cols-4">
-
+                    <Link
+                        href="/student-storage-london"
+                        className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
+                    >
+                        Student Storage
+                    </Link>
                     <Link
                         href="/business-storage-london"
                         className="rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
@@ -632,6 +645,53 @@ export default async function HomePage() {
                                 </p>
                             </Link>
 
+                        </div>
+                    </div>
+                </section>
+                <section className="border-t border-slate-200/70 bg-white py-16">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="grid lg:grid-cols-2 gap-10 items-center">
+                            <div>
+                                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                    Student Storage London
+                                </p>
+
+                                <h2 className="mt-2 text-3xl font-black">
+                                    Student Storage with Collection & Delivery
+                                </h2>
+
+                                <p className="mt-4 text-slate-600 leading-relaxed">
+                                    KXH Logistics provides student storage in London for summer breaks,
+                                    university accommodation moves, term breaks, shared house moves, and
+                                    temporary storage between tenancies.
+                                </p>
+
+                                <p className="mt-4 text-slate-600 leading-relaxed">
+                                    We collect your belongings, store them securely, and return them when
+                                    your new term or move-in date starts.
+                                </p>
+
+                                <Link
+                                    href="/student-storage-london"
+                                    className="mt-8 inline-block rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800 transition"
+                                >
+                                    View Student Storage
+                                </Link>
+                            </div>
+
+                            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8">
+                                <h3 className="text-2xl font-black">
+                                    Ideal for students across London
+                                </h3>
+
+                                <ul className="mt-6 space-y-3 text-slate-700">
+                                    <li>✔ Summer student storage</li>
+                                    <li>✔ University accommodation moves</li>
+                                    <li>✔ Storage between tenancies</li>
+                                    <li>✔ Collection from halls, flats, and shared houses</li>
+                                    <li>✔ Return delivery when needed</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </section>

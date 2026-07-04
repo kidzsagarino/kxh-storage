@@ -41,6 +41,7 @@ export default function MainFooter({
     year = new Date().getFullYear(),
     services = [
         { label: "Warehouse Storage", href: "/warehouse-storage-london" },
+        { label: "Student Storage", href: "/student-storage-london" },
         { label: "Business Storage", href: "/business-storage-london" },
         { label: "Inventory Management", href: "/inventory-management-london" },
         { label: "Pallet Storage", href: "/pallet-storage-london" },

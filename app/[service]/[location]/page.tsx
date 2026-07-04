@@ -1052,56 +1052,56 @@ export default async function LocationServicePage({ params }: any) {
                 <section className="py-16 border-t border-slate-200/70 bg-slate-50">
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="grid lg:grid-cols-2 gap-12 items-start">
-
                             <div>
                                 <h2 className="text-3xl font-black leading-tight">
                                     {content.label} for businesses and customers in {loc.name}
                                 </h2>
 
                                 <p className="mt-5 text-slate-600 leading-relaxed">
-                                    KXH Logistics supports customers across {loc.name} with
-                                    flexible warehouse storage, logistics support, collection,
-                                    transport, and delivery services tailored to changing
-                                    business and household needs.
+                                    KXH Logistics supports customers across {loc.name} with flexible
+                                    warehouse storage, logistics support, collection, transport, and
+                                    delivery services tailored to changing business and household needs.
                                 </p>
 
                                 <p className="mt-4 text-slate-600 leading-relaxed">
-                                    Many customers in {loc.name} use our services during
-                                    office relocations, ecommerce stock overflow, apartment
-                                    moves, student accommodation changes, temporary storage
-                                    periods, and commercial inventory management.
+                                    Many customers in {loc.name} use our services during office
+                                    relocations, ecommerce stock overflow, apartment moves, student
+                                    accommodation changes, temporary storage periods, and commercial
+                                    inventory management.
                                 </p>
 
                                 <p className="mt-4 text-slate-600 leading-relaxed">
-                                    Our managed approach helps customers avoid the stress of
-                                    arranging separate transport, warehouse access, or
-                                    self-managed storage while keeping collection and return
-                                    delivery flexible across London.
+                                    Our managed approach helps customers avoid the stress of arranging
+                                    separate transport, warehouse access, or self-managed storage while
+                                    keeping collection and return delivery flexible across London.
                                 </p>
                             </div>
-                            <Image
-                                src="/images/location-service/location-business-support.webp"
-                                alt={`Business storage and logistics support in ${loc.name}`}
-                                width={900}
-                                height={700}
-                                className="rounded-2xl shadow-lg"
-                            />
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                                <h3 className="text-xl font-bold">
-                                    Common use cases in {loc.name}
-                                </h3>
 
-                                <ul className="mt-5 space-y-3 text-slate-700">
-                                    <li>✔ Ecommerce inventory and retail stock storage</li>
-                                    <li>✔ Office furniture and equipment storage</li>
-                                    <li>✔ Student moves and temporary accommodation storage</li>
-                                    <li>✔ Pallet storage and warehouse overflow support</li>
-                                    <li>✔ Apartment and flat relocations</li>
-                                    <li>✔ Archive storage and document handling</li>
-                                    <li>✔ Business collection and return delivery services</li>
-                                </ul>
+                            <div>
+                                <Image
+                                    src="/images/location-service/location-business-support.webp"
+                                    alt={`Business storage and logistics support in ${loc.name}`}
+                                    width={900}
+                                    height={700}
+                                    className="w-full rounded-2xl shadow-lg"
+                                />
+
+                                <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
+                                    <h3 className="text-xl font-bold">
+                                        Common use cases in {loc.name}
+                                    </h3>
+
+                                    <ul className="mt-5 space-y-3 text-slate-700">
+                                        <li>✔ Ecommerce inventory and retail stock storage</li>
+                                        <li>✔ Office furniture and equipment storage</li>
+                                        <li>✔ Student moves and temporary accommodation storage</li>
+                                        <li>✔ Pallet storage and warehouse overflow support</li>
+                                        <li>✔ Apartment and flat relocations</li>
+                                        <li>✔ Archive storage and document handling</li>
+                                        <li>✔ Business collection and return delivery services</li>
+                                    </ul>
+                                </div>
                             </div>
-
                         </div>
                     </div>
                 </section>
@@ -1114,6 +1114,17 @@ export default async function LocationServicePage({ params }: any) {
                             <h2 className="mt-2 text-3xl font-black">
                                 Storage for Students, Renters & Businesses in {loc.name}
                             </h2>
+
+                            <p className="mt-4 text-slate-600">
+                                Looking for
+                                <Link
+                                    href="/student-storage-london"
+                                    className="mx-1 font-medium text-emerald-700 hover:underline"
+                                >
+                                    student storage in London
+                                </Link>
+                                with collection and return delivery? KXH supports...
+                            </p>
                             <p className="mt-4 text-slate-600">
                                 KXH supports customers in {loc.name} who need flexible storage with
                                 collection and return delivery, whether they are moving home, changing
@@ -1503,29 +1514,71 @@ export default async function LocationServicePage({ params }: any) {
                         </div>
                     </div>
                 </section>
+                {service === "warehouse-storage-london" && (
+                    <section className="py-16 bg-white border-t border-slate-200/70">
+                        <div className="max-w-6xl mx-auto px-4">
 
-                <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
-                    <div className="max-w-3xl mx-auto px-4">
-                        <h2 className="text-3xl font-black">
-                            Need {content.label.toLowerCase()} in {loc.name}?
-                        </h2>
+                            <div className="grid lg:grid-cols-2 gap-10 items-center rounded-3xl border border-emerald-200 bg-emerald-50 p-8 lg:p-10">
+                                <div>
+                                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                        Student Storage London
+                                    </p>
 
-                        <p className="mt-4 text-slate-600">
-                            Get a fast quote and let KXH Logistics handle collection,
-                            transport, and service delivery.
-                        </p>
+                                    <h2 className="mt-2 text-3xl font-black">
+                                        Student Storage Near Universities in {loc.name}, London
+                                    </h2>
 
-                        <div className="mt-8">
-                            <Link
-                                href={`/?service=${content.quoteService}#pricing`}
-                                className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
-                            >
-                                Get Instant Quote
-                            </Link>
+                                    <p className="mt-4 text-slate-700 leading-relaxed">
+                                        If you&apos;re a university student living in {loc.name}, KXH Storage
+                                        & Logistics provides collection, secure warehouse storage, and return
+                                        delivery for summer holidays, accommodation changes, and term breaks.
+                                    </p>
+
+                                    <p className="mt-4 text-slate-700 leading-relaxed">
+                                        We collect student boxes, suitcases, bedding, and personal belongings
+                                        from halls, flats, and shared houses, then return them when needed.
+                                    </p>
+
+                                    <Link
+                                        href="/student-storage-london"
+                                        className="mt-6 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800 transition"
+                                    >
+                                        View Student Storage Services
+                                    </Link>
+
+                                    <p className="mt-5 text-slate-700 leading-relaxed">
+                                        Students moving between accommodation can also use our{" "}
+                                        <Link
+                                            href="/logistics-moving-london"
+                                            className="font-medium text-emerald-700 hover:underline"
+                                        >
+                                            student moving services
+                                        </Link>
+                                        {" "}for transport between halls, shared houses, and rented accommodation.
+                                    </p>
+                                </div>
+                                <Image
+                                    src="/images/student-storage-london/student-storage-collection.webp"
+                                    alt={`Student storage collection service in ${loc.name}, London`}
+                                    width={900}
+                                    height={700}
+                                    className="rounded-3xl shadow-xl"
+                                />
+                                <div className="rounded-2xl border border-emerald-100 bg-white p-6">
+                                    <h3 className="font-bold text-lg">Useful for students in {loc.name}:</h3>
+
+                                    <ul className="mt-4 space-y-3 text-slate-700">
+                                        <li>✔ Summer student storage</li>
+                                        <li>✔ University accommodation moves</li>
+                                        <li>✔ Storage between tenancies</li>
+                                        <li>✔ Collection from halls, flats, and shared houses</li>
+                                        <li>✔ Return delivery when the new term starts</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </section>
-
+                    </section>
+                )}
                 <section className="bg-slate-50 py-14 border-t border-slate-200/70">
                     <div className="max-w-4xl mx-auto px-4">
                         <h2 className="text-2xl font-black mb-6 text-center">
@@ -1544,6 +1597,27 @@ export default async function LocationServicePage({ params }: any) {
                                     <p className="mt-3 text-slate-600">{faq.a}</p>
                                 </details>
                             ))}
+                        </div>
+                    </div>
+                </section>
+                <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
+                    <div className="max-w-3xl mx-auto px-4">
+                        <h2 className="text-3xl font-black">
+                            Need {content.label.toLowerCase()} in {loc.name}?
+                        </h2>
+
+                        <p className="mt-4 text-slate-600">
+                            Get a fast quote and let KXH Logistics handle collection,
+                            transport, and service delivery.
+                        </p>
+
+                        <div className="mt-8">
+                            <Link
+                                href={`/?service=${content.quoteService}#pricing`}
+                                className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
+                            >
+                                Get Instant Quote
+                            </Link>
                         </div>
                     </div>
                 </section>
