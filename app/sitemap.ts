@@ -38,6 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // Core services
     "/warehouse-storage-london",
+    "/student-storage-london",
     "/logistics-moving-london",
     "/shredding-solutions-london",
 
