@@ -120,11 +120,11 @@ export default function StudentStoragePage() {
                         </div>
 
                         <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-                            Student Storage London
+                            Affordable Student Storage London
                         </h1>
 
                         <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-                            Student storage in London with collection, secure warehouse
+                            Affordable Student storage in London with collection, secure warehouse
                             storage and return delivery. Ideal for university students moving
                             between accommodation, returning home during summer, studying
                             abroad, or needing temporary storage between terms.

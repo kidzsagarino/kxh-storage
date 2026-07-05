@@ -198,6 +198,11 @@ export default function ServicesPage() {
             desc: "3PL warehouse support including inventory handling, pallet storage, collection, and delivery coordination.",
             href: "/third-party-logistics-london",
         },
+        {
+            title: "Student Storage London",
+            desc: "Affordable storage for students with collection, secure warehouse storage, and return delivery.",
+            href: "/student-storage-london",
+        }
     ];
 
     return (
