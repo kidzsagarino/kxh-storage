@@ -9,10 +9,12 @@ import Image from "next/image";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata = {
-    title:
-        "Moving Services London | Student, Apartment & Business Relocations | KXH Logistics",
+    title: "Moving Services London | House, Office & Commercial Removals",
     description:
-        "Professional moving services in London for businesses, students, renters, apartment moves, office relocations, and temporary storage support.",
+        "Professional moving services in London including house removals, apartment moves, office relocations, commercial removals, student moves, furniture transport, packing, and temporary storage support.",
+    alternates: {
+        canonical: "https://kxhlogistics.co.uk/logistics-moving-london",
+    },
 };
 
 function JsonLd() {
@@ -27,7 +29,7 @@ function JsonLd() {
         },
         areaServed: "London",
         description:
-            "Professional moving services in London with fast, safe, and fully managed relocation for homes, businesses, students, renters, and apartment moves."
+            "Professional moving services in London including house removals, apartment moves, office relocations, commercial moving, student accommodation moves, furniture transport, packing, and temporary storage support."
     };
 
     return (
@@ -191,18 +193,37 @@ export default function MovingServicePage() {
                         </div>
 
                         <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-                            Fast, Safe & Fully Managed Moving Services in London
+                            Moving Services London for House, Office & Commercial Removals
                         </h1>
 
                         <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-                            We handle packing, loading, transport, and delivery for businesses, students, renters, apartment moves, and home relocations across London.                        </p>
+                            KXH Storage & Logistics is a professional removal company in London
+                            providing house moves, apartment relocations, office removals,
+                            commercial moving, student accommodation moves, packing,
+                            transport, and delivery across London.
+                        </p>
+                        <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto">
+                            {[
+                                "House & Apartment Moves",
+                                "Office & Commercial Removals",
+                                "Student Moves & Storage",
+                                "Packing, Transport & Delivery",
+                            ].map((item) => (
+                                <div
+                                    key={item}
+                                    className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 text-center"
+                                >
+                                    ✓ {item}
+                                </div>
+                            ))}
+                        </div>
 
                         <div className="mt-10">
                             <Link
                                 href="/?service=moving#pricing"
                                 className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
                             >
-                                Get Quote
+                                Get Instant Moving Quote
                             </Link>
                         </div>
                         <div className="mt-6 flex justify-center">
@@ -275,7 +296,9 @@ export default function MovingServicePage() {
                                 Professional Moving Team
                             </h2>
                             <p className="text-slate-600 mb-6 leading-relaxed">
-                                Our trained movers handle your items with care, ensuring safe transport from start to finish.
+                                As a trusted removal company in London, our trained movers carefully
+                                pack, protect, transport, and deliver your belongings safely from
+                                collection through to your new destination.
                             </p>
 
                             <ul className="space-y-3 text-slate-700">
@@ -356,6 +379,74 @@ export default function MovingServicePage() {
 
                     </div>
                 </section>
+                <section className="py-20 bg-white border-t border-slate-200/70">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="text-center max-w-3xl mx-auto">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                Removal Services London
+                            </p>
+
+                            <h2 className="mt-2 text-3xl font-black">
+                                House, Office & Commercial Removals Across London
+                            </h2>
+
+                            <p className="mt-4 text-slate-600">
+                                KXH Storage & Logistics supports London customers with managed moving,
+                                removals, packing, loading, transport, and delivery for homes,
+                                apartments, offices, businesses, and temporary relocations.
+                            </p>
+                        </div>
+
+                        <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                                {
+                                    title: "House Removals London",
+                                    desc: "Managed house moves with packing, loading, transport, and delivery support across London.",
+                                },
+                                {
+                                    title: "Apartment Moving London",
+                                    desc: "Flat and apartment moves for renters, families, professionals, and people relocating between boroughs.",
+                                },
+                                {
+                                    title: "Office Removals London",
+                                    desc: "Office relocation support for desks, furniture, equipment, archive boxes, and business assets.",
+                                },
+                                {
+                                    title: "Commercial Removals London",
+                                    desc: "Commercial moving support for businesses, shops, offices, stock, equipment, and operational items.",
+                                },
+                                {
+                                    title: "Furniture Moving London",
+                                    desc: "Single-item and furniture transport for sofas, tables, desks, cabinets, and large household items.",
+                                },
+                                {
+                                    title: "Student Moving London",
+                                    desc: "Student accommodation moves between halls, flats, shared houses, and temporary storage locations.",
+                                },
+                            ].map((item) => (
+                                <div
+                                    key={item.title}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                >
+                                    <h3 className="font-bold text-lg text-slate-900">{item.title}</h3>
+                                    <p className="mt-3 text-slate-600">{item.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-8 text-center">
+                            <p className="text-slate-600 max-w-2xl mx-auto">
+                                Need storage before moving into your new property?
+                                Explore our{" "}
+                                <Link
+                                    href="/warehouse-storage-london"
+                                    className="font-medium text-emerald-700 hover:underline"
+                                >
+                                    temporary storage services
+                                </Link>.
+                            </p>
+                        </div>
+                    </div>
+                </section>
                 {/* USE CASES */}
                 <section className="py-16 bg-slate-50 border-t border-slate-200/70">
                     <div className="max-w-6xl mx-auto px-4">
@@ -406,6 +497,24 @@ export default function MovingServicePage() {
                             and temporary relocations needing both moving services and
                             secure warehouse storage across London.
                         </p>
+                        <p className="mt-4 text-slate-600 leading-relaxed">
+                            Moving between university accommodation? Combine our{" "}
+                            <Link
+                                href="/student-storage-london"
+                                className="font-medium text-emerald-700 hover:underline"
+                            >
+                                student moving service
+                            </Link>
+                            {" "}with our{" "}
+                            <Link
+                                href="/student-storage-london"
+                                className="font-medium text-emerald-700 hover:underline"
+                            >
+                                secure student storage
+                            </Link>
+                            {" "}for flexible collection, safe warehouse storage, and return delivery
+                            at the start of your next term.
+                        </p>
 
                         <p className="mt-4 text-slate-600 leading-relaxed">
                             We can collect, transport, store, and redeliver your items
@@ -413,6 +522,78 @@ export default function MovingServicePage() {
                             renovation periods, and flexible moving schedules.
                         </p>
 
+                    </div>
+                    <div className="mt-8 flex flex-wrap justify-center gap-3">
+                        <Link
+                            href="/student-storage-london"
+                            className="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3 font-semibold text-emerald-800 hover:bg-emerald-100 transition"
+                        >
+                            Student Storage London
+                        </Link>
+
+                        <Link
+                            href="/warehouse-storage-london"
+                            className="rounded-xl border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-700 hover:bg-slate-50 transition"
+                        >
+                            Temporary Storage
+                        </Link>
+
+                        <Link
+                            href="/warehouse-storage-london"
+                            className="rounded-xl border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-700 hover:bg-slate-50 transition"
+                        >
+                            Storage with Collection
+                        </Link>
+                    </div>
+                </section>
+
+                <section className="py-16 bg-slate-50 border-t border-slate-200/70">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="text-center max-w-3xl mx-auto">
+
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                Areas We Serve
+                            </p>
+
+                            <h2 className="mt-2 text-3xl font-black">
+                                Moving Services Across London Boroughs
+                            </h2>
+                            <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
+                                Whether you're moving home, relocating an office, or changing student
+                                accommodation, our moving teams operate across London's major boroughs.
+                            </p>
+                            <p className="mt-4 text-slate-600">
+                                KXH provides local moving, office removals, commercial removals,
+                                apartment moving, and furniture transport across key London boroughs.
+                            </p>
+                        </div>
+
+                        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[
+                                { name: "Camden", href: "/logistics-moving-london/camden" },
+                                { name: "Westminster", href: "/logistics-moving-london/westminster" },
+                                { name: "Tower Hamlets", href: "/logistics-moving-london/tower-hamlets" },
+                                { name: "Kensington & Chelsea", href: "/logistics-moving-london/kensington-chelsea" },
+                                { name: "Southwark", href: "/logistics-moving-london/southwark" },
+                                { name: "Hackney", href: "/logistics-moving-london/hackney" },
+                                { name: "Lambeth", href: "/logistics-moving-london/lambeth" },
+                                { name: "Islington", href: "/logistics-moving-london/islington" },
+                            ].map((area) => (
+                                <Link
+                                    key={area.href}
+                                    href={area.href}
+                                    className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-emerald-300 hover:bg-white transition"
+                                >
+                                    <h3 className="font-semibold text-slate-900">
+                                        Moving Services in {area.name}
+                                    </h3>
+                                    <p className="mt-2 text-sm text-slate-600">
+                                        House moves, office removals, apartment moves, furniture transport,
+                                        and commercial relocations.
+                                    </p>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </section>
                 {/* FINAL CTA */}
@@ -424,7 +605,9 @@ export default function MovingServicePage() {
                         </h2>
 
                         <p className="mt-4 text-slate-600">
-                            Get a fast, transparent quote and let our team handle everything.
+                            Looking for a reliable removal company in London? Get a fast,
+                            transparent quote and let our experienced team manage your move
+                            from start to finish.
                         </p>
 
                         <div className="mt-8">
@@ -432,7 +615,7 @@ export default function MovingServicePage() {
                                 href="/?service=moving#pricing"
                                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
                             >
-                                Get Quote
+                                Get Instant Moving Quote
                             </Link>
                         </div>
 
@@ -465,13 +648,13 @@ export default function MovingServicePage() {
                             </details>
 
                             {/* <details className="border rounded-xl p-5 bg-white">
-                                <summary className="font-semibold cursor-pointer">
-                                    Are your movers insured?
-                                </summary>
-                                <p className="mt-3 text-slate-600">
-                                    Yes, your items are protected during the move for peace of mind.
-                                </p>
-                            </details> */}
+                                    <summary className="font-semibold cursor-pointer">
+                                        Are your movers insured?
+                                    </summary>
+                                    <p className="mt-3 text-slate-600">
+                                        Yes, your items are protected during the move for peace of mind.
+                                    </p>
+                                </details> */}
 
                             <details className="border border-slate-200 rounded-xl p-5 bg-white">
                                 <summary className="font-semibold cursor-pointer">
