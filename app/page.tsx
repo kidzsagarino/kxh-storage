@@ -339,7 +339,7 @@ export default async function HomePage() {
                 {/* Hero Section */}
 
                 <section className="relative overflow-hidden bg-gradient-to-b from-white to-emerald-50/30 min-h-[85vh] lg:min-h-screen">
-                    <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 pt-10 pb-12 sm:px-6 sm:pt-12 lg:grid-cols-2 lg:px-8 lg:py-20">
 
                         {/* LEFT CONTENT */}
                         <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
@@ -348,15 +348,15 @@ export default async function HomePage() {
                                 Trusted Storage & Logistics in London
                             </div>
 
-                            <h1 className="mt-6 text-5xl font-black leading-tight tracking-tight text-slate-950 sm:text-6xl">
+                            <h1 className="mt-6 text-4xl font-black leading-tight tracking-tight text-slate-950 sm:text-6xl">
                                 Warehouse Storage & Logistics in London
                             </h1>
 
-                            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+                            <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
                                 Secure storage space with pickup and delivery for businesses, students, renters, apartment moves, inventory storage, and temporary relocations across London.
                             </p>
 
-                            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
+                            <div className="mt-8 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:justify-start">
                                 <a
                                     href="#pricing"
                                     className="w-full rounded-2xl bg-emerald-700 px-7 py-4 text-center text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500 sm:w-auto"
@@ -372,7 +372,7 @@ export default async function HomePage() {
                                 </a>
                             </div>
 
-                            <div className="mt-8 flex flex-wrap gap-3 text-sm">
+                            <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm lg:justify-start">
                                 {[
                                     "Warehouse Storage",
                                     "Moving Services",
@@ -388,16 +388,17 @@ export default async function HomePage() {
                                     </span>
                                 ))}
                             </div>
-                            <TrustpilotPill className="mt-4" />
+
+                            <TrustpilotPill className="mt-5" />
                         </div>
 
                         {/* RIGHT IMAGE */}
-                        <div className="relative">
+                        <div className="relative w-full">
                             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                                 <img
                                     src="/images/home-hero-storage.webp"
                                     alt="Warehouse storage with pickup and delivery in London"
-                                    className="aspect-[4/5] w-full object-cover object-center sm:aspect-[3/4] lg:aspect-[4/5]"
+                                    className="aspect-[4/3] w-full object-cover object-center sm:aspect-[3/4] lg:aspect-[4/5]"
                                 />
                             </div>
                         </div>

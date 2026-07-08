@@ -757,6 +757,132 @@ const serviceImages = {
     "shredding-solutions-london": "/images/location-service/document-shredding-location.webp",
 };
 
+
+function getSupportImage(service: ServiceSlug) {
+    const images: Record<ServiceSlug, string> = {
+        "warehouse-storage-london": "/images/location-service/warehouse-storage-location.webp",
+        "business-storage-london": "/images/location-service/location-business-support.webp",
+        "inventory-management-london": "/images/location-service/inventory-management-location.webp",
+        "pallet-storage-london": "/images/location-service/pallet-storage-location.webp",
+        "commercial-storage-london": "/images/location-service/commercial-storage-location.webp",
+        "third-party-logistics-london": "/images/location-service/third-party-logistics-location.webp",
+        "logistics-moving-london": "/images/location-service/moving-services-location.webp",
+        "shredding-solutions-london": "/images/location-service/document-shredding-location.webp",
+    };
+
+    return images[service];
+}
+
+function getUseCases(service: ServiceSlug) {
+    const useCases: Record<ServiceSlug, string[]> = {
+        "warehouse-storage-london": [
+            "Student storage and temporary accommodation storage",
+            "Household items and furniture storage",
+            "Business stock and ecommerce inventory",
+            "Office equipment and archive storage",
+            "Collection and return delivery services",
+        ],
+        "business-storage-london": [
+            "Ecommerce inventory and retail stock storage",
+            "Office furniture and equipment storage",
+            "Archive storage and document handling",
+            "Seasonal business stock overflow",
+            "Business collection and return delivery services",
+        ],
+        "inventory-management-london": [
+            "Ecommerce stock organisation",
+            "Retail inventory handling",
+            "Office assets and equipment tracking",
+            "Warehouse item handling",
+            "Collection and delivery coordination",
+        ],
+        "pallet-storage-london": [
+            "Palletised goods storage",
+            "Retail and wholesale stock",
+            "Warehouse overflow support",
+            "Commercial inventory storage",
+            "Pallet collection and delivery coordination",
+        ],
+        "commercial-storage-london": [
+            "Office equipment storage",
+            "Commercial stock overflow",
+            "Retail inventory storage",
+            "Archive and document storage",
+            "Business relocation storage support",
+        ],
+        "third-party-logistics-london": [
+            "Ecommerce warehouse support",
+            "Inventory coordination",
+            "Pallet handling",
+            "Fulfilment support",
+            "Collection and delivery logistics",
+        ],
+        "logistics-moving-london": [
+            "House moves and flat moves",
+            "Student accommodation moves",
+            "Office relocations",
+            "Furniture transport",
+            "Packing, loading and delivery support",
+        ],
+        "shredding-solutions-london": [
+            "Confidential office paperwork",
+            "Archive document destruction",
+            "Legal and financial records",
+            "HR files and business documents",
+            "Secure collection and disposal",
+        ],
+    };
+
+    return useCases[service];
+}
+
+function getFinalCta(service: ServiceSlug, locName: string) {
+    const ctas: Record<ServiceSlug, { title: string; text: string; button: string }> = {
+        "warehouse-storage-london": {
+            title: `Need Storage Space in ${locName}?`,
+            text: "Get secure warehouse storage with collection, flexible terms, and return delivery.",
+            button: "Get Storage Quote",
+        },
+        "business-storage-london": {
+            title: `Need Business Storage in ${locName}?`,
+            text: "Store inventory, office equipment, archived documents, and commercial stock with collection and return delivery.",
+            button: "Get Business Storage Quote",
+        },
+        "inventory-management-london": {
+            title: `Need Inventory Management Storage in ${locName}?`,
+            text: "Organise stock, business supplies, and stored inventory with warehouse handling and delivery support.",
+            button: "Get Inventory Storage Quote",
+        },
+        "pallet-storage-london": {
+            title: `Need Pallet Storage in ${locName}?`,
+            text: "Store palletised goods securely with warehouse handling, collection, and delivery support.",
+            button: "Get Pallet Storage Quote",
+        },
+        "commercial-storage-london": {
+            title: `Need Commercial Storage in ${locName}?`,
+            text: "Secure storage for office equipment, stock, archives, and commercial items.",
+            button: "Get Commercial Storage Quote",
+        },
+        "third-party-logistics-london": {
+            title: `Need 3PL Support in ${locName}?`,
+            text: "Get warehouse support, inventory handling, pallet coordination, and delivery logistics.",
+            button: "Get 3PL Quote",
+        },
+        "logistics-moving-london": {
+            title: `Need Moving Services in ${locName}?`,
+            text: "Get support for home moves, office relocations, student moves, packing, loading, and delivery.",
+            button: "Get Moving Quote",
+        },
+        "shredding-solutions-london": {
+            title: `Need Secure Document Shredding in ${locName}?`,
+            text: "Arrange confidential document collection, shredding, and secure disposal support.",
+            button: "Get Shredding Quote",
+        },
+    };
+
+    return ctas[service];
+}
+
 export async function generateStaticParams() {
     const services = Object.keys(serviceContent) as ServiceSlug[];
 
@@ -974,6 +1100,7 @@ function Breadcrumbs({
 export default async function LocationServicePage({ params }: any) {
     const { service, location } = await params;
 
+
     const loc = londonLocations.find((l) => l.slug === location);
     const content = serviceContent[service as ServiceSlug];
 
@@ -983,6 +1110,8 @@ export default async function LocationServicePage({ params }: any) {
     if (!content || !loc) {
         return null;
     }
+
+    const finalCta = getFinalCta(service as ServiceSlug, loc.name);
 
     return (
         <>
@@ -1039,7 +1168,27 @@ export default async function LocationServicePage({ params }: any) {
                         />
                     </div>
                 </section>
-
+                {service === "business-storage-london" && (
+                    <section className="border-y border-emerald-100 bg-emerald-50">
+                        <div className="max-w-5xl mx-auto px-4 py-6">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                                {[
+                                    "Collection from your business",
+                                    "Secure warehouse storage",
+                                    "Flexible storage terms",
+                                    "Return delivery when needed",
+                                ].map((item) => (
+                                    <div
+                                        key={item}
+                                        className="rounded-xl border border-emerald-100 bg-white px-4 py-3 text-center font-semibold text-emerald-700"
+                                    >
+                                        ✔ {item}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )}
                 <section className="border-y border-slate-200 bg-white">
                     <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
                         {content.benefits.map((item) => (
@@ -1049,6 +1198,7 @@ export default async function LocationServicePage({ params }: any) {
                         ))}
                     </div>
                 </section>
+
                 <section className="py-16 border-t border-slate-200/70 bg-slate-50">
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -1079,7 +1229,7 @@ export default async function LocationServicePage({ params }: any) {
 
                             <div>
                                 <Image
-                                    src="/images/location-service/location-business-support.webp"
+                                    src={getSupportImage(service as ServiceSlug)}
                                     alt={`Business storage and logistics support in ${loc.name}`}
                                     width={900}
                                     height={700}
@@ -1092,72 +1242,71 @@ export default async function LocationServicePage({ params }: any) {
                                     </h3>
 
                                     <ul className="mt-5 space-y-3 text-slate-700">
-                                        <li>✔ Ecommerce inventory and retail stock storage</li>
-                                        <li>✔ Office furniture and equipment storage</li>
-                                        <li>✔ Student moves and temporary accommodation storage</li>
-                                        <li>✔ Pallet storage and warehouse overflow support</li>
-                                        <li>✔ Apartment and flat relocations</li>
-                                        <li>✔ Archive storage and document handling</li>
-                                        <li>✔ Business collection and return delivery services</li>
+                                        {getUseCases(service as ServiceSlug).map((item) => (
+                                            <li key={item}>✔ {item}</li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                <section className="py-16 bg-white border-t border-slate-200/70">
-                    <div className="max-w-6xl mx-auto px-4">
-                        <div className="text-center max-w-3xl mx-auto">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Storage for Local Customers
-                            </p>
-                            <h2 className="mt-2 text-3xl font-black">
-                                Storage for Students, Renters & Businesses in {loc.name}
-                            </h2>
+                {service === "warehouse-storage-london" && (
+                    <section className="py-16 bg-white border-t border-slate-200/70">
+                        <div className="max-w-6xl mx-auto px-4">
+                            <div className="text-center max-w-3xl mx-auto">
+                                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                    Storage for Local Customers
+                                </p>
+                                <h2 className="mt-2 text-3xl font-black">
+                                    Storage for Students, Renters & Businesses in {loc.name}
+                                </h2>
 
-                            <p className="mt-4 text-slate-600">
-                                Looking for
-                                <Link
-                                    href="/student-storage-london"
-                                    className="mx-1 font-medium text-emerald-700 hover:underline"
-                                >
-                                    student storage in London
-                                </Link>
-                                with collection and return delivery? KXH supports...
-                            </p>
-                            <p className="mt-4 text-slate-600">
-                                KXH supports customers in {loc.name} who need flexible storage with
-                                collection and return delivery, whether they are moving home, changing
-                                student accommodation, storing business stock, or managing temporary space.
-                            </p>
-                        </div>
+                                <p className="mt-4 text-slate-600">
+                                    Looking for
+                                    <Link
+                                        href="/student-storage-london"
+                                        className="mx-1 font-medium text-emerald-700 hover:underline"
+                                    >
+                                        student storage in London
+                                    </Link>
+                                    with collection and return delivery? KXH supports...
+                                </p>
+                                <p className="mt-4 text-slate-600">
+                                    KXH supports customers in {loc.name} who need flexible storage with
+                                    collection and return delivery, whether they are moving home, changing
+                                    student accommodation, storing business stock, or managing temporary space.
+                                </p>
+                            </div>
 
-                        <div className="mt-10 grid md:grid-cols-3 gap-6">
-                            {[
-                                {
-                                    title: "Student Storage",
-                                    desc: `Useful for students in ${loc.name} needing storage during summer breaks, accommodation changes, or temporary moves.`,
-                                },
-                                {
-                                    title: "Renter & Flat Move Storage",
-                                    desc: `Ideal for renters in ${loc.name} who need short-term storage during flat moves, renovations, or delayed move-in dates.`,
-                                },
-                                {
-                                    title: "Business Storage",
-                                    desc: `Suitable for businesses in ${loc.name} storing stock, office equipment, ecommerce inventory, documents, or commercial items.`,
-                                },
-                            ].map((item) => (
-                                <div
-                                    key={item.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                                >
-                                    <h3 className="text-xl font-bold">{item.title}</h3>
-                                    <p className="mt-3 text-slate-600">{item.desc}</p>
-                                </div>
-                            ))}
+                            <div className="mt-10 grid md:grid-cols-3 gap-6">
+                                {[
+                                    {
+                                        title: "Student Storage",
+                                        desc: `Useful for students in ${loc.name} needing storage during summer breaks, accommodation changes, or temporary moves.`,
+                                    },
+                                    {
+                                        title: "Renter & Flat Move Storage",
+                                        desc: `Ideal for renters in ${loc.name} who need short-term storage during flat moves, renovations, or delayed move-in dates.`,
+                                    },
+                                    {
+                                        title: "Business Storage",
+                                        desc: `Suitable for businesses in ${loc.name} storing stock, office equipment, ecommerce inventory, documents, or commercial items.`,
+                                    },
+                                ].map((item) => (
+                                    <div
+                                        key={item.title}
+                                        className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    >
+                                        <h3 className="text-xl font-bold">{item.title}</h3>
+                                        <p className="mt-3 text-slate-600">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                )}
+
                 {service === "warehouse-storage-london" && (
                     <section className="py-16 bg-slate-50 border-t border-slate-200/70">
                         <div className="max-w-6xl mx-auto px-4">
@@ -1232,21 +1381,48 @@ export default async function LocationServicePage({ params }: any) {
                                 {localContent?.localUseCase ??
                                     `Whether you are a household, student, office, or business, our team can collect, handle, and deliver your items through a simple quote-based process.`}
                             </p>
+                            {service === "business-storage-london" && (
+                                <p className="mt-4 text-slate-600 leading-relaxed">
+                                    Businesses across {loc.name} rely on KXH Storage & Logistics for
+                                    flexible warehouse storage that adapts to changing operational needs.
+                                    Whether you are managing seasonal stock, ecommerce inventory,
+                                    office refurbishments, archive storage, or temporary business
+                                    expansion, our collection, secure storage, and return delivery
+                                    service helps reduce storage costs while keeping your inventory
+                                    accessible when required.
+                                </p>
+                            )}
                             {(
                                 service === "warehouse-storage-london" ||
                                 service === "business-storage-london" ||
                                 service === "commercial-storage-london"
                             ) && (
                                     <p className="mt-4 text-slate-600 leading-relaxed">
-                                        Businesses needing organised stock handling can also use our{" "}
+                                        Businesses requiring organised stock handling can explore our{" "}
                                         <Link
                                             href={`/inventory-management-london/${loc.slug}`}
-                                            className="text-emerald-700 hover:underline font-medium"
+                                            className="font-medium text-emerald-700 hover:underline"
                                         >
-                                            inventory management storage in {loc.name}
+                                            inventory management services in {loc.name}
                                         </Link>
                                         {" "}for inventory tracking, warehouse handling, ecommerce stock support,
-                                        pallet coordination, and flexible collection and delivery services across London.
+                                        pallet coordination, and flexible collection and delivery. Businesses
+                                        with larger office equipment, archived documents, or operational stock
+                                        can also use our{" "}
+                                        <Link
+                                            href={`/commercial-storage-london/${loc.slug}`}
+                                            className="font-medium text-emerald-700 hover:underline"
+                                        >
+                                            commercial storage solutions
+                                        </Link>
+                                        {" "}and{" "}
+                                        <Link
+                                            href={`/warehouse-storage-london/${loc.slug}`}
+                                            className="font-medium text-emerald-700 hover:underline"
+                                        >
+                                            warehouse storage services in {loc.name}
+                                        </Link>
+                                        {" "}for scalable business storage across London.
                                     </p>
                                 )}
                             {(
@@ -1392,125 +1568,186 @@ export default async function LocationServicePage({ params }: any) {
                 <TestimonialsSection />
                 <section className="py-16 border-t border-slate-200/70 bg-white">
                     <div className="max-w-6xl mx-auto px-4">
-
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-black">
-                                Explore related storage & logistics services
+                                Explore Related Storage & Logistics Services in {loc.name}
                             </h2>
 
                             <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
-                                KXH Logistics provides managed warehouse storage, inventory
-                                management, pallet storage, commercial logistics, moving
-                                services, and secure document shredding across London.
+                                KXH Logistics provides managed warehouse storage, business storage,
+                                inventory management, pallet storage, commercial logistics, moving
+                                services, and secure document shredding across {loc.name} and London.
                             </p>
                         </div>
 
                         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
-                            <Link
-                                href="/warehouse-storage-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Warehouse Storage London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Managed warehouse storage with collection and delivery support.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/business-storage-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Business Storage London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Flexible business storage for inventory, equipment, and office stock.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/inventory-management-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Inventory Management London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Organised inventory storage with tracking and warehouse support.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/pallet-storage-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Pallet Storage London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Secure pallet storage for retail, wholesale, and commercial stock.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/commercial-storage-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Commercial Storage London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Commercial warehouse support for offices, stock, and equipment.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/logistics-moving-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Moving Services London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Home, office, and student moving services across London.
-                                </p>
-                            </Link>
-
-                            <Link
-                                href="/shredding-solutions-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Document Shredding London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    Secure collection and confidential document destruction services.
-                                </p>
-                            </Link>
-                            <Link
-                                href="/third-party-logistics-london"
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
-                            >
-                                <h3 className="font-semibold">
-                                    Third Party Logistics London
-                                </h3>
-
-                                <p className="mt-2 text-sm text-slate-600">
-                                    3PL warehouse support including inventory handling,
-                                    pallet storage, fulfilment support, and delivery coordination.
-                                </p>
-                            </Link>
-
+                            {(
+                                service === "business-storage-london"
+                                    ? [
+                                        {
+                                            href: `/warehouse-storage-london/${loc.slug}`,
+                                            title: `Warehouse Storage in ${loc.name}`,
+                                            desc: "Managed warehouse storage with collection and delivery support.",
+                                        },
+                                        {
+                                            href: `/inventory-management-london/${loc.slug}`,
+                                            title: `Inventory Management in ${loc.name}`,
+                                            desc: "Organised inventory storage with tracking and warehouse support.",
+                                        },
+                                        {
+                                            href: `/commercial-storage-london/${loc.slug}`,
+                                            title: `Commercial Storage in ${loc.name}`,
+                                            desc: "Commercial warehouse support for offices, stock, and equipment.",
+                                        },
+                                        {
+                                            href: `/third-party-logistics-london/${loc.slug}`,
+                                            title: `Third Party Logistics in ${loc.name}`,
+                                            desc: "3PL warehouse support including inventory handling, pallet storage and fulfilment.",
+                                        },
+                                        {
+                                            href: `/pallet-storage-london/${loc.slug}`,
+                                            title: `Pallet Storage in ${loc.name}`,
+                                            desc: "Secure pallet storage for retail, wholesale, and commercial stock.",
+                                        },
+                                        {
+                                            href: `/logistics-moving-london/${loc.slug}`,
+                                            title: `Moving Services in ${loc.name}`,
+                                            desc: "Home, office, and student moving services across London.",
+                                        },
+                                        {
+                                            href: `/shredding-solutions-london/${loc.slug}`,
+                                            title: `Document Shredding in ${loc.name}`,
+                                            desc: "Secure collection and confidential document destruction services.",
+                                        },
+                                    ]
+                                    : service === "warehouse-storage-london"
+                                        ? [
+                                            {
+                                                href: `/business-storage-london/${loc.slug}`,
+                                                title: `Business Storage in ${loc.name}`,
+                                                desc: "Flexible business storage for inventory, equipment, and office stock.",
+                                            },
+                                            {
+                                                href: "/student-storage-london",
+                                                title: "Student Storage London",
+                                                desc: "Collection, secure storage and return delivery for university students.",
+                                            },
+                                            {
+                                                href: `/logistics-moving-london/${loc.slug}`,
+                                                title: `Moving Services in ${loc.name}`,
+                                                desc: "Home, office and student moving services across London.",
+                                            },
+                                            {
+                                                href: `/inventory-management-london/${loc.slug}`,
+                                                title: `Inventory Management in ${loc.name}`,
+                                                desc: "Organised inventory storage with tracking and warehouse support.",
+                                            },
+                                            {
+                                                href: `/commercial-storage-london/${loc.slug}`,
+                                                title: `Commercial Storage in ${loc.name}`,
+                                                desc: "Commercial warehouse support for offices, stock, and equipment.",
+                                            },
+                                            {
+                                                href: `/pallet-storage-london/${loc.slug}`,
+                                                title: `Pallet Storage in ${loc.name}`,
+                                                desc: "Secure pallet storage for commercial inventory.",
+                                            },
+                                            {
+                                                href: `/third-party-logistics-london/${loc.slug}`,
+                                                title: `Third Party Logistics in ${loc.name}`,
+                                                desc: "Warehouse support, fulfilment and logistics coordination.",
+                                            },
+                                        ]
+                                        : service === "inventory-management-london"
+                                            ? [
+                                                {
+                                                    href: `/business-storage-london/${loc.slug}`,
+                                                    title: `Business Storage in ${loc.name}`,
+                                                    desc: "Flexible storage for business inventory and office equipment.",
+                                                },
+                                                {
+                                                    href: `/warehouse-storage-london/${loc.slug}`,
+                                                    title: `Warehouse Storage in ${loc.name}`,
+                                                    desc: "Managed warehouse storage with collection and delivery.",
+                                                },
+                                                {
+                                                    href: `/commercial-storage-london/${loc.slug}`,
+                                                    title: `Commercial Storage in ${loc.name}`,
+                                                    desc: "Commercial warehouse storage for businesses.",
+                                                },
+                                                {
+                                                    href: `/third-party-logistics-london/${loc.slug}`,
+                                                    title: `Third Party Logistics in ${loc.name}`,
+                                                    desc: "Inventory handling, fulfilment and logistics support.",
+                                                },
+                                                {
+                                                    href: `/pallet-storage-london/${loc.slug}`,
+                                                    title: `Pallet Storage in ${loc.name}`,
+                                                    desc: "Secure pallet storage with warehouse handling.",
+                                                },
+                                                {
+                                                    href: `/logistics-moving-london/${loc.slug}`,
+                                                    title: `Moving Services in ${loc.name}`,
+                                                    desc: "Business and office moving services.",
+                                                },
+                                                {
+                                                    href: `/shredding-solutions-london/${loc.slug}`,
+                                                    title: `Document Shredding in ${loc.name}`,
+                                                    desc: "Confidential document destruction.",
+                                                },
+                                            ]
+                                            : [
+                                                {
+                                                    href: `/warehouse-storage-london/${loc.slug}`,
+                                                    title: `Warehouse Storage in ${loc.name}`,
+                                                    desc: "Managed warehouse storage with collection and delivery support.",
+                                                },
+                                                {
+                                                    href: `/business-storage-london/${loc.slug}`,
+                                                    title: `Business Storage in ${loc.name}`,
+                                                    desc: "Flexible business storage for inventory and office equipment.",
+                                                },
+                                                {
+                                                    href: `/inventory-management-london/${loc.slug}`,
+                                                    title: `Inventory Management in ${loc.name}`,
+                                                    desc: "Inventory-managed warehouse storage.",
+                                                },
+                                                {
+                                                    href: `/commercial-storage-london/${loc.slug}`,
+                                                    title: `Commercial Storage in ${loc.name}`,
+                                                    desc: "Commercial warehouse support.",
+                                                },
+                                                {
+                                                    href: `/third-party-logistics-london/${loc.slug}`,
+                                                    title: `Third Party Logistics in ${loc.name}`,
+                                                    desc: "Warehouse fulfilment and logistics coordination.",
+                                                },
+                                                {
+                                                    href: `/pallet-storage-london/${loc.slug}`,
+                                                    title: `Pallet Storage in ${loc.name}`,
+                                                    desc: "Secure pallet storage.",
+                                                },
+                                                {
+                                                    href: `/logistics-moving-london/${loc.slug}`,
+                                                    title: `Moving Services in ${loc.name}`,
+                                                    desc: "Professional moving services.",
+                                                },
+                                                {
+                                                    href: `/shredding-solutions-london/${loc.slug}`,
+                                                    title: `Document Shredding in ${loc.name}`,
+                                                    desc: "Secure document destruction.",
+                                                },
+                                            ]
+                            ).map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
+                                >
+                                    <h3 className="font-semibold">{item.title}</h3>
+                                    <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </section>
@@ -1579,6 +1816,85 @@ export default async function LocationServicePage({ params }: any) {
                         </div>
                     </section>
                 )}
+                {service === "business-storage-london" && (
+                    <section className="py-16 bg-slate-50 border-t border-slate-200">
+                        <div className="max-w-6xl mx-auto px-4">
+
+                            <div className="text-center">
+                                <h2 className="text-3xl font-black">
+                                    Complete Business Storage Solutions in {loc.name}
+                                </h2>
+
+                                <p className="mt-4 text-slate-600 max-w-3xl mx-auto">
+                                    Many businesses combine our business storage service with
+                                    inventory management, commercial warehouse storage, and
+                                    pallet storage to create a flexible logistics solution
+                                    without leasing additional warehouse space.
+                                </p>
+                            </div>
+
+                            <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                                <Link
+                                    href={`/inventory-management-london/${loc.slug}`}
+                                    className="rounded-2xl border border-slate-200 bg-white p-6 hover:border-emerald-300 transition"
+                                >
+                                    <h3 className="font-bold">
+                                        Inventory Management
+                                    </h3>
+
+                                    <p className="mt-3 text-slate-600 text-sm">
+                                        Organised inventory storage with warehouse handling,
+                                        collection and return delivery.
+                                    </p>
+                                </Link>
+
+                                <Link
+                                    href={`/commercial-storage-london/${loc.slug}`}
+                                    className="rounded-2xl border border-slate-200 bg-white p-6 hover:border-emerald-300 transition"
+                                >
+                                    <h3 className="font-bold">
+                                        Commercial Storage
+                                    </h3>
+
+                                    <p className="mt-3 text-slate-600 text-sm">
+                                        Secure warehouse storage for office equipment,
+                                        retail stock and commercial inventory.
+                                    </p>
+                                </Link>
+
+                                <Link
+                                    href={`/warehouse-storage-london/${loc.slug}`}
+                                    className="rounded-2xl border border-slate-200 bg-white p-6 hover:border-emerald-300 transition"
+                                >
+                                    <h3 className="font-bold">
+                                        Warehouse Storage
+                                    </h3>
+
+                                    <p className="mt-3 text-slate-600 text-sm">
+                                        Flexible warehouse storage with collection and
+                                        delivery across London.
+                                    </p>
+                                </Link>
+                                <Link
+                                    href={`/third-party-logistics-london/${loc.slug}`}
+                                    className="rounded-2xl border border-slate-200 bg-white p-6 hover:border-emerald-300 transition"
+                                >
+                                    <h3 className="font-bold">
+                                        Third Party Logistics
+                                    </h3>
+
+                                    <p className="mt-3 text-slate-600 text-sm">
+                                        Warehouse support, inventory coordination,
+                                        pallet handling and business logistics.
+                                    </p>
+                                </Link>
+
+                            </div>
+
+                        </div>
+                    </section>
+                )}
                 <section className="bg-slate-50 py-14 border-t border-slate-200/70">
                     <div className="max-w-4xl mx-auto px-4">
                         <h2 className="text-2xl font-black mb-6 text-center">
@@ -1600,15 +1916,58 @@ export default async function LocationServicePage({ params }: any) {
                         </div>
                     </div>
                 </section>
+                {service === "business-storage-london" && (
+                    <section className="py-16 bg-slate-50 border-t border-slate-200/70">
+                        <div className="max-w-5xl mx-auto px-4 text-center">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                Flexible Business Storage
+                            </p>
+
+                            <h2 className="mt-2 text-3xl font-black">
+                                Need Secure Business Storage in {loc.name}?
+                            </h2>
+
+                            <p className="mt-5 text-slate-600 leading-relaxed max-w-3xl mx-auto">
+                                Flexible warehouse storage with collection, inventory support,
+                                and return delivery for businesses across {loc.name}. Store
+                                inventory, office equipment, archived documents, retail stock,
+                                and commercial goods without the cost of leasing additional
+                                warehouse space.
+                            </p>
+                            <p className="mt-4 text-slate-600 leading-relaxed max-w-3xl mx-auto">
+                                Whether you're a growing ecommerce business, retailer, office,
+                                contractor or local company, KXH provides scalable storage
+                                solutions that grow with your business.
+                            </p>
+                            <div className="mt-8 flex flex-wrap justify-center gap-4">
+                                <Link
+                                    href={`/?service=${content.quoteService}#pricing`}
+                                    className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
+                                >
+                                    {service === "business-storage-london"
+                                        ? "Get Business Storage Quote"
+                                        : "Get Instant Quote"}
+                                </Link>
+
+                                <Link
+                                    href={`/warehouse-storage-london/${loc.slug}`}
+                                    className="rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 hover:bg-slate-100 transition"
+                                >
+                                    Warehouse Storage
+                                </Link>
+                            </div>
+                        </div>
+                    </section>
+                )}
                 <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
                     <div className="max-w-3xl mx-auto px-4">
+
                         <h2 className="text-3xl font-black">
-                            Need {content.label.toLowerCase()} in {loc.name}?
+                            {finalCta.title}
                         </h2>
 
-                        <p className="mt-4 text-slate-600">
-                            Get a fast quote and let KXH Logistics handle collection,
-                            transport, and service delivery.
+                        <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
+                            {finalCta.text}
                         </p>
 
                         <div className="mt-8">
@@ -1616,9 +1975,10 @@ export default async function LocationServicePage({ params }: any) {
                                 href={`/?service=${content.quoteService}#pricing`}
                                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
                             >
-                                Get Instant Quote
+                                {finalCta.button}
                             </Link>
                         </div>
+
                     </div>
                 </section>
 
