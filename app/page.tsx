@@ -16,9 +16,9 @@ import TrustpilotBadge from "./components/trustpilot/TrustPilotBadge";
 import TrustpilotPill from "./components/trustpilot/TrustpilotPill";
 
 export const metadata: Metadata = {
-    title: "Business Storage, Warehouse Storage & Pickup Delivery London | KXH Logistics",
+    title: "Warehouse Storage, Business Storage & Moving Services London | KXH",
     description:
-        "Business storage, warehouse storage, inventory storage, pallet storage, moving services, and pickup & delivery across London. Flexible storage solutions for businesses, students, renters, and households.",
+        "Secure warehouse storage, business storage, inventory management, student storage, moving services, and pickup & delivery across London. Instant online quotes.",
     keywords: [
         "storage London",
         "moving service London",
@@ -45,98 +45,101 @@ function JsonLd() {
     const data = {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
-        "priceRange": "££",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "London, UK",
-            "addressLocality": "London",
-            "addressCountry": "GB",
-        },
         "@id": "https://kxhlogistics.co.uk/#business",
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "reviewCount": "66"
-        },
+
         name: "KXH Storage & Logistics",
         url: "https://kxhlogistics.co.uk",
-        telephone: "+44 1474 396663",
+        logo: "https://kxhlogistics.co.uk/logo.png",
         image: "https://kxhlogistics.co.uk/og.jpg",
+        telephone: "+44 7846 718258",
+        email: "help@kxhlogistics.co.uk",
+        priceRange: "££",
+
         description:
-            "Door-to-door storage, moving, and shredding services in London with pickup, delivery, and secure handling.",
-        areaServed: {
-            "@type": "Place",
-            name: "London, United Kingdom",
+            "Door-to-door storage, moving, and shredding services in London with pickup, delivery, secure warehouse storage, and business logistics support.",
+
+        address: {
+            "@type": "PostalAddress",
+            streetAddress: "London, UK",
+            addressLocality: "London",
+            addressCountry: "GB",
         },
+
         geo: {
             "@type": "GeoCoordinates",
             latitude: "51.5074",
             longitude: "-0.1278",
         },
+
+        areaServed: {
+            "@type": "Place",
+            name: "London, United Kingdom",
+        },
+
+        serviceArea: {
+            "@type": "Place",
+            name: "London, United Kingdom",
+        },
+
+        openingHoursSpecification: [
+            {
+                "@type": "OpeningHoursSpecification",
+                dayOfWeek: [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                ],
+                opens: "08:00",
+                closes: "18:00",
+            },
+        ],
+
+        contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+44 7846 718258",
+            contactType: "Customer Service",
+            areaServed: "GB",
+            availableLanguage: "English",
+        },
+
+        aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.8",
+            reviewCount: "66",
+        },
+
         sameAs: [
             "https://uk.trustpilot.com/review/kxhlogistics.co.uk",
         ],
-        makesOffer: [
-            {
-                "@type": "Offer",
-                name: "Storage Service London",
-            },
-            {
-                "@type": "Offer",
-                name: "Moving Service London",
-            },
-            {
-                "@type": "Offer",
-                name: "Document Shredding London",
-            },
-            {
-                "@type": "Offer",
-                name: "Storage Pickup and Delivery London",
-            },
-            {
-                "@type": "Offer",
-                name: "Business Warehouse Storage London",
-            },
-            {
-                "@type": "Offer",
-                name: "Inventory Management Services London",
-            },
-            {
-                "@type": "Offer",
-                name: "Commercial Storage Solutions London",
-            },
-            {
-                "@type": "Offer",
-                name: "Student Storage London",
-            },
-        ],
-        "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Storage & Logistics Services",
-            "itemListElement": [
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Warehouse Storage"
-                },
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Business Storage"
-                },
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Inventory Management"
-                },
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Document Shredding"
-                },
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Student Storage"
-                },
-            ]
-        },
 
+        makesOffer: [
+            { "@type": "Offer", name: "Storage Service London" },
+            { "@type": "Offer", name: "Moving Service London" },
+            { "@type": "Offer", name: "Document Shredding London" },
+            { "@type": "Offer", name: "Storage Pickup and Delivery London" },
+            { "@type": "Offer", name: "Business Warehouse Storage London" },
+            { "@type": "Offer", name: "Inventory Management Services London" },
+            { "@type": "Offer", name: "Commercial Storage Solutions London" },
+            { "@type": "Offer", name: "Student Storage London" },
+            { "@type": "Offer", name: "Third Party Logistics London" },
+        ],
+
+        hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Storage & Logistics Services",
+            itemListElement: [
+                { "@type": "OfferCatalog", name: "Warehouse Storage" },
+                { "@type": "OfferCatalog", name: "Business Storage" },
+                { "@type": "OfferCatalog", name: "Inventory Management" },
+                { "@type": "OfferCatalog", name: "Pallet Storage" },
+                { "@type": "OfferCatalog", name: "Commercial Storage" },
+                { "@type": "OfferCatalog", name: "Third Party Logistics" },
+                { "@type": "OfferCatalog", name: "Document Shredding" },
+                { "@type": "OfferCatalog", name: "Student Storage" },
+            ],
+        },
     };
 
     return (
@@ -200,6 +203,10 @@ const faqs = [
         q: "Do you offer storage for students and renters in London?",
         a: "Yes, KXH Logistics supports students, renters, apartment moves, temporary relocations, and short-term storage with collection and delivery services across London.",
     },
+    {
+        q: "Do you provide commercial warehouse storage for growing businesses?",
+        a: "Yes. KXH Logistics supports retailers, ecommerce businesses, wholesalers, contractors, and growing companies with flexible commercial warehouse storage, inventory handling, pallet storage, and collection and delivery services across London.",
+    }
 ];
 
 function FAQJsonLd() {
@@ -310,6 +317,14 @@ function FAQJsonLd() {
                     "@type": "Answer",
                     text: "Yes, KXH Logistics supports students, renters, apartment moves, temporary relocations, and short-term storage with collection and delivery services across London."
                 },
+            },
+            {
+                "@type": "Question",
+                name: "Do you provide commercial warehouse storage for growing businesses?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes. KXH Logistics supports retailers, ecommerce businesses, wholesalers, contractors, and growing companies with flexible commercial warehouse storage, inventory handling, pallet storage, and collection and delivery services across London."
+                }
             }
         ],
     };
@@ -318,6 +333,29 @@ function FAQJsonLd() {
         <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+        />
+    );
+}
+function BreadcrumbJsonLd() {
+    const data = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://kxhlogistics.co.uk",
+            },
+        ],
+    };
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+                __html: JSON.stringify(data),
+            }}
         />
     );
 }
@@ -336,56 +374,82 @@ export default async function HomePage() {
             <main className="min-h-screen bg-white text-slate-900">
                 <JsonLd />
                 <FAQJsonLd />
+                <BreadcrumbJsonLd />
                 {/* Hero Section */}
 
-                <section className="relative overflow-hidden bg-gradient-to-b from-white to-emerald-50/30 min-h-[85vh] lg:min-h-screen">
-                    <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 pt-10 pb-12 sm:px-6 sm:pt-12 lg:grid-cols-2 lg:px-8 lg:py-20">
+                <section className="relative overflow-hidden bg-gradient-to-b from-white to-emerald-50/30">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-4 pt-12 pb-14 sm:px-6 sm:pt-16 lg:min-h-screen lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-20">
 
                         {/* LEFT CONTENT */}
                         <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-[11px] sm:text-sm font-bold uppercase tracking-wide text-emerald-700 shadow-sm">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-[11px] font-bold uppercase tracking-wide text-emerald-700 shadow-sm sm:text-sm">
                                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
                                 Trusted Storage & Logistics in London
                             </div>
 
-                            <h1 className="mt-6 text-4xl font-black leading-tight tracking-tight text-slate-950 sm:text-6xl">
+                            <h1 className="mt-6 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
                                 Warehouse Storage & Logistics in London
                             </h1>
 
                             <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-                                Secure storage space with pickup and delivery for businesses, students, renters, apartment moves, inventory storage, and temporary relocations across London.
+                                KXH Storage & Logistics provides secure warehouse storage with collection and return delivery across London. We support businesses, students, renters, office relocations, inventory storage, and temporary moves with flexible storage solutions tailored to your needs.
                             </p>
 
-                            <div className="mt-8 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:justify-start">
+                            <div className="mt-8 flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
                                 <a
                                     href="#pricing"
-                                    className="w-full rounded-2xl bg-emerald-700 px-7 py-4 text-center text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500 sm:w-auto"
+                                    className="rounded-2xl bg-emerald-700 px-7 py-4 text-center text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500"
                                 >
                                     Get Instant Quote
                                 </a>
 
                                 <a
                                     href="/services"
-                                    className="w-full rounded-2xl border border-emerald-200 bg-white px-7 py-4 text-center text-sm font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50 sm:w-auto"
+                                    className="rounded-2xl border border-emerald-200 bg-white px-7 py-4 text-center text-sm font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50"
                                 >
                                     View All Services
                                 </a>
                             </div>
 
-                            <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm lg:justify-start">
+                            <div className="mt-10 grid w-full gap-4 sm:grid-cols-2 lg:max-w-xl">
                                 {[
-                                    "Warehouse Storage",
-                                    "Moving Services",
-                                    "Student Storage",
-                                    "Business Inventory",
-                                    "Pickup & Delivery",
+                                    {
+                                        title: "Collection from Your Door",
+                                        text: "We collect directly from homes, offices, student accommodation, and businesses across London.",
+                                    },
+                                    {
+                                        title: "Secure Warehouse Storage",
+                                        text: "Your belongings are stored safely in monitored warehouse facilities with professional handling.",
+                                    },
+                                    {
+                                        title: "Flexible Storage Terms",
+                                        text: "Choose short-term or long-term storage with collection and return delivery whenever needed.",
+                                    },
+                                    {
+                                        title: "Trusted Across London",
+                                        text: "Supporting businesses, students, renters, and households with reliable storage and logistics.",
+                                    },
                                 ].map((item) => (
-                                    <span
-                                        key={item}
-                                        className="rounded-full border border-emerald-100 bg-white px-4 py-2 text-slate-700 shadow-sm"
+                                    <div
+                                        key={item.title}
+                                        className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:shadow-md"
                                     >
-                                        {item}
-                                    </span>
+                                        <div className="flex items-start gap-3">
+                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                                                ✓
+                                            </div>
+
+                                            <div>
+                                                <h3 className="font-bold text-slate-900">
+                                                    {item.title}
+                                                </h3>
+
+                                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                                    {item.text}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
 
@@ -393,15 +457,52 @@ export default async function HomePage() {
                         </div>
 
                         {/* RIGHT IMAGE */}
-                        <div className="relative w-full">
-                            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                        <div className="relative w-full lg:pl-4">
+                            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
                                 <img
                                     src="/images/home-hero-storage.webp"
-                                    alt="Warehouse storage with pickup and delivery in London"
-                                    className="aspect-[4/3] w-full object-cover object-center sm:aspect-[3/4] lg:aspect-[4/5]"
+                                    alt="KXH Storage & Logistics warehouse storage with collection and delivery service in London"
+                                    className="h-[320px] w-full object-cover object-center sm:h-[460px] lg:h-[640px]"
                                 />
                             </div>
                         </div>
+                    </div>
+                </section>
+                <section className="border-t border-slate-200/70 bg-white py-14">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+
+                        <div className="grid grid-cols-2 gap-6 text-center lg:grid-cols-4">
+
+                            <div>
+                                <h3 className="text-4xl font-black text-emerald-700">7+</h3>
+                                <p className="mt-2 text-slate-600">
+                                    Storage & Logistics Services
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-4xl font-black text-emerald-700">66+</h3>
+                                <p className="mt-2 text-slate-600">
+                                    Verified Trustpilot Reviews
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-4xl font-black text-emerald-700">London</h3>
+                                <p className="mt-2 text-slate-600">
+                                    Collection & Delivery Coverage
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-4xl font-black text-emerald-700">24–48h</h3>
+                                <p className="mt-2 text-slate-600">
+                                    Typical Collection Availability
+                                </p>
+                            </div>
+
+                        </div>
+
                     </div>
                 </section>
                 <section className="bg-white py-6 sm:py-8">
@@ -439,6 +540,142 @@ export default async function HomePage() {
                             Request your items anytime and we’ll deliver them back quickly — no need to travel to a storage unit.
                         </p>
 
+                    </div>
+                </section>
+                <section className="border-t border-slate-200/70 bg-white py-16">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="max-w-3xl">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                Why Choose KXH
+                            </p>
+
+                            <h2 className="mt-2 text-3xl font-black text-slate-900 sm:text-4xl">
+                                Storage, Collection & Delivery Made Simple
+                            </h2>
+
+                            <p className="mt-4 text-slate-600 leading-relaxed">
+                                KXH Storage & Logistics helps London customers avoid the stress of
+                                self-storage, van hire, and separate transport arrangements. We collect,
+                                store, and return your items when needed.
+                            </p>
+                        </div>
+
+                        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {[
+                                {
+                                    title: "Door-to-Door Collection",
+                                    desc: "We collect from homes, offices, student accommodation, and business locations across London.",
+                                },
+                                {
+                                    title: "Secure Warehouse Storage",
+                                    desc: "Items are stored in managed warehouse facilities with professional handling and organised storage.",
+                                },
+                                {
+                                    title: "Flexible Storage Terms",
+                                    desc: "Choose short-term or long-term storage depending on your move, business needs, or temporary situation.",
+                                },
+                                {
+                                    title: "Return Delivery Available",
+                                    desc: "Request your items back when needed and our team can arrange delivery directly to your address.",
+                                },
+                                {
+                                    title: "Business & Student Support",
+                                    desc: "We support business inventory, office equipment, student belongings, renters, and household storage.",
+                                },
+                                {
+                                    title: "Instant Online Quotes",
+                                    desc: "Get a fast quote online and choose the storage, moving, or logistics service that fits your needs.",
+                                },
+                            ].map((item) => (
+                                <div
+                                    key={item.title}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm"
+                                >
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                                        ✓
+                                    </div>
+
+                                    <h3 className="mt-4 font-bold text-slate-900">
+                                        {item.title}
+                                    </h3>
+
+                                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+                <section className="border-t border-slate-200/70 bg-slate-50 py-16">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="max-w-3xl">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                Who We Help
+                            </p>
+
+                            <h2 className="mt-2 text-3xl font-black text-slate-900 sm:text-4xl">
+                                Storage & Logistics Support for London Customers
+                            </h2>
+
+                            <p className="mt-4 text-slate-600 leading-relaxed">
+                                KXH supports businesses, students, renters, households, and office teams
+                                with flexible storage, collection, delivery, and moving support across London.
+                            </p>
+                        </div>
+
+                        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {[
+                                {
+                                    title: "Businesses",
+                                    desc: "Storage for stock, office equipment, archives, and commercial items.",
+                                    href: "/business-storage-london",
+                                },
+                                {
+                                    title: "Students",
+                                    desc: "Student storage for summer breaks, accommodation moves, and term gaps.",
+                                    href: "/student-storage-london",
+                                },
+                                {
+                                    title: "Renters",
+                                    desc: "Short-term storage during flat moves, delayed move-ins, and temporary relocations.",
+                                    href: "/warehouse-storage-london",
+                                },
+                                {
+                                    title: "Office Relocations",
+                                    desc: "Moving and storage support for office furniture, equipment, and business assets.",
+                                    href: "/logistics-moving-london",
+                                },
+                                {
+                                    title: "Retail & Ecommerce",
+                                    desc: "Inventory storage, pallet storage, and warehouse support for growing businesses.",
+                                    href: "/inventory-management-london",
+                                },
+                                {
+                                    title: "Households",
+                                    desc: "Flexible household storage with collection and return delivery across London.",
+                                    href: "/warehouse-storage-london",
+                                },
+                            ].map((item) => (
+                                <Link
+                                    key={item.title}
+                                    href={item.href}
+                                    className="rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                                >
+                                    <h3 className="text-xl font-bold text-slate-900">
+                                        {item.title}
+                                    </h3>
+
+                                    <p className="mt-3 text-sm leading-6 text-slate-600">
+                                        {item.desc}
+                                    </p>
+
+                                    <span className="mt-5 inline-block text-sm font-semibold text-emerald-700">
+                                        Learn more →
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </section>
                 <section className="px-4 py-14 text-center max-w-3xl mx-auto sm:px-6 lg:px-8 lg:py-16">
@@ -671,6 +908,10 @@ export default async function HomePage() {
                                     We collect your belongings, store them securely, and return them when
                                     your new term or move-in date starts.
                                 </p>
+                                <p className="mt-4 text-slate-600 leading-relaxed">
+                                    We regularly collect from university halls, private student accommodation,
+                                    shared houses, and rented flats throughout London.
+                                </p>
 
                                 <Link
                                     href="/student-storage-london"
@@ -699,26 +940,83 @@ export default async function HomePage() {
                 <section className="border-t border-slate-200/70 bg-white py-16">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
 
-                        <h2 className="text-3xl font-black">
-                            Storage Services Across London Boroughs
-                        </h2>
+                        <div className="max-w-3xl">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                London Boroughs
+                            </p>
 
-                        <p className="mt-4 text-slate-600 max-w-3xl">
-                            KXH Logistics provides warehouse storage, business storage,
-                            inventory storage, pallet storage, and collection services
-                            across London's major boroughs.
-                        </p>
+                            <h2 className="mt-2 text-3xl font-black text-slate-900">
+                                Storage Services Across London Boroughs
+                            </h2>
 
-                        <div className="mt-8 flex flex-wrap gap-3">
-                            <Link href="/warehouse-storage-london/tower-hamlets">Storage Tower Hamlets</Link>
-                            <Link href="/warehouse-storage-london/camden">Storage Camden</Link>
-                            <Link href="/warehouse-storage-london/hackney">Storage Hackney</Link>
-                            <Link href="/warehouse-storage-london/lambeth">Storage Lambeth</Link>
-                            <Link href="/warehouse-storage-london/southwark">Storage Southwark</Link>
-                            <Link href="/warehouse-storage-london/westminster">Storage Westminster</Link>
-                            <Link href="/warehouse-storage-london/kensington-chelsea">Storage Kensington & Chelsea</Link>
+                            <p className="mt-4 text-slate-600 leading-relaxed">
+                                KXH Logistics provides warehouse storage, business storage,
+                                inventory storage, pallet storage, and collection services
+                                across London's major boroughs.
+                            </p>
                         </div>
 
+                        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {[
+                                {
+                                    name: "Tower Hamlets",
+                                    href: "/warehouse-storage-london/tower-hamlets",
+                                    desc: "Warehouse storage with collection and delivery across Tower Hamlets.",
+                                },
+                                {
+                                    name: "Camden",
+                                    href: "/warehouse-storage-london/camden",
+                                    desc: "Flexible storage space for students, renters, households, and businesses in Camden.",
+                                },
+                                {
+                                    name: "Hackney",
+                                    href: "/warehouse-storage-london/hackney",
+                                    desc: "Secure storage for business stock, apartment moves, student storage, and overflow items.",
+                                },
+                                {
+                                    name: "Lambeth",
+                                    href: "/warehouse-storage-london/lambeth",
+                                    desc: "Managed storage with pickup and return delivery for Lambeth customers.",
+                                },
+                                {
+                                    name: "Southwark",
+                                    href: "/warehouse-storage-london/southwark",
+                                    desc: "Warehouse storage for households, businesses, students, and office equipment.",
+                                },
+                                {
+                                    name: "Westminster",
+                                    href: "/warehouse-storage-london/westminster",
+                                    desc: "Central London storage support for offices, students, renters, and commercial items.",
+                                },
+                                {
+                                    name: "Kensington & Chelsea",
+                                    href: "/warehouse-storage-london/kensington-chelsea",
+                                    desc: "Secure storage space with collection and delivery in Kensington and Chelsea.",
+                                },
+                            ].map((area) => (
+                                <Link
+                                    key={area.href}
+                                    href={area.href}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6 transition hover:border-emerald-300 hover:bg-white hover:shadow-sm"
+                                >
+                                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                        Warehouse Storage
+                                    </p>
+
+                                    <h3 className="mt-2 text-xl font-bold text-slate-900">
+                                        {area.name}
+                                    </h3>
+
+                                    <p className="mt-3 text-sm leading-6 text-slate-600">
+                                        {area.desc}
+                                    </p>
+
+                                    <span className="mt-5 inline-block text-sm font-semibold text-emerald-700">
+                                        View storage in {area.name} →
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </section>
                 <TestimonialsSection />
@@ -743,7 +1041,10 @@ export default async function HomePage() {
                             </p>
 
                             <p className="mt-4 text-base sm:text-lg leading-7 text-slate-600">
-                                Whether you need short-term overflow storage, student storage, renter storage, temporary relocation support, or long-term business warehousing, KXH provides flexible collection, secure storage, and return delivery across London.
+                                Whether you need short-term warehouse overflow, commercial inventory
+                                storage, office equipment storage, pallet storage, student storage,
+                                or long-term business warehousing, KXH provides flexible collection,
+                                secure warehouse storage, and return delivery throughout London.
                             </p>
 
                             <div className="mt-8 flex flex-wrap gap-3">
@@ -815,19 +1116,52 @@ export default async function HomePage() {
 
                 {/* Contact Section */}
                 <section id="contact" className="bg-white border-t border-slate-200/70">
-                    <div className="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 lg:px-8">
-                        <h2 className="text-2xl font-black tracking-tight">Contact</h2>
-                        <p className="mt-4 max-w-xl text-base md:text-lg text-slate-600 leading-relaxed">
-                            Prefer messaging? Our team is ready to assist you with any questions or support you need. Reach out
-                        </p>
+                    <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8">
+                        <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
+                            <div>
+                                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                    Contact KXH
+                                </p>
 
-                        <div className="mt-6 flex flex-wrap gap-3">
-                            <a href="tel:+441474396663" className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-700 shadow-lg">
-                                Call +44 1474 396663
-                            </a>
-                            <a href="mailto:help@kxhlogistics.co.uk" className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold hover:bg-slate-50">
-                                Email help@kxhlogistics.co.uk
-                            </a>
+                                <h2 className="mt-2 text-3xl font-black tracking-tight">
+                                    Need Storage or Logistics Support in London?
+                                </h2>
+
+                                <p className="mt-4 max-w-xl text-base md:text-lg text-slate-600 leading-relaxed">
+                                    Our team can help with storage, moving, business inventory,
+                                    student storage, pickup, delivery, and shredding enquiries.
+                                </p>
+
+                                <div className="mt-6 flex flex-wrap gap-3">
+                                    <a
+                                        href="tel:+447846718258"
+                                        className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-700 shadow-lg hover:bg-emerald-800 transition"
+                                    >
+                                        Call +44 7846 718258
+                                    </a>
+
+                                    <a
+                                        href="mailto:help@kxhlogistics.co.uk"
+                                        className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold hover:bg-slate-50"
+                                    >
+                                        Email help@kxhlogistics.co.uk
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                                <h3 className="text-xl font-bold">
+                                    Service Details
+                                </h3>
+
+                                <ul className="mt-5 space-y-3 text-slate-700">
+                                    <li>✔ London-wide collection</li>
+                                    <li>✔ Flexible storage terms</li>
+                                    <li>✔ Return delivery available</li>
+                                    <li>✔ Business & student storage specialists</li>
+                                    <li>✔ Instant online quote available</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </section>
