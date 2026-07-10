@@ -220,7 +220,7 @@ export default function MovingServicePage() {
 
                         <div className="mt-10">
                             <Link
-                                href="/?service=moving#pricing"
+                                href="/get-a-quote?service=moving"
                                 className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
                             >
                                 Get Instant Moving Quote
@@ -612,7 +612,7 @@ export default function MovingServicePage() {
 
                         <div className="mt-8">
                             <Link
-                                href="/?service=moving#pricing"
+                                href="/get-a-quote?service=moving"
                                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
                             >
                                 Get Instant Moving Quote

@@ -181,7 +181,7 @@ export default function WarehouseStoragePage() {
             {/* CTA */}
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link
-                href="/?service=storage#pricing"
+                href="/get-a-quote?service=storage"
                 className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
               >
                 Get Quote
@@ -515,7 +515,7 @@ export default function WarehouseStoragePage() {
 
           <div className="mt-6">
             <Link
-              href="/?service=storage#pricing"
+              href="/get-a-quote?service=storage"
               className="bg-black text-white px-6 py-3 rounded-lg font-semibold"
             >
               Get Quote

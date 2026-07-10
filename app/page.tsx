@@ -1,9 +1,5 @@
 
 import { ServicesGrid } from "./components/ServicesGrid";
-import HomeClientControls from "./components/HomeClientControls";
-import { HeroQuoteBar } from "./components/hero/HeroQuoteBar";
-import { loadOrderFlow } from "@/server/order-flow/loadOrderFlow";
-import { CheckoutProvider } from "./components/checkout/CheckoutStore";
 import CrispChat from "./components/chat/CrispChat";
 import Nav from "./components/MobileNav";
 
@@ -12,7 +8,6 @@ import Link from "next/link";
 import { londonLocations } from "./lib/location";
 import MainFooter from "./components/footer/MainFooter";
 import TestimonialsSection from "./components/TestimonialsSection";
-import TrustpilotBadge from "./components/trustpilot/TrustPilotBadge";
 import TrustpilotPill from "./components/trustpilot/TrustpilotPill";
 
 export const metadata: Metadata = {
@@ -364,10 +359,8 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
 
-    const initialData = await loadOrderFlow("GBP");
-
     return (
-        <CheckoutProvider initialOrderFlow={initialData}>
+        <>
             <CrispChat />
             <Nav />
 
@@ -397,7 +390,7 @@ export default async function HomePage() {
 
                             <div className="mt-8 flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
                                 <a
-                                    href="#pricing"
+                                    href="/get-a-quote"
                                     className="rounded-2xl bg-emerald-700 px-7 py-4 text-center text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500"
                                 >
                                     Get Instant Quote
@@ -1083,19 +1076,62 @@ export default async function HomePage() {
                         </div>
                     </div>
                 </section>
-                {/* Pricing Section */}
-                <section id="pricing" className="relative bg-[#fbfbf9] border-t border-slate-200/70">
-                    <div className="relative mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
-                        <h2 className="text-3xl font-black text-slate-950 sm:text-4xl lg:text-[3.15rem] lg:leading-[1.05]">
-                            Get an instant quote
-                        </h2>
-                        <p className="mt-4 max-w-2xl text-base sm:text-lg text-slate-600 leading-relaxed">
-                            Choose a service, customise your details, and see your price instantly — all in one seamless flow.
-                        </p>
+                {/* CTA */}
+                <section className="relative border-t border-slate-200/70 bg-[#fbfbf9]">
+                    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
 
-                        <div className="mt-10">
-                            <HomeClientControls variant="pricing" />
+                        <div className="mx-auto max-w-3xl text-center">
+
+                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                                Instant Online Quote
+                            </p>
+
+                            <h2 className="mt-2 text-3xl font-black text-slate-950 sm:text-4xl lg:text-5xl">
+                                Ready to Get Your Storage or Moving Quote?
+                            </h2>
+
+                            <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
+                                Tell us what you need and receive an instant estimate for warehouse
+                                storage, business storage, student storage, moving services, collection,
+                                and delivery across London.
+                            </p>
+
+                            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+
+                                <Link
+                                    href="/get-a-quote"
+                                    className="rounded-2xl bg-emerald-700 px-8 py-4 text-sm font-bold text-white shadow-xl shadow-emerald-500/20 transition hover:bg-emerald-500"
+                                >
+                                    Get Instant Quote
+                                </Link>
+
+                                <Link
+                                    href="/services"
+                                    className="rounded-2xl border border-slate-300 bg-white px-8 py-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                                >
+                                    Explore Our Services
+                                </Link>
+
+                            </div>
+
+                            <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
+
+                                <span className="rounded-full bg-white px-4 py-2 shadow-sm border border-slate-200">
+                                    ✓ No obligation
+                                </span>
+
+                                <span className="rounded-full bg-white px-4 py-2 shadow-sm border border-slate-200">
+                                    ✓ Instant estimate
+                                </span>
+
+                                <span className="rounded-full bg-white px-4 py-2 shadow-sm border border-slate-200">
+                                    ✓ Collection & delivery
+                                </span>
+
+                            </div>
+
                         </div>
+
                     </div>
                 </section>
 
@@ -1168,6 +1204,6 @@ export default async function HomePage() {
 
                 <MainFooter locations={londonLocations} />
             </main>
-        </CheckoutProvider>
+        </>
     );
 }

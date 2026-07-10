@@ -231,7 +231,7 @@ export default function ServicesPage() {
                         {/* CTA */}
                         <div className="mt-8 flex justify-center">
                             <Link
-                                href="/#pricing"
+                                href="/get-a-quote"
                                 className="bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-emerald-700 transition"
                             >
                                 Get Quote
@@ -469,7 +469,7 @@ export default function ServicesPage() {
 
                     <div className="mt-6">
                         <Link
-                            href="/#pricing"
+                            href="/get-a-quote"
                             className="inline-block bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-slate-800 transition"
                         >
                             Get Quote

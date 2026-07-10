@@ -201,7 +201,7 @@ export default function ShreddingServicePage() {
             {/* CTA */}
             <div className="mt-10 flex justify-center">
               <Link
-                href="/?service=shredding#pricing"
+                href="/get-a-quote?service=shredding"
                 className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
               >
                 Get Quote
@@ -536,7 +536,7 @@ export default function ShreddingServicePage() {
 
             <div className="mt-8">
               <Link
-                href="/?service=shredding#pricing"
+                href="/get-a-quote?service=shredding"
                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
               >
                 Get Quote

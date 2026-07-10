@@ -1149,7 +1149,7 @@ export default async function LocationServicePage({ params }: any) {
 
                         <div className="mt-8">
                             <Link
-                                href={`/?service=${content.quoteService}#pricing`}
+                                href={`/get-a-quote?service=${content.quoteService}`}
                                 className="inline-block rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
                             >
                                 Get Instant Quote
@@ -1941,7 +1941,7 @@ export default async function LocationServicePage({ params }: any) {
                             </p>
                             <div className="mt-8 flex flex-wrap justify-center gap-4">
                                 <Link
-                                    href={`/?service=${content.quoteService}#pricing`}
+                                    href={`/get-a-quote?service=${content.quoteService}`}
                                     className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
                                 >
                                     {service === "business-storage-london"
@@ -1972,7 +1972,7 @@ export default async function LocationServicePage({ params }: any) {
 
                         <div className="mt-8">
                             <Link
-                                href={`/?service=${content.quoteService}#pricing`}
+                                href={`/get-a-quote?service=${content.quoteService}`}
                                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
                             >
                                 {finalCta.button}

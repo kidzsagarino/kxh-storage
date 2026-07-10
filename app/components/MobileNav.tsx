@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Home, Package, Tag, HelpCircle, Phone, Menu, X } from "lucide-react";
+import Link from "next/link";
 
 export default function Nav() {
     const [isOpen, setIsOpen] = useState(false);
@@ -10,64 +11,77 @@ export default function Nav() {
     const navItems = [
         { href: "/#top", label: "Home", icon: Home },
         { href: "/services", label: "Services", icon: Package },
-        { href: "/#pricing", label: "Pricing", icon: Tag },
+        { href: "/get-a-quote", label: "Pricing", icon: Tag },
         { href: "/#faq", label: "FAQs", icon: HelpCircle },
         { href: "/#contact", label: "Contact", icon: Phone },
     ];
 
     return (
         <>
-            {/* Desktop Header */}
-            <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
-                <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
+            <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur">
+                <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+
                     {/* Logo */}
-                    <a href="/#top" className="text-lg font-black text-emerald-700">
-                        <Image src="/logo.webp" alt="KXH Logo" width={125} height={30} />
-                    </a>
+                    <Link
+                        href="/"
+                        className="shrink-0"
+                        aria-label="KXH Storage & Logistics home"
+                    >
+                        <Image
+                            src="/logo.webp"
+                            alt="KXH Storage & Logistics"
+                            width={125}
+                            height={30}
+                            priority
+                            className="h-auto w-[110px] sm:w-[125px]"
+                        />
+                    </Link>
 
                     {/* Desktop Nav */}
-                    <nav className="hidden items-center gap-6 md:flex">
+                    <nav
+                        className="hidden items-center gap-6 md:flex"
+                        aria-label="Primary navigation"
+                    >
                         {navItems.map((item) => (
-                            <a
+                            <Link
                                 key={item.href}
                                 href={item.href}
-                                className="text-sm font-semibold text-slate-700 hover:text-slate-900"
+                                className="text-sm font-semibold text-slate-700 transition hover:text-emerald-700"
                             >
                                 {item.label}
-                            </a>
+                            </Link>
                         ))}
                     </nav>
 
-                    {/* Desktop Buttons */}
-                    <div className="hidden md:flex items-center gap-2">
+                    {/* Desktop Actions */}
+                    <div className="hidden items-center gap-2 md:flex">
                         <a
-                            href="tel:+441474396663"
-                            className="rounded-xl border border-slate-200 px-3 sm:px-4 py-2 text-sm font-semibold hover:bg-slate-50"
+                            href="tel:+447846718258"
+                            className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                         >
                             Call
                         </a>
-                        <a
-                            href="/#pricing"
-                            onClick={() => {
-                                document.getElementById("pricing")?.scrollIntoView({
-                                    behavior: "smooth",
-                                    block: "start",
-                                });
-                            }}
-                            className="inline-flex rounded-xl bg-slate-900 px-3 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm"
+
+                        <Link
+                            href="/get-a-quote"
+                            className="inline-flex rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
                         >
                             Get Quote
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Mobile Hamburger */}
                     <button
+                        type="button"
                         onClick={() => setIsOpen(true)}
-                        className="md:hidden flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-lg"
-                        aria-label="Open menu"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition hover:bg-slate-50 md:hidden"
+                        aria-label="Open navigation menu"
+                        aria-expanded={isOpen}
+                        aria-controls="mobile-navigation"
                     >
-                        <Menu className="h-6 w-6 text-slate-700" />
+                        <Menu className="h-6 w-6 text-slate-700" aria-hidden="true" />
                     </button>
+
                 </div>
             </header>
 
@@ -77,62 +91,95 @@ export default function Nav() {
                     }`}
                 onClick={() => setIsOpen(false)}
             />
-
-            {/* Mobile Sidebar */}
+            {isOpen && (
+                <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] md:hidden"
+                    aria-label="Close navigation menu"
+                />
+            )}
             <aside
-                className={`fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-lg transition-transform duration-300 md:hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
+                id="mobile-navigation"
+                className={`fixed left-0 top-0 z-50 h-full w-72 bg-white shadow-2xl transition-transform duration-300 md:hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
                     }`}
+                aria-hidden={!isOpen}
             >
-                {/* Close button */}
-                <div className="flex items-center justify-between px-4 py-4 border-b border-slate-200">
-                    <span className="text-lg font-bold text-slate-900">Menu</span>
-                    <button onClick={() => setIsOpen(false)} aria-label="Close menu">
-                        <X className="h-6 w-6 text-slate-700" />
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
+                    <span className="text-lg font-bold text-slate-900">
+                        Menu
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() => setIsOpen(false)}
+                        className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-slate-100"
+                        aria-label="Close navigation menu"
+                    >
+                        <X className="h-6 w-6 text-slate-700" aria-hidden="true" />
                     </button>
                 </div>
 
-                {/* Logo centered */}
-                <div className="flex justify-center py-6 border-b border-slate-200">
-                    <Image src="/logo.webp" alt="KXH Logo" width={125} height={30} />
+                {/* Logo */}
+                <div className="flex justify-center border-b border-slate-200 py-6">
+                    <Link
+                        href="/"
+                        onClick={() => setIsOpen(false)}
+                        aria-label="KXH Storage & Logistics home"
+                    >
+                        <Image
+                            src="/logo.webp"
+                            alt="KXH Storage & Logistics"
+                            width={125}
+                            height={30}
+                            className="h-auto w-[125px]"
+                        />
+                    </Link>
                 </div>
 
-                {/* Nav Items */}
-                <nav className="flex flex-col px-4 py-6 gap-4">
+                {/* Navigation */}
+                <nav
+                    className="flex flex-col gap-2 px-4 py-6"
+                    aria-label="Mobile navigation"
+                >
                     {navItems.map((item) => {
                         const Icon = item.icon;
+
                         return (
-                            <a
+                            <Link
                                 key={item.href}
                                 href={item.href}
                                 onClick={() => setIsOpen(false)}
-                                className="flex items-center gap-3 px-2 py-2 text-slate-700 font-medium rounded-lg hover:bg-slate-100"
+                                className="flex items-center gap-3 rounded-xl px-3 py-3 font-medium text-slate-700 transition hover:bg-slate-100 hover:text-emerald-700"
                             >
-                                <Icon className="h-5 w-5" />
-                                {item.label}
-                            </a>
+                                <Icon
+                                    className="h-5 w-5 shrink-0"
+                                    aria-hidden="true"
+                                />
+                                <span>{item.label}</span>
+                            </Link>
                         );
                     })}
 
-                    {/* Call & Quote buttons in sidebar for mobile */}
-                    <a
-                        href="tel:+441474396663"
-                        className="mt-4 flex items-center justify-center rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold hover:bg-slate-50"
-                    >
-                        Call
-                    </a>
-                    <a
-                        href="/#pricing"
-                        className="mt-2 flex items-center justify-center rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm"
-                        onClick={() => {
-                            setIsOpen(false);
-                            document.getElementById("pricing")?.scrollIntoView({
-                                behavior: "smooth",
-                                block: "start",
-                            });
-                        }}
-                    >
-                        Get Quote
-                    </a>
+                    {/* Mobile actions */}
+                    <div className="mt-5 grid gap-3 border-t border-slate-200 pt-5">
+                        <a
+                            href="tel:+447846718258"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                        >
+                            Call +44 7846 718258
+                        </a>
+
+                        <Link
+                            href="/get-a-quote"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+                        >
+                            Get Quote
+                        </Link>
+                    </div>
                 </nav>
             </aside>
         </>

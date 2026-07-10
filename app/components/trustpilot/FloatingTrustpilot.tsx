@@ -1,17 +1,47 @@
 "use client";
 
-import TrustpilotCollector from "./TrustPilotCollector";
+import dynamic from "next/dynamic";
+
+const TrustpilotCollector = dynamic(
+    () => import("./TrustPilotCollector"),
+    {
+        ssr: false,
+        loading: () => null,
+    }
+);
+
+const tooltipClasses = [
+    "pointer-events-none",
+    "absolute",
+    "left-full",
+    "top-1/2",
+    "z-50",
+    "ml-2",
+    "-translate-y-1/2",
+    "whitespace-nowrap",
+    "rounded-md",
+    "bg-slate-900",
+    "px-2",
+    "py-1",
+    "text-[11px]",
+    "text-white",
+    "opacity-0",
+    "shadow-lg",
+    "transition-opacity",
+    "duration-200",
+    "group-hover:opacity-100",
+].join(" ");
 
 export default function FloatingTrustpilot() {
     return (
-        <div className="">
+        <div className="group relative inline-flex items-center">
+            <TrustpilotCollector />
 
-            <TrustpilotCollector  />
-            {/* Tooltip */}
-            <span className="absolute left-12 whitespace-nowrap rounded-md bg-slate-900 text-white text-[11px] px-2 py-1 opacity-0 group-hover:opacity-100 transition pointer-events-none">
+            <span
+                className={tooltipClasses}
+            >
                 4.8 on Trustpilot
             </span>
-
         </div>
     );
 }
