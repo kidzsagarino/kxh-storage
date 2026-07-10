@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/refunds",
     "/services",
+    "/get-a-quote",
 
     // Core services
     "/warehouse-storage-london",
