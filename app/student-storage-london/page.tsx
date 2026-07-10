@@ -132,7 +132,7 @@ export default function StudentStoragePage() {
 
                         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
                             <Link
-                                href="/?service=storage#pricing"
+                                href="/get-a-quote?service=storage"
                                 className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-800 transition"
                             >
                                 Get Student Storage Quote
@@ -603,7 +603,7 @@ export default function StudentStoragePage() {
 
                         <div className="mt-8">
                             <Link
-                                href="/?service=storage#pricing"
+                                href="/get-a-quote?service=storage"
                                 className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
                             >
                                 Get Student Storage Quote

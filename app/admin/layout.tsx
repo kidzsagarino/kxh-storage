@@ -35,7 +35,7 @@ function AdminTopBar() {
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <div>
-            <Image src="/logo.webp" alt="KXH Logo" width={100}/>
+            <Image src="/logo.webp" alt="KXH Logo" width={100} height="50"/>
           </div>
           <div>
             <div className="text-sm font-semibold text-slate-900">Admin</div>
