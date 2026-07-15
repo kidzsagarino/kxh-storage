@@ -56,7 +56,7 @@ export default function Nav() {
                     {/* Desktop Actions */}
                     <div className="hidden items-center gap-2 md:flex">
                         <a
-                            href="tel:+447846718258"
+                            href="tel:+447470025636"
                             className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                         >
                             Call
@@ -165,11 +165,11 @@ export default function Nav() {
                     {/* Mobile actions */}
                     <div className="mt-5 grid gap-3 border-t border-slate-200 pt-5">
                         <a
-                            href="tel:+447846718258"
+                            href="tel:+447470025636"
                             onClick={() => setIsOpen(false)}
                             className="flex items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                         >
-                            Call +44 7846 718258
+                            Call +44 7470 025636
                         </a>
 
                         <Link

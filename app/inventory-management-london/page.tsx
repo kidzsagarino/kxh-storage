@@ -7,6 +7,7 @@ import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../sitemap";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Inventory Management & Storage London | Business Stock Storage",
@@ -182,10 +183,15 @@ export default function InventoryManagementPage() {
               <TrustpilotPill />
             </div>
             <div className="mt-12">
-              <img
+              <Image
                 src="/images/inventory-management/inventory-management-london-warehouse-stock-handling.webp"
                 alt="Warehouse inventory management and stock handling in London"
-                className="w-full rounded-3xl border border-slate-200 shadow-xl"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                loading="lazy"
+                decoding="async"
+                className="w-full rounded-3xl border border-slate-200 shadow-xl h-auto"
               />
             </div>
             <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
@@ -305,10 +311,15 @@ export default function InventoryManagementPage() {
             </div>
 
             <div>
-              <img
+              <Image
                 src="/images/inventory-management/business-inventory-organisation-london.webp"
                 alt="Business inventory organisation and warehouse stock management"
-                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg h-auto"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                loading="lazy"
+                decoding="async"
               />
 
               <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6">
@@ -329,10 +340,15 @@ export default function InventoryManagementPage() {
         <section className="py-16 border-t border-slate-200/70 bg-slate-50">
           <div className="max-w-6xl mx-auto px-4">
             <div className="max-w-6xl mx-auto px-4 pb-12">
-              <img
+              <Image
                 src="/images/inventory-management/warehouse-inventory-support-london.webp"
                 alt="Warehouse worker organising inventory and stock storage"
-                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                className="w-full rounded-3xl border border-slate-200 shadow-lg h-auto"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="text-center mb-10">
@@ -616,20 +632,30 @@ export default function InventoryManagementPage() {
         </section>
         <section className="py-16 bg-white border-t border-slate-200/70">
           <div className="max-w-6xl mx-auto px-4">
-            <img
+            <Image
               src="/images/inventory-management/inventory-collection-delivery-london.webp"
               alt="Business inventory pickup and delivery service in London"
-              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              loading="lazy"
+              decoding="async"
+              className="w-full rounded-3xl border border-slate-200 shadow-xl h-auto"
             />
           </div>
         </section>
         <TestimonialsSection />
         <section className="py-16 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <img
+            <Image
               src="/images/inventory-management/kxh-inventory-management-team.webp"
               alt="KXH Logistics inventory management warehouse team"
-              className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              loading="lazy"
+              decoding="async"
+              className="w-full rounded-3xl border border-slate-200 shadow-lg h-auto"
             />
           </div>
         </section>

@@ -9,6 +9,7 @@ import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 import { londonLocations } from "../lib/location";
+import Image from "next/image";
 
 export const metadata: Metadata = {
     title: "Student Storage London | Collection, Storage & Delivery",
@@ -151,10 +152,15 @@ export default function StudentStoragePage() {
                         </div>
 
                         <div className="mt-12">
-                            <img
+                            <Image
                                 src="/images/student-storage.webp"
                                 alt="Student storage with collection and delivery in London"
                                 className="w-full rounded-3xl border border-slate-200 shadow-xl"
+                                width={1200}
+                                height={800}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
@@ -206,10 +212,15 @@ export default function StudentStoragePage() {
                             ))}
                         </div>
                         <div className="mt-12">
-                            <img
+                            <Image
                                 src="/images/student-storage-london/student-storage-collection.webp"
                                 alt="Student storage collection from university accommodation in London"
                                 className="w-full rounded-3xl border border-slate-200 shadow-xl object-cover"
+                                width={1200}
+                                height={800}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
@@ -301,10 +312,15 @@ export default function StudentStoragePage() {
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="grid lg:grid-cols-2 gap-12 items-start">
                             <div>
-                                <img
+                                <Image
                                     src="/images/student-storage-london/summer-student-storage.webp"
                                     alt="University student leaving accommodation for summer storage in London"
-                                    className="w-full rounded-3xl border border-slate-200 shadow-xl object-cover"
+                                    className="w-full rounded-3xl border border-slate-200 shadow-xl object-cover h-auto"
+                                    width={1200}
+                                    height={800}
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
                             <div>
@@ -344,10 +360,15 @@ export default function StudentStoragePage() {
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="grid lg:grid-cols-2 gap-12 items-start">
                             <div className="lg:sticky lg:top-24">
-                                <img
+                                <Image
                                     src="/images/student-storage-london/university-student-storage.webp"
                                     alt="University students using KXH Storage & Logistics collection service in London"
-                                    className="w-full rounded-3xl border border-slate-200 shadow-xl object-cover"
+                                    className="w-full rounded-3xl border border-slate-200 shadow-xl object-cover h-auto"
+                                    width={1200}
+                                    height={800}
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
 
@@ -487,10 +508,15 @@ export default function StudentStoragePage() {
                             </div>
 
                             <div>
-                                <img
+                                <Image
                                     src="/images/student-storage-london/student-moving.webp"
                                     alt="Student moving service London"
-                                    className="w-full rounded-3xl border border-slate-200 shadow-xl object-cover"
+                                    className="w-full rounded-3xl border border-slate-200 shadow-xl object-cover h-auto"
+                                    width={1200}
+                                    height={800}
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
                         </div>

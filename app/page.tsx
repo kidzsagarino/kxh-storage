@@ -9,6 +9,7 @@ import { londonLocations } from "./lib/location";
 import MainFooter from "./components/footer/MainFooter";
 import TestimonialsSection from "./components/TestimonialsSection";
 import TrustpilotPill from "./components/trustpilot/TrustpilotPill";
+import Image from "next/image";
 
 export const metadata: Metadata = {
     title: "Warehouse Storage, Business Storage & Moving Services London | KXH",
@@ -46,7 +47,7 @@ function JsonLd() {
         url: "https://kxhlogistics.co.uk",
         logo: "https://kxhlogistics.co.uk/logo.png",
         image: "https://kxhlogistics.co.uk/og.jpg",
-        telephone: "+44 7846 718258",
+        telephone: "+44 7470 025636",
         email: "help@kxhlogistics.co.uk",
         priceRange: "££",
 
@@ -93,7 +94,7 @@ function JsonLd() {
 
         contactPoint: {
             "@type": "ContactPoint",
-            telephone: "+44 7846 718258",
+            telephone: "+44 7470 025636",
             contactType: "Customer Service",
             areaServed: "GB",
             availableLanguage: "English",
@@ -452,10 +453,13 @@ export default async function HomePage() {
                         {/* RIGHT IMAGE */}
                         <div className="relative w-full lg:pl-4">
                             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-                                <img
+                                <Image
                                     src="/images/home-hero-storage.webp"
                                     alt="KXH Storage & Logistics warehouse storage with collection and delivery service in London"
-                                    className="h-[320px] w-full object-cover object-center sm:h-[460px] lg:h-[640px]"
+                                    className="h-[320px] w-full object-cover object-center sm:h-[460px] lg:h-[640px] h-auto"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
                         </div>
@@ -501,10 +505,15 @@ export default async function HomePage() {
                 <section className="bg-white py-6 sm:py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-                            <img
+                            <Image
                                 src="/images/warehouse-team.webp"
                                 alt="KXH warehouse team handling storage and logistics in London"
                                 className="h-[200px] w-full object-cover sm:h-[300px] lg:h-[360px]"
+                                width={1200}
+                                height={800}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
@@ -758,19 +767,28 @@ export default async function HomePage() {
                     <div className="mx-auto grid max-w-screen-xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
 
                         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-                            <img
+                            <Image
                                 src="/images/moving-team.webp"
                                 alt="Professional moving services in London"
-                                className="h-[220px] w-full object-cover sm:h-[300px] lg:h-[320px]"
-
+                                className="h-[220px] w-full object-cover sm:h-[300px] lg:h-[320px] h-auto"
+                                width={1200}
+                                height={800}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
 
                         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-                            <img
+                            <Image
                                 src="/images/student-storage.webp"
                                 alt="Student storage and renter storage in London"
-                                className="h-[220px] w-full object-cover object-center sm:h-[300px] lg:h-[320px]"
+                                className="h-[220px] w-full object-cover object-center sm:h-[300px] lg:h-[320px] h-auto"
+                                width={1200}
+                                height={800}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
 
@@ -1068,10 +1086,15 @@ export default async function HomePage() {
                 <section className="bg-white py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-                            <img
+                            <Image
                                 src="/images/delivery-warehouse.webp"
                                 alt="KXH pickup and delivery logistics"
-                                className="h-[220px] w-full object-cover sm:h-[320px] lg:h-[420px]"
+                                className="h-[220px] w-full object-cover sm:h-[320px] lg:h-[420px] h-auto"
+                                width={1200}
+                                height={800}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
@@ -1170,10 +1193,10 @@ export default async function HomePage() {
 
                                 <div className="mt-6 flex flex-wrap gap-3">
                                     <a
-                                        href="tel:+447846718258"
+                                        href="tel:+447470025636"
                                         className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-700 shadow-lg hover:bg-emerald-800 transition"
                                     >
-                                        Call +44 7846 718258
+                                        Call +44 7470 025636
                                     </a>
 
                                     <a

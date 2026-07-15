@@ -1164,7 +1164,8 @@ export default async function LocationServicePage({ params }: any) {
                             width={1200}
                             height={700}
                             className="mt-10 rounded-2xl shadow-xl"
-                            priority
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                 </section>
@@ -1234,6 +1235,8 @@ export default async function LocationServicePage({ params }: any) {
                                     width={900}
                                     height={700}
                                     className="w-full rounded-2xl shadow-lg"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
 
                                 <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
@@ -1480,6 +1483,8 @@ export default async function LocationServicePage({ params }: any) {
                                 width={900}
                                 height={700}
                                 className="rounded-2xl shadow-lg mb-6"
+                                loading="lazy"
+                                decoding="async"
                             />
                             <h3 className="font-bold text-lg">Ideal for:</h3>
                             <ul className="mt-4 space-y-3 text-slate-700">
@@ -1562,6 +1567,8 @@ export default async function LocationServicePage({ params }: any) {
                             width={1400}
                             height={800}
                             className="rounded-3xl shadow-xl"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                 </section>
@@ -1800,6 +1807,8 @@ export default async function LocationServicePage({ params }: any) {
                                     width={900}
                                     height={700}
                                     className="rounded-3xl shadow-xl"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 <div className="rounded-2xl border border-emerald-100 bg-white p-6">
                                     <h3 className="font-bold text-lg">Useful for students in {loc.name}:</h3>

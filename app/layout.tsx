@@ -61,11 +61,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <CheckoutProvider>{children}</CheckoutProvider>
+        {/* <CheckoutProvider></CheckoutProvider> */}
+        {children}
         <Toaster position="top-right" richColors />
         <Script
           src="https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
       </body>
     </html>

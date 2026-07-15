@@ -2,24 +2,39 @@
 
 import { useEffect } from "react";
 
+declare global {
+    interface Window {
+        $crisp?: unknown[];
+        CRISP_WEBSITE_ID?: string;
+    }
+}
+
+const CRISP_SCRIPT_ID = "crisp-chat-script";
+const CRISP_WEBSITE_ID = "6273a801-a6d4-4682-ab18-603a4b7a0c56";
+
 export default function CrispChat() {
     useEffect(() => {
-        (window as any).$crisp = [];
-        (window as any).CRISP_WEBSITE_ID = "6273a801-a6d4-4682-ab18-603a4b7a0c56";
+        const loadCrisp = () => {
+            if (document.getElementById(CRISP_SCRIPT_ID)) {
+                return;
+            }
 
-        (window as any).$crisp.push([
-            "config",
-            "container:index",
-            [999999]
-        ]);
-        
-        const d = document;
-        const s = d.createElement("script");
+            window.$crisp = window.$crisp ?? [];
+            window.CRISP_WEBSITE_ID = CRISP_WEBSITE_ID;
 
-        s.src = "https://client.crisp.chat/l.js";
-        s.async = true;
+            const script = document.createElement("script");
+            script.id = CRISP_SCRIPT_ID;
+            script.src = "https://client.crisp.chat/l.js";
+            script.async = true;
 
-        d.getElementsByTagName("head")[0].appendChild(s);
+            document.head.appendChild(script);
+        };
+
+        const timer = window.setTimeout(loadCrisp, 4000);
+
+        return () => {
+            window.clearTimeout(timer);
+        };
     }, []);
 
     return null;

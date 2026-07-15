@@ -200,7 +200,9 @@ export default function WarehouseStoragePage() {
                 width={1400}
                 height={800}
                 priority
-                className="w-full h-auto object-cover"
+                quality={80}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="h-auto w-full object-cover"
               />
             </div>
           </div>
@@ -293,7 +295,9 @@ export default function WarehouseStoragePage() {
               alt="Inventory management warehouse storage"
               width={1200}
               height={700}
-              className="w-full h-auto object-cover"
+              quality={75}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="h-auto w-full object-cover"
             />
           </div>
         </section>
@@ -351,7 +355,9 @@ export default function WarehouseStoragePage() {
                 alt="Student storage and apartment relocation services"
                 width={1200}
                 height={700}
-                className="w-full h-auto object-cover"
+                quality={75}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="h-auto w-full object-cover"
               />
             </div>
           </div>
@@ -378,6 +384,8 @@ export default function WarehouseStoragePage() {
                 alt="Business inventory warehouse storage in London"
                 width={1200}
                 height={700}
+                quality={75}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -499,6 +507,8 @@ export default function WarehouseStoragePage() {
               alt="KXH Storage and Logistics warehouse team"
               width={1200}
               height={700}
+              quality={75}
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="w-full h-auto object-cover"
             />
           </div>
