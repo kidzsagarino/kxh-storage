@@ -1,6 +1,7 @@
 "use client";
 
 import FloatingTrustpilot from "./trustpilot/FloatingTrustpilot";
+import Image from "next/image";
 
 type Testimonial = {
     name: string;
@@ -84,10 +85,14 @@ export default function TestimonialsSection() {
                             <div className="flex items-center justify-between mb-3 ">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold">
-                                        <img
+                                        <Image
                                             src={t.avatar}
                                             alt={t.name}
                                             className="w-10 h-10 rounded-full object-cover"
+                                            width={40}
+                                            height={40}
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     </div>
 

@@ -7,6 +7,7 @@ import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
 import { londonLocations } from "../lib/location";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title:
@@ -219,10 +220,15 @@ export default function BusinessStoragePage() {
               <TrustpilotPill />
             </div>
             <div className="mt-12">
-              <img
+              <Image
                 src="images/business-storage/business-storage-london-warehouse-inventory.webp"
                 alt="Business inventory storage inside a secure London warehouse"
                 className="w-full rounded-3xl border border-slate-200 shadow-xl"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -247,10 +253,15 @@ export default function BusinessStoragePage() {
 
           <div className="max-w-6xl mx-auto px-4">
             <div className="mb-10">
-              <img
+              <Image
                 src="/images/business-storage/business-storage-pickup-delivery-london.webp"
                 alt="KXH Logistics collecting business storage items from a London office"
                 className="w-full rounded-3xl border border-slate-200 shadow-lg"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="text-center mb-10">
@@ -305,10 +316,15 @@ export default function BusinessStoragePage() {
         </section>
         <section className="py-20 max-w-5xl mx-auto px-4">
           <div className="mb-12">
-            <img
+            <Image
               src="/images/business-storage/inventory-management-business-storage-london.webp"
               alt="Warehouse worker scanning business inventory in a managed storage facility"
               className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <div className="text-center">
@@ -383,11 +399,15 @@ export default function BusinessStoragePage() {
             </div>
 
             <div>
-              <img
+              <Image
                 src="/images/business-storage/business-storage-office-equipment-archive-storage.webp"
                 alt="Office equipment, archived business documents and commercial inventory stored in a secure London warehouse"
                 className="w-full rounded-3xl border border-slate-200 shadow-lg"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -724,10 +744,15 @@ export default function BusinessStoragePage() {
 
         <section className="py-16 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <img
+            <Image
               src="/images/business-storage/business-storage-warehouse-team-london.webp"
               alt="KXH Storage and Logistics warehouse team"
               className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </section>

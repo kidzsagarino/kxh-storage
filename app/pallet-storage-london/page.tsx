@@ -6,6 +6,7 @@ import MainFooter from "../components/footer/MainFooter";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../sitemap";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title:
@@ -152,10 +153,15 @@ export default function PalletStoragePage() {
               <TrustpilotPill />
             </div>
             <div className="mt-12">
-              <img
+              <Image
                 src="/images/pallet-storage/pallet-storage-london-bulk-warehouse.webp"
                 alt="Pallet storage warehouse in London with pallet racking and bulk inventory"
                 className="w-full rounded-3xl border border-slate-200 shadow-xl"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -201,10 +207,15 @@ export default function PalletStoragePage() {
             </div>
 
             <div>
-              <img
+              <Image
                 src="/images/pallet-storage/commercial-pallet-storage-business-stock.webp"
                 alt="Commercial pallet storage for business stock and inventory"
                 className="w-full rounded-3xl border border-slate-200 shadow-lg"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                loading="lazy"
+                decoding="async"
               />
 
               <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6">
@@ -223,10 +234,15 @@ export default function PalletStoragePage() {
         </section>
         <section className="py-16 bg-white">
           <div className="max-w-6xl mx-auto px-4">
-            <img
+            <Image
               src="/images/pallet-storage/warehouse-pallet-handling-london.webp"
               alt="Warehouse worker handling palletised inventory"
               className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </section>
@@ -417,20 +433,30 @@ export default function PalletStoragePage() {
         </section>
         <section className="py-16 bg-white border-t border-slate-200/70">
           <div className="max-w-6xl mx-auto px-4">
-            <img
+            <Image
               src="/images/pallet-storage/pallet-storage-collection-delivery-london.webp"
               alt="Pallet storage collection and delivery service"
               className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </section>
         <TestimonialsSection />
         <section className="py-16 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <img
+            <Image
               src="/images/pallet-storage/kxh-pallet-storage-team.webp"
               alt="KXH Logistics pallet storage warehouse team"
               className="w-full rounded-3xl border border-slate-200 shadow-lg"
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </section>
