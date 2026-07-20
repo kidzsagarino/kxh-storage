@@ -35,6 +35,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/refunds",
     "/services",
+    "/faqs",
+    "/contact",
     "/get-a-quote",
 
     // Core services
@@ -49,6 +51,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/pallet-storage-london",
     "/commercial-storage-london",
     "/third-party-logistics-london",
+    "/ecommerce-storage-london",
+    
   ].map((path) => ({
     url: `${base}${path}`,
     lastModified: now,
