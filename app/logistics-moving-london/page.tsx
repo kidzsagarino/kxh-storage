@@ -774,10 +774,11 @@ export default function MovingServicePage() {
                                 alt="KXH moving team loading belongings for a London move"
                                 width={1400}
                                 height={800}
-                                priority
                                 quality={80}
                                 sizes="(max-width: 768px) 100vw, 960px"
                                 className="h-auto w-full object-cover"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
@@ -999,6 +1000,8 @@ export default function MovingServicePage() {
                             quality={75}
                             sizes="(max-width: 1024px) 100vw, 50vw"
                             className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <div>
                             <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
@@ -1333,6 +1336,8 @@ export default function MovingServicePage() {
                                 quality={75}
                                 sizes="(max-width: 768px) 100vw, 960px"
                                 className="h-auto w-full object-cover"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                         <div className="mt-10 grid gap-4 md:grid-cols-2">
@@ -1554,6 +1559,8 @@ export default function MovingServicePage() {
                                 quality={75}
                                 sizes="(max-width: 1024px) 100vw, 50vw"
                                 className="h-full w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                                loading="lazy"
+                                decoding="async"
                             />
                             <Image
                                 src="/images/moving-services/moving-services-team.webp"
@@ -1563,6 +1570,8 @@ export default function MovingServicePage() {
                                 quality={75}
                                 sizes="(max-width: 1024px) 100vw, 50vw"
                                 className="h-full w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
