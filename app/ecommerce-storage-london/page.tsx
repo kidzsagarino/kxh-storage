@@ -517,12 +517,18 @@ function BreadcrumbJsonLd() {
             {
                 "@type": "ListItem",
                 position: 2,
+                name: "Services",
+                item: "https://kxhlogistics.co.uk/services",
+            },
+            {
+                "@type": "ListItem",
+                position: 3,
                 name: "Business Storage London",
                 item: "https://kxhlogistics.co.uk/business-storage-london",
             },
             {
                 "@type": "ListItem",
-                position: 3,
+                position: 4,
                 name: "Ecommerce Storage London",
                 item: "https://kxhlogistics.co.uk/ecommerce-storage-london",
             },
@@ -558,6 +564,13 @@ export default function EcommerceStorageLondonPage() {
                 >
                     <Link href="/" className="transition hover:text-emerald-700">
                         Home
+                    </Link>
+                    <span className="mx-2">/</span>
+                    <Link
+                        href="/services"
+                        className="transition hover:text-emerald-700"
+                    >
+                        Services
                     </Link>
                     <span className="mx-2">/</span>
                     <Link
@@ -631,10 +644,11 @@ export default function EcommerceStorageLondonPage() {
                                 alt="Ecommerce inventory stored inside a managed London warehouse"
                                 width={1200}
                                 height={800}
-                                priority
                                 quality={80}
                                 sizes="(max-width: 768px) 100vw, 960px"
                                 className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
@@ -776,6 +790,8 @@ export default function EcommerceStorageLondonPage() {
                             quality={75}
                             sizes="(max-width: 1024px) 100vw, 50vw"
                             className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                            loading="lazy"
+                            decoding="async"
                         />
 
                         <div>
@@ -920,6 +936,8 @@ export default function EcommerceStorageLondonPage() {
                             quality={75}
                             sizes="(max-width: 768px) 100vw, 960px"
                             className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                            loading="lazy"
+                            decoding="async"
                         />
 
                         <div className="mx-auto mt-12 max-w-2xl text-center">
@@ -1377,6 +1395,8 @@ export default function EcommerceStorageLondonPage() {
                             quality={75}
                             sizes="(max-width: 768px) 100vw, 960px"
                             className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                 </section>

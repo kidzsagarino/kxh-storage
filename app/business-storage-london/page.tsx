@@ -121,28 +121,70 @@ const industries = [
     title: "Ecommerce Storage",
     href: "/ecommerce-storage-london",
     description:
-      "Products, packaging, returned goods, seasonal inventory, and stock for online retailers.",
+      "Products, packaging materials, returned goods, seasonal inventory, and stock for online retailers.",
     available: true,
   },
   {
     title: "Retail Stock Storage",
     href: "/retail-stock-storage-london",
     description:
-      "Overflow stock, seasonal collections, displays, fittings, and promotional inventory.",
-    available: false,
+      "Overflow retail stock, seasonal collections, shop fittings, promotional displays, and merchandising equipment.",
+    available: true,
   },
   {
     title: "Office Storage",
     href: "/office-storage-london",
     description:
-      "Furniture, archives, computers, equipment, documents, and operational assets.",
+      "Office furniture, IT equipment, archived documents, business assets, and workplace storage during relocations or refurbishments.",
     available: false,
   },
   {
-    title: "Startup Storage",
-    href: "/startup-storage-london",
+    title: "Archive Storage",
+    href: "/archive-storage-london",
     description:
-      "Flexible capacity for growing businesses without long warehouse commitments.",
+      "Secure long-term storage for business records, legal files, financial documents, and confidential archives.",
+    available: false,
+  },
+  {
+    title: "Construction Equipment Storage",
+    href: "/construction-equipment-storage-london",
+    description:
+      "Secure storage for tools, machinery, building materials, and contractor equipment with collection and delivery.",
+    available: false,
+  },
+  {
+    title: "Event Equipment Storage",
+    href: "/event-equipment-storage-london",
+    description:
+      "Storage for exhibition stands, promotional materials, AV equipment, furniture, and event supplies.",
+    available: false,
+  },
+  {
+    title: "Healthcare Storage",
+    href: "/healthcare-storage-london",
+    description:
+      "Managed storage for medical supplies, healthcare equipment, records, and operational inventory.",
+    available: false,
+  },
+  {
+    title: "School Storage",
+    href: "/school-storage-london",
+    description:
+      "Flexible storage for classroom furniture, teaching resources, archives, sports equipment, and school supplies.",
+    available: false,
+  },
+  {
+    title: "Hospitality Storage",
+    href: "/hospitality-storage-london",
+    description:
+      "Storage for hotel furniture, restaurant equipment, seasonal décor, catering supplies, and hospitality inventory.",
+    available: false,
+  },
+  {
+    title: "Seasonal Business Storage",
+    href: "/seasonal-business-storage-london",
+    description:
+      "Flexible warehouse storage for seasonal stock, promotional inventory, holiday merchandise, and peak trading periods.",
     available: false,
   },
 ];
@@ -461,10 +503,11 @@ export default function BusinessStoragePage() {
                 alt="Business stock stored inside a managed London warehouse"
                 width={1200}
                 height={800}
-                priority
                 quality={80}
                 sizes="(max-width: 768px) 100vw, 960px"
                 className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -613,6 +656,8 @@ export default function BusinessStoragePage() {
               quality={75}
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+              loading="lazy"
+              decoding="async"
             />
 
             <div>
@@ -1034,6 +1079,8 @@ export default function BusinessStoragePage() {
               quality={75}
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </section>
@@ -1155,6 +1202,8 @@ export default function BusinessStoragePage() {
               quality={75}
               sizes="(max-width: 768px) 100vw, 960px"
               className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </section>
