@@ -53,6 +53,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/third-party-logistics-london",
     "/ecommerce-storage-london",
     "/retail-storage-london",
+    "/office-removals-london",
+    "/house-removals-london",
+    "/moving-house-storage-london",
     
   ].map((path) => ({
     url: `${base}${path}`,
