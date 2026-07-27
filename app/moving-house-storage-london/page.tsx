@@ -589,7 +589,8 @@ function BreadcrumbJsonLd() {
         itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: "https://kxhlogistics.co.uk" },
             { "@type": "ListItem", position: 2, name: "Services", item: "https://kxhlogistics.co.uk/services" },
-            { "@type": "ListItem", position: 3, name: "Moving & Storage London", item: pageUrl },
+            { "@type": "ListItem", position: 3, name: "Moving Services", item: "https://kxhlogistics.co.uk/logistics-moving-london" },
+            { "@type": "ListItem", position: 4, name: "Moving & Storage London", item: pageUrl },
         ],
     };
 
@@ -607,6 +608,8 @@ function BreadcrumbNavigation() {
         <Link href="/" className="transition hover:text-emerald-700">Home</Link>
         <span className="mx-2">/</span>
         <Link href="/services" className="transition hover:text-emerald-700">Services</Link>
+        <span className="mx-2">/</span>
+        <Link href="/logistics-moving-london" className="transition hover:text-emerald-700">Moving Services</Link>
         <span className="mx-2">/</span>
         <span className="font-medium text-slate-700">Moving &amp; Storage London</span>
     </nav>
