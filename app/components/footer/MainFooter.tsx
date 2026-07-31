@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FloatingTrustpilot from "../trustpilot/FloatingTrustpilot";
+import SocialLinks from "../SocialLinks";
 
 type Location = {
   name: string;
@@ -135,12 +136,20 @@ export default function MainFooter({
               <p>
                 <span className="font-semibold text-slate-900">Telephone:</span>{" "}
                 <a
-                  href="tel:+447470025636"
+                  href="tel:+447386277785"
                   className="transition hover:text-emerald-700"
                 >
-                  +44 7470 025636
+                  +44 7386 277785
                 </a>
               </p>
+              <div className="mx-auto max-w-7xl mt-5 flex">
+                <span className="font-semibold text-slate-900 mr-2 flex items-center">Check our socials:</span>{" "}
+
+                <SocialLinks
+                  variant="brand"
+                  size="sm"
+                />
+              </div>
             </div>
 
             <Link
@@ -149,6 +158,7 @@ export default function MainFooter({
             >
               Get a Quote
             </Link>
+
           </div>
 
           {/* CORE SERVICES */}
@@ -332,6 +342,7 @@ export default function MainFooter({
           </nav>
         </div>
       </div>
+
     </footer>
   );
 }

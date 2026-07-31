@@ -568,7 +568,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 7470 025636",
+            telephone: "+44 7386 277785",
         },
 
         areaServed: {
@@ -901,7 +901,7 @@ function HeroSection() {
                         Get a Moving Quote
                     </Link>
                     <a
-                        href="tel:+447470025636"
+                        href="tel:+447386277785"
                         className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto"
                     >
                         Call KXH
@@ -1824,7 +1824,7 @@ function MovingCtaSection() {
                         Get a Moving Quote
                     </Link>
                     <a
-                        href="tel:+447470025636"
+                        href="tel:+447386277785"
                         className="w-full rounded-xl border border-white/20 px-6 py-4 text-center font-semibold text-white transition hover:bg-white/10 sm:w-auto sm:px-8"
                     >
                         Call KXH

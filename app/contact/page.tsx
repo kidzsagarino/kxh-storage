@@ -9,9 +9,9 @@ import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 
 const SITE_URL = "https://kxhlogistics.co.uk";
-const PHONE_DISPLAY = "+44 7470 025636";
-const PHONE_HREF = "tel:+447470025636";
-const EMAIL = "info@kxhlogistics.co.uk";
+const PHONE_DISPLAY = "+44 7386 277785";
+const PHONE_HREF = "tel:+447386277785";
+const EMAIL = "help@kxhlogistics.co.uk";
 const OPENING_HOURS = [
     { label: "Monday–Friday", value: "8:00 AM–6:00 PM" },
     { label: "Saturday", value: "9:00 AM–4:00 PM" },
@@ -155,7 +155,7 @@ const serviceContactCards = [
         title: "Moving Services Enquiry",
         description:
             "Discuss house moves, apartment relocations, office removals, packing and furniture transport.",
-        href: "mailto:info@kxhlogistics.co.uk?subject=Moving%20Services%20Enquiry",
+        href: "mailto:hello@kxhlogistics.co.uk?subject=Moving%20Services%20Enquiry",
         cta: "Email moving enquiry",
         icon: "🚚",
     },
@@ -163,7 +163,7 @@ const serviceContactCards = [
         title: "Warehouse Storage Enquiry",
         description:
             "Ask about managed storage, collection, storage duration, access and return delivery.",
-        href: "mailto:info@kxhlogistics.co.uk?subject=Warehouse%20Storage%20Enquiry",
+        href: "mailto:hello@kxhlogistics.co.uk?subject=Warehouse%20Storage%20Enquiry",
         cta: "Email storage enquiry",
         icon: "🏭",
     },
@@ -171,7 +171,7 @@ const serviceContactCards = [
         title: "Business Storage Enquiry",
         description:
             "Discuss stock, office furniture, archived files, recurring collections and staged deliveries.",
-        href: "mailto:info@kxhlogistics.co.uk?subject=Business%20Storage%20Enquiry",
+        href: "mailto:hello@kxhlogistics.co.uk?subject=Business%20Storage%20Enquiry",
         cta: "Email business enquiry",
         icon: "🏢",
     },
@@ -179,7 +179,7 @@ const serviceContactCards = [
         title: "Student Storage Enquiry",
         description:
             "Ask about hall collection, summer storage, luggage, boxes and next-term redelivery.",
-        href: "mailto:info@kxhlogistics.co.uk?subject=Student%20Storage%20Enquiry",
+        href: "mailto:hello@kxhlogistics.co.uk?subject=Student%20Storage%20Enquiry",
         cta: "Email student enquiry",
         icon: "🎓",
     },
