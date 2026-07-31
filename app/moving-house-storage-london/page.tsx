@@ -518,7 +518,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 7470 025636",
+            telephone: "+44 7386 277785",
         },
         areaServed: {
             "@type": "City",
@@ -649,7 +649,7 @@ function HeroSection() {
                 <Link href={quoteUrl} className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto">
                     Get a Free Quote
                 </Link>
-                <a href="tel:+447470025636" className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto">
+                <a href="tel:+447386277785" className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto">
                     Call KXH
                 </a>
             </div>
@@ -1074,7 +1074,7 @@ function FinalCallToActionSection() {
             <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-200">Tell us what you are moving, the collection address, access details, preferred dates and expected storage period. We will review the job and prepare a tailored quotation for the agreed moving, storage and return-delivery plan.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <Link href={quoteUrl} className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8">Get Your Free Quote</Link>
-                <a href="tel:+447470025636" className="w-full rounded-xl border border-white/20 px-6 py-4 text-center font-semibold text-white transition hover:bg-white/10 sm:w-auto sm:px-8">Call KXH</a>
+                <a href="tel:+447386277785" className="w-full rounded-xl border border-white/20 px-6 py-4 text-center font-semibold text-white transition hover:bg-white/10 sm:w-auto sm:px-8">Call KXH</a>
             </div>
         </div>
     </section>

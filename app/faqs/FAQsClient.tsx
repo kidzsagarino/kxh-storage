@@ -392,7 +392,7 @@ export default function FAQsClient({
                                             Request a Quote
                                         </Link>
                                         <a
-                                            href="tel:+447470025636"
+                                            href="tel:+447386277785"
                                             className="rounded-xl border border-white/40 px-6 py-3 font-semibold transition hover:bg-white/10"
                                         >
                                             Call KXH

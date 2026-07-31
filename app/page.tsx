@@ -47,7 +47,7 @@ function JsonLd() {
         url: "https://kxhlogistics.co.uk",
         logo: "https://kxhlogistics.co.uk/logo.png",
         image: "https://kxhlogistics.co.uk/og.jpg",
-        telephone: "+44 7470 025636",
+        telephone: "+44 7386 277785",
         email: "help@kxhlogistics.co.uk",
         priceRange: "££",
 
@@ -94,7 +94,7 @@ function JsonLd() {
 
         contactPoint: {
             "@type": "ContactPoint",
-            telephone: "+44 7470 025636",
+            telephone: "+44 7386 277785",
             contactType: "Customer Service",
             areaServed: "GB",
             availableLanguage: "English",
@@ -460,6 +460,8 @@ export default async function HomePage() {
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                                     loading="lazy"
                                     decoding="async"
+                                    width={1200}
+                                    height={800}
                                 />
                             </div>
                         </div>
@@ -1193,10 +1195,10 @@ export default async function HomePage() {
 
                                 <div className="mt-6 flex flex-wrap gap-3">
                                     <a
-                                        href="tel:+447470025636"
+                                        href="tel:+447386277785"
                                         className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-700 shadow-lg hover:bg-emerald-800 transition"
                                     >
-                                        Call +44 7470 025636
+                                        Call +44 7386 277785
                                     </a>
 
                                     <a

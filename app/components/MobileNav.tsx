@@ -23,9 +23,10 @@ import {
     Warehouse,
     X,
 } from "lucide-react";
+import SocialLinks from "./SocialLinks";
 
-const PHONE_DISPLAY = "+44 7470 025636";
-const PHONE_HREF = "tel:+447470025636";
+const PHONE_DISPLAY = "+44 7386 277785";
+const PHONE_HREF = "tel:+447386277785";
 
 const primaryNavItems = [
     {
@@ -261,8 +262,8 @@ export default function Nav() {
                                         active ? "page" : undefined
                                     }
                                     className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${active
-                                            ? "bg-emerald-50 text-emerald-700"
-                                            : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
+                                        ? "bg-emerald-50 text-emerald-700"
+                                        : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                         }`}
                                 >
                                     {item.label}
@@ -286,16 +287,16 @@ export default function Nav() {
                                 }
                                 aria-controls="desktop-services-menu"
                                 className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition ${isServicesActive
-                                        ? "bg-emerald-50 text-emerald-700"
-                                        : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
+                                    ? "bg-emerald-50 text-emerald-700"
+                                    : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                     }`}
                             >
                                 Services
 
                                 <ChevronDown
                                     className={`h-4 w-4 transition-transform ${openDesktopMenu === "services"
-                                            ? "rotate-180"
-                                            : ""
+                                        ? "rotate-180"
+                                        : ""
                                         }`}
                                     aria-hidden="true"
                                 />
@@ -377,16 +378,16 @@ export default function Nav() {
                                 }
                                 aria-controls="desktop-locations-menu"
                                 className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition ${isLocationsActive
-                                        ? "bg-emerald-50 text-emerald-700"
-                                        : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
+                                    ? "bg-emerald-50 text-emerald-700"
+                                    : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                     }`}
                             >
                                 Locations
 
                                 <ChevronDown
                                     className={`h-4 w-4 transition-transform ${openDesktopMenu === "locations"
-                                            ? "rotate-180"
-                                            : ""
+                                        ? "rotate-180"
+                                        : ""
                                         }`}
                                     aria-hidden="true"
                                 />
@@ -434,31 +435,58 @@ export default function Nav() {
                                         active ? "page" : undefined
                                     }
                                     className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${active
-                                            ? "bg-emerald-50 text-emerald-700"
-                                            : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
+                                        ? "bg-emerald-50 text-emerald-700"
+                                        : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                         }`}
                                 >
                                     {item.label}
                                 </Link>
                             );
                         })}
-                    </nav>
 
-                    <div className="hidden items-center gap-2 xl:flex">
+                    </nav>
+                    <div className="hidden xl:block">
+                        <SocialLinks
+                            variant="brand"
+                            size="sm"
+                            className="justify-center"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {/* Mobile */}
                         <a
                             href={PHONE_HREF}
                             aria-label={`Call KXH Storage and Logistics on ${PHONE_DISPLAY}`}
-                            className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                            className="inline-flex xl:hidden items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
                         >
-                            Call KXH
+                            Call
                         </a>
 
                         <Link
                             href="/get-a-quote"
-                            className="inline-flex rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-emerald-800"
+                            className="inline-flex xl:hidden items-center justify-center rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
                         >
-                            Get Free Quote
+                            Quote
                         </Link>
+
+                        {/* Desktop */}
+                        <div className="hidden xl:flex items-center gap-2">
+                            <a
+                                href={PHONE_HREF}
+                                aria-label={`Call KXH Storage and Logistics on ${PHONE_DISPLAY}`}
+                                className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                            >
+                                Call KXH
+                            </a>
+
+                            <Link
+                                href="/get-a-quote"
+                                className="inline-flex rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-emerald-800"
+                            >
+                                Get Free Quote
+                            </Link>
+                        </div>
+
                     </div>
 
                     <button
@@ -482,8 +510,8 @@ export default function Nav() {
                 type="button"
                 onClick={closeMenus}
                 className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] transition-opacity duration-300 xl:hidden ${isOpen
-                        ? "pointer-events-auto opacity-100"
-                        : "pointer-events-none opacity-0"
+                    ? "pointer-events-auto opacity-100"
+                    : "pointer-events-none opacity-0"
                     }`}
                 aria-label="Close navigation menu"
                 tabIndex={isOpen ? 0 : -1}
@@ -558,8 +586,8 @@ export default function Nav() {
                                             active ? "page" : undefined
                                         }
                                         className={`flex items-center gap-3 rounded-xl px-3 py-3 font-medium transition ${active
-                                                ? "bg-emerald-50 text-emerald-700"
-                                                : "text-slate-700 hover:bg-slate-100 hover:text-emerald-700"
+                                            ? "bg-emerald-50 text-emerald-700"
+                                            : "text-slate-700 hover:bg-slate-100 hover:text-emerald-700"
                                             }`}
                                     >
                                         <Icon
@@ -572,6 +600,7 @@ export default function Nav() {
                                 );
                             })}
                         </div>
+
                     </div>
 
                     {/* Other services */}
@@ -598,8 +627,8 @@ export default function Nav() {
                                                     : undefined
                                             }
                                             className={`flex items-center gap-3 rounded-xl px-3 py-3 font-medium transition ${active
-                                                    ? "bg-emerald-50 text-emerald-700"
-                                                    : "text-slate-700 hover:bg-slate-100 hover:text-emerald-700"
+                                                ? "bg-emerald-50 text-emerald-700"
+                                                : "text-slate-700 hover:bg-slate-100 hover:text-emerald-700"
                                                 }`}
                                         >
                                             <Icon
@@ -654,8 +683,8 @@ export default function Nav() {
                                             active ? "page" : undefined
                                         }
                                         className={`flex items-center gap-3 rounded-xl px-3 py-3 font-medium transition ${active
-                                                ? "bg-emerald-50 text-emerald-700"
-                                                : "text-slate-700 hover:bg-slate-100 hover:text-emerald-700"
+                                            ? "bg-emerald-50 text-emerald-700"
+                                            : "text-slate-700 hover:bg-slate-100 hover:text-emerald-700"
                                             }`}
                                     >
                                         <Icon
@@ -672,6 +701,8 @@ export default function Nav() {
 
                     {/* Mobile actions */}
                     <div className="mt-6 grid gap-3 border-t border-slate-200 pt-5">
+                        <SocialLinks variant="brand" className="justify-center md:justify-end" size="sm" />
+
                         <a
                             href={PHONE_HREF}
                             onClick={closeMenus}
@@ -693,6 +724,7 @@ export default function Nav() {
 
                             Get Free Quote
                         </Link>
+
                     </div>
                 </nav>
             </aside>

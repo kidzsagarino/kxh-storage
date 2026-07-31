@@ -387,7 +387,7 @@ function HeroSection() {
             Get Commercial Storage Quote
           </Link>
           <a
-            href="tel:+447470025636"
+            href="tel:+447386277785"
             className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
           >
             Call KXH
@@ -1130,7 +1130,7 @@ function FinalCTA() {
           </Link>
 
           <a
-            href="tel:+447470025636"
+            href="tel:+447386277785"
             className="w-full rounded-xl border border-white/20 px-6 py-4 text-center font-semibold text-white transition hover:bg-white/10 sm:w-auto sm:px-8"
           >
             Call KXH

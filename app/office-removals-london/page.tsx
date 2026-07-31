@@ -12,7 +12,7 @@ import { londonLocations } from "../lib/location";
 
 const pageUrl = "https://kxhlogistics.co.uk/office-relocation-london";
 const quoteUrl = "/get-a-quote?service=moving";
-const phoneNumber = "+447470025636";
+const phoneNumber = "+447386277785";
 
 export const metadata: Metadata = {
     title: "Office Relocation London | Managed Office Moves & Storage",
@@ -503,7 +503,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 7470 025636",
+            telephone: "+44 7386 277785",
         },
         areaServed: {
             "@type": "City",
