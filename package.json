@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev && prisma generate && prisma migrate deploy",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -22,12 +22,13 @@
     "lucide-react": "^0.562.0",
     "next": "16.1.4",
     "next-auth": "^4.24.13",
-    "nodemailer": "^8.0.1",
+    "nodemailer": "^7.0.13",
     "pdf-lib": "^1.17.1",
     "prisma": "^6.19.2",
     "react": "19.2.3",
     "react-day-picker": "^9.13.0",
     "react-dom": "19.2.3",
+    "resend": "^6.18.1",
     "sonner": "^2.0.7",
     "stripe": "^20.3.1"
   },

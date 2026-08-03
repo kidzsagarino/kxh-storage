@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { PrismaClient, AddressType, ServiceType } from "@prisma/client";
-import { sendEmail } from "@/app/lib/mail";
+import { sendEmail } from "@/app/lib/resend";
 import { generateOrderReceipt, getOrderEmailHtml } from "../generateReceipt";
 
 export const runtime = "nodejs";
