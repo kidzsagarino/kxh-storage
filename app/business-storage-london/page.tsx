@@ -132,18 +132,18 @@ const industries = [
     available: true,
   },
   {
-    title: "Office Storage",
-    href: "/office-storage-london",
+    title: "Furniture Storage",
+    href: "/furniture-storage-london",
     description:
       "Office furniture, IT equipment, archived documents, business assets, and workplace storage during relocations or refurbishments.",
-    available: false,
+    available: true,
   },
   {
     title: "Archive Storage",
     href: "/archive-storage-london",
     description:
       "Secure long-term storage for business records, legal files, financial documents, and confidential archives.",
-    available: false,
+    available: true,
   },
   {
     title: "Construction Equipment Storage",
@@ -157,14 +157,14 @@ const industries = [
     href: "/event-equipment-storage-london",
     description:
       "Storage for exhibition stands, promotional materials, AV equipment, furniture, and event supplies.",
-    available: false,
+    available: true,
   },
   {
     title: "Healthcare Storage",
     href: "/healthcare-storage-london",
     description:
       "Managed storage for medical supplies, healthcare equipment, records, and operational inventory.",
-    available: false,
+    available: true,
   },
   {
     title: "School Storage",
