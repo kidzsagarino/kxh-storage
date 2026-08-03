@@ -267,7 +267,7 @@ export async function getAdminSettings(): Promise<PricingSettings> {
             basic_package: pkgPriceById.get("basic_package") ?? 0,
             move_and_pack: pkgPriceById.get("move_and_pack") ?? 295,
         },
-        movingAndCollectionFee: 14.95, // not in schema; keep UI-only or add column
+        movingAndCollectionFee: fromMinor(settingsRow.movingAndCollectionFeeMinor), // not in schema; keep UI-only or add column
     };
 }
 
