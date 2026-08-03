@@ -56,7 +56,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/office-removals-london",
     "/house-removals-london",
     "/moving-house-storage-london",
-    
+    "/packing-services-london",
+    "/archive-storage-london",
+    "/event-equipment-storage-london",
+    "/healthcare-storage-london",
+    "/furniture-storage-london",
+
   ].map((path) => ({
     url: `${base}${path}`,
     lastModified: now,
