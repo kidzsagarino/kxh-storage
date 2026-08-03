@@ -46,8 +46,10 @@ export type PricingSettings = {
         "half-container": number;
         "full-container": number;
     };
-    storageDiscounts: { months: 1 | 3 | 6 | 12; percentOff: number }[];
-
+    storageDiscounts: {
+        months: number;
+        percentOff: number;
+    }[];
     shredding: {
         bagPrice: number;
         archiveBoxPrice: number;
@@ -245,10 +247,10 @@ export async function getAdminSettings(): Promise<PricingSettings> {
             "full-container": priceByItem.get(CatalogItemId.full_container) ?? 0,
         },
 
-        storageDiscounts: tiers
-            .filter((t) => [1, 3, 6, 12].includes(t.minMonths))
-            .map((t) => ({ months: t.minMonths as 1 | 3 | 6 | 12, percentOff: t.percentOff })),
-
+        storageDiscounts: tiers.map((t) => ({
+            months: t.minMonths,
+            percentOff: t.percentOff,
+        })),
         shredding: {
             bagPrice: priceByItem.get(CatalogItemId.bag) ?? 0,
             archiveBoxPrice: priceByItem.get(CatalogItemId.archive_box) ?? 0,
