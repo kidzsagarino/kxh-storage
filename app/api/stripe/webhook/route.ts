@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { prisma } from "@/src/lib/prisma";
 import { PaymentStatus, OrderStatus, ServiceType, Prisma } from "@prisma/client";
 import { generateOrderReceipt, getOrderEmailHtml } from "../../orders/generateReceipt";
-import { sendEmail } from "@/app/lib/mail";
+import { sendEmail } from "@/app/lib/resend";
 
 export const runtime = "nodejs";
 

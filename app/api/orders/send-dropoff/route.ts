@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { prisma } from "@/src/lib/prisma";
-import { sendEmail } from "@/app/lib/mail";
+import { sendEmail } from "@/app/lib/resend";
 import { OrderStatus } from "@prisma/client";
 
 export const runtime = "nodejs";
