@@ -35,10 +35,19 @@ export const metadata: Metadata = {
 };
 
 const heroBenefits = [
-    "House and apartment moves",
-    "Office and commercial relocations",
-    "Packing and furniture protection",
-    "Temporary storage available",
+    {
+        label: "House and apartment moves",
+    },
+    {
+        label: "Office and commercial relocations",
+    },
+    {
+        label: "Professional Packing Services",
+        href: "/packing-services-london",
+    },
+    {
+        label: "Temporary storage available",
+    },
 ];
 
 const movingSteps = [
@@ -151,6 +160,12 @@ const movingProblems = [
         description:
             "Hall check-out dates, summer travel and new-term move-in windows often require collection, storage and redelivery to work as one connected service.",
     },
+    {
+        title: "Packing Takes Too Much Time",
+        href: "/packing-services-london",
+        description:
+            "Professional packing helps protect fragile items, furniture and valuables while reducing the time and stress involved before moving day.",
+    },
 ];
 
 const managedServices = [
@@ -208,6 +223,13 @@ const movingExpansionPages = [
             "Complete house removals for families, renters, downsizers, upsizers and property-chain moves.",
     },
     {
+        title: "Packing Services London",
+        shortTitle: "Packing Services",
+        href: "/packing-services-london",
+        description:
+            "Professional packing services, furniture protection, fragile item wrapping and packing materials for homes, offices and businesses.",
+    },
+    {
         title: "Moving House and Storage London",
         shortTitle: "Moving + Storage",
         href: "/moving-house-storage-london",
@@ -221,7 +243,7 @@ const movingExpansionPages = [
         description:
             "Managed office relocations for furniture, IT equipment, documents and operational assets.",
     },
-] as const;
+];
 
 const serviceCategories = [
     {
@@ -265,6 +287,13 @@ const serviceCategories = [
         cta: "Explore moving and storage",
         description:
             "Collection, moving, storage and redelivery for halls, shared accommodation, term-time moves, summer travel, luggage, boxes and small furniture.",
+    },
+    {
+        title: "Packing Services",
+        href: "/packing-services-london",
+        cta: "Explore packing services",
+        description:
+            "Professional packing, furniture wrapping, fragile item protection, export packing and packing materials for home, office and commercial moves.",
     },
 ];
 
@@ -389,6 +418,12 @@ const customerFitItems = [
         description:
             "For moving selected items while creating space or changing premises.",
     },
+    {
+        title: "Need professional packing",
+        href: "/packing-services-london",
+        description:
+            "Ideal for customers who want belongings professionally wrapped, boxed and protected before transport.",
+    },
 ];
 
 const movingChecklist = [
@@ -453,6 +488,12 @@ const relatedServices = [
         href: "/shredding-solutions-london",
         description:
             "Dispose of unwanted confidential documents securely before or after an office relocation.",
+    },
+    {
+        title: "Packing Services London",
+        href: "/packing-services-london",
+        description:
+            "Professional packing, furniture protection and fragile item wrapping before house, office or commercial moves.",
     },
 ];
 
@@ -669,6 +710,15 @@ function ServiceJsonLd() {
                             "Secure warehouse storage between collection and final delivery.",
                     },
                 },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Packing Services London",
+                        "url": "https://kxhlogistics.co.uk/packing-services-london",
+                        "description": "Professional packing, wrapping, furniture protection and packing materials."
+                    }
+                }
             ],
         },
     };
@@ -883,14 +933,27 @@ function HeroSection() {
                 </p>
 
                 <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                    {heroBenefits.map((benefit) => (
-                        <div
-                            key={benefit}
-                            className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                        >
-                            <span aria-hidden="true">✓</span> {benefit}
-                        </div>
-                    ))}
+                    {heroBenefits.map((benefit) =>
+                        benefit.href ? (
+                            <Link
+                                key={benefit.label}
+                                href={benefit.href}
+                                className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100 hover:text-emerald-900"
+                            >
+                                <span aria-hidden="true">✓</span>{" "}
+                                <span className="underline underline-offset-2">
+                                    {benefit.label}
+                                </span>
+                            </Link>
+                        ) : (
+                            <div
+                                key={benefit.label}
+                                className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
+                            >
+                                <span aria-hidden="true">✓</span> {benefit.label}
+                            </div>
+                        )
+                    )}
                 </div>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -1000,9 +1063,39 @@ function MovingCostSection() {
                         KXH provides a tailored quote based on the actual move rather
                         than an unclear one-size-fits-all rate.
                     </p>
-                    <p className="mt-4 leading-7 text-slate-600">
-                        Every move is different. A one-bedroom apartment with lift access requires different planning than a four-bedroom house or a commercial office relocation. KXH reviews the collection location, destination, item volume, access restrictions, labour requirements and any optional packing or storage before preparing a tailored quotation.
+                    <p className="mt-4 text-slate-600 leading-7">
+                        Every move is different, which is why our managed moving service is built
+                        around your requirements. Our professional{" "}
+                        <Link
+                            href="/packing-services-london"
+                            className="font-semibold text-emerald-700 hover:underline"
+                        >
+                            Packing Services London
+                        </Link>{" "}
+                        include furniture wrapping, fragile item protection, export-quality packing,
+                        and premium packing materials to help safeguard your belongings before
+                        transport. Combined with temporary storage, secure transportation, and
+                        scheduled return delivery, KXH manages the entire moving process from
+                        collection to final delivery.
                     </p>
+                    <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                        <h3 className="text-lg font-bold text-slate-900">
+                            Need Professional Packing?
+                        </h3>
+
+                        <p className="mt-2 text-slate-600 leading-7">
+                            Whether you're moving a home, office, or business, our professional packing
+                            team carefully wraps furniture, protects fragile items, and prepares
+                            everything for safe transport.
+                        </p>
+
+                        <Link
+                            href="/packing-services-london"
+                            className="mt-4 inline-flex items-center font-semibold text-emerald-700 hover:underline"
+                        >
+                            Explore Packing Services London →
+                        </Link>
+                    </div>
                     <Link
                         href="/get-a-quote?service=moving"
                         className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
