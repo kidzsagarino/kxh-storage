@@ -9,6 +9,7 @@ import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../lib/location";
+import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
     title: "Retail Stock Storage London | Secure Managed Storage with Collection",
@@ -930,12 +931,15 @@ export default function RetailStockStoragePage() {
                                 Get Retail Storage Quote
                             </Link>
 
-                            <a
-                                href="tel:+447386277785"
-                                className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
-                            >
-                                Call KXH
-                            </a>
+                            {CONTACT_NUMBERS.map((contact) => (
+                                <a
+                                    key={contact.href}
+                                    href={contact.href}
+                                    className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
+                                >
+                                    Call {contact.label}
+                                </a>
+                            ))}
                         </div>
 
                         <div className="mt-6 flex justify-center">
@@ -2032,12 +2036,15 @@ export default function RetailStockStoragePage() {
                                 Get Retail Storage Quote
                             </Link>
 
-                            <a
-                                href="tel:+447386277785"
-                                className="w-full rounded-xl border border-white/20 px-6 py-4 text-center font-semibold text-white transition hover:bg-white/10 sm:w-auto sm:px-8"
-                            >
-                                Call KXH
-                            </a>
+                            {CONTACT_NUMBERS.map((contact) => (
+                                <a
+                                    key={contact.href}
+                                    href={contact.href}
+                                    className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
+                                >
+                                    Call {contact.label}
+                                </a>
+                            ))}
                         </div>
                     </div>
                 </section>

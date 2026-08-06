@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { CONTACT_NUMBERS } from "../lib/contact";
 
 type FAQ = {
     question: string;
@@ -291,9 +292,8 @@ export default function FAQsClient({
                         key={section.id}
                         id={section.id}
                         aria-labelledby={`${section.id}-title`}
-                        className={`scroll-mt-24 border-b border-slate-200 py-14 sm:py-20 ${
-                            index % 2 === 0 ? "bg-slate-50" : "bg-white"
-                        }`}
+                        className={`scroll-mt-24 border-b border-slate-200 py-14 sm:py-20 ${index % 2 === 0 ? "bg-slate-50" : "bg-white"
+                            }`}
                     >
                         <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
                             <div className="flex items-start gap-4">
@@ -391,12 +391,15 @@ export default function FAQsClient({
                                         >
                                             Request a Quote
                                         </Link>
-                                        <a
-                                            href="tel:+447386277785"
-                                            className="rounded-xl border border-white/40 px-6 py-3 font-semibold transition hover:bg-white/10"
-                                        >
-                                            Call KXH
-                                        </a>
+                                        {CONTACT_NUMBERS.map((contact) => (
+                                            <a
+                                                key={contact.href}
+                                                href={contact.href}
+                                                className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
+                                            >
+                                                Call {contact.label}
+                                            </a>
+                                        ))}
                                         <Link
                                             href="/contact"
                                             className="rounded-xl border border-white/40 px-6 py-3 font-semibold transition hover:bg-white/10"

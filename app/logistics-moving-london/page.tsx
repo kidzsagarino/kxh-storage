@@ -9,6 +9,7 @@ import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../lib/location";
+import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
     title: "Moving Services London | House, Office & Commercial Removals",
@@ -963,12 +964,15 @@ function HeroSection() {
                     >
                         Get a Moving Quote
                     </Link>
-                    <a
-                        href="tel:+447386277785"
-                        className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto"
-                    >
-                        Call KXH
-                    </a>
+                    {CONTACT_NUMBERS.map((contact) => (
+                        <a
+                            key={contact.href}
+                            href={contact.href}
+                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
+                        >
+                            Call {contact.label}
+                        </a>
+                    ))}
                 </div>
 
                 <div className="mt-6 flex justify-center">
@@ -1916,12 +1920,15 @@ function MovingCtaSection() {
                     >
                         Get a Moving Quote
                     </Link>
-                    <a
-                        href="tel:+447386277785"
-                        className="w-full rounded-xl border border-white/20 px-6 py-4 text-center font-semibold text-white transition hover:bg-white/10 sm:w-auto sm:px-8"
-                    >
-                        Call KXH
-                    </a>
+                    {CONTACT_NUMBERS.map((contact) => (
+                        <a
+                            key={contact.href}
+                            href={contact.href}
+                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
+                        >
+                            Call {contact.label}
+                        </a>
+                    ))}
                 </div>
                 <MovingServiceLinks className="mt-8 [&_a]:border-white/20 [&_a]:bg-white/10 [&_a]:text-white [&_a:hover]:bg-white/20" />
             </div>

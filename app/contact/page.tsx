@@ -7,10 +7,11 @@ import CrispChat from "../components/chat/CrispChat";
 import Nav from "../components/MobileNav";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
+import { CONTACT_NUMBERS } from "../lib/contact";
 
 const SITE_URL = "https://kxhlogistics.co.uk";
-const PHONE_DISPLAY = "+44 7386 277785";
-const PHONE_HREF = "tel:+447386277785";
+const PHONE_DISPLAY = CONTACT_NUMBERS[0].phone;
+const PHONE_HREF = CONTACT_NUMBERS[0].href;
 const EMAIL = "help@kxhlogistics.co.uk";
 const OPENING_HOURS = [
     { label: "Monday–Friday", value: "8:00 AM–6:00 PM" },
@@ -64,14 +65,14 @@ export const metadata: Metadata = {
 };
 
 const contactMethods = [
-    {
-        title: "Call KXH",
+    ...CONTACT_NUMBERS.map((contact) => ({
+        title: `Call ${contact.label}`,
         description:
             "Best for urgent enquiries, date availability and quick questions about moving or storage.",
-        href: PHONE_HREF,
-        label: PHONE_DISPLAY,
+        href: contact.href,
+        label: contact.phone,
         icon: "☎",
-    },
+    })),
     {
         title: "Email Our Team",
         description:
@@ -630,7 +631,7 @@ export default function ContactPage() {
                             ))}
                         </div>
 
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
                             <Link
                                 href="/get-a-quote"
                                 className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 sm:w-auto"
@@ -638,12 +639,15 @@ export default function ContactPage() {
                                 Request a Quote
                             </Link>
 
-                            <a
-                                href={PHONE_HREF}
-                                className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
-                            >
-                                Call KXH
-                            </a>
+                            {CONTACT_NUMBERS.map((contact) => (
+                                <a
+                                    key={contact.href}
+                                    href={contact.href}
+                                    className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
+                                >
+                                    Call {contact.label}
+                                </a>
+                            ))}
 
                             <a
                                 href={`mailto:${EMAIL}`}
@@ -901,24 +905,30 @@ export default function ContactPage() {
                             </Link>
 
                             <div className="grid gap-5 sm:grid-cols-2">
-                                <a
-                                    href={PHONE_HREF}
-                                    className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
-                                >
-                                    <span className="text-2xl" aria-hidden="true">
-                                        ☎
-                                    </span>
-                                    <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:text-emerald-700">
-                                        Call KXH
-                                    </h3>
-                                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                                        Best for urgent enquiries, date availability and quick
-                                        service questions.
-                                    </p>
-                                    <span className="mt-5 inline-block font-semibold text-emerald-700">
-                                        {PHONE_DISPLAY} →
-                                    </span>
-                                </a>
+                                {CONTACT_NUMBERS.map((contact) => (
+                                    <a
+                                        key={contact.href}
+                                        href={contact.href}
+                                        className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                                    >
+                                        <span className="text-2xl" aria-hidden="true">
+                                            ☎
+                                        </span>
+
+                                        <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:text-emerald-700">
+                                            Call {contact.label}
+                                        </h3>
+
+                                        <p className="mt-3 text-sm leading-6 text-slate-600">
+                                            Best for urgent enquiries, date availability and quick service
+                                            questions.
+                                        </p>
+
+                                        <span className="mt-5 inline-block font-semibold text-emerald-700">
+                                            {contact.phone} →
+                                        </span>
+                                    </a>
+                                ))}
 
                                 <a
                                     href={`mailto:${EMAIL}`}
@@ -927,13 +937,16 @@ export default function ContactPage() {
                                     <span className="text-2xl" aria-hidden="true">
                                         ✉
                                     </span>
+
                                     <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:text-emerald-700">
                                         Email Our Team
                                     </h3>
+
                                     <p className="mt-3 text-sm leading-6 text-slate-600">
-                                        Ideal for detailed requirements, photos, inventory lists
-                                        and business enquiries.
+                                        Ideal for detailed requirements, photos, inventory lists and business
+                                        enquiries.
                                     </p>
+
                                     <span className="mt-5 inline-block break-all font-semibold text-emerald-700">
                                         {EMAIL} →
                                     </span>
@@ -1174,16 +1187,23 @@ export default function ContactPage() {
                                 <h3 className="font-bold text-slate-950">
                                     Typical response
                                 </h3>
+
                                 <p className="mt-2 text-sm leading-6 text-slate-600">
                                     Enquiries are reviewed during business hours. For urgent
                                     collections or date availability, call the team directly.
                                 </p>
-                                <a
-                                    href={PHONE_HREF}
-                                    className="mt-4 inline-flex font-semibold text-emerald-700 hover:underline"
-                                >
-                                    Call {PHONE_DISPLAY} →
-                                </a>
+
+                                <div className="mt-4 flex flex-col gap-2">
+                                    {CONTACT_NUMBERS.map((contact) => (
+                                        <a
+                                            key={contact.href}
+                                            href={contact.href}
+                                            className="inline-flex font-semibold text-emerald-700 hover:underline"
+                                        >
+                                            Call {contact.label} ({contact.phone}) →
+                                        </a>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1357,12 +1377,17 @@ export default function ContactPage() {
                             >
                                 Request a Quote
                             </Link>
-                            <a
-                                href={PHONE_HREF}
-                                className="rounded-xl border border-white/40 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
-                            >
-                                Call Now
-                            </a>
+
+                            {CONTACT_NUMBERS.map((contact) => (
+                                <a
+                                    key={contact.href}
+                                    href={contact.href}
+                                    className="rounded-xl border border-white/40 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
+                                >
+                                    Call {contact.label}
+                                </a>
+                            ))}
+
                             <a
                                 href={`mailto:${EMAIL}`}
                                 className="rounded-xl border border-white/40 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
