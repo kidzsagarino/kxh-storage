@@ -10,6 +10,7 @@ import MainFooter from "./components/footer/MainFooter";
 import TestimonialsSection from "./components/TestimonialsSection";
 import TrustpilotPill from "./components/trustpilot/TrustpilotPill";
 import Image from "next/image";
+import { CONTACT_NUMBERS } from "./lib/contact";
 
 export const metadata: Metadata = {
     title: "Warehouse Storage, Business Storage & Moving Services London | KXH",
@@ -1194,12 +1195,15 @@ export default async function HomePage() {
                                 </p>
 
                                 <div className="mt-6 flex flex-wrap gap-3">
-                                    <a
-                                        href="tel:+447386277785"
-                                        className="rounded-xl px-5 py-3 text-sm font-semibold text-white bg-emerald-700 shadow-lg hover:bg-emerald-800 transition"
-                                    >
-                                        Call +44 7386 277785
-                                    </a>
+                                    {CONTACT_NUMBERS.map((contact) => (
+                                        <a
+                                            key={contact.href}
+                                            href={contact.href}
+                                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
+                                        >
+                                            Call {contact.label}
+                                        </a>
+                                    ))}
 
                                     <a
                                         href="mailto:help@kxhlogistics.co.uk"

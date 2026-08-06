@@ -24,9 +24,10 @@ import {
     X,
 } from "lucide-react";
 import SocialLinks from "./SocialLinks";
+import { CONTACT_NUMBERS } from "../lib/contact";
 
-const PHONE_DISPLAY = "+44 7386 277785";
-const PHONE_HREF = "tel:+447386277785";
+const PHONE_DISPLAY = CONTACT_NUMBERS[0].phone;
+const PHONE_HREF = `tel:${CONTACT_NUMBERS[0].phone}`;
 
 const primaryNavItems = [
     {

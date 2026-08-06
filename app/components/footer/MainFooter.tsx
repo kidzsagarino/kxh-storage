@@ -1,6 +1,7 @@
 import Link from "next/link";
 import FloatingTrustpilot from "../trustpilot/FloatingTrustpilot";
 import SocialLinks from "../SocialLinks";
+import { CONTACT_NUMBERS } from "@/app/lib/contact";
 
 type Location = {
   name: string;
@@ -135,12 +136,17 @@ export default function MainFooter({
 
               <p>
                 <span className="font-semibold text-slate-900">Telephone:</span>{" "}
-                <a
-                  href="tel:+447386277785"
-                  className="transition hover:text-emerald-700"
-                >
-                  +44 7386 277785
-                </a>
+                {CONTACT_NUMBERS.map((contact, index) => (
+                  <span key={contact.href}>
+                    {index > 0 && ", "}
+                    <a
+                      href={contact.href}
+                      className="transition hover:text-emerald-700"
+                    >
+                      {contact.phone}
+                    </a>
+                  </span>
+                ))}
               </p>
               <div className="mx-auto max-w-7xl mt-5 flex">
                 <span className="font-semibold text-slate-900 mr-2 flex items-center">Check our socials:</span>{" "}
