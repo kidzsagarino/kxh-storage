@@ -505,7 +505,7 @@ export default async function HomePage() {
 
                     </div>
                 </section>
-                <section className="bg-white py-6 sm:py-8">
+                {/* <section className="bg-white py-6 sm:py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                             <Image
@@ -520,7 +520,7 @@ export default async function HomePage() {
                             />
                         </div>
                     </div>
-                </section>
+                </section> */}
                 <section className="bg-gradient-to-b from-white to-slate-50/70 border-t border-slate-200/70">
 
                     <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
@@ -1094,7 +1094,7 @@ export default async function HomePage() {
                                 alt="KXH pickup and delivery logistics"
                                 className="h-[220px] w-full object-cover sm:h-[320px] lg:h-[420px] h-auto"
                                 width={1200}
-                                height={800}
+                                height={400}
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                                 loading="lazy"
                                 decoding="async"
