@@ -240,13 +240,18 @@ model Order {
   cancelReason         String?
   paymentLink          String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  collectionFeeMinor       Int      @default(0)
+  movingPackageAmountMinor Int      @default(0)
+  movingPricePerMileMinor Int      @default(0)
+  movingDistanceCostMinor  Int      @default(0)
 
-  items     OrderItem[]
-  addresses Address[]
-  payments  Payment[]
-  emailLogs EmailLog[]
+  items           OrderItem[]
+  addresses       Address[]
+  payments        Payment[]
+  emailLogs       EmailLog[]
+  billingSchedule OrderBillingSchedule[]
 
   @@index([customerId])
   @@index([status])
@@ -293,9 +298,13 @@ model Address {
 }
 
 model Payment {
-  id              String          @id @default(cuid())
-  orderId         String
-  order           Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  billingScheduleId String?
+  billingSchedule   OrderBillingSchedule? @relation(fields: [billingScheduleId], references: [id], onDelete: SetNull)
+
   provider        PaymentProvider @default(STRIPE)
   status          PaymentStatus   @default(PROCESSING)
   amountMinor     Int
@@ -305,6 +314,8 @@ model Payment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([billingScheduleId])
 }
 
 model TimeSlot {
@@ -337,8 +348,8 @@ model AdminSettings {
   shreddingEnabled Boolean @default(true)
   returnEnabled    Boolean @default(true)
 
-  movingPricePerMileMinor      Int @default(58)
-  packingAssistanceMinor       Int @default(29500)
+  movingPricePerMileMinor     Int @default(58)
+  packingAssistanceMinor      Int @default(29500)
   movingAndCollectionFeeMinor Int @default(1495)
 
   timeSlotSettings TimeSlotSetting[]
@@ -447,6 +458,7 @@ enum EmailLogType {
   DROPOFF
   OTHER
   COMPLETED
+  BILLING_PAYMENT_LINK
 }
 
 enum EmailLogStatus {
@@ -477,4 +489,41 @@ model DiscountCode {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum BillingScheduleStatus {
+  SCHEDULED
+  PAYMENT_PENDING
+  PAID
+  OVERDUE
+  CANCELED
+}
+
+model OrderBillingSchedule {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  installmentNumber Int
+  dueDate           DateTime
+  amountMinor       Int
+
+  status BillingScheduleStatus @default(SCHEDULED)
+
+  paidAt         DateTime?
+  reminderSentAt DateTime?
+
+  stripeCheckoutSessionId String? @unique
+  stripePaymentIntentId   String? @unique
+
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([orderId, installmentNumber])
+  @@index([orderId])
+  @@index([status])
+  @@index([dueDate])
 }

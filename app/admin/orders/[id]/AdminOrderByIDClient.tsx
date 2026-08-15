@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { redirect, useParams } from "next/navigation";
-import { getOrderById, cancelOrderAction } from "./actions";
+import { useParams, useRouter } from "next/navigation";
+import { getOrderById, cancelOrderAction, type AdminOrder } from "./actions";
 import { money, to12Hour } from "@/app/utils/utils";
 import { toast } from "sonner";
 
@@ -48,19 +48,16 @@ function payBadge(status: string) {
     }
 }
 
-function formatNextBilling(value: any) {
-    if (!value) return "—";
-    const d = value instanceof Date ? value : new Date(value);
-    if (Number.isNaN(d.getTime())) return "—";
-    return d.toLocaleDateString("en-GB", { dateStyle: "medium" });
-}
+
+type OrderAddress =
+    AdminOrder["addresses"][number];
 
 export default function AdminOrderByIdClient() {
 
     const params = useParams<{ id: string }>();
-    const [order, setOrder] = useState<any>(null);
+    const router = useRouter();
+    const [order, setOrder] = useState<AdminOrder | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false);
     const [markingDone, setMarkingDone] = useState(false);
     const [sendDropoff, setSendDropoff] = useState(false);
     const [cancellingOrder, setCancellingOrder] = useState(false);
@@ -68,7 +65,6 @@ export default function AdminOrderByIdClient() {
     const [cancelReason, setCancelReason] = useState("");
     const [cancelRefund, setCancelRefund] = useState(false);
     const [sendingEmailReceipt, setSendingEmailReceipt] = useState(false);
-    const [creatingPaymentLink, setCreatingPaymentLink] = useState(false);
 
     useEffect(() => {
         async function loadOrder() {
@@ -84,19 +80,6 @@ export default function AdminOrderByIdClient() {
         }
         loadOrder();
     }, [params?.id]);
-
-    async function handleSaveStatus() {
-        if (!order) return;
-        setIsSaving(true);
-        try {
-            //await updateOrderStatus(order.id, order.status);
-            toast.success("Status updated successfully!");
-        } catch (err) {
-            toast.error("Failed to update status");
-        } finally {
-            setIsSaving(false);
-        }
-    }
 
     if (loading) return <div className="p-10 text-center text-slate-500">Loading Order...</div>;
 
@@ -143,43 +126,129 @@ export default function AdminOrderByIdClient() {
             setShowCancelModal(false);
             setCancelReason("");
             setCancelRefund(false);
-        } catch (err: any) {
-            toast.error(err?.message || "Failed to cancel order.");
+        } catch (error: unknown) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to cancel order."
+            );
         } finally {
             setCancellingOrder(false);
         }
     }
 
-    const pickupAddress = order.addresses?.find((a: any) => a.type === "PICKUP");
-    const deliveryAddress = order.addresses?.find((a: any) => a.type === "DROPOFF");
+    const pickupAddress =
+        order.addresses.find(
+            (address) =>
+                address.type === "PICKUP"
+        );
+    const deliveryAddress =
+        order.addresses.find(
+            (address) =>
+                address.type === "DROPOFF"
+        );
+
     const stripePayment = order.payments;
     const slot = order.timeSlot;
-    const nextBillingAt = order?.subscription?.nextBillingAt ?? order?.nextBillingAt ?? order?.billing?.nextBillingAt ?? null;
+    //const nextBillingAt = order?.subscription?.nextBillingAt ?? order?.nextBillingAt ?? order?.billing?.nextBillingAt ?? null;
 
-    const hasPacking = order.moving?.packingAssistance || order.items?.some((i: any) => i.name.toLowerCase().includes('pack'));
-    const isMoving = order.serviceType?.toUpperCase() === "MOVING";
-    const movingPricePerMileMinor = order?.pricing?.movingPricePerMileMinor ?? 58;
-    const distanceMiles = isMoving ? Number(order.distanceMiles ?? 0) : 0;
-    const distanceCostMinor = isMoving ? Math.max(0, distanceMiles) * movingPricePerMileMinor : 0;
-    
-    const isStorage = order.serviceType?.toUpperCase() === "STORAGE";
-    const isShredding = order.serviceType?.toUpperCase() === "SHREDDING";
-    const isReturn = order.serviceType?.toUpperCase() === "RETURN"
+    const hasPacking =
+        order.items.some(
+            (item) =>
+                item.name
+                    .toLowerCase()
+                    .includes("pack")
+        );
 
-    const discountPercent = order.storageDiscountTier?.percentOff || 0;
-    const durationMonths = order.items?.[0]?.months || 0;
+    const isMoving =
+        order.serviceType?.toUpperCase() ===
+        "MOVING";
 
-    const movingAndCollectionFeeMinor = isStorage ? (order?.pricing?.movingAndCollectionFeeMinor ?? 1495) : 0;
+    const isStorage =
+        order.serviceType?.toUpperCase() ===
+        "STORAGE";
 
-    const getMapUrl = (addr: any) =>
-        addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${addr.line1} ${addr.postalCode}`)}` : "#";
+    const isShredding =
+        order.serviceType?.toUpperCase() ===
+        "SHREDDING";
 
-    // Calculate discount amount for storage orders
-    const storageDiscountAmountMinor = isStorage && order.storageDiscountTier
-        ? Math.round((order.subtotalMinor || 0) * (order.storageDiscountTier.percentOff / 100))
-        : 0;
+    const isReturn =
+        order.serviceType?.toUpperCase() ===
+        "RETURN";
 
-    let discountCodeMinor = order.promoDiscountMinor || 0;
+
+    /*
+     * Historical pricing snapshot stored
+     * directly on the Order.
+     */
+    const movingPricePerMileMinor =
+        isMoving
+            ? order.movingPricePerMileMinor ?? 0
+            : 0;
+
+    const movingDistanceCostMinor =
+        isMoving
+            ? order.movingDistanceCostMinor ?? 0
+            : 0;
+
+    const movingPackageAmountMinor =
+        isMoving
+            ? order.movingPackageAmountMinor ?? 0
+            : 0;
+
+    const collectionFeeMinor =
+        isStorage
+            ? order.collectionFeeMinor ?? 0
+            : 0;
+
+
+    const distanceMiles =
+        isMoving
+            ? Number(
+                order.distanceMiles ?? 0
+            )
+            : 0;
+
+
+    /*
+     * Stored discount amount.
+     * Do NOT recalculate from the current tier.
+     */
+    const storageDiscountAmountMinor =
+        isStorage
+            ? order.discountMinor ?? 0
+            : 0;
+
+
+    const discountPercent =
+        order.storageDiscountTier?.percentOff ??
+        0;
+
+    const durationMonths =
+        order.items?.[0]?.months ?? 0;
+
+    const discountCodeMinor =
+        order.promoDiscountMinor ?? 0;
+
+    const getMapUrl = (
+        address?: OrderAddress
+    ) => {
+        if (!address) {
+            return "#";
+        }
+
+        const query = [
+            address.line1,
+            address.line2,
+            address.postalCode,
+        ]
+            .filter(Boolean)
+            .join(" ");
+
+        return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            query
+        )}`;
+    };
 
     return (
         <main className="space-y-4">
@@ -329,17 +398,26 @@ export default function AdminOrderByIdClient() {
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                                 <div className="text-sm font-semibold text-slate-500">Time slot</div>
                                 <div className="mt-1 text-sm font-medium text-slate-900">
-                                    {slot ? `${to12Hour(slot.startTime)} – ${to12Hour(slot.endTime)}` : "—"}
+                                    {slot?.startTime && slot?.endTime
+                                        ? `${to12Hour(slot.startTime)} – ${to12Hour(slot.endTime)}`
+                                        : "—"}
                                 </div>
                             </div>
                             {isMoving && (
                                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                                     <div className="text-sm font-semibold text-slate-500">Distance</div>
                                     <div className="mt-1 text-sm font-medium text-slate-900">
-                                        {distanceMiles ? `${distanceMiles} mile${distanceMiles === 1 ? "" : "s"}` : "—"}
+                                        {`${distanceMiles} mile${distanceMiles === 1 ? "" : "s"}`}
                                     </div>
                                     <div className="mt-1 text-sm text-slate-500">
-                                        Cost: {money(distanceCostMinor)}
+                                        Cost:{" "}
+                                        {money(
+                                            movingDistanceCostMinor
+                                        )}
+                                    </div>
+
+                                    <div className="mt-1 text-xs text-slate-400">
+                                        {money(movingPricePerMileMinor)} per mile
                                     </div>
                                 </div>
                             )}
@@ -422,26 +500,32 @@ export default function AdminOrderByIdClient() {
                                             </td>
                                             <td className="p-3 text-right text-slate-600">1</td>
                                             <td className="p-3 text-right font-semibold text-slate-900">
-                                                {money(distanceCostMinor)}
+                                                {money(movingDistanceCostMinor)}
                                             </td>
                                         </tr>
                                     )}
                                     {/* Moving package row if present */}
-                                    {isMoving && order.movingPackage && (
+                                    {isMoving && (
                                         <tr>
                                             <td className="p-3 font-medium text-slate-900">
-                                                {order.movingPackage.name || order.movingPackage.sku || "Moving Package"}
+                                                {order.movingPackage?.name ||
+                                                    order.movingPackage?.sku ||
+                                                    "Moving Package"}
                                             </td>
-                                            <td className="p-3 text-right text-slate-600">1</td>
+
+                                            <td className="p-3 text-right text-slate-600">
+                                                1
+                                            </td>
+
                                             <td className="p-3 text-right font-semibold text-slate-900">
-                                                {money(order.movingPackage.prices?.[0]?.priceMinor)}
+                                                {money(movingPackageAmountMinor)}
                                             </td>
                                         </tr>
                                     )}
-                                    
-                                    
+
+
                                     {/* Order items */}
-                                    {order.items?.map((it: any) => (
+                                    {order.items.map((it) => (
                                         <tr key={it.id}>
                                             <td className="p-3 font-medium text-slate-900">{it.name}</td>
                                             <td className="p-3 text-right text-slate-600">{it.quantity}</td>
@@ -455,16 +539,26 @@ export default function AdminOrderByIdClient() {
                                             <td className="p-3 font-medium text-slate-900">Packing Material & Collection Fee</td>
                                             <td className="p-3 text-right text-slate-600">1</td>
                                             <td className="p-3 text-right font-semibold text-slate-900">
-                                                {money(movingAndCollectionFeeMinor)}
+                                                {money(collectionFeeMinor)}
                                             </td>
                                         </tr>
                                     )}
                                     {/* Storage discount tier row if present */}
                                     {isStorage && order.storageDiscountTier && (
                                         <tr>
-                                            <td className="p-3 font-medium text-slate-900">Discount Tier</td>
-                                            <td className="p-3 text-right text-slate-600">{order.storageDiscountTier.minMonths} mo</td>
-                                            <td className="p-3 text-right font-semibold text-slate-900">{money(storageDiscountAmountMinor)}</td>
+                                            <td className="p-3 font-medium text-emerald-700">
+                                                Storage Discount
+                                            </td>
+
+                                            <td className="p-3 text-right text-slate-600">
+                                                {order.storageDiscountTier.minMonths} mo
+                                            </td>
+
+                                            <td className="p-3 text-right font-semibold text-emerald-700">
+                                                − {money(
+                                                    storageDiscountAmountMinor
+                                                )}
+                                            </td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -477,7 +571,41 @@ export default function AdminOrderByIdClient() {
                 <aside className="space-y-4 lg:sticky lg:top-6">
                     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
                         <h2 className="text-sm font-semibold text-slate-900 tracking-tight">Payment Summary</h2>
+                        {isMoving && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">
+                                    Mileage
+                                </span>
 
+                                <span className="font-medium text-slate-900">
+                                    {money(movingDistanceCostMinor)}
+                                </span>
+                            </div>
+                        )}
+
+                        {isMoving && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">
+                                    Moving Package
+                                </span>
+
+                                <span className="font-medium text-slate-900">
+                                    {money(movingPackageAmountMinor)}
+                                </span>
+                            </div>
+                        )}
+
+                        {isStorage && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">
+                                    Collection Fee
+                                </span>
+
+                                <span className="font-medium text-slate-900">
+                                    {money(collectionFeeMinor)}
+                                </span>
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
                                 <span className="text-slate-500">Subtotal</span>
@@ -485,16 +613,23 @@ export default function AdminOrderByIdClient() {
                             </div>
 
                             {/* Green Discount Card */}
-                            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-emerald-800 font-semibold">Discount Applied</span>
-                                    <span className="font-bold text-emerald-900">− {money(order.discountMinor)}</span>
-                                </div>
-                                <div className="text-sm text-emerald-700">
-                                    {durationMonths} month plan • {discountPercent}% off
-                                </div>
+                            {isStorage && (
+                                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-emerald-800 font-semibold">
+                                            Discount Applied
+                                        </span>
 
-                            </div>
+                                        <span className="font-bold text-emerald-900">
+                                            − {money(storageDiscountAmountMinor)}
+                                        </span>
+                                    </div>
+
+                                    <div className="text-sm text-emerald-700">
+                                        {durationMonths} month plan • {discountPercent}% off
+                                    </div>
+                                </div>
+                            )}
                             {/* Green Discount Card */}
                             {order.discountCode && (
                                 <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
@@ -513,19 +648,7 @@ export default function AdminOrderByIdClient() {
                                 <span className="font-bold text-xl text-slate-900">{money(order.totalMinor)}</span>
                             </div>
                         </div>
-                        {isStorage && (
-                            <div className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-600 font-semibold">Next billing cycle</span>
-                                    <span className="font-bold text-slate-900">
-                                        {formatNextBilling(nextBillingAt)}
-                                    </span>
-                                </div>
-                                <div className="mt-1 text-sm text-slate-500">
-                                    Based on the active subscription period end
-                                </div>
-                            </div>
-                        )}
+
                         <div className="flex flex-col gap-2 pt-2 w-full max-w-sm">
                             <span className="text-sm font-semibold text-slate-600">Payment Link</span>
                             <p className="text-sm break-words">
@@ -537,9 +660,9 @@ export default function AdminOrderByIdClient() {
 
                             <div className="flex flex-col space-y-3">
                                 {stripePayment && stripePayment.length > 0 ? (
-                                    stripePayment.map((payment: any, index: number) => (
+                                    stripePayment.map((payment) => (
                                         <div
-                                            key={payment.id || index}
+                                            key={payment.id}
                                             className="flex items-start justify-between gap-2 border-b border-slate-50 pb-2 last:border-0"
                                         >
                                             {/* Left Side: Status & Reference */}
@@ -591,37 +714,60 @@ export default function AdminOrderByIdClient() {
                             <button
 
                                 onClick={async () => {
-                                    redirect(`/checkout?orderId=${order.id}`)
+                                    router.push(
+                                        `/checkout?orderId=${order.id}`
+                                    );
                                 }}
                                 className="h-10 rounded-xl border border-green-200 bg-green-50 px-4 text-sm font-semibold text-green-800 hover:bg-green-100 disabled:opacity-50"
                             >
                                 View Checkout Page
                             </button>
-                            <button
+                            {/* <button
                                 disabled={sendDropoff}
                                 onClick={async () => {
                                     if (!order?.id) return;
 
                                     setSendDropoff(true);
+
                                     try {
-                                        const res = await fetch(`/api/orders/send-dropoff`, {
-                                            method: "POST",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify({ orderId: order.id }),
-                                        });
+                                        const res = await fetch(
+                                            "/api/orders/send-dropoff",
+                                            {
+                                                method: "POST",
+                                                headers: {
+                                                    "Content-Type": "application/json",
+                                                },
+                                                body: JSON.stringify({
+                                                    orderId: order.id,
+                                                }),
+                                            }
+                                        );
+
+                                        const data = await res
+                                            .json()
+                                            .catch(() => null);
 
                                         if (res.ok) {
-                                            toast.success("Drop-off confirmation email sent.");
-                                            statusBadge("DROPPED_OFF");
-                                            setOrder((prev: any) => ({ ...prev, status: "DROPPED_OFF" }));
-                                            const fresh = await getOrderById(order.id);
-                                            setOrder(fresh);
+                                            toast.success(
+                                                "Drop-off confirmation email sent."
+                                            );
                                         } else {
-                                            const j = await res.json().catch(() => ({}));
-                                            toast.error(j?.error ?? "Failed to send drop-off email.");
-                                            const fresh = await getOrderById(order.id);
-                                            setOrder(fresh);
+                                            toast.error(
+                                                data?.error ??
+                                                "Failed to send drop-off email."
+                                            );
                                         }
+
+                                        const fresh =
+                                            await getOrderById(order.id);
+
+                                        setOrder(fresh);
+                                    } catch (error: unknown) {
+                                        toast.error(
+                                            error instanceof Error
+                                                ? error.message
+                                                : "Failed to send drop-off email."
+                                        );
                                     } finally {
                                         setSendDropoff(false);
                                     }
@@ -629,8 +775,8 @@ export default function AdminOrderByIdClient() {
                                 className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50"
                             >
                                 {sendDropoff ? "Sending..." : "Mark Dropped Off + Email"}
-                            </button>
-                            <button
+                            </button> */}
+                            {/* <button
                                 disabled={markingDone}
                                 onClick={async () => {
                                     if (!order?.id) return;
@@ -646,18 +792,20 @@ export default function AdminOrderByIdClient() {
                                         const j = await res.json().catch(() => ({}));
 
                                         if (res.ok) {
-                                            toast.success("Order marked as COMPLETED and email sent.");
-                                            // Update UI instantly:
-                                            setOrder((prev: any) => ({ ...prev, status: "COMPLETED" }));
-                                            // Optional: re-fetch to refresh emailLogs
-                                            const fresh = await getOrderById(order.id);
-                                            setOrder(fresh);
+                                            toast.success(
+                                                "Order marked as COMPLETED and email sent."
+                                            );
                                         } else {
-                                            toast.error(j?.error ?? "Failed to complete order.");
-                                            // Still re-fetch because status might be updated even if email failed
-                                            const fresh = await getOrderById(order.id);
-                                            setOrder(fresh);
+                                            toast.error(
+                                                j?.error ??
+                                                "Failed to complete order."
+                                            );
                                         }
+
+                                        const fresh =
+                                            await getOrderById(order.id);
+
+                                        setOrder(fresh);
                                     } finally {
                                         setMarkingDone(false);
                                     }
@@ -665,7 +813,7 @@ export default function AdminOrderByIdClient() {
                                 className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50"
                             >
                                 {markingDone ? "Processing..." : "Mark Completed + Email"}
-                            </button>
+                            </button> */}
                             <button
                                 onClick={async () => {
                                     if (!order?.id) return;
@@ -686,7 +834,7 @@ export default function AdminOrderByIdClient() {
                             >
                                 {sendingEmailReceipt ? "Sending..." : "Send Receipt PDF"}
                             </button>
-                            <button
+                            {/* <button
                                 disabled={
                                     cancellingOrder ||
                                     ["CANCELLED", "COMPLETED"].includes(String(order.status || "").toUpperCase())
@@ -695,7 +843,7 @@ export default function AdminOrderByIdClient() {
                                 className="h-10 rounded-xl border border-rose-200 bg-rose-50 px-4 text-sm font-semibold text-rose-700 hover:bg-rose-100 disabled:opacity-50"
                             >
                                 {cancellingOrder ? "Cancelling..." : "Cancel Order"}
-                            </button>
+                            </button> */}
 
                         </div>
                         <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -703,7 +851,7 @@ export default function AdminOrderByIdClient() {
 
                             <div className="mt-3 space-y-2">
                                 {order.emailLogs?.length ? (
-                                    order.emailLogs.map((l: any) => (
+                                    order.emailLogs.map((l) => (
                                         <div key={l.id} className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
                                             <div className="min-w-0">
                                                 <div className="text-sm font-bold text-slate-900">

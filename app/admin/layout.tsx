@@ -9,9 +9,11 @@ import LogoutButton from "./LogoutButton";
 function AdminNav() {
   const links = [
     { href: "/admin/orders", label: "Orders" },
+    { href: "/admin/billings", label: "Billings" },
     { href: "/admin/payments", label: "Payments" },
     { href: "/admin/discounts", label: "Discounts" },
     { href: "/admin/settings", label: "Settings" },
+    
   ];
 
   return (

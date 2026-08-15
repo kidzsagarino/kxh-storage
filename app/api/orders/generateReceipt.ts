@@ -30,12 +30,6 @@ function formatTimeSlot(timeSlot?: any | null) {
     return startTime && endTime ? `${name} (${startTime}–${endTime})` : name;
 }
 
-function getMovingPackagePriceMinor(orderCurrency: string, movingPackage?: any | null) {
-    const prices = (movingPackage?.prices ?? []) as any[];
-    const match = prices.find((p) => p.isActive && p.currency === orderCurrency) ?? prices[0];
-    return match?.priceMinor ?? 0;
-}
-
 export function getOrderEmailHtml(hasContainer: boolean) {
     return `
     <p>Thank you for your order. Please find your receipt attached.</p>
@@ -80,7 +74,7 @@ export async function generateOrderReceipt(
             customer: true,
             items: true,
             storageDiscountTier: true,
-            movingPackage: { include: { prices: true } },
+            movingPackage: true,
             addresses: true,
             timeSlot: true,
             discountCode: true
@@ -97,15 +91,34 @@ export async function generateOrderReceipt(
         x => x.name.toLocaleLowerCase().includes("container")
     );
 
-    const settings = await prisma.adminSettings.findUnique({
-        where: { id: "global_settings" },
-        select: { movingPricePerMileMinor: true, movingAndCollectionFeeMinor: true },
-    });
-    const pricePerMileMinor = settings?.movingPricePerMileMinor ?? 58;
-    const distanceMiles = isMoving ? Number(order.distanceMiles ?? 0) : 0;
-    const distanceCostMinor = distanceMiles * pricePerMileMinor;
+    const distanceMiles =
+        isMoving
+            ? Number(order.distanceMiles ?? 0)
+            : 0;
 
-    const movingAndCollectionFeeMinor = isStorage ? (settings?.movingAndCollectionFeeMinor ?? 0) : 0;
+    /*
+     * Use the exact values captured
+     * when the order was created.
+     */
+    const pricePerMileMinor =
+        isMoving
+            ? order.movingPricePerMileMinor ?? 0
+            : 0;
+
+    const distanceCostMinor =
+        isMoving
+            ? order.movingDistanceCostMinor ?? 0
+            : 0;
+
+    const movingPackageAmountMinor =
+        isMoving
+            ? order.movingPackageAmountMinor ?? 0
+            : 0;
+
+    const collectionFeeMinor =
+        isStorage
+            ? order.collectionFeeMinor ?? 0
+            : 0;
 
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([595.28, 841.89]);
@@ -234,11 +247,42 @@ export async function generateOrderReceipt(
 
     const lineItems: LineItem[] = [];
     if (isMoving) {
-        if (distanceMiles > 0) {
-            lineItems.push({ description: `Mileage (${distanceMiles} miles)`, qty: 1, unitMinor: pricePerMileMinor, lineTotalMinor: distanceCostMinor });
+        if (
+            distanceMiles > 0 &&
+            distanceCostMinor > 0
+        ) {
+            lineItems.push({
+                description:
+                    `Mileage (${distanceMiles} miles)`,
+
+                qty: 1,
+
+                unitMinor:
+                    pricePerMileMinor,
+
+                lineTotalMinor:
+                    distanceCostMinor,
+            });
         }
-        const pkgPrice = getMovingPackagePriceMinor(order.currency, order.movingPackage);
-        lineItems.push({ description: `Package: ${order.movingPackage?.name || 'Standard'}`, qty: 1, unitMinor: pkgPrice, lineTotalMinor: pkgPrice });
+
+        if (
+            movingPackageAmountMinor > 0
+        ) {
+            lineItems.push({
+                description:
+                    `Package: ${order.movingPackage?.name ||
+                    "Standard"
+                    }`,
+
+                qty: 1,
+
+                unitMinor:
+                    movingPackageAmountMinor,
+
+                lineTotalMinor:
+                    movingPackageAmountMinor,
+            });
+        }
     }
 
     order.items.forEach(it => {
@@ -246,8 +290,8 @@ export async function generateOrderReceipt(
         lineItems.push({ description: `${it.name}${suffix}`, qty: it.quantity, unitMinor: it.unitPriceMinor, lineTotalMinor: it.lineTotalMinor });
     });
 
-    if (isStorage && movingAndCollectionFeeMinor && movingAndCollectionFeeMinor > 0) {
-        lineItems.push({ description: `Packing Material & Collection Fee`, qty: 1, unitMinor: movingAndCollectionFeeMinor, lineTotalMinor: movingAndCollectionFeeMinor });
+    if (isStorage && collectionFeeMinor > 0) {
+        lineItems.push({ description: `Packing Material & Collection Fee`, qty: 1, unitMinor: collectionFeeMinor, lineTotalMinor: collectionFeeMinor });
     }
 
     y -= 25;

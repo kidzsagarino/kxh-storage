@@ -3,24 +3,41 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/src/lib/prisma";
 import { CheckoutClient } from "./CheckoutClient";
-import { money } from "../utils/utils";
+import { money, to12Hour } from "../utils/utils";
+import { CheckoutProvider } from "../components/checkout/CheckoutStore";
+
 
 type Props = { searchParams: Promise<{ orderId?: string }> };
-type OrderTimeSlot = {
-    id: string;
-    name: string;
-    startTime: string;
-    endTime: string;
-    isActive: boolean;
-} | null;
 
 const moneyGBP = (minor?: number | null) =>
     minor == null ? "—" : `£${(minor / 100).toFixed(2)}`;
 
-function fmtAddr(a?: any) {
-    if (!a) return "—";
-    return [a.line1, a.line2, a.city, a.postalCode, a.country].filter(Boolean).join(", ");
+type AddressLike = {
+    line1: string | null;
+    line2: string | null;
+    city: string | null;
+    postalCode: string | null;
+    country: string | null;
+};
+
+function fmtAddr(
+    address?: AddressLike | null
+) {
+    if (!address) {
+        return "—";
+    }
+
+    return [
+        address.line1,
+        address.line2,
+        address.city,
+        address.postalCode,
+        address.country,
+    ]
+        .filter(Boolean)
+        .join(", ");
 }
+
 const SLOT_LABELS: Record<string, string> = {
     morning: "Morning",
     afternoon: "Afternoon",
@@ -61,77 +78,141 @@ export default async function SuccessPage({
 }: Props) {
     const { orderId } = await searchParams;
 
-    if (!orderId) redirect("/");
+    const order =
+        await prisma.order.findUnique({
+            where: {
+                id: orderId,
+            },
 
-    let payment: any = null;
-    let order: any = null;
-    let session: any = null;
-
-    if (orderId) {
-        order = await prisma.order.findUnique({
-            where: { id: orderId },
             include: {
                 customer: true,
                 addresses: true,
                 items: true,
-                movingPackage: { include: { prices: true } },
-                storageDiscountTier: true,
-                timeSlot: true,
-                discountCode: true,
+
+                movingPackage: true,
+
+                storageDiscountTier:
+                    true,
+
+                timeSlot:
+                    true,
+
+                discountCode:
+                    true,
             },
         });
 
-        session = null;
+    if (!order) {
+        redirect("/");
     }
 
-    // --- Pricing bits ---
-    let movingPackagePrice: any = null;
-    if (order?.serviceType === "MOVING" && order?.movingPackage?.id) {
-        movingPackagePrice = await prisma.movingPackagePrice.findFirst({
-            where: { packageId: order.movingPackage.id, currency: "GBP", isActive: true },
-        });
-    }
 
-    const settings = await prisma.adminSettings.findUnique({
-        where: { id: "global_settings" },
-    });
+    const isMoving =
+        order.serviceType === "MOVING";
 
-    const movingPricePerMileMinor = settings?.movingPricePerMileMinor ?? 58;
-    const movingAndCollectionFeeMinor = settings?.movingAndCollectionFeeMinor ?? 1495;
+    const isStorage =
+        order.serviceType === "STORAGE";
 
-    const isMoving = order?.serviceType === "MOVING";
-    const isStorage = order?.serviceType === "STORAGE";
-    const isReturn = order?.serviceType === "RETURN";
+    const isReturn =
+        order.serviceType === "RETURN";
 
-    const distanceMiles = isMoving ? (order.distanceMiles ?? 0) : 0;
-    const distanceCostMinor = isMoving ? Math.max(0, distanceMiles) * movingPricePerMileMinor : 0;
 
-    const orderSubtotalMinor =
-        order?.items?.reduce(
-            (sum: number, item: any) => sum + (item.lineTotalMinor ?? item.unitPriceMinor ?? 0),
-            0
-        ) ?? 0;
-
-    const discountMinor =
-        isStorage && order?.storageDiscountTier
-            ? Math.round(orderSubtotalMinor * (order.storageDiscountTier.percentOff / 100))
+    /*
+     * Historical pricing snapshot.
+     */
+    const movingPricePerMileMinor =
+        isMoving
+            ? order.movingPricePerMileMinor ?? 0
             : 0;
 
-    const totalMinor = payment?.amountMinor ?? session?.amount_total ?? null;
+    const movingDistanceCostMinor =
+        isMoving
+            ? order.movingDistanceCostMinor ?? 0
+            : 0;
 
-    const orderNumber = order?.orderNumber ?? order?.id ?? "—";
+    const movingPackageAmountMinor =
+        isMoving
+            ? order.movingPackageAmountMinor ?? 0
+            : 0;
 
-    const pickup = isMoving || isReturn ? order?.addresses?.find((a: any) => a.type === "PICKUP") : null;
-    const dropoff = isMoving || isReturn ? order?.addresses?.find((a: any) => a.type === "DROPOFF") : null;
+    const collectionFeeMinor =
+        isStorage
+            ? order.collectionFeeMinor ?? 0
+            : 0;
+
+    const distanceMiles =
+        isMoving
+            ? Number(
+                order.distanceMiles ?? 0
+            )
+            : 0;
+
+
+    const orderSubtotalMinor =
+        order.items.reduce(
+            (
+                sum,
+                item
+            ) =>
+                sum +
+                (
+                    item.lineTotalMinor ??
+                    item.unitPriceMinor ??
+                    0
+                ),
+            0
+        );
+
+
+    const discountMinor =
+        isStorage
+            ? order.discountMinor ?? 0
+            : 0;
+
+    const discountCodeMinor =
+        order.promoDiscountMinor ?? 0;
+
+
+    const displayedSubtotalMinor =
+        orderSubtotalMinor +
+        (
+            isMoving
+                ? movingPackageAmountMinor +
+                movingDistanceCostMinor
+                : 0
+        ) +
+        (
+            isStorage
+                ? collectionFeeMinor
+                : 0
+        );
+
+
+    const orderNumber =
+        order.orderNumber ??
+        order.id;
+    const pickup =
+        isMoving || isReturn
+            ? order.addresses.find(
+                (address) =>
+                    address.type ===
+                    "PICKUP"
+            )
+            : undefined;
+
+    const dropoff =
+        isMoving || isReturn
+            ? order.addresses.find(
+                (address) =>
+                    address.type ===
+                    "DROPOFF"
+            )
+            : undefined;
 
     // Adjust these field names to match your schema:
-    const scheduledDate =
-        (order?.scheduledDate as Date | undefined) ??
-        (order?.serviceDate as Date | undefined) ??
-        (order?.pickupDate as Date | undefined) ??
-        null;
+    const scheduledDate = order.serviceDate ?? null;
 
-    const timeSlot: OrderTimeSlot = order?.timeSlot ?? null;
+    const timeSlot = order.timeSlot;
     const primaryAddr = order?.addresses?.[0];
 
     // Build display rows (what user sees)
@@ -139,50 +220,91 @@ export default async function SuccessPage({
 
     if (isMoving) {
         rows.push({
-            key: "distance",
-            label: `Distance (${distanceMiles} mile${distanceMiles === 1 ? "" : "s"})`,
-            qty: 1,
-            minor: distanceCostMinor,
-        });
-        if (order?.movingPackage) {
-            rows.push({
-                key: "package",
-                label: order.movingPackage.name || order.movingPackage.sku || "Moving Package",
-                qty: 1,
-                minor: movingPackagePrice?.priceMinor ?? 0,
-            });
-        }
-    }
+            key:
+                "distance",
 
-    for (const it of order?.items ?? []) {
+            label:
+                `Distance (${distanceMiles} mile${distanceMiles === 1
+                    ? ""
+                    : "s"
+                })`,
+
+            qty:
+                1,
+
+            minor:
+                movingDistanceCostMinor,
+        });
+
         rows.push({
-            key: it.id,
-            label: it.label || it.name || it.sku || it.id,
-            qty: it.qty ?? it.quantity ?? 1,
-            minor: it.lineTotalMinor ?? it.unitPriceMinor ?? 0,
+            key:
+                "package",
+
+            label:
+                order.movingPackage?.name ||
+                order.movingPackage?.sku ||
+                "Moving Package",
+
+            qty:
+                1,
+
+            minor:
+                movingPackageAmountMinor,
         });
     }
 
-    if (isStorage && movingAndCollectionFeeMinor > 0) {
+    for (const item of order.items) {
         rows.push({
-            key: "fee",
-            label: "Packing Material & Collection Fee",
-            qty: 1,
-            minor: movingAndCollectionFeeMinor,
+            key: item.id,
+
+            label:
+                item.name.trim() ||
+                item.sku ||
+                item.id,
+
+            qty:
+                item.quantity,
+
+            minor:
+                item.lineTotalMinor,
         });
     }
 
-    if (isStorage && order?.storageDiscountTier && discountMinor > 0) {
+    if (isStorage) {
         rows.push({
-            key: "discount",
-            label: `Discount (${order.storageDiscountTier.minMonths} mo • ${order.storageDiscountTier.percentOff}% off)`,
-            qty: 1,
-            minor: -discountMinor,
+            key:
+                "fee",
+
+            label:
+                "Packing Material & Collection Fee",
+
+            qty:
+                1,
+
+            minor:
+                collectionFeeMinor,
         });
     }
 
-    
-    let discountCodeMinor = order.promoDiscountMinor || 0;
+    if (
+        isStorage &&
+        order.storageDiscountTier
+    ) {
+        rows.push({
+            key:
+                "discount",
+
+            label:
+                `Discount (${order.storageDiscountTier.minMonths} mo • ${order.storageDiscountTier.percentOff}% off)`,
+
+            qty:
+                1,
+
+            minor:
+                -discountMinor,
+        });
+    }
+
 
     return (
         <main className="min-h-screen bg-slate-50">
@@ -196,26 +318,30 @@ export default async function SuccessPage({
 
                             <div className="mt-4 space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="text-slate-600">Subtotal</span>
+                                    <span className="text-slate-600">
+                                        Subtotal
+                                    </span>
+
                                     <span className="font-medium text-slate-900">
                                         {money(
-                                            orderSubtotalMinor +
-                                            (isMoving
-                                                ? (movingPackagePrice?.priceMinor ?? 0) + distanceCostMinor
-                                                : 0)
-                                                + (isStorage ? movingAndCollectionFeeMinor : 0)
+                                            displayedSubtotalMinor
                                         )}
                                     </span>
                                 </div>
 
-                                {isStorage && discountMinor > 0 ? (
+                                {isStorage && (
                                     <div className="flex justify-between">
-                                        <span className="text-emerald-700">Discount</span>
+                                        <span className="text-emerald-700">
+                                            Discount
+                                        </span>
+
                                         <span className="font-semibold text-emerald-700">
-                                            − {money(discountMinor)}
+                                            − {money(
+                                                discountMinor
+                                            )}
                                         </span>
                                     </div>
-                                ) : null}
+                                )}
 
                                 {order.discountCode && (
                                     <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 space-y-1">
@@ -240,7 +366,9 @@ export default async function SuccessPage({
                             </div>
                             {order.status === "PENDING_PAYMENT" && (
                                 <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                                    <CheckoutClient orderId={orderId as string} />
+                                    <CheckoutProvider>
+                                        <CheckoutClient orderId={orderId as string} />
+                                    </CheckoutProvider>
                                 </div>
                             )}
                             {order.status === "SCHEDULED" && (
@@ -288,19 +416,26 @@ export default async function SuccessPage({
 
                                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                        Timeslot
+                                        Time Slot
                                     </div>
                                     <div className="mt-1 font-semibold text-slate-900">
-                                        {timeSlot?.startTime && timeSlot?.endTime
-                                            ? `${timeSlot.startTime} – ${timeSlot.endTime}`
+                                        {timeSlot?.startTime &&
+                                            timeSlot?.endTime
+                                            ? `${to12Hour(
+                                                timeSlot.startTime
+                                            )} – ${to12Hour(
+                                                timeSlot.endTime
+                                            )}`
                                             : "—"}
                                     </div>
-                                    {timeSlot?.name ? (
-                                        <div className="mt-1 text-[11px] text-slate-500 capitalize">
-                                            {timeSlot.name}
-                                        </div>
-                                    ) : null}
+
                                 </div>
+
+                                {timeSlot?.name && (
+                                    <div className="mt-1 text-[11px] text-slate-500 capitalize">
+                                        {timeSlot.name}
+                                    </div>
+                                )}
                             </div>
 
 
@@ -324,22 +459,36 @@ export default async function SuccessPage({
                                                 {fmtAddr(dropoff)}
                                             </div>
                                         </div>
-                                        {isMoving && (<div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                                            <div className="text-sm font-semibold text-slate-500">
-                                                Distance
-                                            </div>
-                                            <div className="mt-2 flex flex-wrap items-baseline justify-between gap-2">
-                                                <div className="text-sm font-medium text-slate-900">
-                                                    {distanceMiles} mile{distanceMiles === 1 ? "" : "s"}
+                                        {isMoving && (
+                                            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+                                                <div className="text-sm font-semibold text-slate-500">
+                                                    Distance
                                                 </div>
-                                                <div className="text-sm font-semibold text-slate-900">
-                                                    {money(distanceCostMinor)}
+
+                                                <div className="mt-2 flex flex-wrap items-baseline justify-between gap-2">
+                                                    <div className="text-sm font-medium text-slate-900">
+                                                        {distanceMiles} mile
+                                                        {distanceMiles === 1
+                                                            ? ""
+                                                            : "s"}
+                                                    </div>
+
+                                                    <div className="text-sm font-semibold text-slate-900">
+                                                        {money(
+                                                            movingDistanceCostMinor
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-1 text-sm text-slate-500">
+                                                    Calculated at{" "}
+                                                    {money(
+                                                        movingPricePerMileMinor
+                                                    )}{" "}
+                                                    per mile
                                                 </div>
                                             </div>
-                                            <div className="mt-1 text-sm text-slate-500">
-                                                Calculated at {money(movingPricePerMileMinor)} per mile
-                                            </div>
-                                        </div>)}
+                                        )}
 
                                     </>
                                 ) : (

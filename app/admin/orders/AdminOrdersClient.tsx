@@ -193,7 +193,7 @@ export default function AdminOrdersClient() {
                   <th className="px-4 py-4">Service Date</th>
                   <th className="px-4 py-4">Order Status</th>
                   <th className="px-4 py-4">Payment Status</th>
-                  <th className="px-4 py-4">Next Billing</th>
+                  {/* <th className="px-4 py-4">Next Billing</th> */}
                   <th className="px-4 py-4 text-right">Total</th>
                 </tr>
               </thead>
@@ -254,7 +254,7 @@ export default function AdminOrdersClient() {
                     <td className="px-4 py-4">{o.status}</td>
                     <td className="px-4 py-4">{o.payments?.[0]?.status}</td>
 
-                    <td className="px-4 py-4">
+                    {/* <td className="px-4 py-4">
                       {String(o.serviceType).toUpperCase() === "STORAGE" ? (
                         <div className="font-medium text-slate-900">
                           {fmtDate(o.nextBillingAt ?? o.subscription?.nextBillingAt)}
@@ -262,7 +262,7 @@ export default function AdminOrdersClient() {
                       ) : (
                         <span className="text-slate-400">—</span>
                       )}
-                    </td>
+                    </td> */}
 
                     <td className="px-4 py-4 text-right">
                       <div className="font-bold text-slate-900">

@@ -59,7 +59,9 @@ export async function submitOrderAction(checkoutState: any) {
         fromLocation: state.fromLocation,
         toLocation: state.toLocation,
         originalOrderNumber: state.originalOrderNumber,
-        discountMeta: state.discountMeta
+        discountMeta: state.discountMeta,
+        collectionFee: Number(state.collectionFeeMinor) || 0,
+        movingPackageAmount: Number(state.movingPackageAmountMinor) || 0,
     };
 
     const res = await fetch("/api/orders", {

@@ -1,40 +1,70 @@
 // actions.ts
 "use server";
 
-import { OrderStatus, PaymentStatus, PrismaClient } from "@prisma/client";
+import {
+  OrderStatus,
+} from "@prisma/client";
+
 import { revalidatePath } from "next/cache";
 
-const prisma = new PrismaClient();
+import { prisma } from "@/src/lib/prisma";
 
-export async function getOrderById(id: string) {
-  const order = await prisma.order.findUnique({
-    where: { id },
+
+export async function getOrderById(
+  id: string
+) {
+  return prisma.order.findUnique({
+    where: {
+      id,
+    },
+
     include: {
       customer: true,
       addresses: true,
       items: true,
       payments: true,
       timeSlot: true,
-      movingPackage: { include: { prices: { where: { isActive: true, currency: "GBP" } } } },
+
+      movingPackage: {
+        include: {
+          prices: {
+            where: {
+              isActive: true,
+              currency: "GBP",
+            },
+          },
+        },
+      },
+
       storageDiscountTier: true,
-      emailLogs: { orderBy: { createdAt: "desc" } },
+
+      emailLogs: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+
       discountCode: true,
+
+      billingSchedule: {
+        orderBy: {
+          installmentNumber: "asc",
+        },
+      },
     },
   });
-
-  const settings = await prisma.adminSettings.findUnique({
-    where: { id: "global_settings" },
-    select: { movingPricePerMileMinor: true, movingAndCollectionFeeMinor: true },
-  });
-
-  return {
-    ...order,
-    pricing: {
-      movingPricePerMileMinor: settings?.movingPricePerMileMinor ?? 58,
-      movingAndCollectionFeeMinor: settings?.movingAndCollectionFeeMinor ?? 1495,
-    },
-  };
 }
+
+
+export type AdminOrder =
+  NonNullable<
+    Awaited<
+      ReturnType<
+        typeof getOrderById
+      >
+    >
+  >;
+
 
 type CancelOrderInput = {
   orderId: string;
@@ -42,62 +72,135 @@ type CancelOrderInput = {
   refund?: boolean;
 };
 
+
 export async function cancelOrderAction({
   orderId,
   cancelReason,
   refund = false,
 }: CancelOrderInput) {
+
   if (!orderId) {
-    throw new Error("Missing orderId");
+    throw new Error(
+      "Missing orderId"
+    );
   }
 
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: {
-      payments: {
-        orderBy: { createdAt: "desc" },
+  const order =
+    await prisma.order.findUnique({
+      where: {
+        id: orderId,
       },
-    },
-  });
+
+      include: {
+        payments: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
 
   if (!order) {
-    throw new Error("Order not found");
-  }
-
-  if (order.status === OrderStatus.CANCELED) {
-    throw new Error("Order is already cancelled");
-  }
-
-  if (order.status === OrderStatus.COMPLETED) {
-    throw new Error("Completed orders cannot be cancelled");
+    throw new Error(
+      "Order not found"
+    );
   }
 
 
-  const updatedOrder = await prisma.order.update({
-    where: { id: orderId },
-    data: {
-      status: OrderStatus.CANCELED,
-      cancelReason: cancelReason?.trim() || "Cancelled by admin",
-      cancelAt: new Date(),
-    },
-    include: {
-      customer: true,
-      addresses: true,
-      items: true,
-      payments: true,
-      timeSlot: true,
-      movingPackage: { include: { prices: { where: { isActive: true, currency: "GBP" } } } },
-      storageDiscountTier: true,
-      emailLogs: { orderBy: { createdAt: "desc" } },
-    },
-  });
+  if (
+    order.status ===
+    OrderStatus.CANCELED
+  ) {
+    throw new Error(
+      "Order is already cancelled"
+    );
+  }
 
-  revalidatePath(`/admin/orders/${orderId}`);
-  revalidatePath("/admin/orders");
+
+  if (
+    order.status ===
+    OrderStatus.COMPLETED
+  ) {
+    throw new Error(
+      "Completed orders cannot be cancelled"
+    );
+  }
+
+
+  const updatedOrder =
+    await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+
+      data: {
+        status:
+          OrderStatus.CANCELED,
+
+        cancelReason:
+          cancelReason?.trim() ||
+          "Cancelled by admin",
+
+        cancelAt:
+          new Date(),
+      },
+
+      include: {
+        customer: true,
+        addresses: true,
+        items: true,
+        payments: true,
+        timeSlot: true,
+
+        movingPackage: {
+          include: {
+            prices: {
+              where: {
+                isActive: true,
+                currency: "GBP",
+              },
+            },
+          },
+        },
+
+        storageDiscountTier:
+          true,
+
+        emailLogs: {
+          orderBy: {
+            createdAt:
+              "desc",
+          },
+        },
+
+        discountCode:
+          true,
+
+        billingSchedule: {
+          orderBy: {
+            installmentNumber:
+              "asc",
+          },
+        },
+      },
+    });
+
+
+  revalidatePath(
+    `/admin/orders/${orderId}`
+  );
+
+  revalidatePath(
+    "/admin/orders"
+  );
+
 
   return {
     ok: true,
-    message: "Order cancelled.",
-    order: updatedOrder,
+    message:
+      "Order cancelled.",
+    order:
+      updatedOrder,
   };
 }
