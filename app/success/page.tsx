@@ -136,41 +136,76 @@ export default async function SuccessPage({ searchParams }: Props) {
   }
 
   // --- Pricing bits ---
-  let movingPackagePrice: any = null;
-  if (order?.serviceType === "MOVING" && order?.movingPackage?.id) {
-    movingPackagePrice = await prisma.movingPackagePrice.findFirst({
-      where: { packageId: order.movingPackage.id, currency: "GBP", isActive: true },
-    });
-  }
 
-  const settings = await prisma.adminSettings.findUnique({
-    where: { id: "global_settings" },
-  });
+  const isMoving =
+    order?.serviceType === "MOVING";
 
-  const movingPricePerMileMinor = settings?.movingPricePerMileMinor ?? 58;
-  const movingAndCollectionFeeMinor = settings?.movingAndCollectionFeeMinor ?? 1495;
+  const isStorage =
+    order?.serviceType === "STORAGE";
 
-  const isMoving = order?.serviceType === "MOVING";
-  const isStorage = order?.serviceType === "STORAGE";
-  const isReturn = order?.serviceType === "RETURN";
+  const isReturn =
+    order?.serviceType === "RETURN";
 
-  const distanceMiles = isMoving ? (order.distanceMiles ?? 0) : 0;
-  const distanceCostMinor = isMoving ? Math.max(0, distanceMiles) * movingPricePerMileMinor : 0;
+  const movingPackageAmountMinor =
+    order?.movingPackageAmountMinor ?? 0;
+
+  const collectionFeeMinor =
+    order?.collectionFeeMinor ?? 0;
+
+  const movingPricePerMileMinor =
+    order?.movingPricePerMileMinor ?? 0;
+
+  const movingDistanceCostMinor =
+    order?.movingDistanceCostMinor ?? 0;
+
+  const distanceMiles =
+    isMoving
+      ? order?.distanceMiles ?? 0
+      : 0;
+
 
   const orderSubtotalMinor =
     order?.items?.reduce(
-      (sum: number, item: any) => sum + (item.lineTotalMinor ?? item.unitPriceMinor ?? 0),
+      (sum: number, item: any) =>
+        sum +
+        (
+          item.lineTotalMinor ??
+          item.unitPriceMinor ??
+          0
+        ),
       0
     ) ?? 0;
 
-  const discountMinor =
-    isStorage && order?.storageDiscountTier
-      ? Math.round(orderSubtotalMinor * (order.storageDiscountTier.percentOff / 100))
-      : 0;
 
-  let discountCodeMinor = order.promoDiscountMinor;
+ const discountMinor =
+  isStorage
+    ? order?.discountMinor ?? 0
+    : 0;
 
-  const totalMinor = payment?.amountMinor ?? session?.amount_total ?? null;
+
+  const discountCodeMinor =
+    order.promoDiscountMinor ?? 0;
+
+
+  const totalMinor =
+    payment?.amountMinor ??
+    session?.amount_total ??
+    null;
+
+
+  /*
+   * Complete pre-discount subtotal using
+   * the exact amounts stored on the order.
+   */
+  const displayedSubtotalMinor =
+    orderSubtotalMinor +
+    (isMoving
+      ? movingPackageAmountMinor +
+      movingDistanceCostMinor
+      : 0) +
+    (isStorage
+      ? collectionFeeMinor
+      : 0);
 
   const email =
     session?.customer_details?.email ??
@@ -198,16 +233,33 @@ export default async function SuccessPage({ searchParams }: Props) {
   if (isMoving) {
     rows.push({
       key: "distance",
-      label: `Distance (${distanceMiles} mile${distanceMiles === 1 ? "" : "s"})`,
+
+      label:
+        `Distance (${distanceMiles} mile${distanceMiles === 1 ? "" : "s"
+        })`,
+
       qty: 1,
-      minor: distanceCostMinor,
+
+      minor:
+        movingDistanceCostMinor,
     });
-    if (order?.movingPackage) {
+
+    if (
+      order?.movingPackage &&
+      movingPackageAmountMinor > 0
+    ) {
       rows.push({
         key: "package",
-        label: order.movingPackage.name || order.movingPackage.sku || "Moving Package",
+
+        label:
+          order.movingPackage.name ||
+          order.movingPackage.sku ||
+          "Moving Package",
+
         qty: 1,
-        minor: movingPackagePrice?.priceMinor ?? 0,
+
+        minor:
+          movingPackageAmountMinor,
       });
     }
   }
@@ -221,13 +273,17 @@ export default async function SuccessPage({ searchParams }: Props) {
     });
   }
 
-  if(isStorage){
+  if (
+    isStorage
+  ) {
     rows.push({
       key: "fee",
-      label: "Packing Material & Collection Fee",
+      label:
+        "Packing Material & Collection Fee",
       qty: 1,
-      minor: movingAndCollectionFeeMinor,
-    })
+      minor:
+        collectionFeeMinor,
+    });
   }
 
   if (isStorage && order?.storageDiscountTier && discountMinor > 0) {
@@ -239,7 +295,7 @@ export default async function SuccessPage({ searchParams }: Props) {
     });
   }
 
-  
+
 
   if (discountCodeMinor && discountCodeMinor > 0) {
     rows.push({
@@ -394,22 +450,34 @@ export default async function SuccessPage({ searchParams }: Props) {
                         {fmtAddr(dropoff)}
                       </div>
                     </div>
-                    {isMoving && (<div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                      <div className="text-sm font-semibold text-slate-500">
-                        Distance
-                      </div>
-                      <div className="mt-2 flex flex-wrap items-baseline justify-between gap-2">
-                        <div className="text-sm font-medium text-slate-900">
-                          {distanceMiles} mile{distanceMiles === 1 ? "" : "s"}
+                    {isMoving && (
+                      <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+                        <div className="text-sm font-semibold text-slate-500">
+                          Distance
                         </div>
-                        <div className="text-sm font-semibold text-slate-900">
-                          {money(distanceCostMinor)}
+
+                        <div className="mt-2 flex flex-wrap items-baseline justify-between gap-2">
+                          <div className="text-sm font-medium text-slate-900">
+                            {distanceMiles} mile
+                            {distanceMiles === 1 ? "" : "s"}
+                          </div>
+
+                          <div className="text-sm font-semibold text-slate-900">
+                            {money(
+                              movingDistanceCostMinor
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-1 text-sm text-slate-500">
+                          Calculated at{" "}
+                          {money(
+                            movingPricePerMileMinor
+                          )}{" "}
+                          per mile
                         </div>
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
-                        Calculated at {money(movingPricePerMileMinor)} per mile
-                      </div>
-                    </div>)}
+                    )}
 
                   </>
                 ) : (
@@ -492,14 +560,12 @@ export default async function SuccessPage({ searchParams }: Props) {
 
               <div className="mt-4 space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-600">Subtotal</span>
+                  <span className="text-slate-600">
+                    Subtotal
+                  </span>
+
                   <span className="font-medium text-slate-900">
-                    {money(
-                      orderSubtotalMinor +
-                      (isMoving
-                        ? (movingPackagePrice?.priceMinor ?? 0) + distanceCostMinor
-                        : 0)
-                    )}
+                    {money(displayedSubtotalMinor)}
                   </span>
                 </div>
 

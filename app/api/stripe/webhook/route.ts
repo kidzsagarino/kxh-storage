@@ -3,11 +3,16 @@ import { prisma } from "@/src/lib/prisma";
 import { PaymentStatus, OrderStatus, ServiceType, Prisma } from "@prisma/client";
 import { generateOrderReceipt, getOrderEmailHtml } from "../../orders/generateReceipt";
 import { sendEmail } from "@/app/lib/resend";
+import {
+    handleStorageBillingWebhook,
+} from "@/app/lib/billing/billing-webhook";
+
+import { sendReceipt } from "@/app/lib/order/send-order-receipt";
 
 export const runtime = "nodejs";
 
 type PaymentWithOrder = Prisma.PaymentGetPayload<{
-  include: { order: true };
+    include: { order: true };
 }>;
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -18,78 +23,6 @@ function addMonthsUTC(date: Date, months: number) {
     const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
     d.setUTCMonth(d.getUTCMonth() + months);
     return d;
-}
-
-async function sendReceipt(paidOrderId: string) {
-    try {
-
-        const { pdfBytes, order, hasContainer } =
-            await generateOrderReceipt(prisma, paidOrderId);
-
-        try {
-            await sendEmail({
-                to: order.customer.email || "operations@kxhlogistics.co.uk",
-                subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
-                html: getOrderEmailHtml(hasContainer),
-                attachments: [{
-                    filename: `receipt-${order.orderNumber || 'order'}.pdf`,
-                    content: Buffer.from(pdfBytes),
-                    contentType: "application/pdf",
-                }],
-            });
-
-            await sendEmail({
-                to: process.env.RECEIPT_TO_ADMIN ?? "",
-                subject: `New Order Received: #${order.orderNumber || order.id.slice(0, 8)}`,
-                html: `
-                            <p>A new order has been placed by ${order.customer.fullName || "Unknown Customer"}.</p>
-                            <p>Order Number: <strong>${order.orderNumber || order.id.slice(0, 8)}</strong></p>
-                            <p>Customer Email: ${order.customer.email || "Not provided"}</p>
-                            ${hasContainer ? "<p><strong>Note:</strong> This order includes a container.</p>" : ""}
-                            <p>See attached receipt for details.</p>
-                        `,
-                attachments: [
-                    {
-                        filename: `receipt-${order.orderNumber || "order"}.pdf`,
-                        content: Buffer.from(pdfBytes),
-                        contentType: "application/pdf",
-                    },
-                ],
-            });
-
-            await prisma.emailLog.create({
-                data: {
-                    orderId: order.id,
-                    type: "RECEIPT",
-                    to: order.customer.email || "operations@kxhlogistics.co.uk",
-                    subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
-                    status: "SENT",
-                    provider: "SEND GRID"
-                },
-            });
-
-        }
-        catch (err: any) {
-            await prisma.emailLog.create({
-                data: {
-                    orderId: order.id,
-                    type: "RECEIPT",
-                    to: order.customer.email || "operations@kxhlogistics.co.uk",
-                    subject: `Receipt for Order #${order.orderNumber || order.id.slice(0, 8)}`,
-                    status: "FAILED",
-                    provider: "SENDGRID",
-                    error: String(err?.message ?? err),
-                },
-            });
-            console.error("Email sending failed:", err);
-
-            throw new Error(err);
-        }
-
-    } catch (err: any) {
-        console.error(err);
-        throw new Error(err);
-    }
 }
 
 type InvoiceWithSubscription = Stripe.Invoice & {
@@ -229,6 +162,18 @@ export async function POST(req: Request) {
         case "checkout.session.completed": {
             const session = event.data.object as Stripe.Checkout.Session;
 
+            if (
+                session.metadata?.paymentType ===
+                "STORAGE_BILLING"
+            ) {
+                await handleStorageBillingWebhook(
+                    event,
+
+                );
+
+                break;
+            }
+
             const stripeCustomerId =
                 typeof session.customer === "string"
                     ? session.customer
@@ -354,6 +299,56 @@ export async function POST(req: Request) {
                     data: { status: PaymentStatus.SUCCEEDED, paymentIntentId: session.payment_intent as string },
                 });
 
+                if (serviceType === "STORAGE") {
+                    const firstBilling =
+                        await tx.orderBillingSchedule.findUnique({
+                            where: {
+                                orderId_installmentNumber: {
+                                    orderId:
+                                        payment.orderId,
+                                    installmentNumber: 1,
+                                },
+                            },
+                        });
+
+                    if (
+                        firstBilling &&
+                        firstBilling.status !== "PAID"
+                    ) {
+                        await tx.orderBillingSchedule.update({
+                            where: {
+                                id: firstBilling.id,
+                            },
+
+                            data: {
+                                status: "PAID",
+                                paidAt: new Date(),
+
+                                stripeCheckoutSessionId:
+                                    session.id,
+
+                                stripePaymentIntentId:
+                                    typeof session.payment_intent ===
+                                        "string"
+                                        ? session.payment_intent
+                                        : session.payment_intent?.id ??
+                                        null,
+                            },
+                        });
+
+                        await tx.payment.update({
+                            where: {
+                                id: payment.id,
+                            },
+
+                            data: {
+                                billingScheduleId:
+                                    firstBilling.id,
+                            },
+                        });
+                    }
+                }
+
                 await tx.order.update({
                     where: { id: payment.orderId },
                     data: { status: OrderStatus.SCHEDULED },
@@ -416,6 +411,28 @@ export async function POST(req: Request) {
 
             break;
         }
+        case "checkout.session.async_payment_succeeded":
+        case "checkout.session.async_payment_failed":
+        case "checkout.session.expired": {
+            const session =
+                event.data.object as Stripe.Checkout.Session;
+
+            /*
+             * These events belong to the new
+             * monthly storage billing flow only.
+             */
+            if (
+                session.metadata?.paymentType ===
+                "STORAGE_BILLING"
+            ) {
+                await handleStorageBillingWebhook(
+                    event
+                );
+            }
+
+            break;
+        }
+
         case "invoice.finalized":
         case "invoice.paid":
         case "invoice.payment_failed":

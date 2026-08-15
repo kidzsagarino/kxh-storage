@@ -8,10 +8,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 type Body = {
-  orderId: string;
-  months?: number; // ✅ optional input; for STORAGE we’ll use tier months if present, else this
-  mode?: "DEPOSIT" | "FULL";
-};
+  orderId?: string;
+  billingScheduleId?: string;
+
+  mode?:
+  | "DEPOSIT"
+  | "FULL"
+  | "STORAGE_BILLING";
+}
 
 function getBaseUrl() {
   const url = process.env.NEXT_PUBLIC_APP_URL;
@@ -38,11 +42,261 @@ async function getOrCreateStorageMonthlyPriceId(params: {
   return price.id;
 }
 
+async function createStorageBillingSession(
+  billingScheduleId: string
+) {
+  const schedule =
+    await prisma.orderBillingSchedule.findUnique({
+      where: {
+        id: billingScheduleId,
+      },
+
+      include: {
+        order: {
+          include: {
+            customer: true,
+          },
+        },
+      },
+    });
+
+  if (!schedule) {
+    return NextResponse.json(
+      {
+        error:
+          "Billing schedule not found",
+      },
+      {
+        status: 404,
+      }
+    );
+  }
+
+  if (schedule.status === "PAID") {
+    return NextResponse.json(
+      {
+        error:
+          "This installment has already been paid",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (schedule.status === "CANCELED") {
+    return NextResponse.json(
+      {
+        error:
+          "This installment has been canceled",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  const order =
+    schedule.order;
+
+  const currency =
+    (
+      order.currency ??
+      "GBP"
+    ).toLowerCase();
+
+  const baseUrl =
+    getBaseUrl();
+
+  /*
+   * Reuse an existing open Checkout Session,
+   * but ONLY for this billing schedule.
+   */
+  if (
+    schedule.stripeCheckoutSessionId
+  ) {
+    try {
+      const existingSession =
+        await stripe.checkout.sessions.retrieve(
+          schedule
+            .stripeCheckoutSessionId
+        );
+
+      if (
+        existingSession.status ===
+        "open" &&
+        existingSession.client_secret
+      ) {
+        return NextResponse.json({
+          clientSecret:
+            existingSession.client_secret,
+
+          sessionId:
+            existingSession.id,
+
+          billingScheduleId:
+            schedule.id,
+
+          orderId:
+            schedule.orderId,
+
+          currency,
+        });
+      }
+    } catch {
+      /*
+       * Old or invalid Stripe session.
+       * Create a fresh one below.
+       */
+    }
+  }
+
+  const session =
+    await stripe.checkout.sessions.create({
+      ui_mode: "embedded",
+
+      mode: "payment",
+
+      redirect_on_completion:
+        "if_required",
+
+      return_url:
+        `${baseUrl}/billing/success` +
+        `?billingScheduleId=${schedule.id}`,
+
+      customer_email:
+        order.customer.email ??
+        undefined,
+
+      line_items: [
+        {
+          price_data: {
+            currency,
+
+            unit_amount:
+              schedule.amountMinor,
+
+            product_data: {
+              name:
+                `KXH Storage - Month ${schedule.installmentNumber}`,
+
+              description:
+                `Storage installment ${schedule.installmentNumber}`,
+            },
+          },
+
+          quantity: 1,
+        },
+      ],
+
+      client_reference_id:
+        schedule.id,
+
+      metadata: {
+        paymentType:
+          "STORAGE_BILLING",
+
+        billingScheduleId:
+          schedule.id,
+
+        orderId:
+          schedule.orderId,
+
+        installmentNumber:
+          String(
+            schedule
+              .installmentNumber
+          ),
+      },
+
+      payment_intent_data: {
+        metadata: {
+          paymentType:
+            "STORAGE_BILLING",
+
+          billingScheduleId:
+            schedule.id,
+
+          orderId:
+            schedule.orderId,
+        },
+      },
+    });
+
+  if (!session.client_secret) {
+    return NextResponse.json(
+      {
+        error:
+          "Missing session client secret",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  await prisma.orderBillingSchedule.update({
+    where: {
+      id: schedule.id,
+    },
+
+    data: {
+      status:
+        "PAYMENT_PENDING",
+
+      stripeCheckoutSessionId:
+        session.id,
+    },
+  });
+
+  return NextResponse.json({
+    clientSecret:
+      session.client_secret,
+
+    sessionId:
+      session.id,
+
+    billingScheduleId:
+      schedule.id,
+
+    orderId:
+      schedule.orderId,
+
+    currency,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as Body;
+
+    if (body.mode === "STORAGE_BILLING") {
+      if (!body.billingScheduleId) {
+        return NextResponse.json(
+          {
+            error:
+              "Missing billingScheduleId",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      return createStorageBillingSession(
+        body.billingScheduleId
+      );
+    }
+
     if (!body.orderId) {
-      return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: "Missing orderId",
+        },
+        {
+          status: 400,
+        }
+      );
     }
 
     const payableStatuses: OrderStatus[] = [
@@ -142,8 +396,8 @@ export async function POST(req: NextRequest) {
                 order.serviceType === "MOVING"
                   ? "Moving service payment"
                   : order.serviceType === "STORAGE"
-                  ? "Storage service payment"
-                  : "Shredding service payment",
+                    ? "Storage service payment"
+                    : "Shredding service payment",
             },
           },
           quantity: 1,

@@ -6,7 +6,19 @@ import { useCheckout } from "../checkout/CheckoutStore";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone: (orderId: string) => void; }) {
+type EmbeddedCheckoutProps = {
+    orderId: string;
+
+    mode?: "DEPOSIT" | "STORAGE_BILLING";
+
+    billingScheduleId?: string;
+
+    onDone: (orderId: string) => void;
+
+    resetCheckoutAfterPayment?: boolean;
+};
+
+export function EmbeddedCheckout({ orderId, mode = "DEPOSIT", billingScheduleId, onDone, resetCheckoutAfterPayment = true }: EmbeddedCheckoutProps) {
     const checkoutRef = useRef<any>(null);
     const initingRef = useRef(false);
 
@@ -18,7 +30,7 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
         const res = await fetch("/api/stripe/create-embedded-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderId, mode: "DEPOSIT" }),
+            body: JSON.stringify({ orderId, mode: mode, billingScheduleId: billingScheduleId }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error ?? "Failed to create embedded session");
@@ -45,7 +57,11 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
                         checkoutRef.current?.destroy?.();
                         checkoutRef.current = null;
 
-                        resetAll();
+                        if (
+                            resetCheckoutAfterPayment
+                        ) {
+                            resetAll();
+                        }
                         onDone(orderId);
 
                     },
@@ -69,7 +85,7 @@ export function EmbeddedCheckout({ orderId, onDone }: { orderId: string, onDone:
             checkoutRef.current = null;
             initingRef.current = false;
         };
-    }, [fetchClientSecret, resetAll, orderId, onDone]);
+    }, [fetchClientSecret, resetAll, orderId, onDone, resetCheckoutAfterPayment]);
 
     return <div className="space-y-4">
         <div id="embedded-checkout" />

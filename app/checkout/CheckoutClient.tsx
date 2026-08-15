@@ -1,26 +1,36 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { EmbeddedCheckout } from "@/app/components/stripe/EmbeddedCheckout";
-import { useEffect } from "react";
-import { createEmbeddedSession } from "../services/stripe";
+import { useRouter } from "next/navigation";
 
-export function CheckoutClient({ orderId }: { orderId: string }) {
+
+type CheckoutClientProps = {
+    orderId: string;
+    mode?: "DEPOSIT" | "STORAGE_BILLING";
+    billingScheduleId?: string;
+    successUrl?: string;
+};
+
+export function CheckoutClient({
+    orderId,
+    mode = "DEPOSIT",
+    billingScheduleId,
+}: CheckoutClientProps) {
     const router = useRouter();
-    useEffect(() => {
-
-        createEmbeddedSession(orderId);
-
-    }, [orderId])
-
-    const handleDone = () => {
-        router.push(`/success?orderId=${orderId}`);
-    };
 
     return (
         <EmbeddedCheckout
-            onDone={handleDone}
             orderId={orderId}
+            mode={mode}
+            billingScheduleId={billingScheduleId}
+            onDone={() =>
+                router.push(
+                    `/success?orderId=${orderId}`
+                )
+            }
+            resetCheckoutAfterPayment={
+                mode === "DEPOSIT"
+            }
         />
     );
 }

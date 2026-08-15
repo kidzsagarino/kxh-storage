@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "EmailLogType" ADD VALUE 'BILLING_PAYMENT_LINK';

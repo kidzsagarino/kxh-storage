@@ -5,6 +5,7 @@ import { validateServiceAvailability } from "@/app/lib/validation-service";
 import { validateCapacity } from "@/app/lib/capacity-service";
 import { generateOrderNumber } from "@/app/lib/order-utils";
 import { haversineMiles, toNum } from "@/app/lib/distance";
+import { createBillingScheduleForOrder } from "@/app/lib/billing/billing-service";
 
 const prisma = new PrismaClient();
 
@@ -34,7 +35,6 @@ export async function POST(req: NextRequest) {
             discountTierId,
             notes,
             movingPackageId,
-            distanceMiles = 0,
             fromLocation,
             toLocation,
             originalOrderNumber,
@@ -58,6 +58,11 @@ export async function POST(req: NextRequest) {
             let totalMinor = 0;
             let mappedItems: any[] = [];
             let finalTierId: string | null = null;
+            let actualCollectionFeeMinor = 0;
+            let actualMovingPackageAmountMinor = 0;
+            let actualMovingPricePerMileMinor = 0;
+            let actualMovingDistanceCostMinor = 0;
+            let actualDistanceMiles = 0;
 
             if (serviceType === "MOVING") {
                 // Find the Move Item (e.g., two-bedroom-flat)
@@ -80,13 +85,26 @@ export async function POST(req: NextRequest) {
                 const toLon = toNum(toLocation.lon) || 0;
 
                 const miles = getDistance(fromLat, fromLon, toLat, toLon);
+                actualDistanceMiles = Number(miles) || 0;
 
                 const itemBase = movingItem?.prices[0]?.unitPriceMinor || 0;
                 const packBase = packagePrice?.priceMinor || 0;
                 const mileRate = settings?.movingPricePerMileMinor || 0;
                 const mileageTotal = Math.round((Number(miles) || 0) * mileRate);
+                actualMovingPackageAmountMinor =
+                    packBase;
 
-                subtotalMinor = itemBase + packBase + mileageTotal;
+                actualMovingPricePerMileMinor =
+                    mileRate;
+
+                actualMovingDistanceCostMinor =
+                    mileageTotal;
+
+                subtotalMinor =
+                    itemBase +
+                    actualMovingPackageAmountMinor +
+                    actualMovingDistanceCostMinor;
+
                 totalMinor = subtotalMinor;
 
                 mappedItems = [{
@@ -99,7 +117,7 @@ export async function POST(req: NextRequest) {
                 }];
             } else if (serviceType === "STORAGE") {
                 // --- STORAGE CALCULATION ---
-                const [dbPrices, discountTiers, collectionFee] = await Promise.all([
+                const [dbPrices, discountTiers, settings] = await Promise.all([
                     tx.serviceItemPrice.findMany({
                         where: {
                             serviceItemId: { in: items.map((i: any) => i.serviceItemId as CatalogItemId) },
@@ -111,21 +129,24 @@ export async function POST(req: NextRequest) {
                         where: { isActive: true },
                         orderBy: { minMonths: "desc" },
                     }),
+                    tx.adminSettings.findUnique({
+                        where: {
+                            id: "global_settings",
+                        },
+                    }),
 
-                    tx.adminSettings.findFirst({
-                        select: {
-                            movingAndCollectionFeeMinor: true,
-                        }
-                    })
                 ]);
 
-                const storageCalc = processOrderItems(items, dbPrices as any, discountTiers, discountTierId, collectionFee?.movingAndCollectionFeeMinor || 0);
+                actualCollectionFeeMinor = settings?.movingAndCollectionFeeMinor ?? 0;
+
+                const storageCalc = processOrderItems(items, dbPrices as any, discountTiers, discountTierId, actualCollectionFeeMinor || 0);
+
                 mappedItems = storageCalc.mappedItems;
                 subtotalMinor = storageCalc.subtotalMonthlyMinor;
                 discountMinor = storageCalc.discountMonthlyMinor;
                 totalMinor = storageCalc.dueNowMinor;
                 finalTierId = storageCalc.finalTierId;
-                
+
 
             } else if (serviceType === "SHREDDING") {
 
@@ -223,7 +244,7 @@ export async function POST(req: NextRequest) {
                 });
 
                 if (dbDiscount && totalMinor > 0) {
-                    
+
                     if (dbDiscount.type === "percentage") {
                         discountCodeMinor = Math.round(
                             (totalMinor * dbDiscount.valueMinor) / 100
@@ -240,39 +261,50 @@ export async function POST(req: NextRequest) {
             }
 
             // 3) Order Creation
-            return tx.order.create({
+            const createdOrder = await tx.order.create({
                 data: {
                     orderNumber: generateOrderNumber(),
                     serviceType,
                     status: OrderStatus.QUOTED,
+
                     customerId: dbCustomer.id,
-                    serviceDate: serviceDate ? new Date(serviceDate) : null,
+
+                    serviceDate: serviceDate
+                        ? new Date(serviceDate)
+                        : null,
+
                     timeSlotId: timeSlotId || null,
+
                     notes:
                         notes ||
                         (originalOrderNumber
                             ? `Return request for original order: ${originalOrderNumber}`
                             : null),
 
-                    movingPackageId: (movingPackageId as MovingPackageId) || MovingPackageId.basic_package,
-                    distanceMiles: Number(distanceMiles) || 0,
+                    movingPackageId:
+                        (movingPackageId as MovingPackageId) ||
+                        MovingPackageId.basic_package,
+
+                    distanceMiles: actualDistanceMiles,
 
                     subtotalMinor: Math.floor(subtotalMinor),
                     discountMinor: Math.floor(discountMinor),
                     totalMinor: Math.floor(totalMinor),
+
                     discountTierId: finalTierId,
 
                     items: {
-                        create: mappedItems.map(item => ({
+                        create: mappedItems.map((item) => ({
                             serviceItemId: item.serviceItemId,
                             sku: item.sku,
                             name: item.name,
                             quantity: item.quantity,
                             unitPriceMinor: item.unitPriceMinor,
                             lineTotalMinor: item.lineTotalMinor,
-                            months: item.months || null
-                        }))
+                            months: item.months || null,
+                        })),
                     },
+
                     addresses: {
                         create: addresses.map((addr: any) => ({
                             type: addr.type as AddressType,
@@ -283,16 +315,40 @@ export async function POST(req: NextRequest) {
                             country: addr.country || "GB",
                         })),
                     },
+
                     promoDiscountMinor: discountCodeMinor,
-                    discountCodeId: dbDiscount ? dbDiscount.id : null,
+
+                    discountCodeId:
+                        dbDiscount
+                            ? dbDiscount.id
+                            : null,
+
+                    movingPackageAmountMinor:
+                        actualMovingPackageAmountMinor,
+                    movingPricePerMileMinor:
+                        actualMovingPricePerMileMinor,
+                    movingDistanceCostMinor:
+                        actualMovingDistanceCostMinor,
+                    collectionFeeMinor:
+                        actualCollectionFeeMinor,
                 },
+
                 include: {
                     items: true,
                     addresses: true,
                     customer: true,
                 },
             });
+
+            return createdOrder;
+
         }, { timeout: 15000 });
+
+        if (result.serviceType === "STORAGE") {
+            await createBillingScheduleForOrder(
+                result.id
+            );
+        }
 
         return NextResponse.json(result, { status: 201 });
     } catch (error: any) {
