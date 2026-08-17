@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getOrderById, cancelOrderAction, type AdminOrder } from "./actions";
 import { money, to12Hour } from "@/app/utils/utils";
 import { toast } from "sonner";
+import { StorageBillingExtension } from "./StorageBillingExtension";
 
 // ---- UI Helpers ----
 
@@ -704,6 +705,29 @@ export default function AdminOrderByIdClient() {
                                 )}
                             </div>
                         </div>
+                        {isStorage && (
+                            <StorageBillingExtension
+                                orderId={order.id}
+                                currentInstallments={
+                                    order.billingSchedule.length
+                                }
+                                monthlyAmountMinor={
+                                    order.billingSchedule.at(-1)
+                                        ?.amountMinor ?? 0
+                                }
+                                currency={
+                                    order.currency ?? "GBP"
+                                }
+                                onExtended={async () => {
+                                    const fresh =
+                                        await getOrderById(
+                                            order.id
+                                        );
+
+                                    setOrder(fresh);
+                                }}
+                            />
+                        )}
                         <div className="grid gap-2 pt-2">
                             <button
                                 onClick={() => window.print()}
