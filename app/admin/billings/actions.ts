@@ -173,7 +173,7 @@ export async function getAdminBillings({
         orderBy: [
             {
                 order: {
-                    orderNumber: "asc",
+                    orderNumber: "desc",
                 },
             },
             {
