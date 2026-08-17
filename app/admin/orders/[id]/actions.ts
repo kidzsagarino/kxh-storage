@@ -9,6 +9,10 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/src/lib/prisma";
 
+import {
+    extendStorageBilling,
+} from "@/app/lib/billing/billing-extension";
+
 
 export async function getOrderById(
   id: string
@@ -203,4 +207,39 @@ export async function cancelOrderAction({
     order:
       updatedOrder,
   };
+}
+
+
+export async function extendBillingAction(
+    orderId: string,
+    months: number
+) {
+    try {
+        const result =
+            await extendStorageBilling(
+                orderId,
+                months
+            );
+
+        revalidatePath(
+            "/admin/billings"
+        );
+
+        revalidatePath(
+            `/admin/orders/${orderId}`
+        );
+
+        return result;
+        
+    } catch (error: unknown) {
+        return {
+            success:
+                false,
+
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to extend billing.",
+        };
+    }
 }
