@@ -7,6 +7,7 @@ import { getOrderById, cancelOrderAction, type AdminOrder } from "./actions";
 import { money, to12Hour } from "@/app/utils/utils";
 import { toast } from "sonner";
 import { StorageBillingExtension } from "./StorageBillingExtension";
+import OrderInventoryManager from "./OrderInventoryManager";
 
 // ---- UI Helpers ----
 
@@ -136,6 +137,21 @@ export default function AdminOrderByIdClient() {
         } finally {
             setCancellingOrder(false);
         }
+    }
+
+    async function refreshOrder() {
+        const freshOrder =
+            await getOrderById(
+                order?.id ?? ""
+            );
+
+        if (!freshOrder) {
+            return;
+        }
+
+        setOrder(
+            freshOrder
+        );
     }
 
     const pickupAddress =
@@ -899,6 +915,11 @@ export default function AdminOrderByIdClient() {
                     </div>
                 </aside>
             </div>
+            {isStorage && (
+                <div className="mt-4">
+                    <OrderInventoryManager orderId={order.id} customerEmail={order.customer.email} items={order.inventoryItems} onRefresh={refreshOrder} />
+                </div>
+            )}
             {showCancelModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
                     <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl border border-slate-200">

@@ -1088,17 +1088,30 @@ export default async function HomePage() {
                 </section>
                 <section className="bg-white py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-                            <Image
-                                src="/images/delivery-warehouse.webp"
-                                alt="KXH pickup and delivery logistics"
-                                className="h-[220px] w-full object-cover sm:h-[320px] lg:h-[420px] h-auto"
-                                width={1200}
-                                height={400}
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                                loading="lazy"
-                                decoding="async"
-                            />
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                                <Image
+                                    src="/images/delivery-warehouse.webp"
+                                    alt="KXH pickup and delivery logistics"
+                                    width={1200}
+                                    height={800}
+                                    className="h-full w-full object-cover"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    loading="lazy"
+                                />
+                            </div>
+
+                            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                                <Image
+                                    src="/images/new-van.webp"
+                                    alt="KXH delivery van"
+                                    width={1200}
+                                    height={800}
+                                    className="h-full w-full object-cover"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    loading="lazy"
+                                />
+                            </div>
                         </div>
                     </div>
                 </section>
