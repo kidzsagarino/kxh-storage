@@ -12,6 +12,15 @@ type Redirect = Awaited<
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.kxhlogistics.co.uk",
+        pathname: "/inventory/**",
+      },
+    ],
+  },
 
   async headers() {
     return [

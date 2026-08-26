@@ -244,14 +244,16 @@ model Order {
   updatedAt                DateTime @updatedAt
   collectionFeeMinor       Int      @default(0)
   movingPackageAmountMinor Int      @default(0)
-  movingPricePerMileMinor Int      @default(0)
+  movingPricePerMileMinor  Int      @default(0)
   movingDistanceCostMinor  Int      @default(0)
 
-  items           OrderItem[]
-  addresses       Address[]
-  payments        Payment[]
-  emailLogs       EmailLog[]
-  billingSchedule OrderBillingSchedule[]
+  items                 OrderItem[]
+  addresses             Address[]
+  payments              Payment[]
+  emailLogs             EmailLog[]
+  billingSchedule       OrderBillingSchedule[]
+  inventoryAccessTokens OrderInventoryAccessToken[]
+  inventoryItems        OrderInventoryItem[]
 
   @@index([customerId])
   @@index([status])
@@ -526,4 +528,40 @@ model OrderBillingSchedule {
   @@index([orderId])
   @@index([status])
   @@index([dueDate])
+}
+
+model OrderInventoryAccessToken {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  token     String    @unique
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+model OrderInventoryItem {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  name     String
+  quantity Int    @default(1)
+
+  description String?
+  condition   String?
+  location    String?
+  notes       String?
+  imageUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
 }
