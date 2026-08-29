@@ -119,6 +119,7 @@ export default function AdminSettingsClient() {
           move_and_pack: 295,
         },
         movingAndCollectionFee: 14.95,
+        shreddingCollectionFee: 45,
       }) as PricingSettings,
     []
   );
@@ -398,6 +399,7 @@ export default function AdminSettingsClient() {
           </div>
         </div>
       </div>
+
       {/* Shredding */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
         <SectionTitle title="Shredding pricing" desc="Set unit prices for shredding items." />
@@ -415,6 +417,18 @@ export default function AdminSettingsClient() {
             suffix="£"
             onChange={(n) => setSettings((s) => ({ ...s, shredding: { ...s.shredding, archiveBoxPrice: n } }))}
           />
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+          <SectionTitle title="Shredding Collection Fee" desc="Set the flat fee for shredding collection." />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label="Collection Fee"
+              value={settings.shreddingCollectionFee}
+              suffix="£"
+              onChange={(n) => setSettings((s) => ({ ...s, shreddingCollectionFee: n }))}
+            />
+          </div>
         </div>
       </div>
 

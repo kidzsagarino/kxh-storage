@@ -143,6 +143,10 @@ export default async function SuccessPage({ searchParams }: Props) {
   const isStorage =
     order?.serviceType === "STORAGE";
 
+
+  const isShredding =
+    order?.serviceType === "SHREDDING";
+
   const isReturn =
     order?.serviceType === "RETURN";
 
@@ -177,10 +181,10 @@ export default async function SuccessPage({ searchParams }: Props) {
     ) ?? 0;
 
 
- const discountMinor =
-  isStorage
-    ? order?.discountMinor ?? 0
-    : 0;
+  const discountMinor =
+    isStorage
+      ? order?.discountMinor ?? 0
+      : 0;
 
 
   const discountCodeMinor =
@@ -203,7 +207,7 @@ export default async function SuccessPage({ searchParams }: Props) {
       ? movingPackageAmountMinor +
       movingDistanceCostMinor
       : 0) +
-    (isStorage
+    (isStorage || isShredding
       ? collectionFeeMinor
       : 0);
 
@@ -273,16 +277,21 @@ export default async function SuccessPage({ searchParams }: Props) {
     });
   }
 
-  if (
-    isStorage
-  ) {
+  if (isStorage && collectionFeeMinor > 0) {
     rows.push({
-      key: "fee",
-      label:
-        "Packing Material & Collection Fee",
+      key: "storage-fee",
+      label: "Packing Material & Collection Fee",
       qty: 1,
-      minor:
-        collectionFeeMinor,
+      minor: collectionFeeMinor,
+    });
+  }
+
+  if (isShredding && collectionFeeMinor > 0) {
+    rows.push({
+      key: "shredding-collection-fee",
+      label: "Shredding Collection Fee",
+      qty: 1,
+      minor: collectionFeeMinor,
     });
   }
 

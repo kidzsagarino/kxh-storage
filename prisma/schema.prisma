@@ -353,6 +353,7 @@ model AdminSettings {
   movingPricePerMileMinor     Int @default(58)
   packingAssistanceMinor      Int @default(29500)
   movingAndCollectionFeeMinor Int @default(1495)
+  shreddingCollectionFeeMinor Int @default(4500)
 
   timeSlotSettings TimeSlotSetting[]
   capacities       CapacitySetting[]

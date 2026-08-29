@@ -417,15 +417,40 @@ export async function sendInventoryAccessLink(
 
 
 
-        const access =
-            await prisma.orderInventoryAccessToken.create({
-                data: {
+        let access =
+            await prisma.orderInventoryAccessToken.findFirst({
+                where: {
                     orderId:
                         order.id,
 
-                    token,
+                    revokedAt:
+                        null,
+                },
+
+                orderBy: {
+                    createdAt:
+                        "desc",
                 },
             });
+
+
+        if (!access) {
+            const token =
+                crypto
+                    .randomBytes(32)
+                    .toString("hex");
+
+
+            access =
+                await prisma.orderInventoryAccessToken.create({
+                    data: {
+                        orderId:
+                            order.id,
+
+                        token,
+                    },
+                });
+        }
 
 
         const baseUrl =
@@ -449,7 +474,7 @@ export async function sendInventoryAccessLink(
         const subject =
             `Your KXH Storage Inventory - Order #${order.orderNumber}`;
 
-        
+
 
         const html =
             await render(

@@ -116,6 +116,8 @@ export default async function SuccessPage({
     const isReturn =
         order.serviceType === "RETURN";
 
+    const isShredding =
+        order.serviceType === "SHREDDING";
 
     /*
      * Historical pricing snapshot.
@@ -136,7 +138,7 @@ export default async function SuccessPage({
             : 0;
 
     const collectionFeeMinor =
-        isStorage
+        isStorage || isShredding
             ? order.collectionFeeMinor ?? 0
             : 0;
 
@@ -182,7 +184,7 @@ export default async function SuccessPage({
                 : 0
         ) +
         (
-            isStorage
+            isStorage || isShredding
                 ? collectionFeeMinor
                 : 0
         );
@@ -285,6 +287,14 @@ export default async function SuccessPage({
                 collectionFeeMinor,
         });
     }
+    if (isShredding) {
+        rows.push({
+            key: "shredding-collection-fee",
+            label: "Shredding Collection Fee",
+            qty: 1,
+            minor: collectionFeeMinor,
+        });
+    }
 
     if (
         isStorage &&
@@ -319,13 +329,35 @@ export default async function SuccessPage({
                             <div className="mt-4 space-y-2 text-sm">
                                 <div className="flex justify-between">
                                     <span className="text-slate-600">
-                                        Subtotal
+                                        Items
                                     </span>
 
                                     <span className="font-medium text-slate-900">
-                                        {money(
-                                            displayedSubtotalMinor
-                                        )}
+                                        {money(orderSubtotalMinor)}
+                                    </span>
+                                </div>
+
+                                {(isStorage || isShredding) && (
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">
+                                            {isShredding
+                                                ? "Shredding Collection Fee"
+                                                : "Collection Fee"}
+                                        </span>
+
+                                        <span className="font-medium text-slate-900">
+                                            {money(collectionFeeMinor)}
+                                        </span>
+                                    </div>
+                                )}
+
+                                <div className="flex justify-between border-t border-slate-100 pt-2">
+                                    <span className="font-medium text-slate-700">
+                                        Subtotal
+                                    </span>
+
+                                    <span className="font-semibold text-slate-900">
+                                        {money(displayedSubtotalMinor)}
                                     </span>
                                 </div>
 

@@ -89,6 +89,7 @@ export async function loadOrderFlow(currency = "GBP") {
           weekdayRules: { select: { serviceType: true, weekday: true, enabled: true } },
           blackoutDates: { select: { date: true }, orderBy: { date: "asc" } },
           movingAndCollectionFeeMinor: true,
+          shreddingCollectionFeeMinor: true,
         },
       }),
     ]);
@@ -152,6 +153,9 @@ export async function loadOrderFlow(currency = "GBP") {
         timeSlotSettings: adminSettings.timeSlotSettings,
         storage: {
           movingAndCollectionFee: minorToMoney(adminSettings.movingAndCollectionFeeMinor),
+        },
+        shredding: {
+          collectionFee: minorToMoney(adminSettings.shreddingCollectionFeeMinor)
         }
       }
       : null,
