@@ -77,6 +77,7 @@ export type PricingSettings = {
         move_and_pack: number;     // e.g. 295
     };
     movingAndCollectionFee: number; // e.g. 14.95, not currently in schema but can be added if needed
+    shreddingCollectionFee: number;
 };
 
 // ---- helpers ----
@@ -270,6 +271,7 @@ export async function getAdminSettings(): Promise<PricingSettings> {
             move_and_pack: pkgPriceById.get("move_and_pack") ?? 295,
         },
         movingAndCollectionFee: fromMinor(settingsRow.movingAndCollectionFeeMinor), // not in schema; keep UI-only or add column
+        shreddingCollectionFee: fromMinor(settingsRow.shreddingCollectionFeeMinor)
     };
 }
 
@@ -284,6 +286,7 @@ export async function saveAdminSettings(input: PricingSettings) {
                 movingPricePerMileMinor: toMinor(input.pricePerMile),
                 packingAssistanceMinor: toMinor(input.packingAssistancePrice),
                 movingAndCollectionFeeMinor: toMinor(input.movingAndCollectionFee),
+                shreddingCollectionFeeMinor: toMinor(input.shreddingCollectionFee),
             },
             create: {
                 id: SETTINGS_ID,
@@ -293,6 +296,7 @@ export async function saveAdminSettings(input: PricingSettings) {
                 movingPricePerMileMinor: toMinor(input.pricePerMile),
                 packingAssistanceMinor: toMinor(input.packingAssistancePrice),
                 movingAndCollectionFeeMinor: toMinor(input.movingAndCollectionFee),
+                shreddingCollectionFeeMinor: toMinor(input.movingAndCollectionFee),
             },
         });
 

@@ -58,7 +58,7 @@ function AdminNav() {
 
 function AdminTopBar() {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur print:hidden">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <Image
@@ -113,7 +113,7 @@ export default async function AdminLayout({
 
       <div className="px-3 py-3 pb-24 md:pb-3">
         <div className="grid items-start gap-3 md:grid-cols-[260px_1fr]">
-          <aside className="hidden md:block">
+          <aside className="hidden md:block print:hidden">
             <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
               <div className="px-3 pb-2 text-sm font-semibold text-slate-500">
                 Navigation

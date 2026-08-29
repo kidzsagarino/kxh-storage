@@ -214,7 +214,7 @@ export default function AdminOrderByIdClient() {
             : 0;
 
     const collectionFeeMinor =
-        isStorage
+        isStorage || isShredding
             ? order.collectionFeeMinor ?? 0
             : 0;
 
@@ -560,6 +560,15 @@ export default function AdminOrderByIdClient() {
                                             </td>
                                         </tr>
                                     )}
+                                    {isShredding && (
+                                        <tr>
+                                            <td className="p-3 font-medium text-slate-900">Shreding Collection Fee</td>
+                                            <td className="p-3 text-right text-slate-600">1</td>
+                                            <td className="p-3 text-right font-semibold text-slate-900">
+                                                {money(collectionFeeMinor)}
+                                            </td>
+                                        </tr>
+                                    )}
                                     {/* Storage discount tier row if present */}
                                     {isStorage && order.storageDiscountTier && (
                                         <tr>
@@ -612,10 +621,12 @@ export default function AdminOrderByIdClient() {
                             </div>
                         )}
 
-                        {isStorage && (
+                        {(isStorage || isShredding) && (
                             <div className="flex justify-between text-sm">
                                 <span className="text-slate-500">
-                                    Collection Fee
+                                    {isShredding
+                                        ? "Shredding Collection Fee"
+                                        : "Collection Fee"}
                                 </span>
 
                                 <span className="font-medium text-slate-900">

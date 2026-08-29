@@ -153,22 +153,56 @@ export async function POST(req: NextRequest) {
                 const [dbPrices, settings] = await Promise.all([
                     tx.serviceItemPrice.findMany({
                         where: {
-                            serviceItemId: { in: items.map((i: any) => i.serviceItemId as CatalogItemId) },
+                            serviceItemId: {
+                                in: items.map(
+                                    (i: any) =>
+                                        i.serviceItemId as CatalogItemId
+                                ),
+                            },
                             isActive: true,
+                            currency: "GBP",
                         },
-                        include: { serviceItem: true },
+                        include: {
+                            serviceItem: true,
+                        },
                     }),
 
-                    tx.adminSettings.findFirst()
+                    tx.adminSettings.findUnique({
+                        where: {
+                            id: "global_settings",
+                        },
+                    }),
                 ]);
 
+                // Get shredding collection fee from Admin Settings
+                actualCollectionFeeMinor =
+                    settings?.shreddingCollectionFeeMinor ?? 0;
 
-                const storageCalc = processOrderItems(items, dbPrices as any, null, discountTierId);
-                mappedItems = storageCalc.mappedItems;
-                subtotalMinor = storageCalc.subtotalMonthlyMinor;
-                discountMinor = storageCalc.discountMonthlyMinor;
-                totalMinor = storageCalc.dueNowMinor;
-                finalTierId = storageCalc.finalTierId;
+                const shreddingCalc = processOrderItems(
+                    items,
+                    dbPrices as any,
+                    null,
+                    discountTierId
+                );
+
+                mappedItems = shreddingCalc.mappedItems;
+
+                // Items only
+                const itemsSubtotalMinor = shreddingCalc.subtotalMonthlyMinor;
+
+                // Items + shredding collection fee
+                subtotalMinor = itemsSubtotalMinor + actualCollectionFeeMinor;
+
+                discountMinor = shreddingCalc.discountMonthlyMinor;
+
+                totalMinor =
+                    Math.max(
+                        0,
+                        subtotalMinor - discountMinor
+                    );
+
+                finalTierId = shreddingCalc.finalTierId;
+
             } else if (serviceType === "RETURN") {
 
                 const returnIds = items.map((i: any) => i.serviceItemId as CatalogItemId);

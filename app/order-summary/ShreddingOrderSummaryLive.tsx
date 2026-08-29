@@ -18,13 +18,13 @@ type Props = {
 
 export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
   const { state, orderFlow } = useShreddingCheckout();
-
+  
   const itemsBySku = orderFlow?.catalog?.shredding?.itemsBySku ?? {};
 
   const currencySymbol = orderFlow?.currency === "GBP" ? "£" : "";
 
   const discount = useDiscount("shredding");
-  
+
   const itemsOk = Object.values(state.quantities ?? {}).some((n) => (Number(n) || 0) > 0);
   const scheduleOk = !!state.collectionDate && !!state.timeSlotId;
 
@@ -34,39 +34,65 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
     isValidGBPhone(state.customerDetails.phone ?? "");
 
   const canProceed = !!orderFlow?.ok && itemsOk && scheduleOk && detailsOk && !busy;
-  const { items, subTotal, codeDiscount, totalDueNow } =
-    React.useMemo(() => {
-      const items = Object.entries(state.quantities)
-        .filter(([_, qty]) => (qty ?? 0) > 0)
-        .map(([sku, qty]) => {
-          const catalogItem = itemsBySku[sku];
+  const {
+    items,
+    itemsSubtotal,
+    collectionFee,
+    subTotal,
+    codeDiscount,
+    totalDueNow,
+  } = useMemo(() => {
+    const items = Object.entries(state.quantities)
+      .filter(([_, qty]) => (qty ?? 0) > 0)
+      .map(([sku, qty]) => {
+        const catalogItem = itemsBySku[sku];
 
-          const unitPrice = Number(catalogItem?.price?.price ?? 0);
-          const total = +(unitPrice * (qty ?? 0)).toFixed(2);
+        const unitPrice = Number(catalogItem?.price?.price ?? 0);
+        const total = +(unitPrice * (qty ?? 0)).toFixed(2);
 
-          return {
-            sku,
-            label: catalogItem?.name ?? sku,
-            qty: qty ?? 0,
-            unitPrice,
-            total,
-          };
-        });
-
-      const subTotal = +items
-        .reduce((sum, it) => sum + it.total, 0)
-        .toFixed(2);
-
-      const codeDiscount = calculateDiscount({
-        baseAmount: subTotal,
-        discountMeta: discount.discountMeta,
+        return {
+          sku,
+          label: catalogItem?.name ?? sku,
+          qty: qty ?? 0,
+          unitPrice,
+          total,
+        };
       });
 
-      const totalDueNow = Math.max(0, subTotal - codeDiscount);
+    const itemsSubtotal = +items
+      .reduce((sum, item) => sum + item.total, 0)
+      .toFixed(2);
 
-      return { items, subTotal, codeDiscount, totalDueNow };
+    const collectionFee =
+      itemsSubtotal > 0
+        ? +(orderFlow.settings.shredding.collectionFee).toFixed(2)
+        : 0;
 
-    }, [state.quantities, discount.discountMeta, itemsBySku]);
+    const subTotal = +(itemsSubtotal + collectionFee).toFixed(2);
+
+    const codeDiscount = calculateDiscount({
+      baseAmount: subTotal,
+      discountMeta: discount.discountMeta,
+    });
+
+    const totalDueNow = Math.max(
+      0,
+      +(subTotal - codeDiscount).toFixed(2)
+    );
+
+    return {
+      items,
+      itemsSubtotal,
+      collectionFee,
+      subTotal,
+      codeDiscount,
+      totalDueNow,
+    };
+  }, [
+    state.quantities,
+    discount.discountMeta,
+    itemsBySku,
+  ]);
 
   return (
     <aside className="space-y-5">
@@ -81,30 +107,56 @@ export function ShreddingOrderSummary({ onProceed, busy, error }: Props) {
           loading={discount.loading}
           error={discount.error}
           applied={!!discount.discountMeta}
-           discountMeta={discount.discountMeta}
-          baseAmount={totalDueNow}
+          discountMeta={discount.discountMeta}
+          baseAmount={subTotal}
         />
+
+        {itemsSubtotal > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Shredding items</span>
+            <span className="text-slate-900">
+              {money(itemsSubtotal, currencySymbol)}
+            </span>
+          </div>
+        )}
+
+        {collectionFee > 0 && (
+          <div className="flex justify-between text-sm text-slate-700">
+            <span>Collection fee</span>
+            <span className="text-slate-900">
+              {money(collectionFee, currencySymbol)}
+            </span>
+          </div>
+        )}
+
         {codeDiscount > 0 && (
           <div className="flex justify-between text-sm text-slate-700">
             <span>Discount code</span>
+
             <span className="text-emerald-700">
               −{money(codeDiscount, currencySymbol)}
             </span>
           </div>
         )}
+
         {subTotal > 0 && (
-          <div className="flex justify-between text-sm text-slate-700">
-            <span>Original Total</span>
-            <span className="text-black-600">
+          <div className="flex justify-between text-sm font-medium text-slate-800">
+            <span>Subtotal</span>
+
+            <span>
               {money(subTotal, currencySymbol)}
             </span>
           </div>
         )}
+
         <div className="h-px bg-slate-200" />
 
         <div className="flex justify-between text-base font-medium text-slate-900">
           <span>Total due now</span>
-          <span>{money(totalDueNow)}</span>
+
+          <span>
+            {money(totalDueNow, currencySymbol)}
+          </span>
         </div>
       </div>
 

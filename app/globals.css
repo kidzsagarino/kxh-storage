@@ -287,3 +287,50 @@ img {
     max-width: calc(100vw - 24px) !important;
   }
 }
+
+@media print {
+  @page {
+    size: auto;
+    margin: 1in;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .print-sheet {
+    width: calc(100% - 8mm) !important;
+    margin: 0 auto !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(2, 108mm) !important;
+
+    gap: 0 !important;
+  }
+
+  .print-label {
+    box-sizing: border-box !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid #94a3b8 !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+
+    overflow: hidden !important;
+  }
+}

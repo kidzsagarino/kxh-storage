@@ -86,6 +86,7 @@ export async function generateOrderReceipt(
     const isMoving = order.serviceType === ServiceType.MOVING;
     const isReturn = order.serviceType === ServiceType.RETURN;
     const isStorage = order.serviceType === ServiceType.STORAGE;
+    const isShredding = order.serviceType === ServiceType.SHREDDING;
 
     const hasContainer = isStorage && order.items.some(
         x => x.name.toLocaleLowerCase().includes("container")
@@ -116,7 +117,7 @@ export async function generateOrderReceipt(
             : 0;
 
     const collectionFeeMinor =
-        isStorage
+        isStorage || isShredding
             ? order.collectionFeeMinor ?? 0
             : 0;
 
@@ -292,6 +293,14 @@ export async function generateOrderReceipt(
 
     if (isStorage && collectionFeeMinor > 0) {
         lineItems.push({ description: `Packing Material & Collection Fee`, qty: 1, unitMinor: collectionFeeMinor, lineTotalMinor: collectionFeeMinor });
+    }
+    if (isShredding && collectionFeeMinor > 0) {
+        lineItems.push({
+            description: "Shredding Collection Fee",
+            qty: 1,
+            unitMinor: collectionFeeMinor,
+            lineTotalMinor: collectionFeeMinor,
+        });
     }
 
     y -= 25;
