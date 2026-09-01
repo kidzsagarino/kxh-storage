@@ -75,8 +75,10 @@ export default function AdminSettingsClient() {
           "large-box": 12,
           "xl-box": 15,
           suitcase: 10,
+          pallet: 80,
           "half-container": 75,
           "full-container": 150,
+          
         },
         storageDiscounts: [
           { months: 1, percentOff: 0 },

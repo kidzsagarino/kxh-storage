@@ -108,7 +108,34 @@ export async function loadOrderFlow(currency = "GBP") {
     };
   });
 
-  const storageItems = normalizedItems.filter((x) => x.serviceType === ServiceType.STORAGE);
+
+  const storageItems = normalizedItems.filter(
+    (x) => x.serviceType === ServiceType.STORAGE
+  );
+
+  // Keep existing database order, but place Pallet immediately after Suitcase
+  const suitcaseIndex = storageItems.findIndex(
+    (item) => item.name.toLowerCase().includes("suitcase")
+  );
+
+  const palletIndex = storageItems.findIndex(
+    (item) => item.name.toLowerCase().includes("pallet")
+  );
+
+  if (
+    suitcaseIndex !== -1 &&
+    palletIndex !== -1 &&
+    palletIndex !== suitcaseIndex + 1
+  ) {
+    const [pallet] = storageItems.splice(palletIndex, 1);
+
+    // Recalculate because removing pallet can shift the suitcase index
+    const newSuitcaseIndex = storageItems.findIndex(
+      (item) => item.name.toLowerCase().includes("suitcase")
+    );
+
+    storageItems.splice(newSuitcaseIndex + 1, 0, pallet);
+  }
   const movingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.MOVING);
   const shreddingItems = normalizedItems.filter((x) => x.serviceType === ServiceType.SHREDDING);
   const returnItems = normalizedItems.filter((x) => x.serviceType === ServiceType.RETURN);
