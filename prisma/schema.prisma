@@ -61,6 +61,7 @@ enum CatalogItemId {
   suitcase
   half_container
   full_container
+  pallet
   // MOVING
   small_move
   one_bedroom_flat

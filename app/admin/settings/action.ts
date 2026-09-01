@@ -43,8 +43,10 @@ export type PricingSettings = {
         "large-box": number;
         "xl-box": number;
         suitcase: number;
+        pallet: number;
         "half-container": number;
         "full-container": number;
+
     };
     storageDiscounts: {
         months: number;
@@ -130,8 +132,10 @@ const storageItemMap: Record<keyof PricingSettings["storagePricePerMonth"], Cata
     "large-box": CatalogItemId.large_box,
     "xl-box": CatalogItemId.xl_box,
     suitcase: CatalogItemId.suitcase,
+    pallet: CatalogItemId.pallet,
     "half-container": CatalogItemId.half_container,
     "full-container": CatalogItemId.full_container,
+    
 };
 
 const movingHomeTypeMap: Record<keyof PricingSettings["movingHomeTypePrice"], CatalogItemId> = {
@@ -244,8 +248,10 @@ export async function getAdminSettings(): Promise<PricingSettings> {
             "large-box": priceByItem.get(CatalogItemId.large_box) ?? 0,
             "xl-box": priceByItem.get(CatalogItemId.xl_box) ?? 0,
             suitcase: priceByItem.get(CatalogItemId.suitcase) ?? 0,
+            pallet: priceByItem.get(CatalogItemId.pallet) ?? 0,
             "half-container": priceByItem.get(CatalogItemId.half_container) ?? 0,
             "full-container": priceByItem.get(CatalogItemId.full_container) ?? 0,
+            
         },
 
         storageDiscounts: tiers.map((t) => ({
