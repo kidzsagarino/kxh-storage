@@ -13,9 +13,32 @@ type LineItem = {
 const moneyGBP = (minor: number | null | undefined) =>
     `£${(((minor || 0) / 100) as number).toFixed(2)}`;
 
+function pdfSafeText(
+    value: string | null | undefined
+): string {
+    if (!value) return "-";
+
+    return value
+        .replace(/[–—]/g, "-")
+        .replace(/[‘’]/g, "'")
+        .replace(/[“”]/g, '"')
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\x20-\x7E£]/g, "");
+}
+
 function fmtAddress(addr?: any | null) {
     if (!addr) return "-";
-    const parts = [addr.line1, addr.line2, addr.city, addr.postalCode].filter(Boolean);
+
+    const parts = [
+        addr.line1,
+        addr.line2,
+        addr.city,
+        addr.postalCode,
+    ]
+        .filter(Boolean)
+        .map((part) => pdfSafeText(String(part)));
+
     return parts.join(", ");
 }
 
@@ -133,9 +156,24 @@ export async function generateOrderReceipt(
     const BORDER_COLOR = rgb(0.9, 0.9, 0.9);
     const ACCENT_GREEN = rgb(0.298, 0.686, 0.314);
 
-    const drawRightText = (str: string, xEnd: number, y: number, opts: any) => {
-        const w = (opts.font || font).widthOfTextAtSize(str, opts.size || 10);
-        page.drawText(str, { ...opts, x: xEnd - w, y });
+    const drawRightText = (
+        str: string,
+        xEnd: number,
+        y: number,
+        opts: any
+    ) => {
+        const safe = pdfSafeText(str);
+
+        const w = (opts.font || font).widthOfTextAtSize(
+            safe,
+            opts.size || 10
+        );
+
+        page.drawText(safe, {
+            ...opts,
+            x: xEnd - w,
+            y,
+        });
     };
 
     // Header Branding
@@ -148,9 +186,25 @@ export async function generateOrderReceipt(
     // Bill To & Order Info
     let y = height - 120;
     page.drawText("BILL TO", { x: margin, y, font: fontBold, size: 8, color: SECONDARY_TEXT });
-    page.drawText(order.customer.fullName || "-", { x: margin, y: y - 15, font: fontBold, size: 10 });
-    page.drawText(order.customer.email || "-", { x: margin, y: y - 28, size: 9, color: SECONDARY_TEXT });
+    page.drawText(
+        pdfSafeText(order.customer.fullName),
+        {
+            x: margin,
+            y: y - 15,
+            font: fontBold,
+            size: 10,
+        }
+    );
 
+    page.drawText(
+        pdfSafeText(order.customer.email),
+        {
+            x: margin,
+            y: y - 28,
+            size: 9,
+            color: SECONDARY_TEXT,
+        }
+    );
     const metaX = width / 2 + 50;
     const drawMeta = (label: string, value: string, rowY: number) => {
         page.drawText(label, { x: metaX, y: rowY, font: fontBold, size: 8, color: SECONDARY_TEXT });
@@ -181,32 +235,41 @@ export async function generateOrderReceipt(
     // });
 
     let currentY = y - 15;
-    const drawLogDetail = (label: string, value: string) => {
+    const drawLogDetail = (
+        label: string,
+        value: string
+    ) => {
         const textX = margin + 90;
-        const maxWidth = width - textX - margin - 10; // Space remaining in the box
+        const maxWidth = width - textX - margin - 10;
         const fontSize = 9;
         const lineHeight = 12;
 
-        page.drawText(label, {
+        const safeLabel = pdfSafeText(label);
+        const safeValue = pdfSafeText(value);
+
+        page.drawText(safeLabel, {
             x: margin + 10,
             y: currentY,
             font: fontBold,
-            size: fontSize
+            size: fontSize,
         });
 
-        page.drawText(value, {
+        page.drawText(safeValue, {
             x: textX,
             y: currentY,
             size: fontSize,
             color: SECONDARY_TEXT,
-            maxWidth: maxWidth,
-            lineHeight: lineHeight,
+            maxWidth,
+            lineHeight,
         });
 
-        const textWidth = font.widthOfTextAtSize(value, fontSize);
-        const numberOfLines = Math.ceil(textWidth / maxWidth);
+        const textWidth =
+            font.widthOfTextAtSize(safeValue, fontSize);
 
-        currentY -= (numberOfLines * lineHeight);
+        const numberOfLines =
+            Math.max(1, Math.ceil(textWidth / maxWidth));
+
+        currentY -= numberOfLines * lineHeight;
     };
 
     if (isMoving || isReturn) {
@@ -223,19 +286,34 @@ export async function generateOrderReceipt(
     // --- Special Instructions (Only if notes exist) ---
     if (order.notes) {
         currentY -= 10;
-        page.drawText("SPECIAL INSTRUCTIONS:", { x: margin, y: currentY, font: fontBold, size: 8, color: SECONDARY_TEXT });
+
+        page.drawText("SPECIAL INSTRUCTIONS:", {
+            x: margin,
+            y: currentY,
+            font: fontBold,
+            size: 8,
+            color: SECONDARY_TEXT,
+        });
+
         currentY -= 15;
-        page.drawText(order.notes, {
+
+        const safeNotes = pdfSafeText(order.notes);
+
+        page.drawText(safeNotes, {
             x: margin,
             y: currentY,
             size: 9,
             color: PRIMARY_TEXT,
-            maxWidth: width - (margin * 2),
-            lineHeight: 12
+            maxWidth: width - margin * 2,
+            lineHeight: 12,
         });
-        // Calculate lines used to adjust y for the table
-        const lines = Math.ceil(font.widthOfTextAtSize(order.notes, 9) / (width - (margin * 2)));
-        currentY -= (lines * 12) + 10;
+
+        const lines = Math.ceil(
+            font.widthOfTextAtSize(safeNotes, 9) /
+            (width - margin * 2)
+        );
+
+        currentY -= lines * 12 + 10;
     }
 
     // --- Items Table ---
@@ -304,13 +382,48 @@ export async function generateOrderReceipt(
     }
 
     y -= 25;
-    lineItems.forEach(item => {
-        page.drawText(item.description, { x: margin + 10, y, size: 9 });
-        drawRightText(String(item.qty), width - margin - 110, y, { size: 9 });
-        drawRightText(moneyGBP(item.unitMinor), width - margin - 60, y, { size: 9 });
-        drawRightText(moneyGBP(item.lineTotalMinor), width - margin - 10, y, { font: fontBold, size: 9 });
+    lineItems.forEach((item) => {
+        page.drawText(
+            pdfSafeText(item.description),
+            {
+                x: margin + 10,
+                y,
+                size: 9,
+            }
+        );
+
+        drawRightText(
+            String(item.qty),
+            width - margin - 110,
+            y,
+            { size: 9 }
+        );
+
+        drawRightText(
+            moneyGBP(item.unitMinor),
+            width - margin - 60,
+            y,
+            { size: 9 }
+        );
+
+        drawRightText(
+            moneyGBP(item.lineTotalMinor),
+            width - margin - 10,
+            y,
+            {
+                font: fontBold,
+                size: 9,
+            }
+        );
+
         y -= 22;
-        page.drawLine({ start: { x: margin, y: y + 14 }, end: { x: width - margin, y: y + 14 }, thickness: 0.5, color: BORDER_COLOR });
+
+        page.drawLine({
+            start: { x: margin, y: y + 14 },
+            end: { x: width - margin, y: y + 14 },
+            thickness: 0.5,
+            color: BORDER_COLOR,
+        });
     });
 
     // Totals
