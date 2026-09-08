@@ -78,7 +78,7 @@ export default function AdminSettingsClient() {
           pallet: 80,
           "half-container": 75,
           "full-container": 150,
-          
+
         },
         storageDiscounts: [
           { months: 1, percentOff: 0 },
@@ -99,20 +99,23 @@ export default function AdminSettingsClient() {
           { id: "morning", label: "Morning", range: "7am – 10am", enabled: true },
           { id: "afternoon", label: "Afternoon", range: "10am – 3pm", enabled: true },
           { id: "evening", label: "Evening", range: "3pm – 6pm", enabled: true },
+          { id: "allday", label: "All Day", range: "7am – 6pm", enabled: true },
         ],
-        serviceEnabled: { storage: true, moving: true, shredding: true },
+        serviceEnabled: { storage: true, moving: true, shredding: true, return: true },
         scheduling: {
           disableAutoBlockSchedule: false,
           capacityEnabled: true,
           capacityPerService: {
-            storage: { morning: 6, afternoon: 8, evening: 6 },
-            moving: { morning: 3, afternoon: 3, evening: 2 },
-            shredding: { morning: 10, afternoon: 12, evening: 10 },
+            storage: { morning: 6, afternoon: 8, evening: 6, allday: 0 },
+            moving: { morning: 3, afternoon: 3, evening: 2, allday: 0 },
+            shredding: { morning: 10, afternoon: 12, evening: 10, allday: 0 },
+            return: { morning: 10, afternoon: 10, evening: 10, allday: 10 },
           },
           weekdaysByService: {
             storage: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false },
             moving: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: false, sun: false },
             shredding: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true },
+            return: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false },
           },
           blackoutDates: [],
         },
@@ -147,7 +150,7 @@ export default function AdminSettingsClient() {
     { key: "sun", label: "Sun" },
   ];
 
-  const SERVICES = ["storage", "moving", "shredding"] as const;
+  const SERVICES = ["storage", "moving", "shredding", "return"] as const;
 
   React.useEffect(() => {
     let cancelled = false;
@@ -615,41 +618,64 @@ export default function AdminSettingsClient() {
           <div className="text-sm font-semibold text-slate-900">Capacity per slot</div>
           <p className="mt-1 text-sm text-slate-500">Orders allowed per service per time slot.</p>
 
-          <div className="mt-3 grid gap-3 lg:grid-cols-3">
-            {(["storage", "moving", "shredding"] as const).map((svc) => (
-              <div key={svc} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-                <div className="text-sm font-semibold capitalize text-slate-900">{svc}</div>
+          <div className="mt-3 grid gap-3 lg:grid-cols-4">
+            {(["storage", "moving", "shredding", "return"] as const).map(
+              (svc) => {
+                const slots =
+                  svc === "return"
+                    ? (["allday"] as const)
+                    : (["morning", "afternoon", "evening"] as const);
 
-                <div className="grid gap-3">
-                  {(["morning", "afternoon", "evening"] as const).map((slot) => (
-                    <label key={slot} className="grid gap-1">
-                      <span className="text-sm font-semibold text-slate-600">{slot} cap</span>
-                      <input
-                        inputMode="numeric"
-                        value={String(settings.scheduling.capacityPerService[svc][slot])}
-                        onChange={(e) => {
-                          const v = Math.max(0, num(e.target.value));
-                          setSettings((s) => ({
-                            ...s,
-                            scheduling: {
-                              ...s.scheduling,
-                              capacityPerService: {
-                                ...s.scheduling.capacityPerService,
-                                [svc]: {
-                                  ...s.scheduling.capacityPerService[svc],
-                                  [slot]: v,
+                return (
+                  <div
+                    key={svc}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3"
+                  >
+                    <div className="text-sm font-semibold capitalize text-slate-900">
+                      {svc}
+                    </div>
+
+                    <div className="grid gap-3">
+                      {slots.map((slot) => (
+                        <label key={slot} className="grid gap-1">
+                          <span className="text-sm font-semibold capitalize text-slate-600">
+                            {slot === "allday" ? "All Day" : slot} cap
+                          </span>
+
+                          <input
+                            inputMode="numeric"
+                            value={String(
+                              settings.scheduling.capacityPerService[svc][slot]
+                            )}
+                            onChange={(e) => {
+                              const v = Math.max(
+                                0,
+                                num(e.target.value)
+                              );
+
+                              setSettings((s) => ({
+                                ...s,
+                                scheduling: {
+                                  ...s.scheduling,
+                                  capacityPerService: {
+                                    ...s.scheduling.capacityPerService,
+                                    [svc]: {
+                                      ...s.scheduling.capacityPerService[svc],
+                                      [slot]: v,
+                                    },
+                                  },
                                 },
-                              },
-                            },
-                          }));
-                        }}
-                        className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
-                      />
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
+                              }));
+                            }}
+                            className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+            )}
           </div>
         </div>
       </div>

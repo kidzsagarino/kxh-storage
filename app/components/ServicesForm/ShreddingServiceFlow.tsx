@@ -24,6 +24,14 @@ import {
 import { AddressLookupField } from "../addressLookUpField";
 
 type StepId = 0 | 1 | 2;
+type TimeSlot = {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  isActive: boolean;
+  serviceType: "SHREDDING" | "RETURN" | "STORAGE" | "MOVING";
+};
 
 const steps = [
   { id: 0 as StepId, title: "Items" },
@@ -156,7 +164,10 @@ export function ShreddingForm({
   const { state, setState, orderFlow } = useShreddingCheckout();
 
   const [step, setStep] = React.useState<StepId>(0);
-  const timeSlots = orderFlow && orderFlow.timeSlots;
+  const timeSlots =
+    orderFlow?.timeSlots.filter(
+      (slot: TimeSlot) => slot.serviceType !== "RETURN"
+    ) ?? [];
   const disableAuto =
     orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
   const [orderId, setOrderId] = React.useState<string | null>(null);

@@ -107,6 +107,7 @@ enum TimeSlotKey {
   MORNING
   AFTERNOON
   EVENING
+  ALLDAY
 }
 
 // --- MODELS ---
@@ -327,6 +328,7 @@ model TimeSlot {
   startTime String?
   endTime   String?
   isActive  Boolean @default(true)
+  serviceType ServiceType?
 
   orders Order[]
 }

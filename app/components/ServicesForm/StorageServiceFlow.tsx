@@ -12,6 +12,14 @@ import { displayToStoredGB, formatGBForDisplay, isValidGBPhone, normalizeGBPhone
 import { AddressLookupField } from "../addressLookUpField";
 
 type StepId = 0 | 1 | 2 | 3;
+type TimeSlot = {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  isActive: boolean;
+  serviceType: "SHREDDING" | "RETURN" | "STORAGE" | "MOVING";
+};
 
 const steps = [
     { id: 0 as StepId, title: "Duration" },
@@ -150,8 +158,10 @@ export function StorageForm({
 
     const storageItems = orderFlow && orderFlow.catalog.storage.items;
     const duration = orderFlow && orderFlow.catalog.storage.discountTiers;
-    const timeSlots = orderFlow && orderFlow.timeSlots;
-    const [orderId, setOrderId] = React.useState<string | null>(null);
+    const timeSlots =
+        orderFlow?.timeSlots.filter(
+            (slot: TimeSlot) => slot.serviceType !== "RETURN"
+        ) ?? []; const [orderId, setOrderId] = React.useState<string | null>(null);
 
     const inc = (id: string) => {
         if (!orderFlow) return;
