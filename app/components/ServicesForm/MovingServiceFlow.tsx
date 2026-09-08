@@ -31,6 +31,15 @@ function getDistance(fromLat: number, fromLon: number, toLat: number, toLon: num
 }
 
 type StepId = 0 | 1 | 2 | 3 | 4;
+type TimeSlot = {
+    id: string;
+    name: string;
+    startTime: string;
+    endTime: string;
+    isActive: boolean;
+    serviceType: "SHREDDING" | "RETURN" | "STORAGE" | "MOVING";
+};
+
 const steps = [
     { id: 0 as StepId, title: "Origin" },
     { id: 1 as StepId, title: "Destination" },
@@ -155,7 +164,10 @@ export function MovingForm({
     const [fromQ, setFromQ] = React.useState("");
     const [toQ, setToQ] = React.useState("");
 
-    const timeSlots = orderFlow && orderFlow.timeSlots;
+    const timeSlots =
+        orderFlow?.timeSlots.filter(
+            (slot: TimeSlot) => slot.serviceType !== "RETURN"
+        ) ?? [];
     const disableAuto = orderFlow && orderFlow.settings.scheduling.disableAutoBlockSchedule;
     const [orderId, setOrderId] = React.useState<string | null>(null);
     // --- 1. Extract Dynamic Data from orderFlow ---

@@ -21,6 +21,15 @@ import {
 import { AddressLookupField } from "../addressLookUpField";
 
 type StepId = 0 | 1 | 2 | 3;
+type TimeSlot = {
+    id: string;
+    name: string;
+    startTime: string;
+    endTime: string;
+    isActive: boolean;
+    serviceType: "SHREDDING" | "RETURN" | "STORAGE" | "MOVING";
+};
+
 
 const steps = [
     { id: 0 as StepId, title: "Type" },
@@ -164,7 +173,10 @@ export function ReturnForm({
     }, [resetNonce]);
 
     const disableAuto = orderFlow?.settings?.scheduling?.disableAutoBlockSchedule;
-    const timeSlots = orderFlow?.timeSlots ?? [];
+    const timeSlots =
+        orderFlow?.timeSlots.filter(
+            (slot: TimeSlot) => slot.serviceType === "RETURN"
+        ) ?? [];
 
     const inc = (id: string) => {
         if (!orderFlow) return;

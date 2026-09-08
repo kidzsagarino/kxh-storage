@@ -16,14 +16,16 @@ const CURRENCY = "GBP";
 
 type WeekdayKey = "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
 type WeekdayMap = Record<WeekdayKey, boolean>;
-type ServiceWeekdays = Record<"storage" | "moving" | "shredding", WeekdayMap>;
+type ServiceWeekdays = Record<"storage" | "moving" | "shredding" | "return", WeekdayMap>;
 
 type TimeSlotUi = {
-    id: "morning" | "afternoon" | "evening";
+    id: "morning" | "afternoon" | "evening" | "allday";
     label: string;
     range: string;
     enabled: boolean;
 };
+type ServiceUi = "storage" | "moving" | "shredding" | "return";
+
 
 export type PricingSettings = {
     pricePerMile: number;
@@ -62,14 +64,17 @@ export type PricingSettings = {
         storage: boolean;
         moving: boolean;
         shredding: boolean;
+        return: boolean;
     };
     scheduling: {
         disableAutoBlockSchedule: boolean; // not in schema; keep UI-only or add columns
         capacityEnabled: boolean; // not in schema; keep UI-only or add columns
         capacityPerService: {
-            storage: { morning: number; afternoon: number; evening: number };
-            moving: { morning: number; afternoon: number; evening: number };
-            shredding: { morning: number; afternoon: number; evening: number };
+            storage: { morning: number; afternoon: number; evening: number; allday: number };
+            moving: { morning: number; afternoon: number; evening: number; allday: number };
+            shredding: { morning: number; afternoon: number; evening: number; allday: number };
+            return: { morning: number; afternoon: number; evening: number; allday: number };
+
         };
         weekdaysByService: ServiceWeekdays;
         blackoutDates: string[]; // YYYY-MM-DD
@@ -89,21 +94,27 @@ const fromMinor = (minor: number) => (minor || 0) / 100;
 function uiSlotToEnum(id: TimeSlotUi["id"]): TimeSlotKey {
     if (id === "morning") return TimeSlotKey.MORNING;
     if (id === "afternoon") return TimeSlotKey.AFTERNOON;
-    return TimeSlotKey.EVENING;
+    if (id === "evening") return TimeSlotKey.EVENING;
+    return TimeSlotKey.ALLDAY;
 }
+
 function enumSlotToUi(id: TimeSlotKey): TimeSlotUi["id"] {
     if (id === TimeSlotKey.MORNING) return "morning";
     if (id === TimeSlotKey.AFTERNOON) return "afternoon";
-    return "evening";
+    if (id === TimeSlotKey.EVENING) return "evening";
+    return "allday";
 }
-function uiSvcToEnum(svc: "storage" | "moving" | "shredding"): ServiceType {
+function uiSvcToEnum(svc: ServiceUi): ServiceType {
     if (svc === "storage") return ServiceType.STORAGE;
     if (svc === "moving") return ServiceType.MOVING;
+    if (svc === "return") return ServiceType.RETURN;
     return ServiceType.SHREDDING;
 }
-function enumSvcToUi(svc: ServiceType): "storage" | "moving" | "shredding" {
+
+function enumSvcToUi(svc: ServiceType): ServiceUi {
     if (svc === ServiceType.STORAGE) return "storage";
     if (svc === ServiceType.MOVING) return "moving";
+    if (svc === ServiceType.RETURN) return "return";
     return "shredding";
 }
 
@@ -135,7 +146,7 @@ const storageItemMap: Record<keyof PricingSettings["storagePricePerMonth"], Cata
     pallet: CatalogItemId.pallet,
     "half-container": CatalogItemId.half_container,
     "full-container": CatalogItemId.full_container,
-    
+
 };
 
 const movingHomeTypeMap: Record<keyof PricingSettings["movingHomeTypePrice"], CatalogItemId> = {
@@ -173,12 +184,13 @@ export async function getAdminSettings(): Promise<PricingSettings> {
         },
     });
 
-    const [prices, tiers, packagePrices] = await Promise.all([
+    const [prices, tiers, packagePrices, dbTimeSlots] = await Promise.all([
         prisma.serviceItemPrice.findMany({ where: { currency: CURRENCY, isActive: true } }),
         prisma.storageDiscountTier.findMany({ where: { isActive: true }, orderBy: { minMonths: "asc" } }),
         prisma.movingPackagePrice.findMany({
             where: { currency: CURRENCY, isActive: true },
         }),
+        prisma.timeSlot.findMany({ where: { isActive: true } }),
     ]);
 
     const pkgPriceById = new Map<string, number>();
@@ -187,20 +199,62 @@ export async function getAdminSettings(): Promise<PricingSettings> {
     const priceByItem = new Map<CatalogItemId, number>();
     for (const p of prices) priceByItem.set(p.serviceItemId, fromMinor(p.unitPriceMinor));
 
-    const timeSlots: TimeSlotUi[] = [TimeSlotKey.MORNING, TimeSlotKey.AFTERNOON, TimeSlotKey.EVENING].map((k) => {
-        const row = settingsRow.timeSlotSettings.find((x) => x.key === k);
+    const timeSlots: TimeSlotUi[] = [
+        TimeSlotKey.MORNING,
+        TimeSlotKey.AFTERNOON,
+        TimeSlotKey.EVENING,
+        TimeSlotKey.ALLDAY,
+    ].map((k) => {
+        const settingRow =
+            settingsRow.timeSlotSettings.find(
+                (x) => x.key === k
+            );
+
+        const uiId = enumSlotToUi(k);
+
+        const timeRow =
+            dbTimeSlots.find(
+                (x) => x.name === uiId
+            );
+
+        const defaultRange =
+            k === TimeSlotKey.MORNING
+                ? "7am – 10am"
+                : k === TimeSlotKey.AFTERNOON
+                    ? "10am – 3pm"
+                    : k === TimeSlotKey.EVENING
+                        ? "3pm – 6pm"
+                        : "7am – 6pm";
+
+        const savedRange =
+            timeRow?.startTime && timeRow?.endTime
+                ? `${timeRow.startTime} – ${timeRow.endTime}`
+                : defaultRange;
+
         return {
-            id: enumSlotToUi(k),
-            label: row?.label ?? (k === TimeSlotKey.MORNING ? "Morning" : k === TimeSlotKey.AFTERNOON ? "Afternoon" : "Evening"),
-            range: k === TimeSlotKey.MORNING ? "7am – 10am" : k === TimeSlotKey.AFTERNOON ? "10am – 3pm" : "3pm – 6pm",
-            enabled: row?.enabled ?? true,
+            id: uiId,
+            label:
+                settingRow?.label ??
+                (k === TimeSlotKey.MORNING
+                    ? "Morning"
+                    : k === TimeSlotKey.AFTERNOON
+                        ? "Afternoon"
+                        : k === TimeSlotKey.EVENING
+                            ? "Evening"
+                            : "All Day"),
+            range: savedRange,
+            enabled:
+                timeRow?.isActive ??
+                settingRow?.enabled ??
+                true,
         };
     });
 
     const capacityPerService: PricingSettings["scheduling"]["capacityPerService"] = {
-        storage: { morning: 0, afternoon: 0, evening: 0 },
-        moving: { morning: 0, afternoon: 0, evening: 0 },
-        shredding: { morning: 0, afternoon: 0, evening: 0 },
+        storage: { morning: 0, afternoon: 0, evening: 0, allday: 0 },
+        moving: { morning: 0, afternoon: 0, evening: 0, allday: 0 },
+        shredding: { morning: 0, afternoon: 0, evening: 0, allday: 0 },
+        return: { morning: 0, afternoon: 0, evening: 0, allday: 0 },
     };
     for (const cap of settingsRow.capacities) {
         const svc = enumSvcToUi(cap.serviceType);
@@ -212,6 +266,7 @@ export async function getAdminSettings(): Promise<PricingSettings> {
         storage: { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false },
         moving: { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false },
         shredding: { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false },
+        return: { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false },
     };
     for (const rule of settingsRow.weekdayRules) {
         const svc = enumSvcToUi(rule.serviceType);
@@ -231,6 +286,7 @@ export async function getAdminSettings(): Promise<PricingSettings> {
             storage: settingsRow.storageEnabled,
             moving: settingsRow.movingEnabled,
             shredding: settingsRow.shreddingEnabled,
+            return: settingsRow.returnEnabled, // always enabled for now
         },
 
         movingHomeTypePrice: {
@@ -251,7 +307,7 @@ export async function getAdminSettings(): Promise<PricingSettings> {
             pallet: priceByItem.get(CatalogItemId.pallet) ?? 0,
             "half-container": priceByItem.get(CatalogItemId.half_container) ?? 0,
             "full-container": priceByItem.get(CatalogItemId.full_container) ?? 0,
-            
+
         },
 
         storageDiscounts: tiers.map((t) => ({
@@ -302,7 +358,7 @@ export async function saveAdminSettings(input: PricingSettings) {
                 movingPricePerMileMinor: toMinor(input.pricePerMile),
                 packingAssistanceMinor: toMinor(input.packingAssistancePrice),
                 movingAndCollectionFeeMinor: toMinor(input.movingAndCollectionFee),
-                shreddingCollectionFeeMinor: toMinor(input.movingAndCollectionFee),
+                shreddingCollectionFeeMinor: toMinor(input.shreddingCollectionFee),
             },
         });
 
@@ -340,7 +396,7 @@ export async function saveAdminSettings(input: PricingSettings) {
                 });
             }
         }
-        for (const svc of ["storage", "moving", "shredding"] as const) {
+        for (const svc of ["storage", "moving", "shredding", "return"] as const) {
             const map = input.scheduling.weekdaysByService[svc];
             for (const dayKey of Object.keys(map) as WeekdayKey[]) {
                 await db.weekdayRule.upsert({
@@ -356,6 +412,30 @@ export async function saveAdminSettings(input: PricingSettings) {
                 });
             }
         }
+
+        const returnCapacity = Math.max(
+            0,
+            Number(input.scheduling.capacityPerService.return.allday) || 0
+        );
+
+        await db.capacitySetting.upsert({
+            where: {
+                settingsId_serviceType_slotKey: {
+                    settingsId: SETTINGS_ID,
+                    serviceType: ServiceType.RETURN,
+                    slotKey: TimeSlotKey.ALLDAY,
+                },
+            },
+            update: {
+                capacity: returnCapacity,
+            },
+            create: {
+                settingsId: SETTINGS_ID,
+                serviceType: ServiceType.RETURN,
+                slotKey: TimeSlotKey.ALLDAY,
+                capacity: returnCapacity,
+            },
+        });
 
         await db.blackoutDate.deleteMany({ where: { settingsId: SETTINGS_ID } });
         const dates = Array.from(new Set(input.scheduling.blackoutDates))

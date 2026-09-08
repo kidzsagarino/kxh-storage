@@ -67,7 +67,7 @@ export async function loadOrderFlow(currency = "GBP") {
 
       prisma.timeSlot.findMany({
         where: { isActive: true },
-        select: { id: true, name: true, startTime: true, endTime: true, isActive: true },
+        select: { id: true, name: true, startTime: true, endTime: true, isActive: true, serviceType: true },
       }),
 
       prisma.storageDiscountTier.findMany({
