@@ -83,13 +83,6 @@ export async function createBillingScheduleForOrder(
         return;
     }
 
-    const monthlyAmount =
-        Math.max(
-            0,
-            order.subtotalMinor -
-            order.discountMinor
-        );
-
     const startDate =
         order.serviceDate ??
         new Date();
@@ -112,9 +105,7 @@ export async function createBillingScheduleForOrder(
                     ),
 
                 amountMinor:
-                    index === 0
-                        ? order.totalMinor
-                        : monthlyAmount,
+                    order.totalMinor,
 
                 status:
                     index === 0
