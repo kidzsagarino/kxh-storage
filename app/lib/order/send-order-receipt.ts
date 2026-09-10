@@ -28,7 +28,7 @@ export async function sendReceipt(
 
         const customerEmail =
             order.customer.email ||
-            "operations@kxhlogistics.co.uk";
+            "hello@kxhlogistics.co.uk";
 
         const customerName =
             order.customer.fullName ||

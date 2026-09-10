@@ -4,6 +4,7 @@ import {
     useMemo,
     useState,
 } from "react";
+import { createPortal } from "react-dom";
 
 import {
     Plus,
@@ -414,9 +415,11 @@ function InventoryItemModal({
         }
     }
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-            <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-2xl">
+    return createPortal (
+        <div className="fixed inset-0 z-[9999] flex items-end justify-center bg-slate-900/50 sm:items-center sm:p-4">
+            <div className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-lg sm:rounded-2xl">
+
+                {/* Header */}
                 <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
                     <div>
                         <h3 className="font-semibold text-slate-900">
@@ -426,8 +429,7 @@ function InventoryItemModal({
                         </h3>
 
                         <p className="mt-1 text-sm text-slate-500">
-                            Record an item stored
-                            under this order.
+                            Record an item stored under this order.
                         </p>
                     </div>
 
@@ -440,7 +442,7 @@ function InventoryItemModal({
                     </button>
                 </div>
 
-
+                {/* Form */}
                 <div className="space-y-4 p-5">
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-slate-700">
@@ -450,15 +452,12 @@ function InventoryItemModal({
                         <input
                             value={name}
                             onChange={(e) =>
-                                setName(
-                                    e.target.value
-                                )
+                                setName(e.target.value)
                             }
                             placeholder="e.g. Dining Chair"
                             className="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                         />
                     </div>
-
 
                     <div className="grid grid-cols-2 gap-3">
                         <div>
@@ -474,9 +473,7 @@ function InventoryItemModal({
                                     setQuantity(
                                         Math.max(
                                             1,
-                                            Number(
-                                                e.target.value
-                                            ) || 1
+                                            Number(e.target.value) || 1
                                         )
                                     )
                                 }
@@ -490,20 +487,15 @@ function InventoryItemModal({
                             </label>
 
                             <input
-                                value={
-                                    condition
-                                }
+                                value={condition}
                                 onChange={(e) =>
-                                    setCondition(
-                                        e.target.value
-                                    )
+                                    setCondition(e.target.value)
                                 }
                                 placeholder="Good"
                                 className="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm"
                             />
                         </div>
                     </div>
-
 
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-slate-700">
@@ -513,15 +505,12 @@ function InventoryItemModal({
                         <input
                             value={location}
                             onChange={(e) =>
-                                setLocation(
-                                    e.target.value
-                                )
+                                setLocation(e.target.value)
                             }
                             placeholder="e.g. Rack A"
                             className="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm"
                         />
                     </div>
-
 
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-slate-700">
@@ -529,19 +518,14 @@ function InventoryItemModal({
                         </label>
 
                         <input
-                            value={
-                                description
-                            }
+                            value={description}
                             onChange={(e) =>
-                                setDescription(
-                                    e.target.value
-                                )
+                                setDescription(e.target.value)
                             }
                             placeholder="e.g. Black dining chair"
                             className="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm"
                         />
                     </div>
-
 
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-slate-700">
@@ -551,15 +535,15 @@ function InventoryItemModal({
                         <textarea
                             value={notes}
                             onChange={(e) =>
-                                setNotes(
-                                    e.target.value
-                                )
+                                setNotes(e.target.value)
                             }
                             rows={3}
                             placeholder="Optional notes..."
                             className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
                         />
                     </div>
+
+                    {/* Photo */}
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-slate-700">
                             Item Photo
@@ -596,9 +580,7 @@ function InventoryItemModal({
                                                     setRemoveImage(false);
 
                                                     setPreviewUrl(
-                                                        URL.createObjectURL(
-                                                            file
-                                                        )
+                                                        URL.createObjectURL(file)
                                                     );
                                                 }}
                                             />
@@ -639,14 +621,15 @@ function InventoryItemModal({
                                             const file =
                                                 e.target.files?.[0];
 
-                                            if (!file) return;
+                                            if (!file) {
+                                                return;
+                                            }
 
                                             setImageFile(file);
+                                            setRemoveImage(false);
 
                                             setPreviewUrl(
-                                                URL.createObjectURL(
-                                                    file
-                                                )
+                                                URL.createObjectURL(file)
                                             );
                                         }}
                                     />
@@ -655,7 +638,9 @@ function InventoryItemModal({
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-end gap-2 border-t border-slate-200 px-5 py-4">
+
+                {/* Actions */}
+                <div className="sticky bottom-0 flex justify-end gap-2 border-t border-slate-200 bg-white px-5 py-4">
                     <button
                         type="button"
                         onClick={onClose}
@@ -680,7 +665,7 @@ function InventoryItemModal({
                     </button>
                 </div>
             </div>
-        </div>
+        </div>, document.body
     );
 }
 
