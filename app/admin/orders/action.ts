@@ -18,6 +18,14 @@ export async function getAdminOrders(filters: {
         gte: from,
         lt: to,
       },
+      NOT: {
+        customer: {
+          email: {
+            contains: "placeholder",
+            mode: "insensitive",
+          },
+        },
+      },
       // 2. Search Filter (Search name, email, or order number)
       OR: q ? [
         { orderNumber: { contains: q, mode: 'insensitive' } },
@@ -30,7 +38,7 @@ export async function getAdminOrders(filters: {
       timeSlot: true,
       addresses: true,
       payments: {
-        orderBy: [{ status: "desc"}, {createdAt: "desc" }],
+        orderBy: [{ status: "desc" }, { createdAt: "desc" }],
         take: 1
       }
     },

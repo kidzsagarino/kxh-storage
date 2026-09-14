@@ -207,6 +207,128 @@ function InventoryCard({
     );
 }
 
+async function compressImage(
+    file: File,
+    maxSizeBytes = 4.5 * 1024 * 1024
+): Promise<File> {
+    // Already small enough
+    if (file.size <= maxSizeBytes) {
+        return file;
+    }
+
+    const image =
+        await createImageBitmap(file);
+
+    let width = image.width;
+    let height = image.height;
+
+    // Prevent unnecessarily huge dimensions
+    const maxDimension = 2400;
+
+    if (
+        width > maxDimension ||
+        height > maxDimension
+    ) {
+        const ratio = Math.min(
+            maxDimension / width,
+            maxDimension / height
+        );
+
+        width = Math.round(
+            width * ratio
+        );
+
+        height = Math.round(
+            height * ratio
+        );
+    }
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const context =
+        canvas.getContext("2d");
+
+    if (!context) {
+        image.close();
+
+        throw new Error(
+            "Unable to compress image."
+        );
+    }
+
+    context.drawImage(
+        image,
+        0,
+        0,
+        width,
+        height
+    );
+
+    image.close();
+
+    let quality = 0.85;
+
+    while (quality >= 0.4) {
+        const blob =
+            await new Promise<Blob | null>(
+                (resolve) => {
+                    canvas.toBlob(
+                        resolve,
+                        "image/jpeg",
+                        quality
+                    );
+                }
+            );
+
+        if (!blob) {
+            throw new Error(
+                "Unable to compress image."
+            );
+        }
+
+        if (
+            blob.size <= maxSizeBytes ||
+            quality <= 0.4
+        ) {
+            if (
+                blob.size >
+                maxSizeBytes
+            ) {
+                throw new Error(
+                    "Image is still larger than 5 MB after compression. Please choose a smaller image."
+                );
+            }
+
+            const fileName =
+                file.name.replace(
+                    /\.[^.]+$/,
+                    ""
+                );
+
+            return new File(
+                [blob],
+                `${fileName}.jpg`,
+                {
+                    type:
+                        "image/jpeg",
+                    lastModified:
+                        Date.now(),
+                }
+            );
+        }
+
+        quality -= 0.1;
+    }
+
+    throw new Error(
+        "Unable to compress image below 5 MB."
+    );
+}
+
 function InventoryItemModal({
     orderId,
     item,
@@ -257,6 +379,8 @@ function InventoryItemModal({
         useState(false);
     const [uploadingImage, setUploadingImage] =
         useState(false);
+    const [compressingImage, setCompressingImage] =
+        useState(false);
 
     const [removeImage, setRemoveImage] =
         useState(false);
@@ -302,6 +426,60 @@ function InventoryItemModal({
 
 
         return data.imageUrl as string;
+    }
+
+    async function handleImageSelected(
+        file: File
+    ) {
+        setCompressingImage(true);
+
+        try {
+            const compressedFile =
+                await compressImage(file);
+
+            setImageFile(
+                compressedFile
+            );
+
+            setRemoveImage(false);
+
+            setPreviewUrl(
+                URL.createObjectURL(
+                    compressedFile
+                )
+            );
+
+            if (
+                compressedFile.size <
+                file.size
+            ) {
+                const originalMb =
+                    (
+                        file.size /
+                        1024 /
+                        1024
+                    ).toFixed(1);
+
+                const compressedMb =
+                    (
+                        compressedFile.size /
+                        1024 /
+                        1024
+                    ).toFixed(1);
+
+                toast.success(
+                    `Image compressed from ${originalMb} MB to ${compressedMb} MB.`
+                );
+            }
+        } catch (error: unknown) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to compress image."
+            );
+        } finally {
+            setCompressingImage(false);
+        }
     }
 
     async function handleSave() {
@@ -598,12 +776,11 @@ function InventoryItemModal({
                                                         return;
                                                     }
 
-                                                    setImageFile(file);
-                                                    setRemoveImage(false);
-
-                                                    setPreviewUrl(
-                                                        URL.createObjectURL(file)
+                                                    void handleImageSelected(
+                                                        file
                                                     );
+
+                                                    e.target.value = "";
                                                 }}
                                             />
                                         </label>
@@ -647,12 +824,11 @@ function InventoryItemModal({
                                                 return;
                                             }
 
-                                            setImageFile(file);
-                                            setRemoveImage(false);
-
-                                            setPreviewUrl(
-                                                URL.createObjectURL(file)
+                                            void handleImageSelected(
+                                                file
                                             );
+
+                                            e.target.value = "";
                                         }}
                                     />
                                 </label>
