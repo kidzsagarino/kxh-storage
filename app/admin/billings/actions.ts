@@ -63,7 +63,40 @@ export async function getAdminBillings({
     const where:
         Prisma.OrderBillingScheduleWhereInput =
         {};
-
+    where.AND = [
+        {
+            order: {
+                customer: {
+                    email: {
+                        not: null,
+                    },
+                },
+            },
+        },
+        {
+            order: {
+                customer: {
+                    email: {
+                        not: "",
+                    },
+                },
+            },
+        },
+        {
+            NOT: {
+                order: {
+                    customer: {
+                        email: {
+                            contains:
+                                "placeholder",
+                            mode:
+                                "insensitive",
+                        },
+                    },
+                },
+            },
+        },
+    ];
 
     if (
         status &&
@@ -277,8 +310,8 @@ export async function sendBillingPaymentLink(
                         installmentNumber:
                             billing.installmentNumber.toString(),
 
-                        installmentCount: 
-                        installmentCount.toString(),
+                        installmentCount:
+                            installmentCount.toString(),
 
                         amount,
 

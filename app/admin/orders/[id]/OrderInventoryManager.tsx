@@ -13,7 +13,8 @@ import {
     Trash2,
     Package,
     X,
-    Printer
+    Printer,
+    Loader2
 } from "lucide-react";
 
 import { toast } from "sonner";
@@ -254,6 +255,8 @@ function InventoryItemModal({
 
     const [saving, setSaving] =
         useState(false);
+    const [uploadingImage, setUploadingImage] =
+        useState(false);
 
     const [removeImage, setRemoveImage] =
         useState(false);
@@ -322,23 +325,32 @@ function InventoryItemModal({
             return;
         }
 
-        let imageUrl =
-            item?.imageUrl ?? null;
 
-        if (removeImage) {
-            imageUrl = null;
-        }
-
-        if (imageFile) {
-            imageUrl =
-                await uploadImage(
-                    imageFile
-                );
-        }
 
         setSaving(true);
 
         try {
+
+            let imageUrl =
+                item?.imageUrl ?? null;
+
+            if (removeImage) {
+                imageUrl = null;
+            }
+
+            if (imageFile) {
+                setUploadingImage(true);
+
+                try {
+                    imageUrl =
+                        await uploadImage(
+                            imageFile
+                        );
+                } finally {
+                    setUploadingImage(false);
+                }
+            }
+
             const input = {
                 name:
                     trimmedName,
@@ -411,11 +423,12 @@ function InventoryItemModal({
                     : "Failed to save inventory item."
             );
         } finally {
+            setUploadingImage(false);
             setSaving(false);
         }
     }
 
-    return createPortal (
+    return createPortal(
         <div className="fixed inset-0 z-[9999] flex items-end justify-center bg-slate-900/50 sm:items-center sm:p-4">
             <div className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-lg sm:rounded-2xl">
 
@@ -559,6 +572,15 @@ function InventoryItemModal({
                                             className="h-full w-full object-cover"
                                         />
                                     </div>
+                                    {uploadingImage && (
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px]">
+                                            <Loader2 className="h-8 w-8 animate-spin text-emerald-700" />
+
+                                            <span className="mt-2 text-sm font-semibold text-slate-700">
+                                                Uploading image...
+                                            </span>
+                                        </div>
+                                    )}
 
                                     <div className="flex gap-2">
                                         <label className="cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
@@ -644,6 +666,7 @@ function InventoryItemModal({
                     <button
                         type="button"
                         onClick={onClose}
+                        disabled={saving}
                         className="h-10 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700"
                     >
                         Cancel
@@ -655,13 +678,21 @@ function InventoryItemModal({
                         disabled={saving}
                         className="h-10 rounded-xl bg-emerald-700 px-5 text-sm font-semibold text-white hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        {saving
-                            ? item
-                                ? "Saving..."
-                                : "Adding..."
-                            : item
-                                ? "Save Changes"
-                                : "Add Item"}
+                        {saving ? (
+                            <span className="flex items-center gap-2">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+
+                                {uploadingImage
+                                    ? "Uploading image..."
+                                    : item
+                                        ? "Saving..."
+                                        : "Adding..."}
+                            </span>
+                        ) : item ? (
+                            "Save Changes"
+                        ) : (
+                            "Add Item"
+                        )}
                     </button>
                 </div>
             </div>
