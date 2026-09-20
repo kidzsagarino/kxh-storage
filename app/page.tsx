@@ -447,9 +447,10 @@ export default async function HomePage() {
                                     </div>
                                 ))}
                             </div>
+                            
 
-                            <TrustpilotPill className="mt-5" />
                         </div>
+
 
                         {/* RIGHT IMAGE */}
                         <div className="relative w-full lg:pl-4">
@@ -504,6 +505,9 @@ export default async function HomePage() {
                         </div>
 
                     </div>
+                </section>
+                <section>
+                    <TrustpilotPill className="mt-5" />
                 </section>
                 {/* <section className="bg-white py-6 sm:py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -1089,7 +1093,7 @@ export default async function HomePage() {
                 <section className="bg-white py-8">
                     <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                         <div className="grid gap-6 md:grid-cols-2">
-                           
+
                             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                                 <Image
                                     src="/images/warehouse.webp"
