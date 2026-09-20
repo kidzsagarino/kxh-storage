@@ -53,7 +53,7 @@ function Stars({ rating }: { rating: number }) {
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    className={`w-4 h-4 ${i < rating ? "fill-[#00B67A] text-[#00B67A]" : "text-gray-300"
+                    className={`w-4 h-4 ${i < rating ? "fill-[#000000] text-[#000000]" : "text-gray-300"
                         }`}
                 >
                     <path

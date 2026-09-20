@@ -23,57 +23,9 @@ export default function TrustpilotPill({
   const hasHalf = rating % 1 >= 0.5;
 
   return (
-    <Link
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="View Trustpilot reviews"
-      className={`group inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:shadow-md hover:border-slate-300 ${className}`}
-    >
-      {/* stars */}
-      <span className="inline-flex items-center gap-0.5">
-        {Array.from({ length: maxRating }).map((_, i) => {
-          const isFull = i < fullStars;
-          const isHalf = i === fullStars && hasHalf;
-
-          return (
-            <span
-              key={i}
-              className={`flex h-4 w-4 items-center justify-center rounded-sm text-[10px] font-bold text-white transition
-                ${
-                  isFull || isHalf
-                    ? "bg-[#00B67A]"
-                    : "bg-slate-200 text-slate-400"
-                }`}
-            >
-              ★
-            </span>
-          );
-        })}
-      </span>
-
-      {/* rating */}
-      <span className="text-sm font-semibold text-slate-900">
-        {rating.toFixed(1)}/5
-      </span>
-
-      {/* divider dot */}
-      <span className="h-1 w-1 rounded-full bg-slate-300" />
-
-      {/* label */}
-      <span className="text-[10px] font-medium text-slate-500">
-        {label}
-      </span>
-
-      {/* optional review count */}
-      {reviewCount && (
-        <>
-          <span className="h-1 w-1 rounded-full bg-slate-300" />
-          <span className="text-[10px] text-slate-400">
-            {reviewCount.toLocaleString()}
-          </span>
-        </>
-      )}
-    </Link>
+    
+    <div className="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="667201b1e980b7848cc8c4fe" data-style-height="52px" data-style-width="100%" data-token="113201a9-e7ab-4e7f-a46e-78f8b93866fb">
+        <a href="https://www.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener">Trustpilot</a>
+      </div>
   );
 }
