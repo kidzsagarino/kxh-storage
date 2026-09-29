@@ -42,7 +42,7 @@ async function getOrCreateStorageMonthlyPriceId(params: {
   return price.id;
 }
 
-const DAILY_LATE_FEE_MINOR = 200; // £5.00
+const DAILY_LATE_FEE_MINOR = 200; // £2.00
 
 function calculateDaysOverdue(
   dueDate: Date,
@@ -302,8 +302,6 @@ async function createStorageBillingSession(
 
       stripeCheckoutSessionId:
         session.id,
-      amountMinor:
-        totalAmountMinor,
     },
   });
 
