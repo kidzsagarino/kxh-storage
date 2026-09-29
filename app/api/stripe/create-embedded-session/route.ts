@@ -42,6 +42,32 @@ async function getOrCreateStorageMonthlyPriceId(params: {
   return price.id;
 }
 
+const DAILY_LATE_FEE_MINOR = 200; // £2.00
+
+function calculateDaysOverdue(
+  dueDate: Date,
+  now = new Date()
+): number {
+  const due = Date.UTC(
+    dueDate.getUTCFullYear(),
+    dueDate.getUTCMonth(),
+    dueDate.getUTCDate()
+  );
+
+  const today = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate()
+  );
+
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+  return Math.max(
+    0,
+    Math.floor((today - due) / MS_PER_DAY)
+  );
+}
+
 async function createStorageBillingSession(
   billingScheduleId: string
 ) {
@@ -108,48 +134,30 @@ async function createStorageBillingSession(
   const baseUrl =
     getBaseUrl();
 
-  /*
-   * Reuse an existing open Checkout Session,
-   * but ONLY for this billing schedule.
-   */
+  const daysOverdue = calculateDaysOverdue(
+    schedule.dueDate
+  );
+
+  const lateFeeMinor =
+    daysOverdue * DAILY_LATE_FEE_MINOR;
+
+  const totalAmountMinor =
+    schedule.amountMinor + lateFeeMinor;
+
   if (
-    schedule.stripeCheckoutSessionId
+    !Number.isInteger(totalAmountMinor) ||
+    totalAmountMinor < 0
   ) {
-    try {
-      const existingSession =
-        await stripe.checkout.sessions.retrieve(
-          schedule
-            .stripeCheckoutSessionId
-        );
-
-      if (
-        existingSession.status ===
-        "open" &&
-        existingSession.client_secret
-      ) {
-        return NextResponse.json({
-          clientSecret:
-            existingSession.client_secret,
-
-          sessionId:
-            existingSession.id,
-
-          billingScheduleId:
-            schedule.id,
-
-          orderId:
-            schedule.orderId,
-
-          currency,
-        });
+    return NextResponse.json(
+      {
+        error: "Invalid billing amount",
+      },
+      {
+        status: 400,
       }
-    } catch {
-      /*
-       * Old or invalid Stripe session.
-       * Create a fresh one below.
-       */
-    }
+    );
   }
+
 
   const session =
     await stripe.checkout.sessions.create({
@@ -187,6 +195,31 @@ async function createStorageBillingSession(
 
           quantity: 1,
         },
+
+        ...(lateFeeMinor > 0
+          ? [
+            {
+              price_data: {
+                currency,
+
+                unit_amount:
+                  lateFeeMinor,
+
+                product_data: {
+                  name: "Late payment fee",
+
+                  description:
+                    `${daysOverdue} ${daysOverdue === 1
+                      ? "day"
+                      : "days"
+                    } overdue × £5.00`,
+                },
+              },
+
+              quantity: 1,
+            },
+          ]
+          : []),
       ],
 
       client_reference_id:
@@ -204,9 +237,20 @@ async function createStorageBillingSession(
 
         installmentNumber:
           String(
-            schedule
-              .installmentNumber
+            schedule.installmentNumber
           ),
+
+        daysOverdue:
+          String(daysOverdue),
+
+        lateFeeMinor:
+          String(lateFeeMinor),
+
+        baseAmountMinor:
+          String(schedule.amountMinor),
+
+        totalAmountMinor:
+          String(totalAmountMinor),
       },
 
       payment_intent_data: {
@@ -219,6 +263,18 @@ async function createStorageBillingSession(
 
           orderId:
             schedule.orderId,
+
+          daysOverdue:
+            String(daysOverdue),
+
+          lateFeeMinor:
+            String(lateFeeMinor),
+
+          baseAmountMinor:
+            String(schedule.amountMinor),
+
+          totalAmountMinor:
+            String(totalAmountMinor),
         },
       },
     });
