@@ -10,6 +10,8 @@ type Props = {
     }>;
 };
 
+const DAILY_LATE_FEE_MINOR = 200;
+
 function formatMoney(
     amountMinor: number,
     currency = "GBP"
@@ -26,6 +28,41 @@ function formatDate(date: Date) {
         month: "long",
         year: "numeric",
     }).format(date);
+}
+
+/**
+ * Calculates how many calendar days the payment is overdue.
+ *
+ * Due today = 0 days overdue
+ * Due yesterday = 1 day overdue
+ * Due 2 days ago = 2 days overdue
+ */
+function calculateDaysOverdue(
+    dueDate: Date,
+    now = new Date()
+) {
+    const due = Date.UTC(
+        dueDate.getUTCFullYear(),
+        dueDate.getUTCMonth(),
+        dueDate.getUTCDate()
+    );
+
+    const today = Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate()
+    );
+
+    const millisecondsPerDay =
+        24 * 60 * 60 * 1000;
+
+    return Math.max(
+        0,
+        Math.floor(
+            (today - due) /
+                millisecondsPerDay
+        )
+    );
 }
 
 export default async function BillingPage({
@@ -62,22 +99,52 @@ export default async function BillingPage({
     const totalInstallments =
         schedule.order.billingSchedule.length;
 
-    const amount = formatMoney(
-        schedule.amountMinor,
-        schedule.order.currency
-    );
-
-    const dueDate =
-        formatDate(schedule.dueDate);
-
     const isPaid =
         schedule.status === "PAID";
 
     const isCanceled =
         schedule.status === "CANCELED";
 
+    /*
+     * Calculate late fee when customer opens payment page.
+     *
+     * £5 × number of overdue days
+     */
+    const daysOverdue =
+        !isPaid && !isCanceled
+            ? calculateDaysOverdue(
+                  schedule.dueDate
+              )
+            : 0;
+
+    const lateFeeMinor =
+        daysOverdue *
+        DAILY_LATE_FEE_MINOR;
+
+    const totalAmountMinor =
+        schedule.amountMinor +
+        lateFeeMinor;
+
+    const amount = formatMoney(
+        schedule.amountMinor,
+        schedule.order.currency
+    );
+
+    const lateFee = formatMoney(
+        lateFeeMinor,
+        schedule.order.currency
+    );
+
+    const totalAmount = formatMoney(
+        totalAmountMinor,
+        schedule.order.currency
+    );
+
+    const dueDate =
+        formatDate(schedule.dueDate);
+
     const isOverdue =
-        schedule.status === "OVERDUE";
+        daysOverdue > 0;
 
     return (
         <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6">
@@ -85,6 +152,7 @@ export default async function BillingPage({
 
                 <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
 
+                    {/* HEADER */}
                     <div className="border-b border-slate-100 px-5 py-6 sm:px-7">
                         <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-700">
                             KXH Storage & Logistics
@@ -100,9 +168,9 @@ export default async function BillingPage({
                         </p>
                     </div>
 
-
                     <div className="space-y-6 p-5 sm:p-7">
 
+                        {/* PAYMENT DETAILS */}
                         <div className="grid gap-3 sm:grid-cols-3">
 
                             <div className="rounded-2xl bg-slate-50 p-4">
@@ -118,7 +186,6 @@ export default async function BillingPage({
                                 </p>
                             </div>
 
-
                             <div className="rounded-2xl bg-slate-50 p-4">
                                 <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                                     Amount
@@ -128,7 +195,6 @@ export default async function BillingPage({
                                     {amount}
                                 </p>
                             </div>
-
 
                             <div className="rounded-2xl bg-slate-50 p-4">
                                 <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -142,7 +208,7 @@ export default async function BillingPage({
 
                         </div>
 
-
+                        {/* CUSTOMER */}
                         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
 
                             <p className="text-sm font-semibold text-slate-900">
@@ -161,7 +227,7 @@ export default async function BillingPage({
 
                         </div>
 
-
+                        {/* PAID */}
                         {isPaid && (
                             <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
 
@@ -185,7 +251,7 @@ export default async function BillingPage({
                             </div>
                         )}
 
-
+                        {/* CANCELED */}
                         {isCanceled && (
                             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
 
@@ -200,13 +266,16 @@ export default async function BillingPage({
                             </div>
                         )}
 
-
+                        {/* ACTIVE PAYMENT */}
                         {!isPaid &&
                             !isCanceled && (
                                 <>
+
+                                    {/* OVERDUE */}
                                     {isOverdue && (
-                                        <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
-                                            <p className="font-semibold text-red-800">
+                                        <div className="rounded-2xl border border-red-200 bg-red-50 p-5">
+
+                                            <p className="font-bold text-red-800">
                                                 Payment overdue
                                             </p>
 
@@ -214,9 +283,62 @@ export default async function BillingPage({
                                                 This installment was due on{" "}
                                                 {dueDate}.
                                             </p>
+
+                                            <p className="mt-1 text-sm text-red-700">
+                                                {daysOverdue}{" "}
+                                                {daysOverdue === 1
+                                                    ? "day"
+                                                    : "days"}{" "}
+                                                overdue × £2.00 per day
+                                            </p>
+
                                         </div>
                                     )}
 
+                                    {/* TOTAL */}
+                                    <div className="overflow-hidden rounded-2xl border border-slate-200">
+
+                                        <div className="flex items-center justify-between px-4 py-3">
+                                            <span className="text-sm text-slate-600">
+                                                Installment
+                                            </span>
+
+                                            <span className="text-sm font-semibold text-slate-900">
+                                                {amount}
+                                            </span>
+                                        </div>
+
+                                        {lateFeeMinor > 0 && (
+                                            <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3">
+                                                <div>
+                                                    <p className="text-sm text-red-600">
+                                                        Late fee
+                                                    </p>
+
+                                                    <p className="text-xs text-slate-500">
+                                                        {daysOverdue} × £2.00
+                                                    </p>
+                                                </div>
+
+                                                <span className="text-sm font-semibold text-red-600">
+                                                    {lateFee}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-4">
+                                            <span className="font-bold text-slate-900">
+                                                Total due
+                                            </span>
+
+                                            <span className="text-lg font-black text-slate-900">
+                                                {totalAmount}
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    {/* STRIPE CHECKOUT */}
                                     <BillingCheckoutClient
                                         orderId={
                                             schedule.orderId
@@ -225,12 +347,12 @@ export default async function BillingPage({
                                             schedule.id
                                         }
                                     />
+
                                 </>
                             )}
 
                     </div>
                 </div>
-
 
                 <p className="mt-4 text-center text-xs text-slate-500">
                     Payments are securely processed by Stripe.

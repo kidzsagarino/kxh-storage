@@ -383,14 +383,14 @@ export default async function HomePage() {
                             <div className="flex h-[52px] items-start justify-center">
                                 <TrustpilotPill />
                             </div>
-
+                            
                             {/* Google */}
                             <a
                                 href="https://www.google.com/maps/place/KXH+Storage+and+Logistics/@51.4005411,-1.5718478,8z/data=!3m1!4b1!4m6!3m5!1s0x47d8b51f343bb04f:0x23adefcf1e4277f3!8m2!3d51.4062307!4d-0.2527389!16s%2Fg%2F11y92dhgp4?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="View KXH Storage and Logistics reviews on Google Maps"
-                                className="flex h-[52px] items-center justify-center gap-3 border border-slate-300 bg-white px-4 transition hover:border-slate-400 hover:opacity-75"
+                                className="flex h-[45px] items-center justify-center gap-3 border border-slate-300 bg-white px-4 transition hover:border-slate-400 hover:opacity-75 rounded-xl line-height-1/2"
                             >
                                 <span className="text-sm font-bold text-slate-800">
                                     Google
@@ -520,12 +520,12 @@ export default async function HomePage() {
                                 </p>
                             </div>
 
-                            <div>
+                            {/* <div>
                                 <h3 className="text-4xl font-black text-emerald-700">100+</h3>
                                 <p className="mt-2 text-slate-600">
                                     Customer Reviews
                                 </p>
-                            </div>
+                            </div> */}
 
                             <div>
                                 <h3 className="text-4xl font-black text-emerald-700">London</h3>

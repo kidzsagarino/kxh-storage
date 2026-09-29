@@ -39,6 +39,17 @@ async function handleBillingPaid(
             ? session.payment_intent
             : session.payment_intent?.id ?? null;
 
+    const amountPaidMinor =
+        session.amount_total;
+
+    if (
+        amountPaidMinor == null ||
+        amountPaidMinor <= 0
+    ) {
+        throw new Error(
+            `Invalid Stripe amount_total for billing session: ${session.id}`
+        );
+    }
     const newlyPaid =
         await prisma.$transaction(
             async (tx) => {
@@ -142,7 +153,7 @@ async function handleBillingPaid(
                             PaymentStatus.SUCCEEDED,
 
                         amountMinor:
-                            schedule.amountMinor,
+                            amountPaidMinor,
 
                         providerRef:
                             session.id,
@@ -156,6 +167,7 @@ async function handleBillingPaid(
 
                         status:
                             PaymentStatus.SUCCEEDED,
+                        amountMinor: amountPaidMinor,
 
                         paymentIntentId,
                     },
@@ -172,6 +184,8 @@ async function handleBillingPaid(
                     data: {
                         status:
                             BillingScheduleStatus.PAID,
+
+                        amountMinor: amountPaidMinor,
 
                         paidAt:
                             new Date(),
