@@ -10,7 +10,7 @@ type Props = {
     }>;
 };
 
-const DAILY_LATE_FEE_MINOR = 200;
+const DAILY_LATE_FEE_MINOR = 0;
 
 function formatMoney(
     amountMinor: number,
