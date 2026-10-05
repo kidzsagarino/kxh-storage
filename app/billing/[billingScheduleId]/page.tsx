@@ -143,8 +143,9 @@ export default async function BillingPage({
     const dueDate =
         formatDate(schedule.dueDate);
 
-    const isOverdue =
-        daysOverdue > 0;
+        //*TODO: Uncomment this when we want to show overdue message
+    const isOverdue = false;
+        //daysOverdue > 0;
 
     return (
         <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6">
