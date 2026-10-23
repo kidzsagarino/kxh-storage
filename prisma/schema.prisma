@@ -1,0 +1,646 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- ENUMS ---
+
+enum ServiceType {
+  STORAGE
+  MOVING
+  SHREDDING
+  RETURN
+}
+
+enum OrderStatus {
+  DRAFT
+  QUOTED
+  PENDING_PAYMENT
+  PAID
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+  REFUNDED
+  DROPPED_OFF
+}
+
+enum PaymentStatus {
+  REQUIRES_PAYMENT_METHOD
+  REQUIRES_CONFIRMATION
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+  CASH
+  BANK_TRANSFER
+  OTHER
+}
+
+enum AddressType {
+  PICKUP
+  DROPOFF
+  BILLING
+}
+
+enum CatalogItemId {
+  // STORAGE
+  small_box
+  medium_box
+  large_box
+  xl_box
+  suitcase
+  half_container
+  full_container
+  pallet
+  // MOVING
+  small_move
+  one_bedroom_flat
+  two_bedroom_flat
+  three_bedroom_flat
+  four_bedroom_flat
+  office_move
+  // SHREDDING
+  bag
+  archive_box
+  return_boxes_suitcase
+  return_half_container
+  return_container
+}
+
+enum MovingPackageId {
+  basic_package
+  move_and_pack
+}
+
+enum BillingUnit {
+  PER_MONTH
+  PER_ITEM
+  FLAT
+}
+
+enum DiscountScope {
+  GLOBAL
+  PER_ITEM
+}
+
+enum Weekday {
+  SUN
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+}
+
+enum TimeSlotKey {
+  MORNING
+  AFTERNOON
+  EVENING
+  ALLDAY
+}
+
+// --- MODELS ---
+
+model Customer {
+  id String @id @default(cuid())
+
+  email                String?  @unique
+  phone                String?
+  fullName             String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  stripeSubscriptionId String?
+  subscriptionStatus   String?
+  stripeCustomerId     String?  @unique
+
+  orders              Order[]
+  subscriptionInvoice SubscriptionInvoice[]
+  invoices            Invoice[]
+
+  billingAddress CustomerBillingAddress?
+}
+
+model AdminUser {
+  id           String  @id @default(cuid())
+  email        String  @unique
+  name         String
+  passwordHash String?
+  role         String  @default("admin")
+  isActive     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ServiceItem {
+  id          CatalogItemId @id
+  serviceType ServiceType
+  sku         String        @unique
+  name        String
+  description String?
+  isActive    Boolean       @default(true)
+
+  prices     ServiceItemPrice[]
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serviceType])
+  @@index([isActive])
+}
+
+model ServiceItemPrice {
+  id            String        @id @default(cuid())
+  serviceItemId CatalogItemId
+  serviceItem   ServiceItem   @relation(fields: [serviceItemId], references: [id], onDelete: Cascade)
+
+  currency       String      @default("GBP")
+  unitPriceMinor Int
+  billingUnit    BillingUnit @default(PER_ITEM)
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([serviceItemId, currency])
+}
+
+model MovingPackage {
+  id          MovingPackageId @id
+  sku         String          @unique
+  name        String
+  description String?
+  isActive    Boolean         @default(true)
+
+  prices MovingPackagePrice[]
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovingPackagePrice {
+  id            String          @id @default(cuid())
+  packageId     MovingPackageId
+  movingPackage MovingPackage   @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  currency   String @default("GBP")
+  priceMinor Int
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([packageId, currency])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique @default(cuid())
+  serviceType ServiceType
+  status      OrderStatus @default(DRAFT)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  serviceDate DateTime?
+  timeSlotId  String?
+  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
+
+  movingPackageId MovingPackageId
+  movingPackage   MovingPackage?  @relation(fields: [movingPackageId], references: [id])
+  distanceMiles   Int             @default(0)
+  notes           String?
+
+  currency      String @default("GBP")
+  subtotalMinor Int    @default(0)
+  discountMinor Int    @default(0)
+  taxMinor      Int    @default(0)
+  totalMinor    Int    @default(0)
+
+  // Link to the Tier for auditing
+  discountTierId      String?
+  storageDiscountTier StorageDiscountTier? @relation(fields: [discountTierId], references: [id])
+
+  promoDiscountMinor Int           @default(0)
+  discountCodeId     String?
+  discountCode       DiscountCode? @relation(fields: [discountCodeId], references: [id])
+
+  stripeSubscriptionId String?   @unique
+  subscriptionStatus   String?
+  nextBillingAt        DateTime?
+  cancelAt             DateTime?
+  cancelReason         String?
+  paymentLink          String?
+
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  collectionFeeMinor       Int      @default(0)
+  movingPackageAmountMinor Int      @default(0)
+  movingPricePerMileMinor  Int      @default(0)
+  movingDistanceCostMinor  Int      @default(0)
+
+  items                 OrderItem[]
+  addresses             Address[]
+  payments              Payment[]
+  emailLogs             EmailLog[]
+  billingSchedule       OrderBillingSchedule[]
+  inventoryAccessTokens OrderInventoryAccessToken[]
+  inventoryItems        OrderInventoryItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([serviceDate])
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  serviceItemId CatalogItemId?
+  serviceItem   ServiceItem?   @relation(fields: [serviceItemId], references: [id])
+
+  sku      String?
+  name     String
+  quantity Int     @default(1)
+
+  unitPriceMinor Int  @default(0)
+  lineTotalMinor Int  @default(0)
+  months         Int? // Used for storage duration
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+model Address {
+  id         String      @id @default(cuid())
+  orderId    String
+  order      Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type       AddressType
+  line1      String
+  line2      String
+  city       String
+  postalCode String
+  country    String      @default("GB")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+model Payment {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  billingScheduleId String?
+  billingSchedule   OrderBillingSchedule? @relation(fields: [billingScheduleId], references: [id], onDelete: SetNull)
+
+  provider        PaymentProvider @default(STRIPE)
+  status          PaymentStatus   @default(PROCESSING)
+  amountMinor     Int
+  providerRef     String?         @unique
+  paymentIntentId String?         @unique
+  refundReason    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([billingScheduleId])
+}
+
+model TimeSlot {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  startTime   String?
+  endTime     String?
+  isActive    Boolean      @default(true)
+  serviceType ServiceType?
+
+  orders Order[]
+}
+
+model StorageDiscountTier {
+  id         String  @id @default(cuid())
+  name       String?
+  minMonths  Int     @unique
+  percentOff Int
+  isActive   Boolean @default(true)
+
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminSettings {
+  id String @id @default("global_settings") // Ensures only one row exists
+
+  storageEnabled   Boolean @default(true)
+  movingEnabled    Boolean @default(true)
+  shreddingEnabled Boolean @default(true)
+  returnEnabled    Boolean @default(true)
+
+  movingPricePerMileMinor     Int @default(58)
+  packingAssistanceMinor      Int @default(29500)
+  movingAndCollectionFeeMinor Int @default(1495)
+  shreddingCollectionFeeMinor Int @default(4500)
+
+  timeSlotSettings TimeSlotSetting[]
+  capacities       CapacitySetting[]
+  weekdayRules     WeekdayRule[]
+  blackoutDates    BlackoutDate[]
+
+  updatedAt DateTime @updatedAt
+}
+
+model TimeSlotSetting {
+  id         String        @id @default(cuid())
+  settingsId String
+  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  key        TimeSlotKey   @unique
+  label      String
+  enabled    Boolean       @default(true)
+}
+
+model CapacitySetting {
+  id          String        @id @default(cuid())
+  settingsId  String
+  settings    AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  serviceType ServiceType
+  slotKey     TimeSlotKey
+  capacity    Int           @default(5)
+
+  @@unique([settingsId, serviceType, slotKey])
+}
+
+model WeekdayRule {
+  id          String        @id @default(cuid())
+  settingsId  String
+  settings    AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  serviceType ServiceType
+  weekday     Weekday
+  enabled     Boolean       @default(true)
+
+  @@unique([settingsId, serviceType, weekday])
+}
+
+model BlackoutDate {
+  id         String        @id @default(cuid())
+  settingsId String
+  settings   AdminSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  date       DateTime
+  reason     String?
+
+  @@unique([settingsId, date])
+}
+
+model SubscriptionInvoice {
+  id String @id @default(cuid())
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  stripeInvoiceId      String  @unique
+  stripeSubscriptionId String?
+  status               String
+  currency             String
+  amountDueMinor       Int     @default(0)
+  amountPaidMinor      Int     @default(0)
+  amountRemainingMinor Int     @default(0)
+
+  hostedInvoiceUrl String?
+  invoicePdf       String?
+  number           String? // Stripe invoice number (e.g. "3C2F1F3-0001")
+  billingReason    String?
+
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([stripeSubscriptionId])
+  @@index([createdAt])
+}
+
+model EmailLog {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  type    EmailLogType
+  to      String
+  subject String?
+
+  status      EmailLogStatus @default(SENT)
+  provider    String?
+  providerRef String?
+  error       String?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([type])
+  @@index([status])
+}
+
+enum EmailLogType {
+  RECEIPT
+  DROPOFF
+  OTHER
+  COMPLETED
+  BILLING_PAYMENT_LINK
+}
+
+enum EmailLogStatus {
+  SENT
+  FAILED
+}
+
+model StripeEvent {
+  id        String   @id
+  createdAt DateTime @default(now())
+}
+
+model DiscountCode {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  description String?
+  type        String        @default("percentage") // "percentage" or "fixed"
+  valueMinor  Int // For percentage: store as 10 = 10%, for fixed: minor currency (e.g., 500 = £5)
+  scope       DiscountScope @default(GLOBAL)
+  maxUses     Int? // Optional max usage
+  usedCount   Int           @default(0)
+  active      Boolean       @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+
+  // Orders that use this discount
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BillingScheduleStatus {
+  SCHEDULED
+  PAYMENT_PENDING
+  PAID
+  OVERDUE
+  CANCELED
+}
+
+model OrderBillingSchedule {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  installmentNumber Int
+  dueDate           DateTime
+  amountMinor       Int
+
+  status BillingScheduleStatus @default(SCHEDULED)
+
+  paidAt         DateTime?
+  reminderSentAt DateTime?
+
+  stripeCheckoutSessionId String? @unique
+  stripePaymentIntentId   String? @unique
+
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([orderId, installmentNumber])
+  @@index([orderId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model OrderInventoryAccessToken {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  token     String    @unique
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+model OrderInventoryItem {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  name     String
+  quantity Int    @default(1)
+
+  description String?
+  condition   String?
+  location    String?
+  notes       String?
+  imageUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  VOID
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String   @unique
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  status   InvoiceStatus @default(DRAFT)
+  currency String        @default("GBP")
+
+  invoiceDate DateTime
+  dueDate     DateTime
+
+  subtotalMinor Int
+  taxPercent    Int @default(0)
+  taxMinor      Int @default(0)
+  totalMinor    Int
+
+  notes String?
+  terms String?
+
+  items InvoiceItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  paidAt    DateTime?
+  sentAt    DateTime?
+
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model InvoiceItem {
+  id        String  @id @default(cuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  description    String
+  quantity       Int    @default(1)
+  unitPriceMinor Int
+  totalMinor     Int
+
+  @@index([invoiceId])
+}
+
+model InvoiceCounter {
+  id        String @id @default("default")
+  lastValue Int    @default(0)
+}
+
+model CustomerBillingAddress {
+  id         String   @id @default(cuid())
+  customerId String   @unique
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  line1      String
+  line2      String?
+  city       String
+  postalCode String
+  country    String  @default("GB")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

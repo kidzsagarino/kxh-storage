@@ -1,0 +1,395 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { PrismaClient, OrderStatus, AddressType, CatalogItemId, MovingPackageId } from "@prisma/client";
+import { processOrderItems } from "@/app/lib/order-service";
+import { validateServiceAvailability } from "@/app/lib/validation-service";
+import { validateCapacity } from "@/app/lib/capacity-service";
+import { generateOrderNumber } from "@/app/lib/order-utils";
+import { haversineMiles, toNum } from "@/app/lib/distance";
+import { createBillingScheduleForOrder } from "@/app/lib/billing/billing-service";
+
+const prisma = new PrismaClient();
+
+
+function getDistance(fromLat: number, fromLon: number, toLat: number, toLon: number) {
+
+    if (![fromLat, fromLon, toLat, toLon].every(Number.isFinite)) {
+
+        return;
+    }
+
+    const miles2dp = haversineMiles(fromLat, fromLon, toLat, toLon);
+
+    return Math.ceil(miles2dp);
+}
+
+export async function POST(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const {
+            customer,
+            serviceType,
+            items = [],
+            addresses = [],
+            serviceDate,
+            timeSlotId,
+            discountTierId,
+            notes,
+            movingPackageId,
+            fromLocation,
+            toLocation,
+            originalOrderNumber,
+            discountMeta
+        } = body;
+
+
+
+        const result = await prisma.$transaction(async (tx) => {
+            // 1) Validation
+            if (serviceDate) {
+                const dateObj = new Date(serviceDate);
+                await validateServiceAvailability(tx, serviceType, dateObj);
+                if (timeSlotId) {
+                    await validateCapacity(tx, serviceType, dateObj, timeSlotId);
+                }
+            }
+
+            let subtotalMinor = 0;
+            let discountMinor = 0;
+            let totalMinor = 0;
+            let mappedItems: any[] = [];
+            let finalTierId: string | null = null;
+            let actualCollectionFeeMinor = 0;
+            let actualMovingPackageAmountMinor = 0;
+            let actualMovingPricePerMileMinor = 0;
+            let actualMovingDistanceCostMinor = 0;
+            let actualDistanceMiles = 0;
+
+            if (serviceType === "MOVING") {
+                // Find the Move Item (e.g., two-bedroom-flat)
+                const moveItemId = items[0]?.serviceItemId as CatalogItemId;
+
+                const [movingItem, packagePrice, settings] = await Promise.all([
+                    tx.serviceItem.findUnique({
+                        where: { id: moveItemId },
+                        include: { prices: { where: { currency: "GBP", isActive: true } } }
+                    }),
+                    movingPackageId ? tx.movingPackagePrice.findUnique({
+                        where: { packageId_currency: { packageId: movingPackageId as MovingPackageId, currency: "GBP" } }
+                    }) : null,
+                    tx.adminSettings.findFirst()
+                ]);
+
+                const fromLat = toNum(fromLocation.lat) || 0;
+                const fromLon = toNum(fromLocation.lon) || 0;
+                const toLat = toNum(toLocation.lat) || 0;
+                const toLon = toNum(toLocation.lon) || 0;
+
+                const miles = getDistance(fromLat, fromLon, toLat, toLon);
+                actualDistanceMiles = Number(miles) || 0;
+
+                const itemBase = movingItem?.prices[0]?.unitPriceMinor || 0;
+                const packBase = packagePrice?.priceMinor || 0;
+                const mileRate = settings?.movingPricePerMileMinor || 0;
+                const mileageTotal = Math.round((Number(miles) || 0) * mileRate);
+                actualMovingPackageAmountMinor =
+                    packBase;
+
+                actualMovingPricePerMileMinor =
+                    mileRate;
+
+                actualMovingDistanceCostMinor =
+                    mileageTotal;
+
+                subtotalMinor =
+                    itemBase +
+                    actualMovingPackageAmountMinor +
+                    actualMovingDistanceCostMinor;
+
+                totalMinor = subtotalMinor;
+
+                mappedItems = [{
+                    serviceItemId: moveItemId,
+                    name: movingItem?.name || "Moving Service",
+                    sku: movingItem?.sku || "MOVE-GENERIC",
+                    quantity: 1,
+                    unitPriceMinor: itemBase,
+                    lineTotalMinor: itemBase,
+                }];
+            } else if (serviceType === "STORAGE") {
+                // --- STORAGE CALCULATION ---
+                const [dbPrices, discountTiers, settings] = await Promise.all([
+                    tx.serviceItemPrice.findMany({
+                        where: {
+                            serviceItemId: { in: items.map((i: any) => i.serviceItemId as CatalogItemId) },
+                            isActive: true,
+                        },
+                        include: { serviceItem: true },
+                    }),
+                    tx.storageDiscountTier.findMany({
+                        where: { isActive: true },
+                        orderBy: { minMonths: "desc" },
+                    }),
+                    tx.adminSettings.findUnique({
+                        where: {
+                            id: "global_settings",
+                        },
+                    }),
+
+                ]);
+
+                actualCollectionFeeMinor = settings?.movingAndCollectionFeeMinor ?? 0;
+
+                const storageCalc = processOrderItems(items, dbPrices as any, discountTiers, discountTierId, actualCollectionFeeMinor || 0);
+
+                mappedItems = storageCalc.mappedItems;
+                subtotalMinor = storageCalc.subtotalMonthlyMinor;
+                discountMinor = storageCalc.discountMonthlyMinor;
+                totalMinor = storageCalc.dueNowMinor;
+                finalTierId = storageCalc.finalTierId;
+
+
+            } else if (serviceType === "SHREDDING") {
+
+                const [dbPrices, settings] = await Promise.all([
+                    tx.serviceItemPrice.findMany({
+                        where: {
+                            serviceItemId: {
+                                in: items.map(
+                                    (i: any) =>
+                                        i.serviceItemId as CatalogItemId
+                                ),
+                            },
+                            isActive: true,
+                            currency: "GBP",
+                        },
+                        include: {
+                            serviceItem: true,
+                        },
+                    }),
+
+                    tx.adminSettings.findUnique({
+                        where: {
+                            id: "global_settings",
+                        },
+                    }),
+                ]);
+
+                // Get shredding collection fee from Admin Settings
+                actualCollectionFeeMinor =
+                    settings?.shreddingCollectionFeeMinor ?? 0;
+
+                const shreddingCalc = processOrderItems(
+                    items,
+                    dbPrices as any,
+                    null,
+                    discountTierId
+                );
+
+                mappedItems = shreddingCalc.mappedItems;
+
+                // Items only
+                const itemsSubtotalMinor = shreddingCalc.subtotalMonthlyMinor;
+
+                // Items + shredding collection fee
+                subtotalMinor = itemsSubtotalMinor + actualCollectionFeeMinor;
+
+                discountMinor = shreddingCalc.discountMonthlyMinor;
+
+                totalMinor =
+                    Math.max(
+                        0,
+                        subtotalMinor - discountMinor
+                    );
+
+                finalTierId = shreddingCalc.finalTierId;
+
+            } else if (serviceType === "RETURN") {
+
+                const returnIds = items.map((i: any) => i.serviceItemId as CatalogItemId);
+
+                const dbPrices = await tx.serviceItemPrice.findMany({
+                    where: {
+                        serviceItemId: { in: returnIds },
+                        isActive: true,
+                        currency: "GBP",
+                    },
+                    include: { serviceItem: true },
+                });
+
+                const priceMap = new Map(
+                    dbPrices.map((p) => [p.serviceItemId, p])
+                );
+
+                mappedItems = items.map((item: any) => {
+                    const serviceItemId = item.serviceItemId as CatalogItemId;
+                    const priceRow = priceMap.get(serviceItemId);
+
+                    if (!priceRow) {
+                        throw new Error(`No active price found for return item: ${serviceItemId}`);
+                    }
+
+                    const quantity = Math.max(1, Number(item.quantity) || 1);
+                    const unitPriceMinor = Number(priceRow.unitPriceMinor || 0);
+                    const lineTotalMinor = unitPriceMinor * quantity;
+
+                    return {
+                        serviceItemId,
+                        sku: priceRow.serviceItem?.sku || serviceItemId,
+                        name: priceRow.serviceItem?.name || serviceItemId,
+                        quantity,
+                        unitPriceMinor,
+                        lineTotalMinor,
+                        months: null,
+                    };
+                });
+
+                subtotalMinor = mappedItems.reduce(
+                    (sum, item) => sum + Number(item.lineTotalMinor || 0),
+                    0
+                );
+
+                discountMinor = 0;
+                totalMinor = subtotalMinor;
+                finalTierId = null;
+            }
+
+            const customerEmail = customer.email?.toLowerCase().trim();
+            const safeEmail = customerEmail || `draft-${Date.now()}@placeholder.com`;
+
+            const dbCustomer = await tx.customer.upsert({
+                where: { email: safeEmail },
+                update: {
+                    fullName: customer.fullName || "Valued Customer",
+                    phone: customer.phone || null,
+                },
+                create: {
+                    email: safeEmail,
+                    fullName: customer.fullName || "Valued Customer",
+                    phone: customer.phone || null,
+                },
+            });
+
+            let dbDiscount = null;
+            let discountCodeMinor = 0;
+
+            if (discountMeta && discountMeta.id) {
+                dbDiscount = await tx.discountCode.findUnique({
+                    where: { id: discountMeta.id },
+                });
+
+                if (dbDiscount && totalMinor > 0) {
+
+                    if (dbDiscount.type === "percentage") {
+                        discountCodeMinor = Math.round(
+                            (totalMinor * dbDiscount.valueMinor) / 100
+                        );
+                    } else if (dbDiscount.type === "fixed") {
+                        discountCodeMinor = Math.min(
+                            dbDiscount.valueMinor,
+                            totalMinor
+                        );
+                    }
+
+                    totalMinor = Math.max(totalMinor - discountCodeMinor, 0);
+                }
+            }
+
+            // 3) Order Creation
+            const createdOrder = await tx.order.create({
+                data: {
+                    orderNumber: generateOrderNumber(),
+                    serviceType,
+                    status: OrderStatus.QUOTED,
+
+                    customerId: dbCustomer.id,
+
+                    serviceDate: serviceDate
+                        ? new Date(serviceDate)
+                        : null,
+
+                    timeSlotId: timeSlotId || null,
+
+                    notes:
+                        notes ||
+                        (originalOrderNumber
+                            ? `Return request for original order: ${originalOrderNumber}`
+                            : null),
+
+                    movingPackageId:
+                        (movingPackageId as MovingPackageId) ||
+                        MovingPackageId.basic_package,
+
+                    distanceMiles: actualDistanceMiles,
+
+                    subtotalMinor: Math.floor(subtotalMinor),
+                    discountMinor: Math.floor(discountMinor),
+                    totalMinor: Math.floor(totalMinor),
+
+                    discountTierId: finalTierId,
+
+                    items: {
+                        create: mappedItems.map((item) => ({
+                            serviceItemId: item.serviceItemId,
+                            sku: item.sku,
+                            name: item.name,
+                            quantity: item.quantity,
+                            unitPriceMinor: item.unitPriceMinor,
+                            lineTotalMinor: item.lineTotalMinor,
+                            months: item.months || null,
+                        })),
+                    },
+
+                    addresses: {
+                        create: addresses.map((addr: any) => ({
+                            type: addr.type as AddressType,
+                            line1: addr.line1 || "",
+                            line2: addr.line2 || "",
+                            city: addr.city || "",
+                            postalCode: addr.postalCode || "",
+                            country: addr.country || "GB",
+                        })),
+                    },
+
+                    promoDiscountMinor: discountCodeMinor,
+
+                    discountCodeId:
+                        dbDiscount
+                            ? dbDiscount.id
+                            : null,
+
+                    movingPackageAmountMinor:
+                        actualMovingPackageAmountMinor,
+                    movingPricePerMileMinor:
+                        actualMovingPricePerMileMinor,
+                    movingDistanceCostMinor:
+                        actualMovingDistanceCostMinor,
+                    collectionFeeMinor:
+                        actualCollectionFeeMinor,
+                },
+
+                include: {
+                    items: true,
+                    addresses: true,
+                    customer: true,
+                },
+            });
+
+            return createdOrder;
+
+        }, { timeout: 15000 });
+
+        if (result.serviceType === "STORAGE") {
+            await createBillingScheduleForOrder(
+                result.id
+            );
+        }
+
+        return NextResponse.json(result, { status: 201 });
+    } catch (error: any) {
+        console.error("[ORDER_POST_ERROR]", error);
+        return NextResponse.json(
+            { error: error.message || "Failed to process order" },
+            { status: 400 }
+        );
+    }
+}

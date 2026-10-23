@@ -1,0 +1,666 @@
+import CrispChat from "../components/chat/CrispChat";
+import MainFooter from "../components/footer/MainFooter";
+import Nav from "../components/MobileNav";
+import Link from "next/link";
+import { londonLocations } from "../lib/location";
+import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
+import TestimonialsSection from "../components/TestimonialsSection";
+import Image from "next/image";
+import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
+
+function JsonLd() {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Secure Document Shredding London",
+    title: "Secure Document Shredding London | Confidential Shredding Services | KXH Logistics",
+    provider: {
+      "@type": "LocalBusiness",
+      name: "KXH Storage & Logistics",
+      url: "https://kxhlogistics.co.uk",
+    },
+    areaServed: "London",
+    description:
+      "Confidential document shredding service in London with secure collection, certified destruction, and full compliance.",
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
+function FAQJsonLd() {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Is your shredding service GDPR compliant?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, all shredding processes follow GDPR standards with secure handling, strict chain of custody, and certified destruction.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you provide a certificate of destruction?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we provide an official certificate of destruction after shredding for compliance and record keeping.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer document shredding collection in London?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we provide secure collection services across London. We pick up your documents, transport them safely, and shred them securely.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What types of documents can be shredded?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "We shred financial records, legal documents, business paperwork, and personal files securely and safely.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How much does document shredding cost in London?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Pricing depends on the volume of documents and service type. You can use our instant quote tool for accurate pricing.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is your document shredding service secure?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we use secure handling, controlled processes, and certified destruction methods to ensure complete confidentiality.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer one-off and business shredding services?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we offer both one-time shredding for individuals and scheduled shredding services for businesses and offices.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can you collect documents for shredding near me?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we offer document collection services across London. Enter your postcode to check availability in your area.",
+        },
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
+function BreadcrumbJsonLd() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://kxhlogistics.co.uk",
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Services",
+              "item": "https://kxhlogistics.co.uk/services",
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Document Shredding London",
+              "item":
+                "https://kxhlogistics.co.uk/shredding-solutions-london",
+            },
+          ],
+        }),
+      }}
+    />
+  );
+}
+
+export default function ShreddingServicePage() {
+  return (
+    <>
+      <CrispChat />
+      <Nav />
+
+      <nav className="max-w-6xl mx-auto px-4 pt-6 text-sm text-slate-500">
+        <Link href="/">Home</Link>
+        <span className="mx-2">/</span>
+        <Link href="/services">Services</Link>
+        <span className="mx-2">/</span>
+        <span className="text-slate-700 font-medium">
+          Document Shredding London
+        </span>
+      </nav>
+
+      <main className="min-h-screen bg-white text-slate-900">
+        <JsonLd />
+        <FAQJsonLd />
+        <BreadcrumbJsonLd />
+        <TrustpilotJsonLd />
+
+        {/* HERO */}
+        <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">
+          <div className="mx-auto max-w-5xl px-4 text-center">
+
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Confidential Shredding Service in London
+            </div>
+
+            <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
+              Confidential Document Shredding Services in London
+            </h1>
+
+            <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Protect your sensitive information with fully managed shredding services — secure collection, certified destruction, and complete peace of mind.
+            </p>
+
+            {/* TRUST BADGES */}
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {["Confidential & Secure", "Fully Compliant", "Certified Destruction"].map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border bg-white px-4 py-2 text-sm text-slate-600 shadow-sm"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <div className="mt-10 flex justify-center">
+              <Link
+                href="/get-a-quote?service=shredding"
+                className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
+              >
+                Get Quote
+              </Link>
+            </div>
+            <div className="mt-6 flex justify-center">
+              <TrustpilotPill />
+            </div>
+            <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
+              <Image
+                src="/images/shredding/document-shredding-hero.webp"
+                alt="Confidential document shredding services in London"
+                width={1400}
+                height={800}
+                priority
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+        </section>
+        <section className="border-y border-slate-200 bg-white">
+          <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
+            {[
+              "GDPR-Compliant",
+              "Certificate of Destruction",
+              "Secure Collection",
+              "Business & Office Shredding",
+              "Confidential Disposal",
+            ].map((item) => (
+              <span
+                key={item}
+                className="rounded-full border px-4 py-2 bg-slate-50"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </section>
+        {/* PROBLEM STATEMENT */}
+        <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-5xl mx-auto px-4 text-center">
+
+            <h2 className="text-3xl font-black">
+              Storing or disposing sensitive documents shouldn’t be risky or complicated
+            </h2>
+
+            <p className="mt-4 text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Many businesses and individuals still store or discard confidential documents without proper security, putting sensitive data at risk of leaks, fines, or compliance issues.
+            </p>
+            <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200">
+              <Image
+                src="/images/shredding/document-shredding-security-risk.webp"
+                alt="Confidential business documents awaiting secure destruction"
+                width={1400}
+                height={700}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+            {/* PROBLEM CARDS */}
+            <div className="mt-10 grid md:grid-cols-3 gap-6 text-left">
+
+              <div className="p-6 rounded-xl border border-slate-200 bg-red-50">
+                <h3 className="font-semibold text-red-600 mb-2">
+                  Data breach risk
+                </h3>
+                <p className="text-sm text-slate-600">
+                  Improper disposal of documents can expose sensitive personal or business information.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl border border-slate-200 bg-red-50">
+                <h3 className="font-semibold text-red-600 mb-2">
+                  GDPR compliance issues
+                </h3>
+                <p className="text-sm text-slate-600">
+                  Failure to securely destroy records can lead to compliance penalties and legal risk.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl border border-slate-200 bg-red-50">
+                <h3 className="font-semibold text-red-600 mb-2">
+                  Time-consuming handling
+                </h3>
+                <p className="text-sm text-slate-600">
+                  Manual shredding or storage wastes time and increases operational hassle.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+        {/* FEATURES */}
+        <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-6xl mx-auto px-4 mb-12">
+            <Image
+              src="/images/shredding/document-shredding-compliance.webp"
+              alt="GDPR compliant document destruction process"
+              width={1400}
+              height={700}
+              className="w-full rounded-3xl border border-slate-200 object-cover"
+            />
+          </div>
+          <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12">
+
+            <div>
+              <h2 className="text-2xl font-black mb-4">
+                Secure & Compliant Destruction
+              </h2>
+              <p className="text-slate-600 mb-6 leading-relaxed">
+                We ensure your confidential documents are destroyed securely and in compliance with data protection standards.
+              </p>
+
+              <ul className="space-y-3 text-slate-700">
+                <li>✔ GDPR-compliant shredding</li>
+                <li>✔ Secure chain of custody</li>
+                <li>✔ Certified document destruction</li>
+                <li>✔ Environmentally responsible disposal</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-black mb-4">
+                Flexible Shredding Solutions
+              </h2>
+              <p className="text-slate-600 mb-6 leading-relaxed">
+                Whether you need one-time shredding or regular scheduled services, we adapt to your needs.
+              </p>
+              <p className="mt-4 text-slate-600 leading-relaxed">
+                Our shredding services are suitable for offices, legal firms,
+                accountants, healthcare providers, retailers, and businesses
+                handling confidential information that requires secure disposal.
+              </p>
+
+              <ul className="space-y-3 text-slate-700">
+                <li>✔ One-off shredding services</li>
+                <li>✔ Scheduled business shredding</li>
+                <li>✔ Office cleanouts</li>
+                <li>✔ Bulk document disposal</li>
+              </ul>
+            </div>
+
+          </div>
+
+        </section>
+        <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <Image
+              src="/images/shredding/document-shredding-collection.webp"
+              alt="Secure document collection service in London"
+              width={1400}
+              height={700}
+              className="w-full rounded-3xl border border-slate-200 object-cover"
+            />
+          </div>
+        </section>
+        {/* HOW IT WORKS */}
+        <section className="py-20 bg-slate-50 border-t border-slate-200/40">
+          <div className="max-w-5xl mx-auto px-4">
+
+            <div className="text-center">
+              <h2 className="text-3xl font-black">
+                How our shredding service works
+              </h2>
+              <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
+                A simple, secure 3-step process to safely destroy your confidential documents.
+              </p>
+            </div>
+
+            <div className="mt-12 grid md:grid-cols-3 gap-6">
+
+              {/* STEP 1 */}
+              <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="text-2xl font-black text-emerald-700">1</div>
+                <h3 className="mt-3 font-semibold">
+                  We collect your documents
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  We securely pick up your documents from your home or office anywhere in London.
+                </p>
+              </div>
+
+              {/* STEP 2 */}
+              <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="text-2xl font-black text-emerald-700">2</div>
+                <h3 className="mt-3 font-semibold">
+                  Secure transport & shredding
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  Your documents are transported under strict chain-of-custody and destroyed using certified shredding processes.
+                </p>
+              </div>
+
+              {/* STEP 3 */}
+              <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="text-2xl font-black text-emerald-700">3</div>
+                <h3 className="mt-3 font-semibold">
+                  Receive certificate of destruction
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  You receive an official certificate confirming secure and compliant destruction of your documents.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+        {/* USE CASES */}
+        <section className="py-16 bg-slate-50 border-t border-slate-200/40">
+          <div className="max-w-6xl mx-auto px-4">
+
+            <h2 className="text-2xl font-black mb-8 text-center">
+              Who Our Document Shredding Services Are For
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-4 text-slate-700">
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Businesses handling sensitive data</div>
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Offices clearing old records</div>
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Legal & financial firms</div>
+              <div className="bg-white p-4 rounded-xl border shadow-sm border border-slate-200">✔ Individuals protecting personal documents</div>
+            </div>
+
+          </div>
+        </section>
+        <section className="py-16 border-t border-slate-200/70 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-black">
+                Related business storage services
+              </h2>
+
+              <p className="mt-3 text-slate-600">
+                Explore more warehouse and logistics services across London.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <Link
+                href="/warehouse-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Warehouse Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Managed storage with pickup and delivery.
+                </p>
+              </Link>
+
+              <Link
+                href="/business-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Business Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Flexible warehouse storage for businesses.
+                </p>
+              </Link>
+
+              <Link
+                href="/inventory-management-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Inventory Management
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Organised stock handling and storage support.
+                </p>
+              </Link>
+
+              <Link
+                href="/commercial-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Commercial Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Scalable storage for growing businesses.
+                </p>
+              </Link>
+              <Link
+                href="/pallet-storage-london"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+              >
+                <h3 className="font-semibold">
+                  Pallet Storage
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  Secure storage for palletised business goods.
+                </p>
+              </Link>
+
+            </div>
+          </div>
+        </section>
+        <section className="py-16 border-t border-slate-200/70 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <Image
+              src="/images/shredding/document-shredding-team.webp"
+              alt="KXH Storage and Logistics secure shredding team"
+              width={1400}
+              height={700}
+              className="w-full rounded-3xl border border-slate-200 object-cover"
+            />
+          </div>
+        </section>
+        <TestimonialsSection />
+
+        {/* FINAL CTA */}
+        <section className="py-16 text-center border-t border-slate-200/40 bg-white">
+          <div className="max-w-3xl mx-auto px-4">
+
+            <h2 className="text-3xl font-black">
+              Securely destroy confidential documents with trusted London shredding services
+            </h2>
+
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              Get a fast quote for secure document collection, confidential shredding, and certified destruction across London.
+            </p>
+
+            <div className="mt-8">
+              <Link
+                href="/get-a-quote?service=shredding"
+                className="inline-block bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition"
+              >
+                Get Quote
+              </Link>
+            </div>
+
+          </div>
+        </section>
+        <section className="py-16 border-t border-slate-200/40 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-black">
+                Secure shredding for businesses and individuals
+              </h2>
+
+              <p className="mt-4 text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                Whether you need to destroy archived office files,
+                confidential financial records, legal paperwork,
+                employee documents, or personal paperwork,
+                our London shredding service provides secure,
+                compliant, and fully managed disposal.
+              </p>
+            </div>
+          </div>
+        </section>
+        {/* FAQ */}
+        <section className="bg-slate-50 py-14 border-t border-slate-200/40">
+          <div className="max-w-4xl mx-auto px-4">
+
+            <h2 className="text-2xl font-black mb-6 text-center">Frequently Asked Questions</h2>
+
+            <div className="space-y-3">
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Is your shredding service GDPR compliant?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, all shredding processes follow GDPR standards with secure handling, strict chain of custody, and certified destruction.
+                </p>
+              </details>
+
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Do you provide a certificate of destruction?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we provide an official certificate of destruction after shredding for compliance and record keeping.
+                </p>
+              </details>
+
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Do you offer document shredding collection in London?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we provide secure collection services across London. We pick up your documents and shred them securely.
+                </p>
+              </details>
+
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  What types of documents can be shredded?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  We shred financial records, legal documents, business paperwork, and personal files securely and safely.
+                </p>
+              </details>
+
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  How much does document shredding cost in London?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Pricing depends on the volume of documents and service type. Use our instant quote tool for accurate pricing.
+                </p>
+              </details>
+
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Is your document shredding service secure?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we use secure handling, controlled processes, and certified destruction methods to ensure confidentiality.
+                </p>
+              </details>
+
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Do you offer one-off and business shredding services?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we provide both one-time shredding and scheduled business shredding services.
+                </p>
+              </details>
+
+              <details className="border border-slate-200 rounded-xl p-5 bg-white">
+                <summary className="font-semibold cursor-pointer">
+                  Can you collect documents for shredding near me?
+                </summary>
+                <p className="mt-3 text-slate-600">
+                  Yes, we offer document collection across London. Enter your postcode to check availability.
+                </p>
+              </details>
+            </div>
+          </div>
+        </section>
+        <section className="bg-slate-50 py-14 border-t border-slate-200/70">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="font-bold text-lg mb-3">Other areas we serve</h2>
+            <div className="flex flex-wrap gap-3">
+              {londonLocations.map((l) => (
+                <Link
+                  key={l.slug}
+                  href={`/shredding-solutions-london/${l.slug}`}
+                  className="text-emerald-700 hover:underline text-sm"
+                >
+                  Shredding Solutions in {l.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+        <MainFooter locations={londonLocations} />
+      </main>
+    </>
+  );
+}
