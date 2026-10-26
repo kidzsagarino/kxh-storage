@@ -221,9 +221,18 @@ export default function Nav() {
     const [activeBorough, setActiveBorough] = useState(boroughs[0].slug);
     const currentBorough = boroughs.find((b) => b.slug === activeBorough) ?? boroughs[0];
     const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const hoverOpenedAt = useRef(0);
     const openOnHover = (menu: "services" | "locations") => {
         if (hoverTimer.current) clearTimeout(hoverTimer.current);
-        if (window.matchMedia("(hover: hover)").matches) setOpenDesktopMenu(menu);
+        if (window.matchMedia("(hover: hover)").matches) {
+            hoverOpenedAt.current = Date.now();
+            setOpenDesktopMenu(menu);
+        }
+    };
+    // A click right after hover-open should keep the menu open, not toggle it shut.
+    const toggleMenu = (menu: "services" | "locations") => {
+        const justHovered = Date.now() - hoverOpenedAt.current < 600;
+        setOpenDesktopMenu((current) => (current === menu && !justHovered ? null : menu));
     };
     const closeOnLeave = () => {
         if (hoverTimer.current) clearTimeout(hoverTimer.current);
@@ -374,11 +383,7 @@ export default function Nav() {
                         >
                             <button
                                 type="button"
-                                onClick={() =>
-                                    setOpenDesktopMenu((current) =>
-                                        current === "services" ? null : "services",
-                                    )
-                                }
+                                onClick={() => toggleMenu("services")}
                                 aria-expanded={openDesktopMenu === "services"}
                                 aria-controls="desktop-services-menu"
                                 className={`kxh-navlink relative flex items-center whitespace-nowrap gap-1 rounded-lg px-2 py-2 text-sm font-semibold transition xl:px-3 ${openDesktopMenu === "services"
@@ -450,11 +455,7 @@ export default function Nav() {
                         >
                             <button
                                 type="button"
-                                onClick={() =>
-                                    setOpenDesktopMenu((current) =>
-                                        current === "locations" ? null : "locations",
-                                    )
-                                }
+                                onClick={() => toggleMenu("locations")}
                                 aria-expanded={openDesktopMenu === "locations"}
                                 aria-controls="desktop-locations-menu"
                                 className={`kxh-navlink relative flex items-center whitespace-nowrap gap-1 rounded-lg px-2 py-2 text-sm font-semibold transition xl:px-3 ${openDesktopMenu === "locations"

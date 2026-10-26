@@ -7,6 +7,7 @@ import { londonLocations } from "./lib/location";
 import MainFooter from "./components/footer/MainFooter";
 import HomeHeroCover from "./components/hero/HomeHeroCover";
 import HomeSections from "./components/HomeSections";
+import ServiceMarquee from "./components/ServiceMarquee";
 
 export const metadata: Metadata = {
     title: { absolute: "Storage with Collection & Delivery in London | KXH" },
@@ -256,6 +257,9 @@ export default async function HomePage() {
                 <BreadcrumbJsonLd />
                 {/* Hero Section (new cover) */}
                 <HomeHeroCover />
+
+                {/* Crossing service ribbons */}
+                <ServiceMarquee />
 
                 {/* Proof band */}
                 <section className="border-b border-slate-200/70 bg-white py-10">

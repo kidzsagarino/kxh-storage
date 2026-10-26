@@ -417,3 +417,30 @@ label {
 
 /* anchor targets clear the sticky header */
 section[id] { scroll-margin-top: 88px; }
+
+/* ===== Salmova: crossing 3D service ribbons (marquee) ===== */
+.kxh-tapes { perspective: 1200px; }
+.kxh-tapes-stage { transform-style: preserve-3d; }
+.kxh-tape { will-change: transform; }
+.kxh-tape-front { z-index: 2; transform: rotate(-2.5deg) translateZ(40px); }
+.kxh-tape-back { z-index: 1; transform: translateY(-50%) rotate(2.5deg) rotateX(10deg) translateZ(-40px); }
+.kxh-marquee {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.kxh-marquee-track { width: max-content; animation: kxhMarquee 45s linear infinite; }
+.kxh-marquee-reverse .kxh-marquee-track { animation-direction: reverse; animation-duration: 55s; }
+.kxh-marquee:hover .kxh-marquee-track { animation-play-state: paused; }
+@keyframes kxhMarquee { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+.kxh-chip { transform: translateZ(0); transition: transform .3s ease, background-color .3s ease, color .3s ease, box-shadow .3s ease; }
+.kxh-chip:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 24px -10px rgba(2, 6, 23, .45); }
+.kxh-diamond { animation: kxhDiamond 2.4s ease-in-out infinite; }
+@keyframes kxhDiamond { 0%, 100% { transform: rotate(45deg) scale(1); } 50% { transform: rotate(225deg) scale(1.35); } }
+@media (prefers-reduced-motion: reduce) {
+  .kxh-marquee-track, .kxh-diamond { animation: none !important; }
+}
+.kxh-promo { box-shadow: 0 0 0 0 rgba(190, 242, 100, .7); animation: kxhPromoGlow 2.2s ease-in-out infinite; }
+.kxh-promo-badge { display: inline-block; animation: kxhPromoBadge 2.2s ease-in-out infinite; }
+@keyframes kxhPromoGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(190, 242, 100, .55); } 50% { box-shadow: 0 0 22px 4px rgba(190, 242, 100, .55); } }
+@keyframes kxhPromoBadge { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.12) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .kxh-promo, .kxh-promo-badge { animation: none !important; } }
