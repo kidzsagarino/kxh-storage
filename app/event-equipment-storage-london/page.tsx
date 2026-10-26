@@ -1,3 +1,6 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import { Presentation as HIcPresentation, Speaker as HIcSpeaker, Armchair as HIcArmchair, Megaphone as HIcMegaphone } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Image from "next/image";
@@ -17,9 +20,9 @@ const quoteUrl = "/get-a-quote?service=storage";
 const parentPageUrl = "https://kxhlogistics.co.uk/business-storage-london";
 
 export const metadata: Metadata = {
-    title: "Event Equipment Storage London | Collection & Delivery | KXH",
+    title: "Event Equipment Storage London | Collection | KXH",
     description:
-        "Managed event equipment storage in London with collection, organised warehouse storage, inventory support, event delivery and return logistics.",
+    "Event equipment storage in London for exhibition stands, AV kit, furniture and promotional materials, with collection after events and delivery to the next one.",
     applicationName: "KXH Storage & Logistics",
     category: "Event equipment storage",
     creator: "KXH Storage & Logistics",
@@ -764,7 +767,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+447386277785",
+            telephone: "+442039165312",
         },
         areaServed: { "@type": "City", name: "London" },
         audience: {
@@ -924,11 +927,11 @@ function SectionHeading({
     return (
         <div className={`mx-auto ${widthClass} text-center`}>
             {eyebrow && (
-                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                     {eyebrow}
                 </p>
             )}
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                 {title}
             </h2>
             {description && (
@@ -1004,37 +1007,7 @@ const pageSections = [
 ];
 
 function PageBreadcrumb() {
-    return (
-        <nav
-            aria-label="Breadcrumb"
-            className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
-        >
-            <Link href="/" className="transition hover:text-emerald-700">
-                Home
-            </Link>
-            <span aria-hidden="true" className="mx-2">
-                /
-            </span>
-            <Link href="/services" className="transition hover:text-emerald-700">
-                Services
-            </Link>
-            <span aria-hidden="true" className="mx-2">
-                /
-            </span>
-            <Link
-                href="/business-storage-london"
-                className="transition hover:text-emerald-700"
-            >
-                Business Storage
-            </Link>
-            <span aria-hidden="true" className="mx-2">
-                /
-            </span>
-            <span aria-current="page" className="font-medium text-slate-700">
-                Event Equipment Storage London
-            </span>
-        </nav>
-    );
+    return null;
 }
 
 function PageSectionNav() {
@@ -1043,7 +1016,7 @@ function PageSectionNav() {
             aria-label="Event equipment storage page sections"
             className="border-b border-slate-200 bg-white"
         >
-            <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-5 py-4 sm:px-6 lg:px-8">
+            <div className="mx-auto flex max-w-screen-xl gap-2 overflow-x-auto px-5 py-4 sm:px-6 lg:px-8">
                 {pageSections.map((item) => (
                     <a
                         key={item.href}
@@ -1060,91 +1033,33 @@ function PageSectionNav() {
 
 function HeroSection() {
     return (
-        <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-            <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                    <span
-                        aria-hidden="true"
-                        className="h-2 w-2 rounded-full bg-emerald-500"
-                    />
-                    Managed Event Equipment Storage for London Businesses
-                </div>
-
-                <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                    Event Equipment Storage London
-                </h1>
-
-                <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Managed storage for exhibition stands, event furniture,
-                    promotional materials, displays, flight cases and reusable
-                    event equipment.
-                </p>
-
-                <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                    KXH can collect event assets, organise them in a managed
-                    warehouse workflow, retrieve selected kits and coordinate
-                    event delivery and return logistics.
-                </p>
-
-                <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                    {coreBenefits.map((benefit) => (
-                        <div
-                            key={benefit}
-                            className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                        >
-                            <span aria-hidden="true">✓</span> {benefit}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link
-                        href={quoteUrl}
-                        className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 sm:w-auto"
-                    >
-                        Get Event Equipment Storage Quote
-                    </Link>
-                    {CONTACT_NUMBERS.map((contact) => (
-                        <a
-                            key={contact.href}
-                            href={contact.href}
-                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                        >
-                            Call {contact.label}
-                        </a>
-                    ))}
-                </div>
-
-                <p className="mt-4 text-sm text-slate-500">
-                    Not sure of the exact volume? Photographs and an estimate are
-                    enough to begin.
-                </p>
-
-                <div className="mt-6 flex justify-center">
-                    <TrustpilotPill />
-                </div>
-
-                <div className="mt-12">
-                    <Image
-                        src="/images/business-storage/business-storage-london-warehouse-inventory.webp"
-                        alt="Event equipment and exhibition materials organised inside a London warehouse"
-                        width={1200}
-                        height={800}
-                        priority
-                        quality={80}
-                        sizes="(max-width: 768px) 100vw, 960px"
-                        className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                    />
-                </div>
-            </div>
-        </section>
+        <ServiceHero
+            image="/images/kxh-commercial-storage-london.webp"
+            imageAlt="Event Equipment Storage London with KXH Storage & Logistics"
+            breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Event Equipment Storage London"}]}
+            eyebrow="Storage for events"
+            title="Event Equipment Storage London"
+            highlight="Event Equipment"
+            intro="Store exhibition stands, AV kit, furniture, signage and promotional materials between events. We collect after the show and deliver to your next venue."
+            chips={["Collection after events", "Delivery to venues", "Stands, AV and furniture", "Flexible storage"]}
+            ctaHref="/get-a-quote?service=storage"
+            ctaLabel="Get an Event Storage Quote"
+            cardEyebrow="We store"
+            cardTitle="Event kit"
+            cardItems={[
+                { icon: <HIcPresentation className="h-6 w-6" aria-hidden="true" />, title: "Exhibition stands", text: "Pop-ups and shells" },
+                { icon: <HIcSpeaker className="h-6 w-6" aria-hidden="true" />, title: "AV equipment", text: "Screens and sound" },
+                { icon: <HIcArmchair className="h-6 w-6" aria-hidden="true" />, title: "Furniture", text: "Seating and tables" },
+                { icon: <HIcMegaphone className="h-6 w-6" aria-hidden="true" />, title: "Promo materials", text: "Banners and signage" },
+            ]}
+        />
     );
 }
 
 function DifferentiationSection() {
     return (
-        <section className="border-b border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-b border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Managed Event Equipment Storage"
                     title="More Than Empty Warehouse Space"
@@ -1159,13 +1074,13 @@ function DifferentiationSection() {
 
 function GuidanceSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Planning an Event Storage Project
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Good Storage Starts with the Next Event Plan
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1218,8 +1133,8 @@ function GuidanceSection() {
 
 function ProblemsSection() {
     return (
-        <section className="border-b border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-b border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Problems We Solve"
                     title={
@@ -1243,9 +1158,9 @@ function ProcessSection() {
     return (
         <section
             id="how-it-works"
-            className="scroll-mt-24 border-b border-slate-200 bg-white py-14 sm:py-20"
+            className="scroll-mt-24 border-b border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="How It Works"
                     title="Four Steps from Collection to Event Delivery"
@@ -1259,8 +1174,8 @@ function ProcessSection() {
 
 function LifecycleSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Event Equipment Lifecycle"
                     title="Manage Reusable Assets Between Events"
@@ -1281,9 +1196,9 @@ function PricingSection() {
     return (
         <section
             id="pricing"
-            className="scroll-mt-24 border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="scroll-mt-24 border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Flexible Event Equipment Storage Pricing"
                     title="A Quote Based on Equipment and Event Logistics"
@@ -1316,7 +1231,7 @@ function PricingSection() {
                 <div className="mt-10 text-center">
                     <Link
                         href={quoteUrl}
-                        className="inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
+                        className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
                     >
                         Calculate Your Event Storage Quote
                     </Link>
@@ -1328,25 +1243,25 @@ function PricingSection() {
 
 function ManagedStorageSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <Image
-                    src="/images/business-storage/business-storage-pickup-delivery-london.webp"
+                    src="/images/kxh-collection-delivery-london.webp"
                     alt="Exhibition stands, flight cases and event displays organised in a London warehouse"
                     width={1200}
                     height={800}
                     quality={75}
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                    className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                     loading="lazy"
                     decoding="async"
                 />
 
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Managed Event Storage
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Store Event Assets Around How They Are Used
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1411,8 +1326,8 @@ function ManagedStorageSection() {
 
 function EquipmentReviewSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Before We Collect"
                     title="What KXH Reviews Before Event Equipment Moves Offsite"
@@ -1429,9 +1344,9 @@ function StoredItemsSection() {
     return (
         <section
             id="equipment"
-            className="scroll-mt-24 bg-slate-50 py-14 sm:py-20"
+            className="scroll-mt-24 bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="What Can Be Stored"
                     title="Storage for Exhibition, Event and Promotional Equipment"
@@ -1451,8 +1366,8 @@ function StoredItemsSection() {
 
 function IndustriesSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Who We Support"
                     title="Event Equipment Storage Across Agencies, Exhibitors and Brand Teams"
@@ -1467,19 +1382,8 @@ function IndustriesSection() {
 
 function UseCasesSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <Image
-                    src="/images/business-storage/inventory-management-business-storage-london.webp"
-                    alt="Event equipment loaded for delivery to a London exhibition venue"
-                    width={1200}
-                    height={800}
-                    quality={75}
-                    sizes="(max-width: 768px) 100vw, 960px"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                    loading="lazy"
-                    decoding="async"
-                />
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
 
                 <div className="mt-12">
                     <SectionHeading
@@ -1502,8 +1406,8 @@ function UseCasesSection() {
 
 function TypicalProjectsSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Typical Event Storage Projects"
                     title="Storage Designed for Reusable Event Assets"
@@ -1522,8 +1426,8 @@ function TypicalProjectsSection() {
 
 function ComparisonSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Choose the Right Storage Model"
                     title="Event Equipment Storage vs Self Storage vs Warehouse Rental"
@@ -1533,7 +1437,7 @@ function ComparisonSection() {
 
                 <div className="mt-10 hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white lg:block">
                     <div className="min-w-[980px]">
-                        <div className="grid grid-cols-[0.7fr_1fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
+                        <div className="grid grid-cols-[0.7fr_1fr_1fr_1fr] bg-slate-950 text-sm font-bold text-white">
                             <div className="p-5">Comparison</div>
                             <div className="border-l border-white/10 p-5">
                                 Self Storage
@@ -1623,7 +1527,7 @@ function ComparisonSection() {
                     </p>
                     <Link
                         href={quoteUrl}
-                        className="mt-6 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                        className="mt-6 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                     >
                         Ask KXH Which Service Fits
                     </Link>
@@ -1635,8 +1539,8 @@ function ComparisonSection() {
 
 function WhyKxhSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Managed Event Logistics Partner"
                     title="Why London Event Teams Choose KXH"
@@ -1655,13 +1559,13 @@ function WhyKxhSection() {
 
 function InventorySection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Event Equipment Inventory Organisation
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Know Which Equipment Belongs to Each Event
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1683,7 +1587,7 @@ function InventorySection() {
 
                     <Link
                         href="/inventory-management-london"
-                        className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                        className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                     >
                         Explore Inventory Management
                     </Link>
@@ -1728,13 +1632,13 @@ function InventorySection() {
 
 function ExistingSystemsSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Existing Event Inventories
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Keep Useful References Your Team Already Uses
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1762,9 +1666,9 @@ function RetrievalWorkflowSection() {
     return (
         <section
             id="delivery"
-            className="scroll-mt-24 border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="scroll-mt-24 border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="How Event Delivery Requests Work"
                     title="Retrieve the Right Kit and Deliver It to the Right Venue"
@@ -1784,8 +1688,8 @@ function RetrievalWorkflowSection() {
 
 function RetrievalSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Typical Retrieval Requests"
                     title="Request One Event Kit or a Complete Project"
@@ -1801,7 +1705,7 @@ function RetrievalSection() {
                 <div className="mt-10 text-center">
                     <Link
                         href={quoteUrl}
-                        className="inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                        className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                     >
                         Discuss Your Event Delivery Requirements
                     </Link>
@@ -1813,13 +1717,13 @@ function RetrievalSection() {
 
 function QuoteChecklistSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Prepare Your Event Storage Quote
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         What Information Helps Us Scope the Service?
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1833,7 +1737,7 @@ function QuoteChecklistSection() {
                     </p>
                     <Link
                         href={quoteUrl}
-                        className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                        className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                     >
                         Request an Event Equipment Storage Quote
                     </Link>
@@ -1850,10 +1754,10 @@ function QuoteChecklistSection() {
 
 function CustomerFitSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 sm:rounded-3xl sm:p-10">
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
                         Is KXH Event Equipment Storage Right for Your Business?
                     </h2>
                     <p className="mt-4 max-w-3xl leading-7 text-slate-700">
@@ -1878,7 +1782,7 @@ function LondonCoverageSection() {
             id="coverage"
             className="scroll-mt-24 border-t border-slate-200 bg-slate-50 py-16 sm:py-20"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="London Coverage"
                     title="Event Equipment Collection and Delivery Across London"
@@ -1891,7 +1795,7 @@ function LondonCoverageSection() {
                         <Link
                             key={area.href}
                             href={area.href}
-                            className="rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
+                            className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
                         >
                             <h3 className="font-bold text-slate-900">
                                 {area.name}
@@ -1933,8 +1837,8 @@ function LondonCoverageSection() {
 
 function RelatedServicesSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     title="Related Event, Inventory, Furniture and Business Storage Services"
                     description="Connect event-equipment storage with commercial storage, inventory organisation, furniture storage, packing and moving services."
@@ -1976,8 +1880,8 @@ function RelatedServicesSection() {
 
 function FinalCtaSection() {
     return (
-        <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-            <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+        <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
                 <p className="text-sm font-semibold uppercase tracking-wide !text-white">
                     Plan Your Event Equipment Storage
                 </p>
@@ -2039,15 +1943,15 @@ function FaqSection() {
             id="faqs"
             className="scroll-mt-24 border-t border-slate-200 bg-slate-50 py-12"
         >
-            <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-                <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <h2 className="mb-8 text-center text-3xl font-black text-slate-950 sm:text-4xl">
                     Event Equipment Storage FAQs
                 </h2>
                 <div className="space-y-3">
                     {faqs.map((faq) => (
                         <details
                             key={faq.question}
-                            className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
+                            className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg"
                         >
                             <summary className="cursor-pointer rounded-md font-semibold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2">
                                 {faq.question}
@@ -2101,6 +2005,19 @@ export default function EventEquipmentStorageLondonPage() {
                 <CustomerFitSection />
                 <LondonCoverageSection />
                 <RelatedServicesSection />
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Event kit ready for the next show"
+                    intro="Stands, displays and flight cases are stored safely between events and delivered to your venue on time."
+                    points={["Collection after events", "Delivery to venues", "Stands, AV and furniture", "Flexible storage"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Event Equipment Storage London with KXH Storage & Logistics", label: "Event equipment" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get an Event Storage Quote"
+                />
                 <TestimonialsSection />
                 <FinalCtaSection />
                 <FaqSection />

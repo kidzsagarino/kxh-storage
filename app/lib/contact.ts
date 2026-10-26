@@ -12,7 +12,7 @@ export const CONTACT_NUMBERS: ContactNumber[] = [
   },
   {
     label: "Mobile",
-    phone: "+44 74 7002 5636",
+    phone: "+44 7470 025636",
     href: "tel:+447470025636",
   },
 ];

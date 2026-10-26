@@ -1,3 +1,6 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import { Shirt as HIcShirt, Store as HIcStore, Boxes as HIcBoxes, Megaphone as HIcMegaphone } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,9 +15,9 @@ import { londonLocations } from "../lib/location";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
-    title: "Retail Stock Storage London | Secure Managed Storage with Collection",
+    title: "Retail Stock Storage London | Collection | KXH",
     description:
-        "Door-to-door retail stock storage in London with collection, secure warehouse storage, organised inventory, pallet support, and return delivery.",
+    "Retail stock storage in London for overflow, seasonal collections, shop fittings and displays, with collection and return delivery to your store. Get a quote.",
     alternates: {
         canonical: "https://kxhlogistics.co.uk/retail-stock-storage-london",
     },
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
             "Flexible managed retail stock storage with collection, secure warehouse storage, inventory organisation, pallet support, and return delivery across London.",
         images: [
             {
-                url: "/images/retail-stock-storage/retail-stock-storage-london-warehouse.webp",
+                url: "/images/kxh-business-storage-london.webp",
                 width: 1200,
                 height: 630,
                 alt: "Retail stock, cartons and store fixtures inside a managed London warehouse",
@@ -695,7 +698,7 @@ function BusinessStorageHierarchy() {
             aria-label="Business Storage service hierarchy"
             className="border-b border-slate-200 bg-white py-5"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                     <div className="flex flex-wrap items-center gap-2 text-sm">
                         <Link
@@ -742,7 +745,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 1474 396663",
+            telephone: "+44 20 3916 5312",
         },
         areaServed: {
             "@type": "City",
@@ -849,127 +852,41 @@ export default function RetailStockStoragePage() {
                 <TrustpilotJsonLd />
 
                 {/* BREADCRUMB */}
-                <nav
-                    aria-label="Breadcrumb"
-                    className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
-                >
-                    <Link href="/" className="transition hover:text-emerald-700">
-                        Home
-                    </Link>
-                    <span className="mx-2">/</span>
-
-                    <Link
-                        href="/services"
-                        className="transition hover:text-emerald-700"
-                    >
-                        Services
-                    </Link>
-                    <span className="mx-2">/</span>
-
-                    <Link
-                        href="/business-storage-london"
-                        className="transition hover:text-emerald-700"
-                    >
-                        Business Storage
-                    </Link>
-
-                    <span className="mx-2">/</span>
-
-                    <span className="font-medium text-slate-700">
-                        Retail Stock Storage London
-                    </span>
-                </nav>
+                
 
                 <BusinessStorageHierarchy />
 
                 {/* HERO */}
-                <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-                    <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                            Managed Retail Stock Storage
-                        </div>
-
-                        <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                            Retail Stock Storage London with Collection & Return Delivery
-                        </h1>
-
-                        <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                            Retail Stock Storage is a specialist service within our{" "}
-                            <Link
-                                href="/business-storage-london"
-                                className="font-semibold text-emerald-700 hover:underline"
-                            >
-                                Business Storage London
-                            </Link>{" "}
-                            solution. We collect retail inventory, fixtures, displays, and
-                            supplies, organise them in managed storage, and deliver selected
-                            items back when required.
-                        </p>
-
-                        <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                            Create more room in shops and stockrooms without renting an entire
-                            storage unit or committing to a separate warehouse lease.
-                        </p>
-
-                        <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                            {coreBenefits.map((benefit) => (
-                                <div
-                                    key={benefit}
-                                    className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                                >
-                                    ✓ {benefit}
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                            <Link
-                                href="/get-a-quote?service=storage"
-                                className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 sm:w-auto"
-                            >
-                                Get Retail Storage Quote
-                            </Link>
-
-                            {CONTACT_NUMBERS.map((contact) => (
-                                <a
-                                    key={contact.href}
-                                    href={contact.href}
-                                    className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                                >
-                                    Call {contact.label}
-                                </a>
-                            ))}
-                        </div>
-
-                        <div className="mt-6 flex justify-center">
-                            <TrustpilotPill />
-                        </div>
-
-                        <div className="mt-12">
-                            <Image
-                                src="/images/retail-stock-storage/retail-stock-storage-london-warehouse.webp"
-                                alt="Retail stock, cartons and store fixtures inside a managed London warehouse"
-                                width={1200}
-                                height={800}
-                                priority
-                                quality={80}
-                                sizes="(max-width: 768px) 100vw, 960px"
-                                className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                            />
-                        </div>
-                    </div>
-                </section>
+                <ServiceHero
+                    image="/images/kxh-business-storage-london.webp"
+                    imageAlt="Retail Stock Storage London with Collection & Return Delivery with KXH Storage & Logistics"
+                    breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Retail Stock Storage London"}]}
+                    eyebrow="Storage for shops"
+                    title="Retail Stock Storage London with Collection & Return Delivery"
+                    highlight="Collection & Return Delivery"
+                    intro="Keep your shop floor clear. KXH collects overflow stock, seasonal collections, shop fittings and displays, stores them safely and returns them when you need them."
+                    chips={["Overflow and seasonal stock", "Shop fittings and displays", "Collection from your store", "Return delivery"]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get a Retail Storage Quote"
+                    cardEyebrow="We store"
+                    cardTitle="Retail stock"
+                    cardItems={[
+                        { icon: <HIcShirt className="h-6 w-6" aria-hidden="true" />, title: "Seasonal ranges", text: "Collections and drops" },
+                        { icon: <HIcStore className="h-6 w-6" aria-hidden="true" />, title: "Shop fittings", text: "Rails and displays" },
+                        { icon: <HIcBoxes className="h-6 w-6" aria-hidden="true" />, title: "Overflow stock", text: "Surplus inventory" },
+                        { icon: <HIcMegaphone className="h-6 w-6" aria-hidden="true" />, title: "Promotions", text: "POS and signage" },
+                    ]}
+                />
 
                 {/* PROCESS */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 How It Works
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 We Collect, Organise, Store and Return
                             </h2>
 
@@ -984,7 +901,7 @@ export default function RetailStockStoragePage() {
                             {processSteps.map((step) => (
                                 <article
                                     key={step.number}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
                                 >
                                     <span className="text-sm font-black text-emerald-700">
                                         {step.number}
@@ -1002,14 +919,14 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* PRICING */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Flexible Pricing
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Pay for the Retail Storage You Use
                             </h2>
 
@@ -1033,7 +950,7 @@ export default function RetailStockStoragePage() {
 
                             <Link
                                 href="/get-a-quote?service=storage"
-                                className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                                className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                             >
                                 Calculate Your Storage Quote
                             </Link>
@@ -1043,7 +960,7 @@ export default function RetailStockStoragePage() {
                             {storageTypes.map((type) => (
                                 <article
                                     key={type.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6"
                                 >
                                     <h3 className="font-bold text-slate-900">{type.title}</h3>
 
@@ -1057,10 +974,10 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* BUSINESS PROBLEMS */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Make Space to Trade
                             </p>
 
@@ -1080,7 +997,7 @@ export default function RetailStockStoragePage() {
                             {businessProblems.map((problem) => (
                                 <article
                                     key={problem.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <h3 className="text-lg font-bold text-slate-950">
                                         {problem.title}
@@ -1096,13 +1013,13 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* WHO THIS SERVICE IS FOR */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Who This Service Is For
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Retail Storage Built Around Different Products and Operating
                                 Models
                             </h2>
@@ -1118,7 +1035,7 @@ export default function RetailStockStoragePage() {
                             {retailAudiences.map((audience) => (
                                 <article
                                     key={audience.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <h3 className="text-lg font-bold text-slate-950">
                                         {audience.title}
@@ -1139,13 +1056,13 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* RETAIL WORKFLOWS */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Retail Storage Workflows
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Practical Support for Retail Projects and Stock Cycles
                             </h2>
                             <p className="mt-5 leading-7 text-slate-600">
@@ -1158,7 +1075,7 @@ export default function RetailStockStoragePage() {
                             {retailWorkflows.map((workflow) => (
                                 <article
                                     key={workflow.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-7"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-7"
                                 >
                                     <h3 className="text-xl font-bold text-slate-950">
                                         {workflow.title}
@@ -1183,7 +1100,7 @@ export default function RetailStockStoragePage() {
 
                 {/* RETAIL OPERATIONS LANGUAGE */}
                 <section className="bg-slate-950 py-14 text-white sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                         <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
                             <div>
                                 <p className="text-sm font-semibold uppercase tracking-wide text-emerald-300">
@@ -1217,13 +1134,13 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* SEASONAL RETAIL CALENDAR */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Seasonal Retail Calendar
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Plan Storage Around the Retail Trading Year
                             </h2>
                             <p className="mt-5 leading-7 text-slate-600">
@@ -1232,7 +1149,7 @@ export default function RetailStockStoragePage() {
                                 collections, clearance goods, displays, and campaign materials.
                             </p>
                         </div>
-                        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-200">
+                        <div className="kxh-reveal mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
                             {seasonalCalendar.map((item) => (
                                 <div
                                     key={item.season}
@@ -1250,13 +1167,13 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* STORE LIFECYCLE */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Store Lifecycle Support
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Storage From Store Opening to Relocation
                             </h2>
                         </div>
@@ -1264,7 +1181,7 @@ export default function RetailStockStoragePage() {
                             {storeLifecycle.map((item) => (
                                 <article
                                     key={item.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6"
                                 >
                                     <h3 className="text-lg font-bold text-slate-950">
                                         {item.title}
@@ -1279,13 +1196,13 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* WAREHOUSE OPERATIONS */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:px-8">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:px-8">
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Warehouse Operations
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Managed Handling, Not Passive Floor Space
                             </h2>
                             <p className="mt-5 leading-7 text-slate-600">
@@ -1309,13 +1226,13 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* RETAIL LOGISTICS */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Retail Logistics Support
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Connect Storage With Real Stock Movements
                             </h2>
                             <p className="mt-5 leading-7 text-slate-600">
@@ -1328,7 +1245,7 @@ export default function RetailStockStoragePage() {
                             {retailLogistics.map((item) => (
                                 <article
                                     key={item.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6"
                                 >
                                     <h3 className="text-lg font-bold text-slate-950">
                                         {item.title}
@@ -1343,24 +1260,24 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* MANAGED STORAGE */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                         <Image
-                            src="/images/retail-stock-storage/retail-stock-collection-delivery-london.webp"
+                            src="/images/kxh-collection-delivery-london.webp"
                             alt="KXH collecting retail stock from a London shop"
                             width={1200}
                             height={800}
                             quality={75}
                             sizes="(max-width: 1024px) 100vw, 50vw"
-                            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                            className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                         />
 
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Managed Door-to-Door Storage
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 No Van Hire. No Repeated Storage Visits. No Extra Warehouse.
                             </h2>
 
@@ -1411,14 +1328,14 @@ export default function RetailStockStoragePage() {
                     </div>
                 </section>
                 {/* INDUSTRY PAGES */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Storage by Business Type
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Storage for Retail and Related Operations
                             </h2>
 
@@ -1439,7 +1356,7 @@ export default function RetailStockStoragePage() {
                                 <Link
                                     key={industry.href}
                                     href={industry.href}
-                                    className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm sm:p-6"
+                                    className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-5 sm:p-6"
                                 >
                                     <h3 className="text-lg font-bold text-slate-900">
                                         {industry.title}
@@ -1457,14 +1374,14 @@ export default function RetailStockStoragePage() {
                         </div>
                     </div>
                 </section>
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Compare Retail Storage Options
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Self Storage vs Your Own Warehouse vs KXH Retail Storage
                             </h2>
 
@@ -1478,7 +1395,7 @@ export default function RetailStockStoragePage() {
 
                         {/* DESKTOP TABLE */}
                         <div className="mt-12 hidden overflow-hidden rounded-2xl border border-slate-200 md:block">
-                            <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
+                            <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] bg-slate-950 text-sm font-bold text-white">
                                 <div className="p-5">Service Feature</div>
 
                                 <div className="border-l border-white/10 p-5 text-center">
@@ -1652,7 +1569,7 @@ export default function RetailStockStoragePage() {
                         <div className="mt-10 text-center">
                             <Link
                                 href="/get-a-quote?service=storage"
-                                className="inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                                className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                             >
                                 Compare Your Storage Requirements
                             </Link>
@@ -1661,14 +1578,14 @@ export default function RetailStockStoragePage() {
                 </section>
                 {/* WHY BUSINESSES TRUST KXH */}
 
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Trusted Retail Stock Storage Partner
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Why London Retailers Choose KXH Storage & Logistics
                             </h2>
 
@@ -1714,7 +1631,7 @@ export default function RetailStockStoragePage() {
                             ].map((item) => (
                                 <article
                                     key={item.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold text-emerald-700">
                                         ✓
@@ -1732,14 +1649,14 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* INVENTORY DIFFERENTIATOR */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Evolving Beyond Basic Storage
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Keep Stored Retail Inventory Organised
                             </h2>
 
@@ -1768,34 +1685,35 @@ export default function RetailStockStoragePage() {
 
                             <Link
                                 href="/inventory-management-london"
-                                className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                                className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                             >
                                 Explore Inventory Management
                             </Link>
                         </div>
 
                         <Image
-                            src="/images/retail-stock-storage/retail-stock-inventory-organisation-london.webp"
+                            src="/images/kxh-inventory-management-london.webp"
                             alt="Warehouse worker organising and scanning business inventory"
                             width={1200}
                             height={800}
                             quality={75}
                             sizes="(max-width: 1024px) 100vw, 50vw"
-                            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                            className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                             loading="lazy"
 
                         />
+
                     </div>
                 </section>
 
                 {/* UK RETAIL CONTEXT */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 UK Retail Context
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Retail Storage Must Support Both Stores and Online Demand
                             </h2>
                             <p className="mt-5 leading-7 text-slate-600">
@@ -1809,7 +1727,7 @@ export default function RetailStockStoragePage() {
                             {retailStats.map((stat) => (
                                 <article
                                     key={stat.label}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <p className="text-3xl font-black tracking-tight text-emerald-700">
                                         {stat.value}
@@ -1840,10 +1758,10 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* CUSTOMER FIT */}
-                <section className="border-y border-slate-200 bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+                <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 sm:rounded-3xl sm:p-10">
-                            <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
                                 Is KXH Retail Stock Storage Right for Your Business?
                             </h2>
 
@@ -1867,9 +1785,9 @@ export default function RetailStockStoragePage() {
                     </div>
                 </section>
                 <section className="border-t border-slate-200 bg-slate-50 py-16">
-                    <div className="mx-auto max-w-6xl px-5">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <div className="mx-auto max-w-screen-xl px-5">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 London Coverage
                             </p>
 
@@ -1916,8 +1834,8 @@ export default function RetailStockStoragePage() {
                 </section>
                 {/* BUSINESS STORAGE CONTENT HUB */}
                 <section className="border-t border-slate-200 bg-slate-950 py-14 text-white sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
                             <p className="text-sm font-semibold uppercase tracking-wide text-emerald-300">
                                 Business Storage Knowledge Hub
                             </p>
@@ -1954,13 +1872,13 @@ export default function RetailStockStoragePage() {
                 </section>
 
                 {/* HOW KXH HANDLES RETAIL INVENTORY */}
-                <section className="border-t border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-t border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 How KXH Handles Retail Inventory
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 A Clear Process From Collection to Return Delivery
                             </h2>
                             <p className="mt-5 leading-7 text-slate-600">
@@ -1973,7 +1891,7 @@ export default function RetailStockStoragePage() {
                             {handlingSteps.map((step, index) => (
                                 <article
                                     key={step.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <span className="text-sm font-black text-emerald-700">
                                         {String(index + 1).padStart(2, "0")}
@@ -1995,26 +1913,24 @@ export default function RetailStockStoragePage() {
                     </div>
                 </section>
 
-                {/* TEAM IMAGE */}
-                <section className="border-t border-slate-200 bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <Image
-                            src="/images/retail-stock-storage/retail-storage-warehouse-team-london.webp"
-                            alt="KXH warehouse team supporting London retail stock storage"
-                            width={1200}
-                            height={800}
-                            quality={75}
-                            sizes="(max-width: 768px) 100vw, 960px"
-                            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                        />
-                    </div>
-                </section>
-
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Extra room for retail and seasonal stock"
+                    intro="Free up shop floor and back-room space. We collect surplus stock and return it when you need it on the shelves."
+                    points={["Overflow and seasonal stock", "Shop fittings and displays", "Collection from your store", "Return delivery"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Retail Stock Storage London with KXH Storage & Logistics", label: "Retail overflow" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get a Retail Storage Quote"
+                />
                 <TestimonialsSection />
 
                 {/* FINAL CTA */}
-                <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-                    <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+                <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
                         <p className="text-sm font-semibold uppercase tracking-wide !text-white">
                             Flexible Retail Stock Storage
                         </p>
@@ -2031,7 +1947,7 @@ export default function RetailStockStoragePage() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                             <Link
                                 href="/get-a-quote?service=storage"
-                                className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8"
+                                className="kxh-shine relative w-full overflow-hidden rounded-2xl bg-white px-8 py-4 text-center font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 sm:w-auto"
                             >
                                 Get Retail Storage Quote
                             </Link>
@@ -2051,8 +1967,8 @@ export default function RetailStockStoragePage() {
 
                 {/* FAQ */}
                 <section className="border-t border-slate-200 bg-slate-50 py-12">
-                    <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-                        <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                        <h2 className="mb-8 text-center text-3xl font-black text-slate-950 sm:text-4xl">
                             Retail Stock Storage FAQs
                         </h2>
 
@@ -2060,7 +1976,7 @@ export default function RetailStockStoragePage() {
                             {faqs.map((faq) => (
                                 <details
                                     key={faq.question}
-                                    className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5"
+                                    className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg"
                                 >
                                     <summary className="cursor-pointer font-semibold">
                                         {faq.question}

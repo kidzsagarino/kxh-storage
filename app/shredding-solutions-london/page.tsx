@@ -1,3 +1,7 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import AreaMapExplorer from "../components/AreaMapExplorer";
+import { FileText as HIcFileText, Landmark as HIcLandmark, HeartPulse as HIcHeartPulse, Archive as HIcArchive } from "lucide-react";
 import CrispChat from "../components/chat/CrispChat";
 import MainFooter from "../components/footer/MainFooter";
 import Nav from "../components/MobileNav";
@@ -7,6 +11,20 @@ import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import TestimonialsSection from "../components/TestimonialsSection";
 import Image from "next/image";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Document Shredding London | Secure Collection | KXH",
+  description:
+    "Confidential document shredding in London. We collect paper records from homes and offices and securely destroy them. Book online or call 020 3916 5312.",
+  alternates: { canonical: "https://kxhlogistics.co.uk/shredding-solutions-london" },
+  openGraph: {
+    title: "Document Shredding London | KXH Storage & Logistics",
+    description: "Secure collection and confidential destruction of documents across London.",
+    url: "https://kxhlogistics.co.uk/shredding-solutions-london",
+    images: [{ url: "/images/kxh-shredding-solutions-london.webp", width: 1600, height: 900 }],
+  },
+};
 
 function JsonLd() {
   const data = {
@@ -153,16 +171,6 @@ export default function ShreddingServicePage() {
       <CrispChat />
       <Nav />
 
-      <nav className="max-w-6xl mx-auto px-4 pt-6 text-sm text-slate-500">
-        <Link href="/">Home</Link>
-        <span className="mx-2">/</span>
-        <Link href="/services">Services</Link>
-        <span className="mx-2">/</span>
-        <span className="text-slate-700 font-medium">
-          Document Shredding London
-        </span>
-      </nav>
-
       <main className="min-h-screen bg-white text-slate-900">
         <JsonLd />
         <FAQJsonLd />
@@ -170,58 +178,26 @@ export default function ShreddingServicePage() {
         <TrustpilotJsonLd />
 
         {/* HERO */}
-        <section className="relative bg-gradient-to-b from-slate-50 to-white py-16 lg:py-24">
-          <div className="mx-auto max-w-5xl px-4 text-center">
-
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Confidential Shredding Service in London
-            </div>
-
-            <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-              Confidential Document Shredding Services in London
-            </h1>
-
-            <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              Protect your sensitive information with fully managed shredding services — secure collection, certified destruction, and complete peace of mind.
-            </p>
-
-            {/* TRUST BADGES */}
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              {["Confidential & Secure", "Fully Compliant", "Certified Destruction"].map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full border bg-white px-4 py-2 text-sm text-slate-600 shadow-sm"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <div className="mt-10 flex justify-center">
-              <Link
-                href="/get-a-quote?service=shredding"
-                className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
-              >
-                Get Quote
-              </Link>
-            </div>
-            <div className="mt-6 flex justify-center">
-              <TrustpilotPill />
-            </div>
-            <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
-              <Image
-                src="/images/shredding/document-shredding-hero.webp"
-                alt="Confidential document shredding services in London"
-                width={1400}
-                height={800}
-                priority
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          </div>
-        </section>
+        <ServiceHero
+            image="/images/kxh-shredding-solutions-london.webp"
+            imageAlt="Confidential Document Shredding Services in London with KXH Storage & Logistics"
+            breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Document Shredding London"}]}
+            eyebrow="Confidential shredding"
+            title="Confidential Document Shredding Services in London"
+            highlight="Document Shredding"
+            intro="Secure collection and destruction of confidential paperwork for London homes and businesses. Book a one-off clear-out or regular collections from your office."
+            chips={["Collection from your door", "Confidential handling", "Homes and offices", "One-off or regular"]}
+            ctaHref="/get-a-quote?service=shredding"
+            ctaLabel="Book Document Shredding"
+            cardEyebrow="We shred"
+            cardTitle="Confidential paperwork"
+            cardItems={[
+                { icon: <HIcFileText className="h-6 w-6" aria-hidden="true" />, title: "Business records", text: "Invoices and files" },
+                { icon: <HIcLandmark className="h-6 w-6" aria-hidden="true" />, title: "Financial papers", text: "Bank and tax documents" },
+                { icon: <HIcHeartPulse className="h-6 w-6" aria-hidden="true" />, title: "Personal data", text: "Medical and HR files" },
+                { icon: <HIcArchive className="h-6 w-6" aria-hidden="true" />, title: "Archive clear-outs", text: "Old storage boxes" },
+            ]}
+        />
         <section className="border-y border-slate-200 bg-white">
           <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
             {[
@@ -251,15 +227,6 @@ export default function ShreddingServicePage() {
             <p className="mt-4 text-slate-600 max-w-2xl mx-auto leading-relaxed">
               Many businesses and individuals still store or discard confidential documents without proper security, putting sensitive data at risk of leaks, fines, or compliance issues.
             </p>
-            <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200">
-              <Image
-                src="/images/shredding/document-shredding-security-risk.webp"
-                alt="Confidential business documents awaiting secure destruction"
-                width={1400}
-                height={700}
-                className="w-full h-auto object-cover"
-              />
-            </div>
             {/* PROBLEM CARDS */}
             <div className="mt-10 grid md:grid-cols-3 gap-6 text-left">
 
@@ -296,16 +263,7 @@ export default function ShreddingServicePage() {
         </section>
         {/* FEATURES */}
         <section className="py-16 border-t border-slate-200/40 bg-white">
-          <div className="max-w-6xl mx-auto px-4 mb-12">
-            <Image
-              src="/images/shredding/document-shredding-compliance.webp"
-              alt="GDPR compliant document destruction process"
-              width={1400}
-              height={700}
-              className="w-full rounded-3xl border border-slate-200 object-cover"
-            />
-          </div>
-          <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12">
+          <div className="max-w-screen-xl mx-auto px-4 grid md:grid-cols-2 gap-12">
 
             <div>
               <h2 className="text-2xl font-black mb-4">
@@ -346,17 +304,6 @@ export default function ShreddingServicePage() {
 
           </div>
 
-        </section>
-        <section className="py-16 border-t border-slate-200/40 bg-white">
-          <div className="max-w-6xl mx-auto px-4">
-            <Image
-              src="/images/shredding/document-shredding-collection.webp"
-              alt="Secure document collection service in London"
-              width={1400}
-              height={700}
-              className="w-full rounded-3xl border border-slate-200 object-cover"
-            />
-          </div>
         </section>
         {/* HOW IT WORKS */}
         <section className="py-20 bg-slate-50 border-t border-slate-200/40">
@@ -412,7 +359,7 @@ export default function ShreddingServicePage() {
         </section>
         {/* USE CASES */}
         <section className="py-16 bg-slate-50 border-t border-slate-200/40">
-          <div className="max-w-6xl mx-auto px-4">
+          <div className="max-w-screen-xl mx-auto px-4">
 
             <h2 className="text-2xl font-black mb-8 text-center">
               Who Our Document Shredding Services Are For
@@ -444,7 +391,7 @@ export default function ShreddingServicePage() {
 
               <Link
                 href="/warehouse-storage-london"
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+                className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
               >
                 <h3 className="font-semibold">
                   Warehouse Storage
@@ -457,7 +404,7 @@ export default function ShreddingServicePage() {
 
               <Link
                 href="/business-storage-london"
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+                className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
               >
                 <h3 className="font-semibold">
                   Business Storage
@@ -470,7 +417,7 @@ export default function ShreddingServicePage() {
 
               <Link
                 href="/inventory-management-london"
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+                className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
               >
                 <h3 className="font-semibold">
                   Inventory Management
@@ -483,7 +430,7 @@ export default function ShreddingServicePage() {
 
               <Link
                 href="/commercial-storage-london"
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+                className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
               >
                 <h3 className="font-semibold">
                   Commercial Storage
@@ -495,7 +442,7 @@ export default function ShreddingServicePage() {
               </Link>
               <Link
                 href="/pallet-storage-london"
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+                className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
               >
                 <h3 className="font-semibold">
                   Pallet Storage
@@ -509,18 +456,32 @@ export default function ShreddingServicePage() {
             </div>
           </div>
         </section>
-        <section className="py-16 border-t border-slate-200/70 bg-white">
-          <div className="max-w-6xl mx-auto px-4">
-            <Image
-              src="/images/shredding/document-shredding-team.webp"
-              alt="KXH Storage and Logistics secure shredding team"
-              width={1400}
-              height={700}
-              className="w-full rounded-3xl border border-slate-200 object-cover"
-            />
-          </div>
-        </section>
-        <TestimonialsSection />
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Secure document collection and destruction"
+                    intro="Confidential paperwork is collected in sealed containers and securely destroyed, with collection from your home or office."
+                    points={["Collection from your door", "Confidential handling", "Homes and offices", "One-off or regular"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Document Shredding London with KXH Storage & Logistics", label: "Secure destruction" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=shredding"
+                    ctaLabel="Book Document Shredding"
+                />
+        <section id="areas" className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-3xl">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">London service areas</p>
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Document Shredding London across London boroughs</h2>
+                            <p className="mt-4 text-slate-600">Tap an area to see it on the map and open the local document shredding page.</p>
+                        </div>
+                        <div className="mt-10">
+                            <AreaMapExplorer primaryHref="/shredding-solutions-london" />
+                        </div>
+                    </div>
+                </section>
+                <TestimonialsSection />
 
         {/* FINAL CTA */}
         <section className="py-16 text-center border-t border-slate-200/40 bg-white">

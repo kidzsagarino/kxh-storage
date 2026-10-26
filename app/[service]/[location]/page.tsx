@@ -9,6 +9,9 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import TrustpilotJsonLd from "@/app/components/seo/TrustPilotJsonLD";
+import ServiceHero from "@/app/components/ServiceHero";
+import ServiceShowcase from "@/app/components/ServiceShowcase";
+import { Clock as HIcClock, MapPin as HIcMapPin, ShieldCheck as HIcShield, Truck as HIcTruck } from "lucide-react";
 
 
 type FAQ = {
@@ -749,14 +752,14 @@ const boroughContent: Record<string, Partial<Record<ServiceSlug, BoroughContent>
 };
 
 const serviceImages = {
-    "warehouse-storage-london": "/images/location-service/warehouse-storage-location.webp",
-    "business-storage-london": "/images/location-service/business-storage-location.webp",
-    "inventory-management-london": "/images/location-service/inventory-management-location.webp",
-    "pallet-storage-london": "/images/location-service/pallet-storage-location.webp",
-    "commercial-storage-london": "/images/location-service/business-storage-location.webp",
-    "third-party-logistics-london": "/images/location-service/third-party-logistics-location.webp",
-    "logistics-moving-london": "/images/location-service/moving-services-location.webp",
-    "shredding-solutions-london": "/images/location-service/document-shredding-location.webp",
+    "warehouse-storage-london": "/images/kxh-home-hero-warehouse-london.webp",
+    "business-storage-london": "/images/kxh-business-storage-london.webp",
+    "inventory-management-london": "/images/kxh-inventory-management-london.webp",
+    "pallet-storage-london": "/images/kxh-pallet-storage-london.webp",
+    "commercial-storage-london": "/images/kxh-business-storage-london.webp",
+    "third-party-logistics-london": "/images/kxh-third-party-logistics-london.webp",
+    "logistics-moving-london": "/images/kxh-moving-removals-london.webp",
+    "shredding-solutions-london": "/images/kxh-shredding-solutions-london.webp",
 };
 
 
@@ -836,14 +839,14 @@ const businessStorageIndustries = [
 
 function getSupportImage(service: ServiceSlug) {
     const images: Record<ServiceSlug, string> = {
-        "warehouse-storage-london": "/images/location-service/warehouse-storage-location.webp",
-        "business-storage-london": "/images/location-service/location-business-support.webp",
-        "inventory-management-london": "/images/location-service/inventory-management-location.webp",
-        "pallet-storage-london": "/images/location-service/pallet-storage-location.webp",
-        "commercial-storage-london": "/images/location-service/commercial-storage-location.webp",
-        "third-party-logistics-london": "/images/location-service/third-party-logistics-location.webp",
-        "logistics-moving-london": "/images/location-service/moving-services-location.webp",
-        "shredding-solutions-london": "/images/location-service/document-shredding-location.webp",
+        "warehouse-storage-london": "/images/kxh-home-hero-warehouse-london.webp",
+        "business-storage-london": "/images/kxh-business-storage-london.webp",
+        "inventory-management-london": "/images/kxh-inventory-management-london.webp",
+        "pallet-storage-london": "/images/kxh-pallet-storage-london.webp",
+        "commercial-storage-london": "/images/kxh-commercial-storage-london.webp",
+        "third-party-logistics-london": "/images/kxh-third-party-logistics-london.webp",
+        "logistics-moving-london": "/images/kxh-moving-removals-london.webp",
+        "shredding-solutions-london": "/images/kxh-shredding-solutions-london.webp",
     };
 
     return images[service];
@@ -972,6 +975,26 @@ type SectionProps = {
 };
 
 const SITE_URL = "https://kxhlogistics.co.uk";
+
+const AREA_INFO: Record<string, { postcodes: string; places: string; mapQuery: string }> = {
+    camden: { postcodes: "NW1, NW3, NW5, NW6, WC1", places: "Camden Town, Kentish Town, Hampstead, Bloomsbury", mapQuery: "London Borough of Camden" },
+    westminster: { postcodes: "W1, W2, SW1, WC2, NW8", places: "Mayfair, Soho, Marylebone, Pimlico, Paddington", mapQuery: "City of Westminster, London" },
+    hackney: { postcodes: "E2, E5, E8, E9, N16", places: "Dalston, Shoreditch, Stoke Newington, Homerton", mapQuery: "London Borough of Hackney" },
+    islington: { postcodes: "N1, N4, N5, N7, N19, EC1", places: "Angel, Highbury, Holloway, Archway, Clerkenwell", mapQuery: "London Borough of Islington" },
+    "kensington-chelsea": { postcodes: "SW3, SW5, SW7, SW10, W8, W10, W11", places: "Chelsea, South Kensington, Notting Hill, Earl's Court", mapQuery: "Royal Borough of Kensington and Chelsea" },
+    "tower-hamlets": { postcodes: "E1, E2, E3, E14", places: "Whitechapel, Bethnal Green, Bow, Canary Wharf", mapQuery: "London Borough of Tower Hamlets" },
+    southwark: { postcodes: "SE1, SE5, SE15, SE16, SE22", places: "Borough, Bermondsey, Peckham, Camberwell, Dulwich", mapQuery: "London Borough of Southwark" },
+    lambeth: { postcodes: "SE11, SW2, SW4, SW8, SW9, SE27", places: "Brixton, Clapham, Vauxhall, Streatham, Waterloo", mapQuery: "London Borough of Lambeth" },
+};
+
+function areaInfo(slug: string) {
+    return AREA_INFO[slug] ?? { postcodes: "", places: "", mapQuery: `${slug}, London` };
+}
+
+/** Pick the first title variant that fits Google's ~60 character limit. */
+function fitTitle(variants: string[]) {
+    return variants.find((t) => t.length <= 60) ?? variants[variants.length - 1];
+}
 const focusRing =
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2";
 
@@ -985,15 +1008,16 @@ function quoteHref(service: ServiceSlug) {
 
 function getMetadataCopy(service: ServiceSlug, location: LocationItem) {
     const locName = location.name;
+    const short = locName.replace("Kensington and Chelsea", "Kensington & Chelsea");
     const titles: Record<ServiceSlug, string> = {
-        "warehouse-storage-london": `Storage Space to Rent in ${locName}, London | Pickup & Delivery | KXH`,
-        "logistics-moving-london": `Moving Services in ${locName}, London | Home & Office Moves | KXH`,
-        "shredding-solutions-london": `Document Shredding in ${locName}, London | Secure Collection | KXH`,
-        "business-storage-london": `Business Storage in ${locName}, London | Managed Storage | KXH`,
-        "inventory-management-london": `Inventory Management & Storage in ${locName}, London | KXH`,
-        "pallet-storage-london": `Pallet Storage in ${locName}, London | Collection & Delivery | KXH`,
-        "commercial-storage-london": `Commercial Storage in ${locName}, London | Warehouse Support | KXH`,
-        "third-party-logistics-london": `Third Party Logistics in ${locName}, London | 3PL Support | KXH`,
+        "warehouse-storage-london": fitTitle([`Storage in ${short}, London | Pickup & Delivery | KXH`, `Storage in ${short} | Pickup & Delivery | KXH`, `Storage ${short} | KXH`]),
+        "logistics-moving-london": fitTitle([`Moving Services in ${short}, London | Removals | KXH`, `Moving Services in ${short} | KXH`, `Removals ${short} | KXH`]),
+        "shredding-solutions-london": fitTitle([`Document Shredding in ${short}, London | KXH`, `Document Shredding ${short} | KXH`, `Shredding ${short} | KXH`]),
+        "business-storage-london": fitTitle([`Business Storage in ${short}, London | KXH`, `Business Storage ${short} | KXH`]),
+        "inventory-management-london": fitTitle([`Inventory Management in ${short}, London | KXH`, `Inventory Management ${short} | KXH`, `Inventory Storage ${short} | KXH`]),
+        "pallet-storage-london": fitTitle([`Pallet Storage in ${short}, London | Delivery | KXH`, `Pallet Storage in ${short}, London | KXH`, `Pallet Storage ${short} | KXH`]),
+        "commercial-storage-london": fitTitle([`Commercial Storage in ${short}, London | KXH`, `Commercial Storage ${short} | KXH`]),
+        "third-party-logistics-london": fitTitle([`3PL & Third Party Logistics in ${short}, London | KXH`, `Third Party Logistics ${short} | KXH`, `3PL ${short} | KXH`]),
     };
     const descriptions: Record<ServiceSlug, string> = {
         "warehouse-storage-london": `Secure storage space in ${locName}, London with collection, managed warehouse storage, flexible terms, and return delivery for students, renters, households, and businesses.`,
@@ -1023,9 +1047,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const { title, description } = getMetadataCopy(service, loc);
     const canonical = `${SITE_URL}/${service}/${location}`;
     return {
-        title,
+        title: { absolute: title },
         description,
         alternates: { canonical },
+        openGraph: { title, description, url: canonical, images: [serviceImages[service]] },
     };
 }
 
@@ -1043,7 +1068,7 @@ function StructuredData({ service, location, content }: SectionProps) {
             "@type": "LocalBusiness",
             name: "KXH Storage & Logistics",
             url: SITE_URL,
-            telephone: "+44 1474 396663",
+            telephone: "+44 20 3916 5312",
         },
     };
     const faqSchema = {
@@ -1084,60 +1109,39 @@ function Breadcrumbs({ service, location, content }: SectionProps) {
     return (
         <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-            <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl px-4 pt-6 text-sm text-slate-500">
-                <ol className="flex flex-wrap items-center gap-2">
-                    {items.map((item, index) => (
-                        <li key={item.href} className="flex items-center gap-2">
-                            {index < items.length - 1 ? (
-                                <Link href={item.href} className={`font-medium text-emerald-700 hover:underline ${focusRing}`}>
-                                    {item.name}
-                                </Link>
-                            ) : (
-                                <span aria-current="page" className="font-semibold text-slate-700">{item.name}</span>
-                            )}
-                            {index < items.length - 1 && <span aria-hidden="true" className="text-slate-300">/</span>}
-                        </li>
-                    ))}
-                </ol>
-            </nav>
         </>
     );
 }
 
 function LocationHero({ service, location, content }: SectionProps) {
+    const area = areaInfo(location.slug);
+    const h1 = content.h1(location.name);
     return (
-        <section className="bg-gradient-to-b from-slate-50 to-white py-16 lg:py-20" aria-labelledby="page-title">
-            <div className="mx-auto max-w-6xl px-4">
-                <div className="mx-auto max-w-4xl text-center">
-                    <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-800">
-                        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-emerald-600" />
-                        {content.label} in {location.name}
-                    </p>
-                    <h1 id="page-title" className="mt-6 text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-                        {content.h1(location.name)}
-                    </h1>
-                    <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">{content.intro(location.name)}</p>
-                    <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                        <Link href={quoteHref(service)} className={`rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-emerald-800 ${focusRing}`}>
-                            Request a Quote
-                        </Link>
-                        <Link href="#how-it-works" className={`rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-800 transition hover:bg-slate-50 ${focusRing}`}>
-                            See How It Works
-                        </Link>
-                    </div>
-                    <div className="mt-6 flex justify-center"><TrustpilotPill /></div>
-                </div>
-                <Image
-                    src={serviceImages[service]}
-                    alt={`${content.label} service available in ${location.name}, London`}
-                    width={1200}
-                    height={700}
-                    priority
-                    sizes="(min-width: 1024px) 1152px, 100vw"
-                    className="mt-10 aspect-[12/7] w-full rounded-3xl object-cover shadow-xl"
-                />
-            </div>
-        </section>
+        <ServiceHero
+            image={serviceImages[service]}
+            imageAlt={`${content.label} in ${location.name}, London by KXH Storage & Logistics`}
+            breadcrumb={[
+                { label: "Home", href: "/" },
+                { label: "Services", href: "/services" },
+                { label: content.label, href: `/${service}` },
+                { label: location.name },
+            ]}
+            eyebrow={`${content.label} · ${location.name}`}
+            title={h1}
+            highlight={h1.includes(location.name) ? location.name : undefined}
+            intro={content.intro(location.name)}
+            chips={content.benefits.slice(0, 4)}
+            ctaHref={quoteHref(service)}
+            ctaLabel="Get a Free Quote"
+            cardEyebrow={`Covering ${location.name}`}
+            cardTitle={area.postcodes ? `Postcodes ${area.postcodes}` : `All of ${location.name}`}
+            cardItems={[
+                { icon: <HIcMapPin className="h-6 w-6" />, title: "Local pickups", text: area.places || `Across ${location.name}` },
+                { icon: <HIcTruck className="h-6 w-6" />, title: "Own vans", text: "Collection and delivery" },
+                { icon: <HIcShield className="h-6 w-6" />, title: "Secure", text: "Managed warehouse" },
+                { icon: <HIcClock className="h-6 w-6" />, title: "24/7", text: "Open every day" },
+            ]}
+        />
     );
 }
 
@@ -1147,7 +1151,7 @@ function BenefitsStrip({ service, content }: SectionProps) {
         : content.benefits.slice(0, 4);
     return (
         <section aria-label={`${content.label} benefits`} className="border-y border-emerald-100 bg-emerald-50">
-            <div className="mx-auto max-w-6xl px-4 py-6">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-6">
                 <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {benefits.map((benefit) => (
                         <li key={benefit} className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-white px-4 py-3 text-sm font-semibold text-emerald-800">
@@ -1165,11 +1169,11 @@ function ServiceOverview({ service, location, content }: SectionProps) {
     const title = business ? `Managed Business Storage in ${location.name}` : `Local ${content.label} in ${location.name}`;
     return (
         <section className="border-b border-slate-200 bg-white py-16 lg:py-20" aria-labelledby="overview-title">
-            <div className="mx-auto max-w-6xl px-4">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-12">
                     <div className="max-w-3xl">
-                        <p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Managed local service</p>
-                        <h2 id="overview-title" className="mt-3 text-3xl font-black sm:text-4xl">{title}</h2>
+                        <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Managed local service</p>
+                        <h2 id="overview-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{title}</h2>
                         {business ? (
                             <>
                                 <p className="mt-5 leading-7 text-slate-600">KXH Storage & Logistics provides flexible business storage across {location.name} for stock, equipment, office furniture, documents, seasonal inventory, and commercial assets.</p>
@@ -1184,7 +1188,7 @@ function ServiceOverview({ service, location, content }: SectionProps) {
                         )}
                     </div>
                     <div>
-                        <Image src={getSupportImage(service)} alt={`KXH ${content.label.toLowerCase()} operations serving ${location.name}`} width={900} height={700} loading="lazy" sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-lg" />
+                        <Image src={getSupportImage(service)} alt={`KXH ${content.label.toLowerCase()} operations serving ${location.name}`} width={900} height={700} loading="lazy" sizes="(min-width: 1024px) 50vw, 100vw" className="h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80" />
                         <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="text-xl font-bold">Common uses in {location.name}</h3>
                             <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
@@ -1206,14 +1210,14 @@ function WarehouseAudienceSection({ location }: { location: LocationItem }) {
     ];
     return (
         <section className="bg-slate-50 py-16 lg:py-20" aria-labelledby="audience-title">
-            <div className="mx-auto max-w-6xl px-4">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Storage for local customers</p>
-                    <h2 id="audience-title" className="mt-3 text-3xl font-black sm:text-4xl">Storage for Students, Renters and Businesses in {location.name}</h2>
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Storage for local customers</p>
+                    <h2 id="audience-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Storage for Students, Renters and Businesses in {location.name}</h2>
                     <p className="mt-4 leading-7 text-slate-600">Collection and return delivery make storage practical whether you are changing accommodation, moving home, or creating more operational space.</p>
                 </div>
                 <div className="mt-10 grid gap-6 md:grid-cols-3">
-                    {groups.map((group) => <article key={group.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><h3 className="text-xl font-bold">{group.title}</h3><p className="mt-3 leading-7 text-slate-600">{group.text}</p><Link href={group.href} className={`mt-5 inline-flex font-semibold text-emerald-700 hover:underline ${focusRing}`}>Explore {group.title}<span aria-hidden="true" className="ml-1">→</span></Link></article>)}
+                    {groups.map((group) => <article key={group.title} className="kxh-reveal kxh-card3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl"><h3 className="text-xl font-bold">{group.title}</h3><p className="mt-3 leading-7 text-slate-600">{group.text}</p><Link href={group.href} className={`mt-5 inline-flex font-semibold text-emerald-700 hover:underline ${focusRing}`}>Explore {group.title}<span aria-hidden="true" className="ml-1">→</span></Link></article>)}
                 </div>
             </div>
         </section>
@@ -1224,17 +1228,41 @@ function LocalContextSection({ service, location, content }: SectionProps) {
     const local = boroughContent[location.slug]?.[service];
     return (
         <section className="border-y border-slate-200 bg-white py-16 lg:py-20" aria-labelledby="local-context-title">
-            <div className="mx-auto max-w-6xl px-4">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr] lg:items-start">
                     <div className="max-w-3xl">
-                        <p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Local service context</p>
-                        <h2 id="local-context-title" className="mt-3 text-3xl font-black sm:text-4xl">{content.label} Support in {location.name}</h2>
+                        <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Local service context</p>
+                        <h2 id="local-context-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{content.label} Support in {location.name}</h2>
                         <p className="mt-5 leading-7 text-slate-600">{local?.localIntro ?? `KXH Logistics helps customers in ${location.name} arrange reliable, fully managed ${content.label.toLowerCase()} without handling transport and logistics alone.`}</p>
                         <p className="mt-4 leading-7 text-slate-600">{local?.localUseCase ?? `Our service supports households, students, offices, and businesses through a straightforward quote, collection, handling, and delivery process.`}</p>
+                        {areaInfo(location.slug).places && (
+                            <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                                <p className="font-bold text-slate-950">Where we collect in {location.name}</p>
+                                <p className="mt-2 text-sm leading-6 text-slate-700">
+                                    We regularly collect from homes, flats and businesses in {areaInfo(location.slug).places}, covering {areaInfo(location.slug).postcodes} postcodes.
+                                </p>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                    {areaInfo(location.slug).postcodes.split(", ").map((pc) => (
+                                        <span key={pc} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">{pc}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-6" aria-label={`${content.label} is ideal for`}>
-                        <h3 className="text-xl font-bold">Ideal for</h3>
-                        <ul className="mt-5 space-y-3">{content.idealFor.map((item) => <li key={item} className="flex gap-3 text-slate-700"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span>{item}</li>)}</ul>
+                    <aside className="space-y-4" aria-label={`${content.label} coverage in ${location.name}`}>
+                        <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
+                            <iframe
+                                title={`Map of ${location.name}, London`}
+                                src={`https://maps.google.com/maps?q=${encodeURIComponent(areaInfo(location.slug).mapQuery)}&z=13&output=embed`}
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                className="h-72 w-full border-0"
+                            />
+                        </div>
+                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                            <h3 className="text-lg font-bold">Ideal for</h3>
+                            <ul className="mt-4 grid gap-2 sm:grid-cols-2">{content.idealFor.map((item) => <li key={item} className="flex gap-2 text-sm text-slate-700"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span>{item}</li>)}</ul>
+                        </div>
                     </aside>
                 </div>
             </div>
@@ -1245,9 +1273,9 @@ function LocalContextSection({ service, location, content }: SectionProps) {
 function HowItWorksSection({ location, content }: SectionProps) {
     return (
         <section id="how-it-works" className="scroll-mt-24 bg-slate-50 py-16 lg:py-20" aria-labelledby="how-title">
-            <div className="mx-auto max-w-6xl px-4">
-                <div className="mx-auto max-w-3xl text-center"><p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Simple managed process</p><h2 id="how-title" className="mt-3 text-3xl font-black sm:text-4xl">How It Works in {location.name}</h2><p className="mt-4 leading-7 text-slate-600">A clear process from quote and collection through secure handling and delivery.</p></div>
-                <ol className="mt-10 grid gap-6 md:grid-cols-3">{content.process.map((step, index) => <li key={step} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-lg font-black text-emerald-800">{index + 1}</span><p className="mt-4 leading-7 text-slate-700">{step}</p></li>)}</ol>
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-3xl text-center"><p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Simple managed process</p><h2 id="how-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">How It Works in {location.name}</h2><p className="mt-4 leading-7 text-slate-600">A clear process from quote and collection through secure handling and delivery.</p></div>
+                <ol className="mt-10 grid gap-6 md:grid-cols-3">{content.process.map((step, index) => <li key={step} className="kxh-reveal kxh-card3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-lg font-black text-emerald-800">{index + 1}</span><p className="mt-4 leading-7 text-slate-700">{step}</p></li>)}</ol>
             </div>
         </section>
     );
@@ -1260,20 +1288,32 @@ function WhyChooseSection({ service, location, content }: SectionProps) {
             ? ["No need to rent a van", "Short- and long-term options", "Storage for homes and businesses", "Return delivery across London"]
             : ["Experienced operational support", "Flexible booking and scheduling", "Clear quote-based service", "Collection and delivery coordination"];
     return (
-        <section className="bg-white py-16 lg:py-20" aria-labelledby="why-title"><div className="mx-auto max-w-6xl px-4"><div className="grid gap-10 lg:grid-cols-2 lg:items-center"><div><p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Why KXH</p><h2 id="why-title" className="mt-3 text-3xl font-black sm:text-4xl">Why {service === "business-storage-london" ? "Businesses" : "Customers"} Choose KXH in {location.name}</h2><p className="mt-5 leading-7 text-slate-600">KXH combines local collection, professional handling, and practical logistics support so customers can use one managed service rather than coordinating several providers.</p></div><div className="grid gap-4 sm:grid-cols-2">{items.map((item) => <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-5"><span aria-hidden="true" className="text-xl font-black text-emerald-700">✓</span><h3 className="mt-3 font-bold">{item}</h3><p className="mt-2 text-sm leading-6 text-slate-600">Available as part of our {content.label.toLowerCase()} service in {location.name} and across London.</p></div>)}</div></div></div></section>
+        <section className="bg-white py-16 lg:py-20" aria-labelledby="why-title"><div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"><div className="grid gap-10 lg:grid-cols-2 lg:items-center"><div><p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Why KXH</p><h2 id="why-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Why {service === "business-storage-london" ? "Businesses" : "Customers"} Choose KXH in {location.name}</h2><p className="mt-5 leading-7 text-slate-600">KXH combines local collection, professional handling, and practical logistics support so customers can use one managed service rather than coordinating several providers.</p></div><div className="grid gap-4 sm:grid-cols-2">{items.map((item) => <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-5"><span aria-hidden="true" className="text-xl font-black text-emerald-700">✓</span><h3 className="mt-3 font-bold">{item}</h3><p className="mt-2 text-sm leading-6 text-slate-600">Available as part of our {content.label.toLowerCase()} service in {location.name} and across London.</p></div>)}</div></div></div></section>
     );
 }
 
 function BusinessIndustrySection({ location }: { location: LocationItem }) {
     const availableIndustries = businessStorageIndustries.filter((industry) => industry.available);
     return (
-        <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-20" aria-labelledby="industry-title"><div className="mx-auto max-w-6xl px-4"><div className="max-w-3xl"><p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Business storage options</p><h2 id="industry-title" className="mt-3 text-3xl font-black sm:text-4xl">Available Business Storage Solutions</h2><p className="mt-4 leading-7 text-slate-600">Explore dedicated storage solutions for businesses in {location.name}. Future industry services remain planned, but only currently available pages are shown here.</p></div><div className="mt-10 grid gap-6 md:grid-cols-2">{availableIndustries.map((industry) => <Link key={industry.href} href={industry.href} className={`group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md ${focusRing}`}><h3 className="text-xl font-bold group-hover:text-emerald-700">{industry.title}</h3><p className="mt-3 leading-7 text-slate-600">{industry.description}</p><span className="mt-5 inline-flex font-semibold text-emerald-700">View solution <span aria-hidden="true" className="ml-1 transition group-hover:translate-x-1">→</span></span></Link>)}</div><div className="mt-8"><Link href="/business-storage-london" className={`inline-flex rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800 ${focusRing}`}>Explore All Business Storage</Link></div></div></section>
+        <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-20" aria-labelledby="industry-title"><div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"><div className="max-w-3xl"><p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Business storage options</p><h2 id="industry-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Available Business Storage Solutions</h2><p className="mt-4 leading-7 text-slate-600">Explore dedicated storage solutions for businesses in {location.name}. Future industry services remain planned, but only currently available pages are shown here.</p></div><div className="mt-10 grid gap-6 md:grid-cols-2">{availableIndustries.map((industry) => <Link key={industry.href} href={industry.href} className={`group kxh-reveal kxh-card3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md ${focusRing}`}><h3 className="text-xl font-bold group-hover:text-emerald-700">{industry.title}</h3><p className="mt-3 leading-7 text-slate-600">{industry.description}</p><span className="mt-5 inline-flex font-semibold text-emerald-700">View solution <span aria-hidden="true" className="ml-1 transition group-hover:translate-x-1">→</span></span></Link>)}</div><div className="mt-8"><Link href="/business-storage-london" className={`inline-flex rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800 ${focusRing}`}>Explore All Business Storage</Link></div></div></section>
     );
 }
 
 function TeamSection({ location, content }: Omit<SectionProps, "service">) {
     return (
-        <section className="bg-white py-16 lg:py-20" aria-labelledby="team-title"><div className="mx-auto max-w-6xl px-4"><div className="grid gap-10 lg:grid-cols-2 lg:items-center"><Image src="/images/location-service/location-team-photo.webp" alt={`KXH Storage & Logistics operations team serving ${location.name}`} width={1400} height={800} loading="lazy" sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[7/4] w-full rounded-3xl object-cover shadow-xl" /><div><p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Operational trust</p><h2 id="team-title" className="mt-3 text-3xl font-black sm:text-4xl">A Team That Manages the Details</h2><p className="mt-5 leading-7 text-slate-600">From collection planning to careful handling and delivery coordination, the KXH team supports each stage of your {content.label.toLowerCase()} service in {location.name}.</p><ul className="mt-6 space-y-3 text-slate-700"><li className="flex gap-3"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span>Professional collection and handling</li><li className="flex gap-3"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span>Clear communication throughout the service</li><li className="flex gap-3"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span>Flexible support for changing requirements</li></ul></div></div></div></section>
+        <ServiceShowcase
+            eyebrow="See it in action"
+            title={`Our own team and vans in ${location.name}`}
+            intro={`From collection planning to careful handling and delivery, the KXH team runs every stage of your ${content.label.toLowerCase()} in ${location.name} ourselves.`}
+            points={["Professional collection and handling", "Clear updates throughout", "Flexible dates and timings", "Secure managed warehouse"]}
+            images={[
+                { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                { src: "/images/new-van.webp", alt: `KXH Storage & Logistics van collecting in ${location.name}`, label: `Collections in ${location.name}` },
+                { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for delivery", label: "Return delivery" },
+            ]}
+            ctaHref="/get-a-quote"
+            ctaLabel="Get a Free Quote"
+        />
     );
 }
 
@@ -1345,13 +1385,13 @@ function getRelatedServices(service: ServiceSlug, location: LocationItem): { pri
 function RelatedServicesSection({ service, location, content }: SectionProps) {
     const { primary, secondary } = getRelatedServices(service, location);
     return (
-        <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-20" aria-labelledby="related-title"><div className="mx-auto max-w-6xl px-4"><div className="mx-auto max-w-3xl text-center"><p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Related services</p><h2 id="related-title" className="mt-3 text-3xl font-black sm:text-4xl">Explore Related Services in {location.name}</h2><p className="mt-4 leading-7 text-slate-600">Combine {content.label.toLowerCase()} with other KXH storage, moving, and logistics services.</p></div><div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{primary.map((item) => <Link key={item.href} href={item.href} className={`group rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md ${focusRing}`}><h3 className="text-lg font-bold group-hover:text-emerald-700">{item.title}</h3><p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p><span className="mt-5 inline-flex font-semibold text-emerald-700">View service <span aria-hidden="true" className="ml-1">→</span></span></Link>)}</div>{secondary.length > 0 && <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">{secondary.map((item) => <Link key={item.href} href={item.href} className={`font-semibold text-emerald-700 hover:underline ${focusRing}`}>{item.title} in {location.name}</Link>)}</div>}</div></section>
+        <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-20" aria-labelledby="related-title"><div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"><div className="mx-auto max-w-3xl text-center"><p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Related services</p><h2 id="related-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore Related Services in {location.name}</h2><p className="mt-4 leading-7 text-slate-600">Combine {content.label.toLowerCase()} with other KXH storage, moving, and logistics services.</p></div><div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{primary.map((item) => <Link key={item.href} href={item.href} className={`group rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md ${focusRing}`}><h3 className="text-lg font-bold group-hover:text-emerald-700">{item.title}</h3><p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p><span className="mt-5 inline-flex font-semibold text-emerald-700">View service <span aria-hidden="true" className="ml-1">→</span></span></Link>)}</div>{secondary.length > 0 && <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">{secondary.map((item) => <Link key={item.href} href={item.href} className={`font-semibold text-emerald-700 hover:underline ${focusRing}`}>{item.title} in {location.name}</Link>)}</div>}</div></section>
     );
 }
 
 function FAQSection({ location, content }: Omit<SectionProps, "service">) {
     return (
-        <section className="bg-white py-16 lg:py-20" aria-labelledby="faq-title"><div className="mx-auto max-w-6xl px-4"><div className="mx-auto max-w-4xl"><div className="text-center"><p className="text-sm font-bold uppercase tracking-wider text-emerald-700">Questions answered</p><h2 id="faq-title" className="mt-3 text-3xl font-black sm:text-4xl">Frequently Asked Questions</h2><p className="mt-4 text-slate-600">Common questions about {content.label.toLowerCase()} in {location.name}.</p></div><div className="mt-10 space-y-3">{content.faqs.map((faq) => <details key={faq.q} className="group rounded-xl border border-slate-200 bg-white p-5"><summary className={`cursor-pointer list-none font-semibold text-slate-900 ${focusRing}`}>{faq.q}<span aria-hidden="true" className="float-right text-emerald-700 transition group-open:rotate-45">+</span></summary><p className="mt-3 max-w-3xl leading-7 text-slate-600">{faq.a}</p></details>)}</div></div></div></section>
+        <section className="bg-white py-16 lg:py-20" aria-labelledby="faq-title"><div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"><div className="mx-auto max-w-4xl"><div className="text-center"><p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Questions answered</p><h2 id="faq-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Frequently Asked Questions</h2><p className="mt-4 text-slate-600">Common questions about {content.label.toLowerCase()} in {location.name}.</p></div><div className="mt-10 space-y-3">{content.faqs.map((faq) => <details key={faq.q} className="group rounded-2xl border border-slate-200 bg-slate-50 open:border-emerald-300 open:bg-white open:shadow-lg"><summary className={`flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-bold text-slate-950 [&::-webkit-details-marker]:hidden ${focusRing}`}>{faq.q}<span aria-hidden="true" className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700 transition group-open:rotate-45">+</span></summary><p className="px-5 pb-5 leading-7 text-slate-600">{faq.a}</p></details>)}</div></div></div></section>
     );
 }
 
@@ -1372,14 +1412,14 @@ function getAreaSupportText(service: ServiceSlug, label: string) {
 function LondonServiceAreasSection({ service, location, content }: SectionProps) {
     const otherAreas = londonLocations.filter((area) => area.slug !== location.slug);
     return (
-        <section className="border-t border-slate-200 bg-white py-16 lg:py-20" aria-labelledby="areas-title"><div className="mx-auto max-w-6xl px-4"><div className="max-w-3xl"><p className="text-sm font-bold uppercase tracking-wider text-emerald-700">London Service Areas</p><h2 id="areas-title" className="mt-3 text-3xl font-black sm:text-4xl">{content.label} Across London</h2><p className="mt-4 leading-7 text-slate-600">{getAreaSupportText(service, content.label)}</p></div><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{otherAreas.map((area) => <Link key={area.slug} href={`/${service}/${area.slug}`} className={`group flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm ${focusRing}`}><span><span className="block text-xs font-semibold uppercase tracking-wide text-slate-500">{content.label}</span><span className="mt-1 block font-bold text-slate-900 group-hover:text-emerald-700">{area.name}</span></span><span aria-hidden="true" className="ml-4 text-lg font-bold text-emerald-700 transition group-hover:translate-x-1">→</span></Link>)}</div><div className="mt-10 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-5 sm:flex sm:items-center sm:justify-between sm:gap-6"><div><h3 className="font-bold">Need service in another London area?</h3><p className="mt-1 text-sm leading-6 text-slate-600">Contact KXH to confirm collection, delivery, and service availability for your postcode.</p></div><Link href={quoteHref(service)} className={`mt-4 inline-flex shrink-0 rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-800 sm:mt-0 ${focusRing}`}>Check Availability</Link></div></div></section>
+        <section className="border-t border-slate-200 bg-white py-16 lg:py-20" aria-labelledby="areas-title"><div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"><div className="max-w-3xl"><p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">London Service Areas</p><h2 id="areas-title" className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{content.label} Across London</h2><p className="mt-4 leading-7 text-slate-600">{getAreaSupportText(service, content.label)}</p></div><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{otherAreas.map((area) => <Link key={area.slug} href={`/${service}/${area.slug}`} className={`group flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm ${focusRing}`}><span><span className="block text-xs font-semibold uppercase tracking-wide text-slate-500">{content.label}</span><span className="mt-1 block font-bold text-slate-900 group-hover:text-emerald-700">{area.name}</span></span><span aria-hidden="true" className="ml-4 text-lg font-bold text-emerald-700 transition group-hover:translate-x-1">→</span></Link>)}</div><div className="mt-10 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-5 sm:flex sm:items-center sm:justify-between sm:gap-6"><div><h3 className="font-bold">Need service in another London area?</h3><p className="mt-1 text-sm leading-6 text-slate-600">Contact KXH to confirm collection, delivery, and service availability for your postcode.</p></div><Link href={quoteHref(service)} className={`mt-4 inline-flex shrink-0 rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-800 sm:mt-0 ${focusRing}`}>Check Availability</Link></div></div></section>
     );
 }
 
 function FinalCtaSection({ service, location }: Pick<SectionProps, "service" | "location">) {
     const cta = getFinalCta(service, location.name);
     return (
-        <section className="bg-slate-950 py-16 text-center text-white lg:py-20" aria-labelledby="final-cta-title"><div className="mx-auto max-w-6xl px-4"><div className="mx-auto max-w-3xl"><h2 id="final-cta-title" className="text-3xl font-black sm:text-4xl">{cta.title}</h2><p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">{cta.text}</p><Link href={quoteHref(service)} className={`mt-8 inline-flex rounded-xl bg-emerald-600 px-8 py-4 font-semibold text-white transition hover:bg-emerald-500 ${focusRing}`}>{cta.button}</Link></div></div></section>
+        <section className="px-4 py-16 sm:px-6 lg:px-8 lg:py-20" aria-labelledby="final-cta-title"><div className="kxh-hero relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-950 px-6 py-14 text-center text-white shadow-2xl sm:px-12"><div className="mx-auto max-w-3xl"><h2 id="final-cta-title" className="text-3xl font-black sm:text-4xl">{cta.title}</h2><p className="mx-auto mt-4 max-w-2xl leading-7 text-emerald-50">{cta.text}</p><Link href={quoteHref(service)} className={`kxh-shine relative mt-8 inline-flex overflow-hidden rounded-2xl bg-white px-8 py-4 font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 ${focusRing}`}>{cta.button}</Link></div></div></section>
     );
 }
 

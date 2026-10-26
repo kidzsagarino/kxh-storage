@@ -52,7 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/commercial-storage-london",
     "/third-party-logistics-london",
     "/ecommerce-storage-london",
-    "/retail-storage-london",
+    "/retail-stock-storage-london",
     "/office-removals-london",
     "/house-removals-london",
     "/moving-house-storage-london",

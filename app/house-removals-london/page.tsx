@@ -1,3 +1,6 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import { Home as HIcHome, Building2 as HIcBuilding2, Package as HIcPackage, Warehouse as HIcWarehouse } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,13 +14,13 @@ import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../lib/location";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
-const pageUrl = "https://kxhlogistics.co.uk/home-removals-london";
+const pageUrl = "https://kxhlogistics.co.uk/house-removals-london";
 const quoteUrl = "/get-a-quote?service=moving";
 
 export const metadata: Metadata = {
-    title: "Home Removals London | Packing, Moving & Storage | KXH",
+    title: "House Removals London | Packing & Storage | KXH",
     description:
-        "Professional home removals in London with packing, furniture protection, careful transport, temporary storage and flexible delivery from one managed team.",
+    "House removals in London with packing, furniture protection, loading, transport and optional storage. Same-day moves across London. Get a removals quote.",
     alternates: {
         canonical: pageUrl,
     },
@@ -612,7 +615,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 7386 277785",
+            telephone: "+44 20 3916 5312",
         },
         areaServed: {
             "@type": "City",
@@ -697,98 +700,46 @@ function BreadcrumbJsonLd() {
 }
 
 function BreadcrumbNavigation() {
-    return (
-        <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8">
-            <Link href="/" className="transition hover:text-emerald-700">Home</Link>
-            <span className="mx-2">/</span>
-            <Link href="/services" className="transition hover:text-emerald-700">Services</Link>
-            <span className="mx-2">/</span>
-            <Link href="/logistics-moving-london" className="transition hover:text-emerald-700">Moving Services</Link>
-            <span className="mx-2">/</span>
-            <span className="font-medium text-slate-700">Home Removals London</span>
-        </nav>
-    );
+    return null;
 }
 
 function HeroSection() {
     return (
-        <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-            <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
-                    Professional House and Flat Removals Across London
-                </div>
-
-                <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                    Home Removals London Made Easier
-                </h1>
-
-                <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Move your home with one London team managing planning, professional packing, furniture protection, collection, secure transport, optional storage and delivery to the new address.
-                </p>
-
-                <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                    Suitable for house removals, flat moves, apartment relocations, family moves, downsizing, renovations and delayed completion dates where belongings may need to remain stored between addresses.
-                </p>
-
-                <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                    {heroBenefits.map((benefit) => (
-                        <div key={benefit} className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
-                            <span aria-hidden="true">✓</span> {benefit}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link href={quoteUrl} className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto">
-                        Get a Free Home Removal Quote
-                    </Link>
-                    {CONTACT_NUMBERS.map((contact) => (
-                        <a
-                            key={contact.href}
-                            href={contact.href}
-                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                        >
-                            Call {contact.label}
-                        </a>
-                    ))}
-                </div>
-
-                <p className="mt-4 text-sm text-slate-500">
-                    Share both addresses, property access, item volume, preferred date and any packing or storage requirements.
-                </p>
-
-                <div className="mt-6 flex justify-center"><TrustpilotPill /></div>
-
-                <div className="mt-12 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-                    <Image
-                        src="/images/moving-services/moving-services-hero.webp"
-                        alt="KXH home removals team collecting household furniture in London"
-                        width={1400}
-                        height={800}
-                        priority
-                        quality={80}
-                        sizes="(max-width: 768px) 100vw, 960px"
-                        className="h-auto w-full object-cover"
-                    />
-                </div>
-            </div>
-        </section>
+        <ServiceHero
+            image="/images/kxh-moving-removals-london.webp"
+            imageAlt="House Removals London Made Easier with KXH Storage & Logistics"
+            breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "House Removals London"}]}
+            eyebrow="Home removals"
+            title="House Removals London Made Easier"
+            highlight="Made Easier"
+            intro="Move home with one team for packing, furniture protection, loading, transport and storage. Flats, houses and student moves across London."
+            chips={["Packing and wrapping", "Furniture protection", "Same-day London moves", "Storage between homes"]}
+            ctaHref="/get-a-quote?service=moving"
+            ctaLabel="Get a Removals Quote"
+            cardEyebrow="We move"
+            cardTitle="Every size of home"
+            cardItems={[
+                { icon: <HIcHome className="h-6 w-6" aria-hidden="true" />, title: "Flats", text: "Studios to 2 beds" },
+                { icon: <HIcBuilding2 className="h-6 w-6" aria-hidden="true" />, title: "Houses", text: "3 and 4 bed homes" },
+                { icon: <HIcPackage className="h-6 w-6" aria-hidden="true" />, title: "Packing", text: "Boxes and wrapping" },
+                { icon: <HIcWarehouse className="h-6 w-6" aria-hidden="true" />, title: "Storage", text: "Between move dates" },
+            ]}
+        />
     );
 }
 
 function WhyProfessionalRemovalsSection() {
     return (
-        <section aria-labelledby="why-professional-removals" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Why Use Professional Home Movers?</p>
-                    <h2 id="why-professional-removals" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">A Home Move Is More Than Hiring a Van</h2>
+        <section aria-labelledby="why-professional-removals" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Why Use Professional Home Movers?</p>
+                    <h2 id="why-professional-removals" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">A Home Move Is More Than Hiring a Van</h2>
                     <p className="mt-4 leading-7 text-slate-600">Professional removals bring labour, protection, loading experience and practical planning together. That matters most when access is restricted, furniture is bulky, dates are uncertain or the household has limited time to organise every stage.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {moveSituations.map((item) => (
-                        <article key={item.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <article key={item.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
                         </article>
@@ -801,16 +752,16 @@ function WhyProfessionalRemovalsSection() {
 
 function ProcessSection() {
     return (
-        <section aria-labelledby="home-removal-process" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">How It Works</p>
-                    <h2 id="home-removal-process" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">One Managed Home Removal From Quote to Unloading</h2>
+        <section aria-labelledby="home-removal-process" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">How It Works</p>
+                    <h2 id="home-removal-process" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">One Managed Home Removal From Quote to Unloading</h2>
                     <p className="mt-4 leading-7 text-slate-600">After you request a quote, KXH reviews the move details and confirms the agreed labour, vehicle, packing, access, storage and delivery requirements.</p>
                 </div>
                 <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {serviceSteps.map((step) => (
-                        <article key={step.number} className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                        <article key={step.number} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
                             <span className="text-sm font-black text-emerald-700">{step.number}</span>
                             <h3 className="mt-4 text-lg font-bold text-slate-950">{step.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{step.description}</p>
@@ -818,7 +769,7 @@ function ProcessSection() {
                     ))}
                 </div>
                 <div className="mt-10 text-center">
-                    <Link href={quoteUrl} className="inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800">Plan Your Home Move</Link>
+                    <Link href={quoteUrl} className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800">Plan Your Home Move</Link>
                 </div>
             </div>
         </section>
@@ -827,22 +778,23 @@ function ProcessSection() {
 
 function WhatWeMoveSection() {
     return (
-        <section aria-labelledby="what-we-move" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section aria-labelledby="what-we-move" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <Image
-                    src="/images/moving-services/moving-services-packing-loading.webp"
+                    src="/images/kxh-collection-delivery-london.webp"
                     alt="KXH movers protecting and loading household furniture"
                     width={1400}
                     height={800}
                     quality={75}
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                    className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                     loading="lazy"
                     decoding="async"
                 />
+
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">What We Move</p>
-                    <h2 id="what-we-move" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Household Furniture, Boxes, Appliances and Personal Belongings</h2>
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">What We Move</p>
+                    <h2 id="what-we-move" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Household Furniture, Boxes, Appliances and Personal Belongings</h2>
                     <p className="mt-4 leading-7 text-slate-600">Provide an accurate item list, photographs or survey information so KXH can plan vehicle capacity, labour, packing, dismantling and any specialist handling before the move.</p>
                     <ul className="mt-7 grid gap-3 sm:grid-cols-2">
                         {whatWeMove.map((item) => (
@@ -857,16 +809,16 @@ function WhatWeMoveSection() {
 
 function PackingSection() {
     return (
-        <section aria-labelledby="packing-protection" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Packing and Furniture Protection</p>
-                    <h2 id="packing-protection" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Prepare Belongings for Carrying, Transport and Storage</h2>
+        <section aria-labelledby="packing-protection" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Packing and Furniture Protection</p>
+                    <h2 id="packing-protection" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Prepare Belongings for Carrying, Transport and Storage</h2>
                     <p className="mt-4 leading-7 text-slate-600">Professional packing can reduce pressure before moving day and help ensure furniture, boxes and fragile belongings are prepared consistently for the agreed journey.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {packingFeatures.map((item) => (
-                        <article key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+                        <article key={item.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
                         </article>
@@ -879,11 +831,11 @@ function PackingSection() {
 
 function StorageSection() {
     return (
-        <section aria-labelledby="temporary-storage" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section aria-labelledby="temporary-storage" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Temporary Storage During Your Move</p>
-                    <h2 id="temporary-storage" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Bridge the Gap Between Moving Out and Moving In</h2>
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Temporary Storage During Your Move</p>
+                    <h2 id="temporary-storage" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Bridge the Gap Between Moving Out and Moving In</h2>
                     <p className="mt-4 leading-7 text-slate-600">A direct move is not always possible. KXH can collect belongings, place them into managed warehouse storage and arrange full, partial or staged delivery when the next property is ready.</p>
                     <ul className="mt-7 grid gap-3 sm:grid-cols-2">
                         {storageScenarios.map((item) => (
@@ -895,16 +847,17 @@ function StorageSection() {
                     </p>
                 </div>
                 <Image
-                    src="/images/moving-services/moving-services-team-working.webp"
+                    src="/images/new-van.webp"
                     alt="Household furniture organised inside KXH managed warehouse storage"
                     width={1400}
                     height={800}
                     quality={75}
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                    className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                     loading="lazy"
                     decoding="async"
                 />
+
             </div>
         </section>
     );
@@ -912,16 +865,16 @@ function StorageSection() {
 
 function ProblemsSection() {
     return (
-        <section aria-labelledby="moving-problems" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Common Moving Problems We Solve</p>
-                    <h2 id="moving-problems" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Practical Planning for London Homes and Streets</h2>
+        <section aria-labelledby="moving-problems" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Common Moving Problems We Solve</p>
+                    <h2 id="moving-problems" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Practical Planning for London Homes and Streets</h2>
                     <p className="mt-4 leading-7 text-slate-600">London removals often depend on access details that are easy to overlook. Sharing them early helps avoid delays, unsuitable vehicles and unrealistic moving-day assumptions.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {commonProblems.map((problem) => (
-                        <article key={problem.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+                        <article key={problem.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-lg font-bold text-slate-950">{problem.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{problem.description}</p>
                         </article>
@@ -934,16 +887,16 @@ function ProblemsSection() {
 
 function WhyKxhSection() {
     return (
-        <section aria-labelledby="why-kxh" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Why London Families Choose KXH</p>
-                    <h2 id="why-kxh" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">More Than a Point-to-Point Removal Company</h2>
+        <section aria-labelledby="why-kxh" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Why London Families Choose KXH</p>
+                    <h2 id="why-kxh" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">More Than a Point-to-Point Removal Company</h2>
                     <p className="mt-4 leading-7 text-slate-600">KXH can manage the connected journey from planning and packing through collection, transport, optional storage and final delivery, reducing the number of separate providers involved.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {whyChooseKxh.map((item, index) => (
-                        <article key={item.title} className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm">
+                        <article key={item.title} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 font-bold text-emerald-700" aria-hidden="true">{index + 1}</div>
                             <h3 className="mt-5 text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
@@ -957,16 +910,16 @@ function WhyKxhSection() {
 
 function ComparisonSection() {
     return (
-        <section aria-labelledby="removal-comparison" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Compare Your Options</p>
-                    <h2 id="removal-comparison" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">DIY Move vs Traditional Movers vs KXH Managed Removals</h2>
+        <section aria-labelledby="removal-comparison" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Compare Your Options</p>
+                    <h2 id="removal-comparison" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">DIY Move vs Traditional Movers vs KXH Managed Removals</h2>
                     <p className="mt-4 leading-7 text-slate-600">The best option depends on your time, access, item volume, storage requirements and how much of the process you want to coordinate yourself.</p>
                 </div>
 
                 <div className="mt-12 hidden overflow-hidden rounded-2xl border border-slate-200 lg:block">
-                    <div className="grid grid-cols-[1.25fr_1fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
+                    <div className="grid grid-cols-[1.25fr_1fr_1fr_1fr] bg-slate-950 text-sm font-bold text-white">
                         <div className="p-5">Service Feature</div>
                         <div className="border-l border-white/10 p-5 text-center">DIY Move</div>
                         <div className="border-l border-white/10 p-5 text-center">Traditional Movers</div>
@@ -1001,16 +954,16 @@ function ComparisonSection() {
 
 function MoveTypesSection() {
     return (
-        <section aria-labelledby="types-of-home-moves" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Types of Home Moves</p>
-                    <h2 id="types-of-home-moves" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">House, Flat and Apartment Removals Across London</h2>
+        <section aria-labelledby="types-of-home-moves" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Types of Home Moves</p>
+                    <h2 id="types-of-home-moves" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">House, Flat and Apartment Removals Across London</h2>
                     <p className="mt-4 leading-7 text-slate-600">Each property type creates different access, carrying and parking considerations. The quotation should reflect the real building and item requirements rather than only the number of bedrooms.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {moveTypes.map((item) => (
-                        <article key={item.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <article key={item.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
                         </article>
@@ -1023,16 +976,16 @@ function MoveTypesSection() {
 
 function ChecklistSection() {
     return (
-        <section aria-labelledby="moving-checklist" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Moving Home Checklist</p>
-                    <h2 id="moving-checklist" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Prepare for Your Move in Manageable Stages</h2>
+        <section aria-labelledby="moving-checklist" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Moving Home Checklist</p>
+                    <h2 id="moving-checklist" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Prepare for Your Move in Manageable Stages</h2>
                     <p className="mt-4 leading-7 text-slate-600">Starting early makes it easier to identify access issues, reduce unnecessary belongings and provide the information needed for an accurate quotation.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {checklistGroups.map((group) => (
-                        <article key={group.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+                        <article key={group.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-xl font-bold text-slate-950">{group.title}</h3>
                             <ul className="mt-5 space-y-3">
                                 {group.items.map((item) => (
@@ -1049,16 +1002,16 @@ function ChecklistSection() {
 
 function CostSection() {
     return (
-        <section aria-labelledby="removal-cost" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Pricing Explained</p>
-                    <h2 id="removal-cost" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">What Affects Home Removal Costs in London?</h2>
+        <section aria-labelledby="removal-cost" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Pricing Explained</p>
+                    <h2 id="removal-cost" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">What Affects Home Removal Costs in London?</h2>
                     <p className="mt-4 leading-7 text-slate-600">A useful quotation should reflect the actual work required. Bedroom count alone does not show furniture volume, carrying distance, stairs, parking, packing or special handling.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {costFactors.map((factor) => (
-                        <article key={factor.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <article key={factor.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="text-lg font-bold text-slate-950">{factor.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{factor.description}</p>
                         </article>
@@ -1067,7 +1020,7 @@ function CostSection() {
                 <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center sm:p-8">
                     <h3 className="text-xl font-bold text-slate-950">For a more accurate quotation</h3>
                     <p className="mx-auto mt-3 max-w-2xl leading-7 text-slate-600">Provide photographs or an item list, both addresses, floor and access details, preferred dates, packing requirements, dismantling needs and whether storage may be required.</p>
-                    <Link href={quoteUrl} className="mt-5 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800">Get a Tailored Quote</Link>
+                    <Link href={quoteUrl} className="mt-5 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800">Get a Tailored Quote</Link>
                 </div>
             </div>
         </section>
@@ -1076,16 +1029,16 @@ function CostSection() {
 
 function ScenariosSection() {
     return (
-        <section aria-labelledby="moving-scenarios" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Realistic Moving Scenarios</p>
-                    <h2 id="moving-scenarios" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">How a Managed Plan Solves Common Home-Moving Challenges</h2>
+        <section aria-labelledby="moving-scenarios" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Realistic Moving Scenarios</p>
+                    <h2 id="moving-scenarios" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">How a Managed Plan Solves Common Home-Moving Challenges</h2>
                     <p className="mt-4 leading-7 text-slate-600">These examples show how access, timing and storage requirements can change the right moving approach.</p>
                 </div>
                 <div className="mt-12 grid gap-6 lg:grid-cols-3">
                     {movingScenarios.map((scenario) => (
-                        <article key={scenario.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+                        <article key={scenario.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-xl font-bold text-slate-950">{scenario.title}</h3>
                             <dl className="mt-5 space-y-4 text-sm leading-6">
                                 <div><dt className="font-bold text-slate-950">Challenge</dt><dd className="mt-1 text-slate-600">{scenario.challenge}</dd></div>
@@ -1102,16 +1055,16 @@ function ScenariosSection() {
 
 function LondonCoverageSection() {
     return (
-        <section aria-labelledby="london-coverage" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Areas We Cover</p>
-                    <h2 id="london-coverage" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Home Removals Across London Boroughs</h2>
+        <section aria-labelledby="london-coverage" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Areas We Cover</p>
+                    <h2 id="london-coverage" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Home Removals Across London Boroughs</h2>
                     <p className="mt-4 leading-7 text-slate-600">KXH supports approved collections and deliveries across London. Every move should account for parking controls, loading restrictions, stairs, lifts, concierge access and building requirements.</p>
                 </div>
                 <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {coverageAreas.map((area) => (
-                        <Link key={area.href} href={area.href} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-emerald-300 hover:shadow-sm">
+                        <Link key={area.href} href={area.href} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5">
                             <h3 className="font-semibold text-slate-900">Home Removals in {area.name}</h3>
                             <p className="mt-2 text-sm leading-6 text-slate-600">Professional collection, moving, optional storage and delivery for London homes.</p>
                         </Link>
@@ -1124,16 +1077,16 @@ function LondonCoverageSection() {
 
 function RelatedGuidesSection() {
     return (
-        <section aria-labelledby="related-guides" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Related Services and Guides</p>
-                    <h2 id="related-guides" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Build the Right Moving and Storage Plan</h2>
+        <section aria-labelledby="related-guides" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Related Services and Guides</p>
+                    <h2 id="related-guides" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Build the Right Moving and Storage Plan</h2>
                     <p className="mt-4 leading-7 text-slate-600">Explore direct moving, temporary storage and specialist services for students, households and businesses across London.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {relatedGuides.map((service) => (
-                        <Link key={service.href} href={service.href} className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm">
+                        <Link key={service.href} href={service.href} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-lg font-bold text-slate-950">{service.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
                             <span className="mt-5 inline-block text-sm font-semibold text-emerald-700">Explore this service →</span>
@@ -1147,13 +1100,13 @@ function RelatedGuidesSection() {
 
 function FinalCallToActionSection() {
     return (
-        <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-            <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+        <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
                 <p className="text-sm font-semibold uppercase tracking-wide !text-white">Plan Your London Home Move</p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight !text-white sm:text-4xl">Moving Home in London?</h2>
                 <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-200">Tell us what needs moving, both addresses, property access, your preferred date and whether you require packing, dismantling or storage. KXH will review the details and prepare a tailored quotation for the agreed service.</p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link href={quoteUrl} className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8">Request Your Free Quote</Link>
+                    <Link href={quoteUrl} className="kxh-shine relative w-full overflow-hidden rounded-2xl bg-white px-8 py-4 text-center font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 sm:w-auto">Request Your Free Quote</Link>
                     {CONTACT_NUMBERS.map((contact) => (
                         <a
                             key={contact.href}
@@ -1172,11 +1125,11 @@ function FinalCallToActionSection() {
 function FaqsSection() {
     return (
         <section aria-labelledby="home-removals-faqs" className="border-t border-slate-200 bg-slate-50 py-12 sm:py-16">
-            <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-                <h2 id="home-removals-faqs" className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Home Removals London FAQs</h2>
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <h2 id="home-removals-faqs" className="mb-8 text-center text-3xl font-black text-slate-950 sm:text-4xl">Home Removals London FAQs</h2>
                 <div className="space-y-3">
                     {faqs.map((faq) => (
-                        <details key={faq.question} className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                        <details key={faq.question} className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg">
                             <summary className="cursor-pointer font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">{faq.question}</summary>
                             <p className="mt-3 leading-7 text-slate-600">{faq.answer}</p>
                         </details>
@@ -1215,6 +1168,19 @@ export default function HomeRemovalsLondonPage() {
                 <ScenariosSection />
                 <LondonCoverageSection />
                 <RelatedGuidesSection />
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="House moves handled by our own crew"
+                    intro="We pack, load and move your home with our own vans and team, with storage available if your dates do not line up."
+                    points={["Packing and wrapping", "Furniture protection", "Same-day London moves", "Storage between homes"]}
+                    images={[
+                        { src: "/images/new-van.webp", alt: "KXH Storage & Logistics van outside a London apartment block", label: "Our own KXH vans" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "House Removals London with KXH Storage & Logistics", label: "Careful packing" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=moving"
+                    ctaLabel="Get a Removals Quote"
+                />
                 <TestimonialsSection />
                 <FinalCallToActionSection />
                 <FaqsSection />

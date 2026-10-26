@@ -6,7 +6,7 @@ import FAQsClient from "./FAQsClient";
 import Nav from "../components/MobileNav";
 
 export const metadata: Metadata = {
-    title: "Storage, Moving & Logistics FAQs | KXH Storage & Logistics London",
+    title: { absolute: "Storage, Moving & Logistics FAQs London | KXH" },
     description:
         "Find answers about storage, moving, business storage, warehouse storage, student storage, logistics, collection, delivery, pricing, security and bookings across London.",
     alternates: {
@@ -1180,7 +1180,7 @@ export default function FAQsPage() {
                 serviceShortcuts={serviceShortcuts}
                 popularQuestions={popularQuestions}
                 relatedServicesByCategory={relatedServicesByCategory}
-                lastUpdated="July 2026"
+                lastUpdated="October 2026"
             />
 
             <MainFooter locations={londonLocations} />

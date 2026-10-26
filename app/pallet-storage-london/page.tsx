@@ -1,3 +1,7 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import AreaMapExplorer from "../components/AreaMapExplorer";
+import { Layers as HIcLayers, ShoppingCart as HIcShoppingCart, Store as HIcStore, Boxes as HIcBoxes } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import CrispChat from "../components/chat/CrispChat";
@@ -9,10 +13,9 @@ import { londonLocations } from "../sitemap";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title:
-    "Pallet Storage London | Secure Bulk Warehouse Storage | KXH Logistics",
+  title: "Pallet Storage London | Bulk & Business Stock | KXH",
   description:
-    "Secure pallet storage in London with warehouse handling, pickup & delivery, bulk stock storage, and flexible business storage solutions.",
+    "Pallet storage in London for business stock and bulk goods. Collection, secure warehouse space, organised handling and delivery when you need it. Get a quote.",
   alternates: {
     canonical: "https://kxhlogistics.co.uk/pallet-storage-london",
   },
@@ -107,65 +110,26 @@ export default function PalletStoragePage() {
         <JsonLd />
         <FAQJsonLd />
        
-        <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28">
-          <div className="max-w-5xl mx-auto px-4 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Bulk Warehouse Storage London
-            </div>
-
-            <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-              Pallet Storage London for Business Stock & Bulk Goods
-            </h1>
-
-            <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-              Secure warehouse storage for palletised stock, bulk goods,
-              ecommerce inventory, retail overflow, and commercial items.
-            </p>
-            <p className="mt-4 text-slate-600 leading-relaxed">
-              For businesses managing larger stock volumes, our{" "}
-              <Link
-                href="/third-party-logistics-london"
-                className="text-emerald-700 hover:underline font-medium"
-              >
-                third party logistics warehouse services
-              </Link>
-              {" "}can support pallet coordination, inventory storage,
-              warehouse overflow, and delivery handling.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
-              <Link
-                href="/get-a-quote?service=storage"
-                className="rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
-              >
-                Get Storage Quote
-              </Link>
-
-              <Link
-                href="/commercial-storage-london"
-                className="rounded-xl border border-slate-200 px-6 py-3 font-semibold text-slate-700 hover:bg-slate-50 transition"
-              >
-                Commercial Storage
-              </Link>
-            </div>
-
-            <div className="mt-6 flex justify-center">
-              <TrustpilotPill />
-            </div>
-            <div className="mt-12">
-              <Image
-                src="/images/pallet-storage/pallet-storage-london-bulk-warehouse.webp"
-                alt="Pallet storage warehouse in London with pallet racking and bulk inventory"
-                className="w-full rounded-3xl border border-slate-200 shadow-xl"
-                width={1200}
-                height={800}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </div>
-        </section>
+        <ServiceHero
+            image="/images/kxh-pallet-storage-london.webp"
+            imageAlt="Pallet Storage London for Business Stock & Bulk Goods with KXH Storage & Logistics"
+            breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Pallet Storage London"}]}
+            eyebrow="Bulk warehouse storage"
+            title="Pallet Storage London for Business Stock & Bulk Goods"
+            highlight="Business Stock & Bulk Goods"
+            intro="Flexible pallet space for palletised stock, bulk goods, ecommerce inventory, retail overflow and commercial items, with collection and delivery across London."
+            chips={["Pay per pallet", "Collection and delivery", "Organised warehouse handling", "Short or long term"]}
+            ctaHref="/get-a-quote?service=storage"
+            ctaLabel="Get a Pallet Storage Quote"
+            cardEyebrow="We store"
+            cardTitle="Pallets for every business"
+            cardItems={[
+                { icon: <HIcLayers className="h-6 w-6" aria-hidden="true" />, title: "Palletised stock", text: "Wholesale and imports" },
+                { icon: <HIcShoppingCart className="h-6 w-6" aria-hidden="true" />, title: "Ecommerce", text: "Online retail inventory" },
+                { icon: <HIcStore className="h-6 w-6" aria-hidden="true" />, title: "Retail overflow", text: "Seasonal and surplus" },
+                { icon: <HIcBoxes className="h-6 w-6" aria-hidden="true" />, title: "Bulk goods", text: "Cartons and materials" },
+            ]}
+        />
 
         <section className="border-y border-slate-200 bg-white">
           <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
@@ -186,7 +150,7 @@ export default function PalletStoragePage() {
           </div>
         </section>
 
-        <section className="py-20 max-w-6xl mx-auto px-4">
+        <section className="py-20 max-w-screen-xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="text-3xl font-black">
@@ -208,9 +172,9 @@ export default function PalletStoragePage() {
 
             <div>
               <Image
-                src="/images/pallet-storage/commercial-pallet-storage-business-stock.webp"
+                src="/images/kxh-inventory-management-london.webp"
                 alt="Commercial pallet storage for business stock and inventory"
-                className="w-full rounded-3xl border border-slate-200 shadow-lg"
+                className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                 width={1200}
                 height={800}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
@@ -232,22 +196,8 @@ export default function PalletStoragePage() {
             </div>
           </div>
         </section>
-        <section className="py-16 bg-white">
-          <div className="max-w-6xl mx-auto px-4">
-            <Image
-              src="/images/pallet-storage/warehouse-pallet-handling-london.webp"
-              alt="Warehouse worker handling palletised inventory"
-              className="w-full rounded-3xl border border-slate-200 shadow-lg"
-              width={1200}
-              height={800}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </section>
         <section className="py-16 border-t border-slate-200/70 bg-slate-50">
-          <div className="max-w-6xl mx-auto px-4">
+          <div className="max-w-screen-xl mx-auto px-4">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-black">
                 Managed pallet storage support
@@ -287,7 +237,7 @@ export default function PalletStoragePage() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                  className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
                 >
                   <h3 className="font-bold">{item.title}</h3>
                   <p className="mt-2 text-sm text-slate-600 leading-relaxed">
@@ -422,7 +372,7 @@ export default function PalletStoragePage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
+                  className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 transition"
                 >
                   <h3 className="font-semibold">{item.title}</h3>
                   <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
@@ -431,35 +381,32 @@ export default function PalletStoragePage() {
             </div>
           </div>
         </section>
-        <section className="py-16 bg-white border-t border-slate-200/70">
-          <div className="max-w-6xl mx-auto px-4">
-            <Image
-              src="/images/pallet-storage/pallet-storage-collection-delivery-london.webp"
-              alt="Pallet storage collection and delivery service"
-              className="w-full rounded-3xl border border-slate-200 shadow-lg"
-              width={1200}
-              height={800}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </section>
-        <TestimonialsSection />
-        <section className="py-16 bg-white">
-          <div className="max-w-5xl mx-auto px-4">
-            <Image
-              src="/images/pallet-storage/kxh-pallet-storage-team.webp"
-              alt="KXH Logistics pallet storage warehouse team"
-              className="w-full rounded-3xl border border-slate-200 shadow-lg"
-              width={1200}
-              height={800}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </section>
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Pallet space that grows with your stock"
+                    intro="Palletised goods are received, logged and stored on warehouse racking, then delivered to you or your customers when needed."
+                    points={["Pay per pallet", "Collection and delivery", "Organised warehouse handling", "Short or long term"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Pallet Storage London with KXH Storage & Logistics", label: "Pallet racking" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get a Pallet Storage Quote"
+                />
+        <section id="areas" className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-3xl">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">London service areas</p>
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Pallet Storage London across London boroughs</h2>
+                            <p className="mt-4 text-slate-600">Tap an area to see it on the map and open the local pallet storage page.</p>
+                        </div>
+                        <div className="mt-10">
+                            <AreaMapExplorer primaryHref="/pallet-storage-london" />
+                        </div>
+                    </div>
+                </section>
+                <TestimonialsSection />
         <section className="py-20 text-center bg-slate-50 border-t border-slate-200/70">
           <div className="max-w-3xl mx-auto px-4">
             <h2 className="text-3xl font-black">

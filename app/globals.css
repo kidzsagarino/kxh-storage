@@ -238,11 +238,13 @@ label {
    SEO helpers
 ================================ */
 
-/* Prevent CLS for images */
-img {
-  height: auto;
-  max-width: 100%;
-  display: block;
+/* Prevent CLS for images (in the base layer so height utilities like h-64 still apply) */
+@layer base {
+  img {
+    height: auto;
+    max-width: 100%;
+    display: block;
+  }
 }
 
 /* ===============================
@@ -334,3 +336,84 @@ img {
     overflow: hidden !important;
   }
 }
+/* ===== Salmova: hero motion + 3D (respects reduced motion) ===== */
+.kxh-hero h1, .kxh-hero h2, .kxh-hero h3 { color: #fff; }
+@keyframes kxhKenburns { from { transform: scale(1.04); } to { transform: scale(1.12); } }
+.kxh-kenburns { animation: kxhKenburns 18s ease-in-out infinite alternate; }
+
+@keyframes kxhRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.kxh-rise { animation: kxhRise 0.7s cubic-bezier(.2,.7,.2,1) both; }
+
+.kxh-scene { width: 200px; height: 200px; perspective: 900px; }
+.kxh-stack { position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+  transform: rotateX(-24deg) rotateY(38deg); animation: kxhSpin 14s ease-in-out infinite alternate; }
+@keyframes kxhSpin { from { transform: rotateX(-24deg) rotateY(20deg); } to { transform: rotateX(-24deg) rotateY(60deg); } }
+.kxh-cube { position: absolute; left: 40px; top: 90px; width: 56px; height: 56px; transform-style: preserve-3d;
+  animation: kxhBob 3.2s ease-in-out infinite; }
+@keyframes kxhBob { 0%,100% { margin-top: 0; } 50% { margin-top: -8px; } }
+.kxh-face { position: absolute; inset: 0; border: 1px solid rgba(120, 72, 28, .55);
+  background: linear-gradient(135deg, #d9a86a, #b9813f); }
+.kxh-face::after { content: ""; position: absolute; left: 0; right: 0; top: 46%; height: 8%; background: rgba(240, 220, 170, .55); }
+.kxh-front  { transform: translateZ(28px); }
+.kxh-back   { transform: rotateY(180deg) translateZ(28px); }
+.kxh-right  { transform: rotateY(90deg) translateZ(28px); background: linear-gradient(135deg, #c48f4f, #9c6a30); }
+.kxh-left   { transform: rotateY(-90deg) translateZ(28px); }
+.kxh-top    { transform: rotateX(90deg) translateZ(28px); background: linear-gradient(135deg, #e8bf86, #cf9d5c); }
+.kxh-bottom { transform: rotateX(-90deg) translateZ(28px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .kxh-kenburns, .kxh-rise, .kxh-stack, .kxh-cube { animation: none !important; }
+}
+
+/* ===== Salmova: nav effects ===== */
+.kxh-navlink::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, #059669, #a3e635); transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
+.kxh-navlink:hover::after, .kxh-navlink[aria-current="page"]::after, .kxh-navlink[aria-expanded="true"]::after { transform: scaleX(1); }
+@keyframes kxhDrop { from { opacity: 0; transform: translate(var(--kxh-dx, 0), -6px) scale(.98); } to { opacity: 1; transform: translate(var(--kxh-dx, 0), 0) scale(1); } }
+.kxh-drop { animation: kxhDrop .18s ease-out both; }
+.kxh-drop.-translate-x-1\/2 { --kxh-dx: -50%; }
+.kxh-shine::before { content: ""; position: absolute; inset: 0; transform: translateX(-120%) skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); transition: transform .6s ease; }
+.kxh-shine:hover::before { transform: translateX(120%) skewX(-20deg); }
+
+/* ===== Salmova: scroll reveal (content stays visible without JS) ===== */
+.kxh-reveal-ready .kxh-reveal { opacity: .35; transform: translateY(14px); transition: opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1); }
+.kxh-reveal-ready .kxh-reveal.is-in { opacity: 1; transform: none; }
+
+/* ===== Salmova: 3D cards ===== */
+.kxh-card3d { transform-style: preserve-3d; transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease; }
+.kxh-card3d:hover, .kxh-reveal-ready .kxh-card3d.kxh-reveal.is-in:hover { transform: perspective(900px) rotateX(4deg) rotateY(-4deg) translateY(-6px); box-shadow: 0 30px 60px -20px rgba(2,44,34,.35); }
+.kxh-card3d .kxh-pop { transition: transform .35s ease; }
+.kxh-card3d:hover .kxh-pop { transform: translateZ(30px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .kxh-drop, .kxh-shine::before { animation: none !important; transition: none !important; }
+  .kxh-reveal-ready .kxh-reveal { opacity: 1 !important; transform: none !important; }
+  .kxh-card3d:hover, .kxh-reveal-ready .kxh-card3d.kxh-reveal.is-in:hover { transform: none; }
+}
+
+/* ===== Salmova: modal ===== */
+@keyframes kxhFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes kxhSheet { from { opacity: 0; transform: translateY(24px) scale(.98); } to { opacity: 1; transform: none; } }
+.kxh-fade { animation: kxhFade .2s ease-out both; }
+.kxh-sheet { animation: kxhSheet .28s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .kxh-fade, .kxh-sheet { animation: none !important; } }
+
+/* ===== Salmova: floating "Get a Quote" button jumps and blinks every few seconds ===== */
+@keyframes kxhJump {
+  0%, 52%, 100% { transform: translateY(0); }
+  8%  { transform: translateY(-14px); }
+  16% { transform: translateY(0); }
+  22% { transform: translateY(-7px); }
+  28% { transform: translateY(0); }
+}
+@keyframes kxhQuoteBlink {
+  0%, 52%, 100% { background-color: #020617; box-shadow: 0 10px 25px rgba(2, 6, 23, .35); }
+  8%, 22% { background-color: #059669; box-shadow: 0 0 0 6px rgba(16, 185, 129, .35), 0 14px 30px rgba(5, 150, 105, .45); }
+}
+.kxh-jump.kxh-quote-blink { animation: kxhJump 2.6s ease-in-out infinite, kxhQuoteBlink 2.6s ease-in-out infinite; }
+.kxh-jump:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .kxh-jump { animation: none !important; } }
+
+/* anchor targets clear the sticky header */
+section[id] { scroll-margin-top: 88px; }

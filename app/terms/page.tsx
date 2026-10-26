@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Terms & Conditions | KXH Storage & Logistics",
+  description: "Terms and conditions for storage, collection, delivery, moving and shredding services provided by KXH Storage & Logistics in London.",
+  alternates: { canonical: "https://kxhlogistics.co.uk/terms" },
+};
+
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-white text-slate-800">
@@ -152,7 +158,7 @@ export default function TermsPage() {
 
         <Section title="11. CONTACT">
           <p>Email: help@kxhlogistics.co.uk</p>
-          <p>Phone: +44 1474 396663</p>
+          <p>Phone: +44 20 3916 5312</p>
         </Section>
       </div>
     </main>

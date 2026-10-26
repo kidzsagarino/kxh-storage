@@ -1,3 +1,7 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import AreaMapExplorer from "../components/AreaMapExplorer";
+import { ClipboardList as HIcClipboardList, ScanLine as HIcScanLine, PackageCheck as HIcPackageCheck, Truck as HIcTruck } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,9 +15,9 @@ import { londonLocations } from "../sitemap";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
-  title: "Inventory Storage with Tracking London | Collection & Delivery | KXH",
+  title: "Inventory Management London | Stock Storage | KXH",
   description:
-    "Managed inventory storage in London with collection, organised item records, secure warehouse storage, pallet support and return delivery for business stock.",
+    "Inventory management in London with organised stock storage, item records, selected-item returns and collection and delivery for growing businesses. Get a quote.",
   alternates: {
     canonical: "https://kxhlogistics.co.uk/inventory-management-london",
   },
@@ -25,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/inventory-management/inventory-management-london-warehouse-stock-handling.webp",
+        url: "/images/kxh-inventory-management-london.webp",
         width: 1200,
         height: 630,
         alt: "Organised business inventory inside a managed London warehouse",
@@ -498,103 +502,38 @@ function JsonLd() {
 }
 
 function Breadcrumbs() {
-  return (
-    <nav
-      aria-label="Breadcrumb"
-      className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
-    >
-      <Link href="/" className={`${focusClass} rounded-sm transition hover:text-emerald-700`}>
-        Home
-      </Link>
-      <span aria-hidden="true" className="mx-2">/</span>
-      <Link
-        href="/services"
-        className={`${focusClass} rounded-sm transition hover:text-emerald-700`}
-      >
-        Services
-      </Link>
-      <span aria-hidden="true" className="mx-2">/</span>
-      <span aria-current="page" className="font-medium text-slate-700">
-        Inventory Storage London
-      </span>
-    </nav>
-  );
+  return null;
 }
 
 function HeroSection() {
   return (
-    <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-      <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-emerald-500" />
-          Managed Physical Inventory Storage
-        </div>
-
-        <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-          Inventory Storage with Tracking for London Businesses
-        </h1>
-
-        <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-          We collect business stock, organise it using agreed item records or manifests,
-          store it securely, and coordinate return delivery when inventory is needed.
-        </p>
-
-        <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-          A managed physical storage service for boxes, products, equipment, bulk cartons,
-          business assets and suitable palletised inventory—not inventory software or a live dashboard.
-        </p>
-
-        <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-          {benefits.map((benefit) => (
-            <div
-              key={benefit.title}
-              className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-            >
-              ✓ {benefit.title}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link
-            href={quoteUrl}
-            className={`${focusClass} w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 sm:w-auto`}
-          >
-            Get Inventory Storage Quote
-          </Link>
-          <Link
-            href="#how-inventory-storage-works"
-            className={`${focusClass} w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto`}
-          >
-            How Inventory Storage Works
-          </Link>
-        </div>
-
-        <div className="mt-6 flex justify-center">
-          <TrustpilotPill />
-        </div>
-
-        <div className="mt-12">
-          <Image
-            src="/images/inventory-management/inventory-management-london-warehouse-stock-handling.webp"
-            alt="KXH warehouse team handling organised business inventory in London"
-            width={1200}
-            height={800}
-            priority
-            quality={80}
-            sizes="(max-width: 768px) 100vw, 960px"
-            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-          />
-        </div>
-      </div>
-    </section>
+    <ServiceHero
+        image="/images/kxh-inventory-management-london.webp"
+        imageAlt="Inventory Management London for Growing Businesses with KXH Storage & Logistics"
+        breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Inventory Management London"}]}
+        eyebrow="Organised stock storage"
+        title="Inventory Management London for Growing Businesses"
+        highlight="Growing Businesses"
+        intro="Store your stock with KXH and keep it organised. We record and categorise your items, help you find what you need and deliver selected items back across London."
+        chips={["Item records and categories", "Selected-item returns", "Boxes, cartons and pallets", "Collection and delivery"]}
+        ctaHref="/get-a-quote?service=storage"
+        ctaLabel="Get an Inventory Storage Quote"
+        cardEyebrow="We handle"
+        cardTitle="Stock, organised"
+        cardItems={[
+            { icon: <HIcClipboardList className="h-6 w-6" aria-hidden="true" />, title: "Item records", text: "Know what is stored" },
+            { icon: <HIcScanLine className="h-6 w-6" aria-hidden="true" />, title: "Identification", text: "Labelled and tracked" },
+            { icon: <HIcPackageCheck className="h-6 w-6" aria-hidden="true" />, title: "Selected returns", text: "Only what you need" },
+            { icon: <HIcTruck className="h-6 w-6" aria-hidden="true" />, title: "Delivery", text: "To you or your customer" },
+        ]}
+    />
   );
 }
 
 function BenefitsStrip() {
   return (
     <section aria-labelledby="service-clarification" className="border-b border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-screen-xl px-5 py-6 sm:px-6 lg:px-8">
         <h2 id="service-clarification" className="sr-only">
           Physical managed inventory storage clarification
         </h2>
@@ -610,13 +549,13 @@ function BenefitsStrip() {
 
 function PhysicalInventoryExplanation() {
   return (
-    <section className="bg-white py-14 sm:py-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 lg:grid-cols-2">
+    <section className="bg-white py-16 lg:py-24">
+      <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 lg:grid-cols-2">
         <div>
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Physical Inventory Management
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             What Does Inventory Management Mean at KXH?
           </h2>
           <p className="mt-6 text-lg leading-8 text-slate-600">
@@ -649,13 +588,14 @@ function PhysicalInventoryExplanation() {
         </div>
 
         <Image
-          src="/images/inventory-management/business-inventory-organisation-london.webp"
+          src="/images/kxh-business-storage-london.webp"
           alt="Business inventory grouped and organised inside a London warehouse"
           width={1200}
           height={900}
           sizes="(max-width: 1024px) 100vw, 50vw"
-          className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+          className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
         />
+
       </div>
     </section>
   );
@@ -663,13 +603,13 @@ function PhysicalInventoryExplanation() {
 
 function InventoryProcessSection() {
   return (
-    <section id="how-inventory-storage-works" className="scroll-mt-24 bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+    <section id="how-inventory-storage-works" className="scroll-mt-24 bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+          <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
             Collection, Storage and Return Delivery
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             How Managed Inventory Storage Works
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -680,7 +620,7 @@ function InventoryProcessSection() {
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {processSteps.map((item) => (
-            <article key={item.step} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <article key={item.step} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <p className="text-3xl font-bold text-emerald-700">{item.step}</p>
               <h3 className="mt-5 text-xl font-bold text-slate-950">{item.title}</h3>
               <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
@@ -694,14 +634,14 @@ function InventoryProcessSection() {
 
 function InventoryRecordsSection() {
   return (
-    <section className="bg-white py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section className="bg-white py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-start gap-12 lg:grid-cols-[0.86fr_1.14fr]">
           <div className="lg:sticky lg:top-24">
             <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
               Inventory Listing and Tracking
             </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
               Inventory Lists and Organised Stock Records
             </h2>
             <p className="mt-6 text-lg leading-8 text-slate-600">
@@ -717,7 +657,7 @@ function InventoryRecordsSection() {
 
           <div className="grid gap-5 sm:grid-cols-2">
             {recordFeatures.map((feature) => (
-              <article key={feature.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+              <article key={feature.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                 <h3 className="text-lg font-bold text-slate-950">{feature.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{feature.description}</p>
               </article>
@@ -731,8 +671,8 @@ function InventoryRecordsSection() {
 
 function ProblemsSolvedSection() {
   return (
-    <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Practical Business Problems
@@ -748,7 +688,7 @@ function ProblemsSolvedSection() {
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {problemsSolved.map((problem) => (
-            <article key={problem.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <article key={problem.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <h3 className="font-bold text-slate-950">{problem.title}</h3>
               <p className="mt-3 text-sm leading-6 text-slate-600">{problem.description}</p>
             </article>
@@ -761,13 +701,13 @@ function ProblemsSolvedSection() {
 
 function InventoryStorageOptionsSection() {
   return (
-    <section className="bg-white py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+    <section className="bg-white py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Stock Types Supported
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             Inventory and Business Stock We Can Discuss
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -778,7 +718,7 @@ function InventoryStorageOptionsSection() {
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {stockTypes.map((stockType) => (
-            <article key={stockType.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <article key={stockType.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5">
               <h3 className="font-bold text-slate-950">{stockType.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">{stockType.description}</p>
             </article>
@@ -797,13 +737,13 @@ function InventoryStorageOptionsSection() {
 
 function BusinessTypesSection() {
   return (
-    <section className="bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section className="bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Businesses and Industries
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             Who Uses Business Inventory Storage?
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -835,13 +775,13 @@ function BusinessTypesSection() {
 
 function InventoryVsSelfStorageSection() {
   return (
-    <section className="bg-white py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+    <section className="bg-white py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Service Comparison
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             Managed Inventory Storage vs Ordinary Self Storage
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -898,13 +838,13 @@ function InventoryVsSelfStorageSection() {
 
 function PalletStorageSection() {
   return (
-    <section className="border-y border-slate-200 bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 lg:grid-cols-2">
+    <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 lg:grid-cols-2">
         <div>
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Pallet and Bulk Inventory Storage
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             A Better Format for Larger Stock Volumes
           </h2>
           <p className="mt-6 text-lg leading-8 text-slate-600">
@@ -936,13 +876,14 @@ function PalletStorageSection() {
         </div>
 
         <Image
-          src="/images/inventory-management/warehouse-inventory-support-london.webp"
+          src="/images/kxh-collection-delivery-london.webp"
           alt="Warehouse inventory support for bulk cartons and palletised stock in London"
           width={1200}
           height={900}
           sizes="(max-width: 1024px) 100vw, 50vw"
-          className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+          className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
         />
+
       </div>
     </section>
   );
@@ -950,13 +891,13 @@ function PalletStorageSection() {
 
 function LondonCoverageSection() {
   return (
-    <section className="bg-white py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+    <section className="bg-white py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             London Coverage
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             Inventory Storage for Businesses Across London
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -995,13 +936,13 @@ function LondonCoverageSection() {
 
 function RelatedServicesSection() {
   return (
-    <section className="bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section className="bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Related Business Services
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             Choose the Storage Service That Matches Your Stock
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -1043,22 +984,22 @@ function RelatedServicesSection() {
 
 function TeamTrustSection() {
   return (
-    <section className="bg-white py-14 sm:py-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 lg:grid-cols-[1.05fr_0.95fr]">
+    <section className="bg-white py-16 lg:py-24">
+      <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 lg:grid-cols-[1.05fr_0.95fr]">
         <Image
-          src="/images/inventory-management/kxh-inventory-management-team.webp"
+          src="/images/new-van.webp"
           alt="KXH Storage and Logistics warehouse team supporting business inventory storage"
           width={1200}
           height={900}
           sizes="(max-width: 1024px) 100vw, 52vw"
-          className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+          className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
         />
 
         <div>
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Managed by a Logistics Team
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             Operational Support, Not Just Empty Space
           </h2>
           <p className="mt-6 text-lg leading-8 text-slate-600">
@@ -1084,20 +1025,20 @@ function TeamTrustSection() {
 
 function FaqSection() {
   return (
-    <section className="border-t border-slate-200 bg-slate-50 py-14 sm:py-20">
+    <section className="border-t border-slate-200 bg-slate-50 py-16 lg:py-24">
       <div className="mx-auto max-w-4xl px-4">
         <div className="text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
             Frequently Asked Questions
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">
             Inventory Storage London FAQs
           </h2>
         </div>
 
         <div className="mt-10 space-y-4">
           {faqs.map((faq) => (
-            <details key={faq.question} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm open:border-emerald-300">
+            <details key={faq.question} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm open:border-emerald-300">
               <summary className={`${focusClass} cursor-pointer list-none rounded-sm pr-8 font-semibold text-slate-950 marker:hidden`}>
                 <span className="flex items-start justify-between gap-4">
                   <span>{faq.question}</span>
@@ -1115,8 +1056,8 @@ function FaqSection() {
 
 function FinalCtaSection() {
   return (
-    <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-      <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+    <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
         <p className="text-sm font-semibold uppercase tracking-wide !text-white">
           Managed Inventory Storage London
         </p>
@@ -1134,7 +1075,7 @@ function FinalCtaSection() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
             href={quoteUrl}
-            className={`${focusClass} w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8`}
+            className={`${focusClass} kxh-shine relative w-full overflow-hidden rounded-2xl bg-white px-8 py-4 text-center font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 sm:w-auto`}
           >
             Get Inventory Storage Quote
           </Link>
@@ -1177,7 +1118,32 @@ export default function InventoryManagementPage() {
         <LondonCoverageSection />
         <RelatedServicesSection />
         <TeamTrustSection />
-        <TestimonialsSection />
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Stock kept organised and easy to find"
+                    intro="We group, label and store your inventory so you always know what is in storage and can call it back quickly."
+                    points={["Item records and categories", "Selected-item returns", "Boxes, cartons and pallets", "Collection and delivery"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Inventory Management London with KXH Storage & Logistics", label: "Labelled stock" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get an Inventory Storage Quote"
+                />
+        <section id="areas" className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-3xl">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">London service areas</p>
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Inventory Management London across London boroughs</h2>
+                            <p className="mt-4 text-slate-600">Tap an area to see it on the map and open the local inventory management page.</p>
+                        </div>
+                        <div className="mt-10">
+                            <AreaMapExplorer primaryHref="/inventory-management-london" />
+                        </div>
+                    </div>
+                </section>
+                <TestimonialsSection />
         <FinalCtaSection />
         <FaqSection />
         <MainFooter locations={londonLocations} />

@@ -351,7 +351,7 @@ export function StorageForm({
                                     >
                                         {m.minMonths}{" "}
                                         <span className="text-sm font-medium text-slate-500">
-                                            months
+                                            {Number(m.minMonths) === 1 ? "month" : "months"}
                                         </span>
                                     </div>
 

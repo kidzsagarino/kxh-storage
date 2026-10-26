@@ -1,5 +1,9 @@
 // app/third-party-logistics-london/page.tsx
 
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import AreaMapExplorer from "../components/AreaMapExplorer";
+import { Warehouse as HIcWarehouse, ScanLine as HIcScanLine, PackageCheck as HIcPackageCheck, Truck as HIcTruck } from "lucide-react";
 import CrispChat from "@/app/components/chat/CrispChat";
 import MainFooter from "@/app/components/footer/MainFooter";
 import Nav from "@/app/components/MobileNav";
@@ -11,11 +15,10 @@ import Image from "next/image";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 
 export const metadata = {
-    title:
-        "Third Party Logistics London | 3PL Warehouse, Inventory & Delivery | KXH",
+    title: "Third Party Logistics London | 3PL Warehouse | KXH",
 
     description:
-        "Third party logistics services in London including inventory management, pallet storage, warehouse handling, ecommerce stock storage, collection, and delivery support.",
+    "Third party logistics in London: 3PL warehouse storage, inventory handling, order picking support and delivery coordination for growing businesses. Get a quote.",
 
     alternates: {
         canonical: "https://kxhlogistics.co.uk/third-party-logistics-london",
@@ -32,7 +35,7 @@ function JsonLd() {
             "@type": "LocalBusiness",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 1474 396663",
+            telephone: "+44 20 3916 5312",
         },
         areaServed: "London",
         description:
@@ -103,49 +106,26 @@ export default function ThirdPartyLogisticsPage() {
                 <FAQJsonLd />
                 <TrustpilotJsonLd />
 
-                <section className="relative bg-gradient-to-b from-slate-50 to-white py-20 lg:py-24">
-                    <div className="max-w-5xl mx-auto px-4 text-center">
-
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                            Third Party Logistics London
-                        </div>
-
-                        <h1 className="mt-6 text-4xl font-black sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-                            Third Party Logistics & 3PL Warehouse Services in London
-                        </h1>
-
-                        <p className="mt-5 text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                            KXH Logistics provides third party logistics services
-                            in London including inventory management, pallet storage,
-                            warehouse handling, collection, delivery coordination,
-                            and flexible commercial storage support.
-                        </p>
-
-                        <div className="mt-8">
-                            <Link
-                                href="/get-a-quote?service=storage"
-                                className="inline-block rounded-xl bg-emerald-700 px-6 py-3 text-white font-semibold shadow-lg hover:bg-emerald-700 transition"
-                            >
-                                Get Instant Quote
-                            </Link>
-                        </div>
-
-                        <div className="mt-6 flex justify-center">
-                            <TrustpilotPill />
-                        </div>
-                        <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
-                            <Image
-                                src="/images/third-party-logistics/3pl-hero-warehouse.webp"
-                                alt="KXH Storage and Logistics third party logistics warehouse in London"
-                                width={1400}
-                                height={800}
-                                priority
-                                className="h-auto w-full object-cover"
-                            />
-                        </div>
-                    </div>
-                </section>
+                <ServiceHero
+                    image="/images/kxh-third-party-logistics-london.webp"
+                    imageAlt="Third Party Logistics & 3PL Warehouse Services in London with KXH Storage & Logistics"
+                    breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Third Party Logistics London"}]}
+                    eyebrow="3PL warehouse services"
+                    title="Third Party Logistics & 3PL Warehouse Services in London"
+                    highlight="3PL Warehouse Services"
+                    intro="Let KXH store your stock, handle your inventory and coordinate deliveries, so your team can focus on selling. Flexible 3PL support for ecommerce brands, retailers and B2B suppliers."
+                    chips={["Warehouse storage", "Inventory handling", "Delivery coordination", "Flexible capacity"]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get a 3PL Quote"
+                    cardEyebrow="3PL support"
+                    cardTitle="From shelf to door"
+                    cardItems={[
+                        { icon: <HIcWarehouse className="h-6 w-6" aria-hidden="true" />, title: "Storage", text: "Secure warehouse space" },
+                        { icon: <HIcScanLine className="h-6 w-6" aria-hidden="true" />, title: "Inventory", text: "Stock handling" },
+                        { icon: <HIcPackageCheck className="h-6 w-6" aria-hidden="true" />, title: "Order support", text: "Picking and packing" },
+                        { icon: <HIcTruck className="h-6 w-6" aria-hidden="true" />, title: "Delivery", text: "London-wide dispatch" },
+                    ]}
+                />
 
                 <section className="border-y border-slate-200 bg-white">
                     <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap justify-center gap-3 text-sm text-slate-600">
@@ -169,7 +149,7 @@ export default function ThirdPartyLogisticsPage() {
                     </div>
                 </section>
 
-                <section className="py-16 max-w-6xl mx-auto px-4">
+                <section className="py-16 max-w-screen-xl mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-12 items-start">
 
                         <div>
@@ -218,7 +198,7 @@ export default function ThirdPartyLogisticsPage() {
                             </p>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <div className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="font-bold text-lg">
                                 Suitable for:
                             </h3>
@@ -236,7 +216,7 @@ export default function ThirdPartyLogisticsPage() {
                     </div>
                 </section>
                 <section className="py-16 bg-slate-50 border-t border-slate-200/70">
-                    <div className="max-w-6xl mx-auto px-4">
+                    <div className="max-w-screen-xl mx-auto px-4">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-black">
                                 Warehouse, inventory and delivery support
@@ -251,22 +231,22 @@ export default function ThirdPartyLogisticsPage() {
                         <div className="grid md:grid-cols-2 gap-6">
                             {[
                                 {
-                                    src: "/images/third-party-logistics/inventory-scanning.webp",
+                                    src: "/images/kxh-third-party-logistics-london.webp",
                                     alt: "KXH worker scanning inventory boxes in a London warehouse",
                                     title: "Inventory management",
                                 },
                                 {
-                                    src: "/images/third-party-logistics/pallet-storage.webp",
+                                    src: "/images/kxh-pallet-storage-london.webp",
                                     alt: "KXH pallet storage warehouse with organised commercial stock",
                                     title: "Pallet storage",
                                 },
                                 {
-                                    src: "/images/third-party-logistics/business-delivery.webp",
+                                    src: "/images/kxh-third-party-logistics-london.webp",
                                     alt: "KXH delivery van unloading business inventory in London",
                                     title: "Collection and delivery",
                                 },
                                 {
-                                    src: "/images/third-party-logistics/ecommerce-fulfillment.webp",
+                                    src: "/images/kxh-third-party-logistics-london.webp",
                                     alt: "KXH ecommerce fulfilment and warehouse packing support",
                                     title: "Ecommerce fulfilment support",
                                 },
@@ -315,7 +295,7 @@ export default function ThirdPartyLogisticsPage() {
                             ].map((step, index) => (
                                 <div
                                     key={step}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
                                 >
                                     <div className="text-2xl font-black text-emerald-700">
                                         {index + 1}
@@ -330,7 +310,7 @@ export default function ThirdPartyLogisticsPage() {
                     </div>
                 </section>
                 <section className="py-16 border-t border-slate-200/70 bg-white">
-                    <div className="max-w-6xl mx-auto px-4">
+                    <div className="max-w-screen-xl mx-auto px-4">
                         <div className="grid lg:grid-cols-2 gap-10 items-center">
                             <div>
                                 <h2 className="text-3xl font-black">
@@ -346,21 +326,47 @@ export default function ThirdPartyLogisticsPage() {
 
                             <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
                                 <Image
-                                    src="/images/third-party-logistics/warehouse-team.webp"
+                                    src="/images/new-van.webp"
                                     alt="KXH Storage and Logistics warehouse team in London"
                                     width={900}
                                     height={600}
-                                    className="h-auto w-full object-cover"
+                                    className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                                 />
+
                             </div>
                         </div>
                     </div>
                 </section>
 
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="3PL support from shelf to door"
+                    intro="Store your stock with us and let our team handle picking, packing coordination and delivery across London."
+                    points={["Warehouse storage", "Inventory handling", "Delivery coordination", "Flexible capacity"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Third Party Logistics London with KXH Storage & Logistics", label: "Fulfilment ready" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get a 3PL Quote"
+                />
+                <section id="areas" className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-3xl">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">London service areas</p>
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Third Party Logistics London across London boroughs</h2>
+                            <p className="mt-4 text-slate-600">Tap an area to see it on the map and open the local third party logistics page.</p>
+                        </div>
+                        <div className="mt-10">
+                            <AreaMapExplorer primaryHref="/third-party-logistics-london" />
+                        </div>
+                    </div>
+                </section>
                 <TestimonialsSection />
 
                 <section className="py-16 border-t border-slate-200/70 bg-white">
-                    <div className="max-w-6xl mx-auto px-4">
+                    <div className="max-w-screen-xl mx-auto px-4">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-black">
                                 Related Warehouse, Storage & Logistics Services
@@ -405,7 +411,7 @@ export default function ThirdPartyLogisticsPage() {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 hover:border-emerald-300 hover:bg-white transition"
                                 >
                                     <h3 className="font-semibold text-slate-900">
                                         {item.title}

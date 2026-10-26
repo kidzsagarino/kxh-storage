@@ -1,3 +1,7 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import AreaMapExplorer from "../components/AreaMapExplorer";
+import { Boxes as HIcBoxes, Wrench as HIcWrench, Armchair as HIcArmchair, Archive as HIcArchive } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,10 +15,9 @@ import { londonLocations } from "../sitemap";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
-  title:
-    "Commercial Storage London | Managed Warehouse Storage | KXH Logistics",
+  title: "Commercial Storage London | Business Space | KXH",
   description:
-    "Commercial storage in London for inventory, equipment, archives and warehouse overflow. Managed collection, secure handling and return delivery for businesses.",
+    "Commercial storage in London for inventory, equipment, furniture and warehouse overflow. Collection, secure managed storage and return delivery. Get a quote.",
   alternates: {
     canonical: "https://kxhlogistics.co.uk/commercial-storage-london",
   },
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/commercial-storage/commercial-storage-hero.webp",
+        url: "/images/kxh-commercial-storage-london.webp",
         width: 1400,
         height: 800,
         alt: "Managed commercial warehouse storage in London",
@@ -315,108 +318,31 @@ function FAQJsonLd() {
 }
 
 function Breadcrumbs() {
-  return (
-    <nav aria-label="Breadcrumb" className="border-b border-slate-200 bg-white">
-      <ol className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-4 text-sm text-slate-500 sm:px-6 lg:px-8">
-        <li>
-          <Link href="/" className="transition hover:text-emerald-700">
-            Home
-          </Link>
-        </li>
-        <li aria-hidden="true">/</li>
-        <li>
-          <Link
-            href="/business-storage-london"
-            className="transition hover:text-emerald-700"
-          >
-            Business Storage
-          </Link>
-        </li>
-        <li aria-hidden="true">/</li>
-        <li className="font-medium text-slate-800" aria-current="page">
-          Commercial Storage London
-        </li>
-      </ol>
-    </nav>
-  );
+  return null;
 }
 
 function HeroSection() {
   return (
-    <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-      <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-          <span className="h-2 w-2 rounded-full bg-emerald-500" />
-          Managed Commercial Warehouse Storage
-        </div>
-
-        <h1 className="mx-auto mt-5 max-w-5xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-          Commercial Storage London for Inventory, Equipment and Warehouse Overflow
-        </h1>
-
-        <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-          Add flexible warehouse capacity without committing to another commercial lease.
-          KXH collects, handles, stores and returns stock, equipment, archives and business assets across London.
-        </p>
-
-        <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-          Built for operational storage requirements including warehouse overflow,
-          commercial inventory, temporary projects, office moves and long-term business continuity.
-        </p>
-
-        <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-          {[
-            "Flexible warehouse capacity",
-            "Commercial inventory handling",
-            "Collection from your premises",
-            "Return delivery available",
-          ].map((benefit) => (
-            <div
-              key={benefit}
-              className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-            >
-              ✓ {benefit}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link
-            href="/get-a-quote?service=storage"
-            className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 sm:w-auto"
-          >
-            Get Commercial Storage Quote
-          </Link>
-          {CONTACT_NUMBERS.map((contact) => (
-            <a
-              key={contact.href}
-              href={contact.href}
-              className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-            >
-              Call {contact.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="mt-6 flex justify-center">
-          <TrustpilotPill />
-        </div>
-
-        <div className="mt-12">
-          <Image
-            src="/images/commercial-storage/commercial-storage-hero.webp"
-            alt="Managed commercial warehouse storage for London companies"
-            width={1400}
-            height={800}
-            quality={80}
-            sizes="(max-width: 768px) 100vw, 960px"
-            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-            priority
-            decoding="async"
-          />
-        </div>
-      </div>
-    </section>
+    <ServiceHero
+        image="/images/kxh-commercial-storage-london.webp"
+        imageAlt="Commercial Storage London for Inventory, Equipment & Overflow with KXH Storage & Logistics"
+        breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Commercial Storage London"}]}
+        eyebrow="Scalable business storage"
+        title="Commercial Storage London for Inventory, Equipment & Overflow"
+        highlight="Inventory, Equipment & Overflow"
+        intro="Scalable commercial storage for London organisations. Move stock, equipment, furniture and archives out of your premises and get them back when your team needs them."
+        chips={["No extra lease", "Scale up or down", "Collection from your site", "Return delivery available"]}
+        ctaHref="/get-a-quote?service=storage"
+        ctaLabel="Get a Commercial Storage Quote"
+        cardEyebrow="We store"
+        cardTitle="Commercial items"
+        cardItems={[
+            { icon: <HIcBoxes className="h-6 w-6" aria-hidden="true" />, title: "Inventory", text: "Stock and overflow" },
+            { icon: <HIcWrench className="h-6 w-6" aria-hidden="true" />, title: "Equipment", text: "Tools and machinery" },
+            { icon: <HIcArmchair className="h-6 w-6" aria-hidden="true" />, title: "Furniture", text: "Office and fit-out" },
+            { icon: <HIcArchive className="h-6 w-6" aria-hidden="true" />, title: "Archives", text: "Records and files" },
+        ]}
+    />
   );
 }
 
@@ -446,10 +372,10 @@ const benefits = [
 function BenefitsSection() {
   return (
     <section aria-label="Commercial storage benefits" className="border-y border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {benefits.map((benefit) => (
-            <article key={benefit.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <article key={benefit.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                 <Icon name={benefit.icon} />
               </div>
@@ -465,23 +391,24 @@ function BenefitsSection() {
 
 function CommercialOverview() {
   return (
-    <section className="py-14 sm:py-20">
-      <div className="mx-auto grid max-w-6xl gap-14 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
+    <section className="py-16 lg:py-24">
+      <div className="mx-auto grid max-w-screen-xl gap-14 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
         <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
           <Image
-            src="/images/commercial-storage/commercial-storage-business-inventory.webp"
+            src="/images/kxh-inventory-management-london.webp"
             alt="Commercial inventory stored inside a managed London warehouse"
             width={900}
             height={600}
             loading="lazy"
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="aspect-[3/2] w-full object-cover"
+            className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
           />
+
         </div>
 
         <div>
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Commercial storage explained</p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
             What commercial storage means for an operating business
           </h2>
           <div className="mt-6 space-y-5 text-base leading-8 text-slate-600">
@@ -543,11 +470,11 @@ const industries = [
 
 function WhoUsesSection() {
   return (
-    <section className="border-y border-slate-200 bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+    <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Built for real operations</p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
             Who uses commercial storage in London?
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -558,7 +485,7 @@ function WhoUsesSection() {
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {industries.map(([title, description], index) => (
-            <article key={title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <article key={title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 text-white">
                   <Icon name={index % 3 === 0 ? "building" : index % 3 === 1 ? "boxes" : "equipment"} />
@@ -620,12 +547,12 @@ const problems = [
 
 function ProblemsSection() {
   return (
-    <section className="py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section className="py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div className="lg:sticky lg:top-24">
             <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Operational pressure points</p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
               Commercial storage problems we solve
             </h2>
             <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -637,7 +564,7 @@ function ProblemsSection() {
 
           <div className="grid gap-5 sm:grid-cols-2">
             {problems.map((problem) => (
-              <article key={problem.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <article key={problem.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                   <Icon name={problem.icon} />
                 </div>
@@ -678,7 +605,7 @@ const processSteps = [
 function ProcessSection() {
   return (
     <section className="overflow-hidden bg-slate-950 py-20 text-white lg:py-28">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-emerald-400">A managed four-step service</p>
@@ -692,7 +619,7 @@ function ProcessSection() {
 
             <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
               <Image
-                src="/images/commercial-storage/commercial-storage-collection-delivery.webp"
+                src="/images/kxh-commercial-storage-london.webp"
                 alt="KXH collection and return delivery for commercial storage customers"
                 width={1400}
                 height={700}
@@ -737,11 +664,11 @@ function WhyKxhSection() {
   ];
 
   return (
-    <section className="border-b border-slate-200 bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+    <section className="border-b border-slate-200 bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">More than spare space</p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
             Why London businesses choose KXH commercial storage
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -752,7 +679,7 @@ function WhyKxhSection() {
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {reasons.map(([title, description]) => (
-            <article key={title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <article key={title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <Icon name="check" className="h-7 w-7 text-emerald-700" />
               <h3 className="mt-4 text-lg font-bold text-slate-950">{title}</h3>
               <p className="mt-3 text-sm leading-6 text-slate-600">{description}</p>
@@ -777,11 +704,11 @@ const comparisonRows = [
 
 function ComparisonSection() {
   return (
-    <section className="py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+    <section className="py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Choose the right operating model</p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
             Commercial storage vs self storage
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
@@ -849,12 +776,12 @@ const storageSolutions = [
 
 function ServicesSection() {
   return (
-    <section className="border-y border-slate-200 bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Commercial storage solutions</p>
-            <h2 className="mt-4 max-w-3xl text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <h2 className="mt-4 max-w-3xl text-3xl font-black text-slate-950 sm:text-4xl">
               Warehouse space for the items that keep your business moving
             </h2>
           </div>
@@ -866,7 +793,7 @@ function ServicesSection() {
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {storageSolutions.map(([title, description, icon]) => (
-            <article key={title} className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md">
+            <article key={title} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-600 group-hover:text-white">
                 <Icon name={icon} />
               </div>
@@ -917,11 +844,11 @@ function IndustryLinksSection() {
   ];
 
   return (
-    <section className="py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+    <section className="py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Industry-focused support</p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Commercial storage by business type</h2>
+          <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Commercial storage by business type</h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
             Our commercial service can be adapted around the stock, access, project cycles and operational pressures of different sectors.
           </p>
@@ -943,11 +870,11 @@ function IndustryLinksSection() {
             );
 
             return card.href ? (
-              <Link key={card.title} href={card.href} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md">
+              <Link key={card.title} href={card.href} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md">
                 {content}
               </Link>
             ) : (
-              <article key={card.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+              <article key={card.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                 {content}
               </article>
             );
@@ -961,7 +888,7 @@ function IndustryLinksSection() {
 function RelatedServicesSection() {
   return (
     <section className="border-y border-slate-200 bg-slate-950 py-20 text-white lg:py-28">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-emerald-400">Connected warehouse services</p>
@@ -973,7 +900,7 @@ function RelatedServicesSection() {
 
             <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
               <Image
-                src="/images/commercial-storage/commercial-storage-inventory-management.webp"
+                src="/images/kxh-inventory-management-london.webp"
                 alt="Commercial inventory management and warehouse operations in London"
                 width={1400}
                 height={700}
@@ -1023,12 +950,12 @@ function LocationsSection() {
   ];
 
   return (
-    <section className="bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section className="bg-slate-50 py-16 lg:py-24">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">London-wide coverage</p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Commercial storage across London</h2>
+            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Commercial storage across London</h2>
           </div>
           <p className="text-lg leading-8 text-slate-600">
             KXH supports commercial collections and return deliveries across London. Availability depends on item volume,
@@ -1038,7 +965,7 @@ function LocationsSection() {
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {locations.map(([name, href, description]) => (
-            <Link key={name} href={href} className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md">
+            <Link key={name} href={href} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md">
               <div className="flex items-center justify-between">
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                   <Icon name="building" />
@@ -1060,33 +987,17 @@ function LocationsSection() {
 }
 
 function TeamSection() {
-  return (
-    <section className="border-t border-slate-200 bg-slate-50 py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        <Image
-          src="/images/commercial-storage/commercial-storage-team.webp"
-          alt="KXH warehouse team supporting commercial storage customers in London"
-          width={1400}
-          height={800}
-          quality={75}
-          sizes="(max-width: 768px) 100vw, 960px"
-          className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-    </section>
-  );
+  return null;
 }
 
 function FaqSection() {
   return (
     <section className="border-t border-slate-200 bg-slate-50 py-12">
-      <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <p className="text-center text-sm font-semibold uppercase tracking-wide text-emerald-700">
           Commercial Storage FAQs
         </p>
-        <h2 className="mb-8 mt-2 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+        <h2 className="mb-8 mt-2 text-center text-3xl font-black text-slate-950 sm:text-4xl">
           Questions from London Businesses
         </h2>
 
@@ -1094,7 +1005,7 @@ function FaqSection() {
           {faqs.map((faq) => (
             <details
               key={faq.q}
-              className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
+              className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg"
             >
               <summary className="cursor-pointer font-semibold text-slate-950">
                 {faq.q}
@@ -1110,8 +1021,8 @@ function FaqSection() {
 
 function FinalCTA() {
   return (
-    <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-      <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+    <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
         <p className="text-sm font-semibold uppercase tracking-wide !text-white">
           Flexible Commercial Storage
         </p>
@@ -1128,7 +1039,7 @@ function FinalCTA() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/get-a-quote?service=storage"
-            className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8"
+            className="kxh-shine relative w-full overflow-hidden rounded-2xl bg-white px-8 py-4 text-center font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 sm:w-auto"
           >
             Get Commercial Storage Quote
           </Link>
@@ -1173,7 +1084,32 @@ export default function CommercialStoragePage() {
         <IndustryLinksSection />
         <RelatedServicesSection />
         <TeamSection />
-        <TestimonialsSection />
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Commercial storage handled by our own team"
+                    intro="From overflow stock to office equipment, we collect it, store it securely and deliver it back on your schedule."
+                    points={["No extra lease", "Scale up or down", "Collection from your site", "Return delivery available"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Commercial Storage London with KXH Storage & Logistics", label: "Business space" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get a Commercial Storage Quote"
+                />
+        <section id="areas" className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-3xl">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">London service areas</p>
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Commercial Storage London across London boroughs</h2>
+                            <p className="mt-4 text-slate-600">Tap an area to see it on the map and open the local commercial storage page.</p>
+                        </div>
+                        <div className="mt-10">
+                            <AreaMapExplorer primaryHref="/commercial-storage-london" />
+                        </div>
+                    </div>
+                </section>
+                <TestimonialsSection />
         <LocationsSection />
         <FinalCTA />
         <FaqSection />

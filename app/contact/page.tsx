@@ -7,25 +7,24 @@ import CrispChat from "../components/chat/CrispChat";
 import Nav from "../components/MobileNav";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
+import AreaMapExplorer from "../components/AreaMapExplorer";
+import type { ReactNode } from "react";
+import { ArrowRight, Boxes, Building2, CheckCircle2, ChevronRight, ClipboardList, Clock, FileText, GraduationCap, Hammer, Home, Layers, Mail, MapPin, Package, Phone, ShoppingCart, Smartphone, Star, Truck, Warehouse, Zap } from "lucide-react";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 const SITE_URL = "https://kxhlogistics.co.uk";
 const PHONE_DISPLAY = CONTACT_NUMBERS[0].phone;
 const PHONE_HREF = CONTACT_NUMBERS[0].href;
 const EMAIL = "help@kxhlogistics.co.uk";
+const ADDRESS_LINE = "9 New City Road, London E13 9LL";
 const OPENING_HOURS = [
-    { label: "Monday–Friday", value: "8:00 AM–6:00 PM" },
-    { label: "Saturday", value: "9:00 AM–4:00 PM" },
-    { label: "Sunday", value: "By appointment" },
+    { label: "Monday–Sunday", value: "Open 24 hours" },
 ];
-const TRUSTPILOT_RATING = "4.8";
-const TRUSTPILOT_REVIEW_COUNT = "66";
 
 
 
 export const metadata: Metadata = {
-    title:
-        "Contact KXH Storage & Logistics | London Moving, Storage & Warehouse Services",
+    title: "Contact KXH | Storage & Moving in London, Open 24/7",
     description:
         "Contact KXH Storage & Logistics for moving services, managed storage, business storage, warehouse storage, student storage, collection and delivery across London. Request a tailored quotation today.",
     keywords: [
@@ -156,7 +155,7 @@ const serviceContactCards = [
         title: "Moving Services Enquiry",
         description:
             "Discuss house moves, apartment relocations, office removals, packing and furniture transport.",
-        href: "mailto:hello@kxhlogistics.co.uk?subject=Moving%20Services%20Enquiry",
+        href: "mailto:help@kxhlogistics.co.uk?subject=Moving%20Services%20Enquiry",
         cta: "Email moving enquiry",
         icon: "🚚",
     },
@@ -164,7 +163,7 @@ const serviceContactCards = [
         title: "Warehouse Storage Enquiry",
         description:
             "Ask about managed storage, collection, storage duration, access and return delivery.",
-        href: "mailto:hello@kxhlogistics.co.uk?subject=Warehouse%20Storage%20Enquiry",
+        href: "mailto:help@kxhlogistics.co.uk?subject=Warehouse%20Storage%20Enquiry",
         cta: "Email storage enquiry",
         icon: "🏭",
     },
@@ -172,7 +171,7 @@ const serviceContactCards = [
         title: "Business Storage Enquiry",
         description:
             "Discuss stock, office furniture, archived files, recurring collections and staged deliveries.",
-        href: "mailto:hello@kxhlogistics.co.uk?subject=Business%20Storage%20Enquiry",
+        href: "mailto:help@kxhlogistics.co.uk?subject=Business%20Storage%20Enquiry",
         cta: "Email business enquiry",
         icon: "🏢",
     },
@@ -180,7 +179,7 @@ const serviceContactCards = [
         title: "Student Storage Enquiry",
         description:
             "Ask about hall collection, summer storage, luggage, boxes and next-term redelivery.",
-        href: "mailto:hello@kxhlogistics.co.uk?subject=Student%20Storage%20Enquiry",
+        href: "mailto:help@kxhlogistics.co.uk?subject=Student%20Storage%20Enquiry",
         cta: "Email student enquiry",
         icon: "🎓",
     },
@@ -437,7 +436,7 @@ function ContactPageJsonLd() {
         },
         about: {
             "@type": "LocalBusiness",
-            "@id": `${SITE_URL}/#localbusiness`,
+            "@id": `${SITE_URL}/#business`,
             name: "KXH Storage & Logistics",
         },
     };
@@ -454,11 +453,18 @@ function LocalBusinessJsonLd() {
     const data = {
         "@context": "https://schema.org",
         "@type": ["LocalBusiness", "MovingCompany", "StorageFacility"],
-        "@id": `${SITE_URL}/#localbusiness`,
+        "@id": `${SITE_URL}/#business`,
         name: "KXH Storage & Logistics",
         url: SITE_URL,
         telephone: PHONE_DISPLAY,
         email: EMAIL,
+        address: {
+            "@type": "PostalAddress",
+            streetAddress: "9 New City Road",
+            addressLocality: "London",
+            postalCode: "E13 9LL",
+            addressCountry: "GB",
+        },
         areaServed: {
             "@type": "City",
             name: "London",
@@ -466,23 +472,11 @@ function LocalBusinessJsonLd() {
         openingHoursSpecification: [
             {
                 "@type": "OpeningHoursSpecification",
-                dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-                opens: "08:00",
-                closes: "18:00",
-            },
-            {
-                "@type": "OpeningHoursSpecification",
-                dayOfWeek: "Saturday",
-                opens: "09:00",
-                closes: "16:00",
+                dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                opens: "00:00",
+                closes: "23:59",
             },
         ],
-        aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: TRUSTPILOT_RATING,
-            reviewCount: TRUSTPILOT_REVIEW_COUNT,
-            bestRating: "5",
-        },
         contactPoint: [
             {
                 "@type": "ContactPoint",
@@ -569,386 +563,113 @@ function FAQJsonLd() {
     );
 }
 
+const SERVICE_ICONS: Record<string, ReactNode> = {
+    "/logistics-moving-london": <Truck className="h-5 w-5" />,
+    "/warehouse-storage-london": <Warehouse className="h-5 w-5" />,
+    "/business-storage-london": <Building2 className="h-5 w-5" />,
+    "/student-storage-london": <GraduationCap className="h-5 w-5" />,
+    "/inventory-management-london": <ClipboardList className="h-5 w-5" />,
+    "/pallet-storage-london": <Layers className="h-5 w-5" />,
+    "/services": <MapPin className="h-5 w-5" />,
+    "/shredding-solutions-london": <FileText className="h-5 w-5" />,
+};
+
+const SCENARIO_ICONS = [Home, GraduationCap, Building2, Hammer, Boxes, ShoppingCart];
+
 export default function ContactPage() {
     return (
         <>
-            {/* <CrispChat /> */}
+            <CrispChat />
             <Nav />
-            <ContactPageJsonLd />
-            <LocalBusinessJsonLd />
-            <BreadcrumbJsonLd />
-            <FAQJsonLd />
-
             <main className="min-h-screen bg-white text-slate-900">
-                <nav
-                    aria-label="Breadcrumb"
-                    className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
-                >
-                    <Link href="/" className="transition hover:text-emerald-700">
-                        Home
-                    </Link>
-                    <span className="mx-2" aria-hidden="true">
-                        /
-                    </span>
-                    <span className="font-medium text-slate-700">Contact</span>
-                </nav>
+                <ContactPageJsonLd />
+                <LocalBusinessJsonLd />
+                <BreadcrumbJsonLd />
+                <FAQJsonLd />
 
-                <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-                    <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                            London Moving, Storage & Logistics
-                        </div>
-
-                        <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                            Contact KXH Storage & Logistics
-                        </h1>
-
-                        <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                            Speak with our London team about moving, managed storage,
-                            warehouse space, business storage, student storage,
-                            collection or delivery.
-                        </p>
-
-                        <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                            Share your addresses, dates, item list and access details so
-                            we can understand the work and prepare a tailored quotation.
-                        </p>
-
-                        <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                            {[
-                                "Tailored quotations",
-                                "Residential and business support",
-                                "Collection available",
-                                "London-wide coverage",
-                            ].map((benefit) => (
-                                <div
-                                    key={benefit}
-                                    className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                                >
-                                    ✓ {benefit}
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
-                            <Link
-                                href="/get-a-quote"
-                                className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 sm:w-auto"
-                            >
-                                Request a Quote
-                            </Link>
-
-                            {CONTACT_NUMBERS.map((contact) => (
-                                <a
-                                    key={contact.href}
-                                    href={contact.href}
-                                    className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
-                                >
-                                    Call {contact.label}
-                                </a>
-                            ))}
-
-                            <a
-                                href={`mailto:${EMAIL}`}
-                                className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
-                            >
-                                Email KXH
-                            </a>
-                        </div>
-
-                        <div className="mt-6 flex justify-center">
-                            <TrustpilotPill />
-                        </div>
+                {/* HERO */}
+                <section className="kxh-hero relative isolate overflow-hidden bg-slate-950 text-white">
+                    <div className="absolute inset-0 -z-20">
+                        <Image src="/images/delivery-warehouse.webp" alt="KXH Storage & Logistics van in London" fill priority sizes="100vw" className="kxh-kenburns object-cover object-center" />
                     </div>
-                </section>
+                    <div className="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/40" />
+                    <div className="mx-auto max-w-screen-xl px-4 pb-16 pt-6 sm:px-6 lg:px-8 lg:pb-20">
+                        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-slate-300 sm:text-sm">
+                            <Link href="/" className="transition hover:text-white">Home</Link>
+                            <ChevronRight className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />
+                            <span className="font-semibold text-white" aria-current="page">Contact</span>
+                        </nav>
 
-                <section className="border-b border-slate-200 bg-white py-6">
-                    <div className="mx-auto grid max-w-6xl gap-4 px-5 text-center text-sm font-semibold text-slate-700 sm:grid-cols-2 sm:px-6 lg:grid-cols-6 lg:px-8">
-                        {[
-                            "Serving London",
-                            "Managed Collection",
-                            "Secure Storage",
-                            "Business Support",
-                            "Flexible Scheduling",
-                            "Fast Quotations",
-                        ].map((item) => (
-                            <div
-                                key={item}
-                                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
-                            >
-                                {item}
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                <section
-                    aria-labelledby="contact-options"
-                    className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20"
-                >
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Contact Options
-                            </p>
-                            <h2
-                                id="contact-options"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                Choose the Best Way to Reach KXH
-                            </h2>
-                            <p className="mt-4 leading-7 text-slate-600">
-                                Call for a quick conversation, email detailed requirements or
-                                use the quote form for a structured service request.
-                            </p>
-                        </div>
-
-                        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-                            {contactMethods.map((method) => (
-                                <a
-                                    key={method.title}
-                                    href={method.href}
-                                    className="group rounded-2xl border border-slate-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md"
-                                >
-                                    <span
-                                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-2xl"
-                                        aria-hidden="true"
-                                    >
-                                        {method.icon}
+                        <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+                            <div className="kxh-rise">
+                                <p className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-emerald-300 sm:text-xs">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                                     </span>
-                                    <h3 className="mt-5 text-xl font-bold text-slate-950 group-hover:text-emerald-700">
-                                        {method.title}
-                                    </h3>
-                                    <p className="mt-3 leading-7 text-slate-600">
-                                        {method.description}
-                                    </p>
-                                    <span className="mt-5 inline-block font-semibold text-emerald-700">
-                                        {method.label} →
-                                    </span>
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-
-                <section
-                    aria-labelledby="service-contact-options"
-                    className="border-b border-slate-200 bg-white py-16 sm:py-20"
-                >
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Service Enquiries
-                            </p>
-                            <h2
-                                id="service-contact-options"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                Contact the Team About a Specific Service
-                            </h2>
-                            <p className="mt-4 leading-7 text-slate-600">
-                                Choose the enquiry type that best matches your requirements so
-                                you can include the most relevant information from the start.
-                            </p>
-                        </div>
-
-                        <div className="mt-10 grid gap-5 md:grid-cols-2">
-                            {serviceContactCards.map((card) => (
-                                <a
-                                    key={card.title}
-                                    href={card.href}
-                                    className="group rounded-2xl border border-slate-200 bg-slate-50 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:bg-white hover:shadow-sm"
-                                >
-                                    <span className="text-3xl" aria-hidden="true">
-                                        {card.icon}
-                                    </span>
-                                    <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:text-emerald-700">
-                                        {card.title}
-                                    </h3>
-                                    <p className="mt-3 leading-7 text-slate-600">
-                                        {card.description}
-                                    </p>
-                                    <span className="mt-5 inline-block font-semibold text-emerald-700">
-                                        {card.cta} →
-                                    </span>
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                <section
-                    aria-labelledby="quote-process"
-                    className="border-b border-slate-200 bg-white py-16 sm:py-20"
-                >
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Simple Process
-                            </p>
-                            <h2
-                                id="quote-process"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                From Enquiry to Collection
-                            </h2>
-                        </div>
-
-                        <ol className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                            {[
-                                {
-                                    number: "01",
-                                    title: "Tell us what you need",
-                                    text: "Share the service, locations, dates, items and access requirements.",
-                                },
-                                {
-                                    number: "02",
-                                    title: "Receive a tailored quote",
-                                    text: "We review the work and prepare a quotation based on your actual requirements.",
-                                },
-                                {
-                                    number: "03",
-                                    title: "Confirm your booking",
-                                    text: "Choose an available date and complete the required confirmation steps.",
-                                },
-                                {
-                                    number: "04",
-                                    title: "We collect, move or store",
-                                    text: "Our team carries out the agreed collection, moving, storage or delivery service.",
-                                },
-                            ].map((step) => (
-                                <li
-                                    key={step.number}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                                >
-                                    <span className="text-sm font-bold text-emerald-700">
-                                        {step.number}
-                                    </span>
-                                    <h3 className="mt-4 text-lg font-bold text-slate-950">
-                                        {step.title}
-                                    </h3>
-                                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                                        {step.text}
-                                    </p>
-                                </li>
-                            ))}
-                        </ol>
-                    </div>
-                </section>
-
-                <section
-                    aria-labelledby="start-enquiry"
-                    className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20"
-                >
-                    <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:px-8">
-                        <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Ready to Get Started?
-                            </p>
-                            <h2
-                                id="start-enquiry"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                Choose the Fastest Way to Start Your Enquiry
-                            </h2>
-                            <p className="mt-5 max-w-2xl leading-7 text-slate-600">
-                                Request a tailored quotation online, call for urgent
-                                availability or email detailed requirements with photos,
-                                measurements and inventory information.
-                            </p>
-
-                            <ul className="mt-8 grid gap-3 text-sm text-slate-700 sm:grid-cols-2">
-                                {[
-                                    "Home and apartment moves",
-                                    "Business and warehouse storage",
-                                    "Student storage",
-                                    "Collection and delivery",
-                                    "Packing and dismantling",
-                                    "Tailored quotations",
-                                ].map((item) => (
-                                    <li
-                                        key={item}
-                                        className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3"
-                                    >
-                                        <span
-                                            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-700"
-                                            aria-hidden="true"
-                                        >
-                                            ✓
-                                        </span>
-                                        <span>{item}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="grid gap-5">
-                            <Link
-                                href="/get-a-quote"
-                                className="group rounded-2xl border border-emerald-700 bg-emerald-700 p-7 text-white shadow-lg transition hover:bg-emerald-800 hover:shadow-xl"
-                            >
-                                <span className="text-3xl" aria-hidden="true">
-                                    📋
-                                </span>
-                                <h3 className="mt-5 text-2xl font-bold">
-                                    Request a Quote
-                                </h3>
-                                <p className="mt-3 leading-7 text-emerald-50">
-                                    Provide your locations, dates, items and service
-                                    requirements through our structured quotation process.
+                                    Open 24 hours · 7 days a week
                                 </p>
-                                <span className="mt-5 inline-flex font-semibold">
-                                    Start your quote →
-                                </span>
-                            </Link>
-
-                            <div className="grid gap-5 sm:grid-cols-2">
-                                {CONTACT_NUMBERS.map((contact) => (
-                                    <a
-                                        key={contact.href}
-                                        href={contact.href}
-                                        className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                                <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                                    Contact KXH{" "}
+                                    <span className="bg-gradient-to-r from-emerald-300 to-lime-200 bg-clip-text text-transparent">Storage & Logistics</span>
+                                </h1>
+                                <p className="mt-5 max-w-xl text-base leading-7 text-slate-200 sm:text-lg">
+                                    Call, email or get an instant quote for storage, moving and logistics anywhere in London. A real person from our team will help you.
+                                </p>
+                                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                    <Link
+                                        href="/get-a-quote"
+                                        className="kxh-shine group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-emerald-500 px-7 py-4 text-sm font-bold text-slate-950 shadow-xl shadow-emerald-500/30 transition hover:-translate-y-0.5 hover:bg-emerald-400"
                                     >
-                                        <span className="text-2xl" aria-hidden="true">
-                                            ☎
+                                        Get Instant Quote <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                                    </Link>
+                                    <a
+                                        href={PHONE_HREF}
+                                        className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/25 bg-white/10 px-7 py-4 text-sm font-bold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/20"
+                                    >
+                                        <Phone className="h-4 w-4" /> 020 3916 5312
+                                    </a>
+                                </div>
+                                <div className="mt-6 flex flex-wrap gap-3">
+                                    <span className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm backdrop-blur">
+                                        <span className="font-bold">Google</span>
+                                        <span className="flex">{[0, 1, 2, 3, 4].map((i) => <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />)}</span>
+                                        <span className="font-semibold">5.0</span>
+                                    </span>
+                                    <a href="https://www.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm backdrop-blur transition hover:bg-white/20">
+                                        <Star className="h-4 w-4 fill-[#00b67a] text-[#00b67a]" />
+                                        <span className="font-bold">Trustpilot</span>
+                                        <span className="font-semibold">4.8</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div className="kxh-rise grid gap-3 [animation-delay:150ms] sm:grid-cols-2 lg:grid-cols-1">
+                                {CONTACT_NUMBERS.map((c) => (
+                                    <a
+                                        key={c.href}
+                                        href={c.href}
+                                        className="group flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-emerald-400/60 hover:bg-emerald-500/15"
+                                    >
+                                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-emerald-500 text-slate-950">
+                                            {c.label === "Mobile" ? <Smartphone className="h-6 w-6" /> : <Phone className="h-6 w-6" />}
                                         </span>
-
-                                        <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:text-emerald-700">
-                                            Call {contact.label}
-                                        </h3>
-
-                                        <p className="mt-3 text-sm leading-6 text-slate-600">
-                                            Best for urgent enquiries, date availability and quick service
-                                            questions.
-                                        </p>
-
-                                        <span className="mt-5 inline-block font-semibold text-emerald-700">
-                                            {contact.phone} →
+                                        <span>
+                                            <span className="block text-xs font-bold uppercase tracking-wider text-emerald-300">{c.label}</span>
+                                            <span className="mt-0.5 block text-lg font-black">{c.phone}</span>
                                         </span>
                                     </a>
                                 ))}
-
                                 <a
                                     href={`mailto:${EMAIL}`}
-                                    className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                                    className="group flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-emerald-400/60 hover:bg-emerald-500/15"
                                 >
-                                    <span className="text-2xl" aria-hidden="true">
-                                        ✉
+                                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white text-emerald-700">
+                                        <Mail className="h-6 w-6" />
                                     </span>
-
-                                    <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:text-emerald-700">
-                                        Email Our Team
-                                    </h3>
-
-                                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                                        Ideal for detailed requirements, photos, inventory lists and business
-                                        enquiries.
-                                    </p>
-
-                                    <span className="mt-5 inline-block break-all font-semibold text-emerald-700">
-                                        {EMAIL} →
+                                    <span className="min-w-0">
+                                        <span className="block text-xs font-bold uppercase tracking-wider text-emerald-300">Email</span>
+                                        <span className="mt-0.5 block truncate text-lg font-black">{EMAIL}</span>
                                     </span>
                                 </a>
                             </div>
@@ -956,449 +677,209 @@ export default function ContactPage() {
                     </div>
                 </section>
 
-
-                <section className="border-b border-slate-200 bg-white py-16 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-                            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8">
-                                <h3 className="text-2xl font-bold text-slate-950">Prepare for an Accurate Quote</h3>
-                                <p className="mt-4 leading-7 text-slate-600">Providing collection and delivery postcodes, preferred dates, access details, parking information and an inventory list helps our team prepare a tailored quotation.</p>
-                                <ul className="mt-6 space-y-3 text-slate-700">
-                                    <li>✓ Collection & delivery addresses</li>
-                                    <li>✓ Item list or estimated volume</li>
-                                    <li>✓ Parking and access information</li>
-                                    <li>✓ Preferred collection date</li>
-                                    <li>✓ Packing or storage requirements</li>
-                                </ul>
-                            </div>
-
-                            <div className="mt-8 grid gap-8 md:grid-cols-2">
-                                <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
-
-                                    <figcaption className="p-6">
-                                        <h3 className="text-lg font-bold text-slate-950">
-                                            Moving and Collection
-                                        </h3>
-                                        <p className="mt-2 text-sm leading-6 text-slate-600">
-                                            Planned household, student and business collections
-                                            with optional packing, storage and redelivery.
-                                        </p>
-                                    </figcaption>
-                                </figure>
-
-                                <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
-
-                                    <figcaption className="p-6">
-                                        <h3 className="text-lg font-bold text-slate-950">
-                                            Warehouse and Business Support
-                                        </h3>
-                                        <p className="mt-2 text-sm leading-6 text-slate-600">
-                                            Managed warehouse capacity for stock, pallets, office
-                                            assets, furniture and operational overflow.
-                                        </p>
-                                    </figcaption>
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section
-                    aria-labelledby="services"
-                    className="border-b border-slate-200 bg-white py-16 sm:py-20"
-                >
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Services
-                            </p>
-                            <h2
-                                id="services"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                What Can KXH Help You With?
-                            </h2>
+                {/* VISIT / MAP */}
+                <section className="bg-white py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
+                        <div className="kxh-reveal">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Find us</p>
+                            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Our London base</h2>
                             <p className="mt-4 leading-7 text-slate-600">
-                                Contact us for one-off residential work, student services or
-                                ongoing business storage and logistics support.
+                                We collect from and deliver to homes, student halls and businesses across London. Tell us your postcode and we will confirm availability.
                             </p>
-                        </div>
-
-                        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                            {services.map((service) => (
-                                <Link
-                                    key={service.title}
-                                    href={service.href}
-                                    className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:bg-white hover:shadow-sm"
-                                >
-                                    <span
-                                        className="text-2xl"
-                                        aria-hidden="true"
-                                    >
-                                        {service.icon}
+                            <ul className="mt-8 space-y-3">
+                                <li className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                                    <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
+                                    <span>
+                                        <span className="block font-bold text-slate-950">Address</span>
+                                        <span className="mt-1 block text-sm text-slate-600">{ADDRESS_LINE}</span>
                                     </span>
-                                    <h3 className="mt-4 text-lg font-bold text-slate-950 group-hover:text-emerald-700">
-                                        {service.title}
-                                    </h3>
-                                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                                        {service.description}
-                                    </p>
-                                    <span className="mt-5 inline-block text-sm font-semibold text-emerald-700">
-                                        View service →
+                                </li>
+                                <li className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
+                                    <span>
+                                        <span className="block font-bold text-slate-950">Opening hours</span>
+                                        {OPENING_HOURS.map((h) => (
+                                            <span key={h.label} className="mt-1 block text-sm text-slate-600">{h.label}: {h.value}</span>
+                                        ))}
                                     </span>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-
-                <section className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Common Enquiries
-                            </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                                Why Customers Contact KXH
-                            </h2>
-                            <p className="mt-4 leading-7 text-slate-600">
-                                We support one-off moves, temporary storage and ongoing
-                                commercial requirements across London.
-                            </p>
-                        </div>
-
-                        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                            {enquiryScenarios.map((scenario) => (
-                                <article
-                                    key={scenario.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6"
-                                >
-                                    <span className="text-2xl" aria-hidden="true">
-                                        {scenario.icon}
+                                </li>
+                                <li className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                                    <Zap className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
+                                    <span>
+                                        <span className="block font-bold text-slate-950">Urgent collection?</span>
+                                        <span className="mt-1 block text-sm text-slate-600">Call us for same-week dates and quick answers on availability.</span>
                                     </span>
-                                    <h3 className="mt-4 text-lg font-bold text-slate-950">
-                                        {scenario.title}
-                                    </h3>
-                                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                                        {scenario.description}
-                                    </p>
-                                </article>
-                            ))}
+                                </li>
+                            </ul>
                         </div>
-                    </div>
-                </section>
-
-                <section
-                    aria-labelledby="coverage"
-                    className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20"
-                >
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-                            <div>
-                                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                    London Coverage
-                                </p>
-                                <h2
-                                    id="coverage"
-                                    className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                                >
-                                    Moving, Storage and Collection Across London
-                                </h2>
-                                <p className="mt-5 leading-7 text-slate-600">
-                                    KXH supports customers across multiple London boroughs.
-                                    Availability depends on the requested service, route,
-                                    dates, parking and building access.
-                                </p>
-                                <p className="mt-4 leading-7 text-slate-600">
-                                    Include both postcodes when requesting a quote so the team
-                                    can review the route and any congestion, loading or access
-                                    requirements.
-                                </p>
-                            </div>
-
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                {londonAreas.map((area) => (
-                                    <Link
-                                        key={area.name}
-                                        href={area.href}
-                                        className="rounded-2xl border border-slate-200 bg-white p-5 font-semibold text-slate-800 transition hover:border-emerald-300 hover:text-emerald-700 hover:shadow-sm"
-                                    >
-                                        {area.name}
-                                        <span className="ml-2" aria-hidden="true">
-                                            →
-                                        </span>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-
-                <section className="border-b border-slate-200 bg-white py-16 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
-                        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+                        <div className="kxh-reveal overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-xl">
                             <iframe
-                                title="KXH Storage and Logistics service area map"
-                                src="https://www.google.com/maps?q=KXH%20Storage%20%26%20Logistics%20London&output=embed"
-                                width="100%"
-                                height="100%"
+                                title="KXH Storage & Logistics location map"
+                                src={`https://maps.google.com/maps?q=${encodeURIComponent(ADDRESS_LINE)}&z=14&output=embed`}
                                 loading="lazy"
                                 referrerPolicy="no-referrer-when-downgrade"
-                                className="min-h-[440px] w-full border-0"
+                                className="h-[360px] w-full border-0 sm:h-[460px] lg:h-full lg:min-h-[480px]"
                                 allowFullScreen
                             />
                         </div>
-
-                        <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Location and Hours
-                            </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                                Contact Our London Team
-                            </h2>
-                            <p className="mt-5 leading-7 text-slate-600">
-                                KXH serves customers across supported London boroughs.
-                                Collection and delivery availability depends on the route,
-                                parking, loading restrictions and requested service.
-                            </p>
-
-                            <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                                <h3 className="font-bold text-slate-950">Opening hours</h3>
-                                <dl className="mt-4 space-y-3 text-sm">
-                                    {OPENING_HOURS.map((hours) => (
-                                        <div
-                                            key={hours.label}
-                                            className="flex items-center justify-between gap-4 border-b border-slate-200 pb-3 last:border-0 last:pb-0"
-                                        >
-                                            <dt className="font-medium text-slate-700">
-                                                {hours.label}
-                                            </dt>
-                                            <dd className="text-right text-slate-600">
-                                                {hours.value}
-                                            </dd>
-                                        </div>
-                                    ))}
-                                </dl>
-                            </div>
-
-                            <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-6">
-                                <h3 className="font-bold text-slate-950">
-                                    Typical response
-                                </h3>
-
-                                <p className="mt-2 text-sm leading-6 text-slate-600">
-                                    Enquiries are reviewed during business hours. For urgent
-                                    collections or date availability, call the team directly.
-                                </p>
-
-                                <div className="mt-4 flex flex-col gap-2">
-                                    {CONTACT_NUMBERS.map((contact) => (
-                                        <a
-                                            key={contact.href}
-                                            href={contact.href}
-                                            className="inline-flex font-semibold text-emerald-700 hover:underline"
-                                        >
-                                            Call {contact.label} ({contact.phone}) →
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
-                <section
-                    aria-labelledby="business-support"
-                    className="border-y border-slate-200 bg-slate-50 py-14 sm:py-20"
-                >
-                    <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:px-8">
-                        <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Business Enquiries
-                            </p>
-
-                            <h2
-                                id="business-support"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                Need Ongoing Storage or Logistics Support?
-                            </h2>
-
-                            <p className="mt-5 leading-7 text-slate-600">
-                                KXH works with businesses that need additional space,
-                                stock collection, office storage, pallet capacity,
-                                project support or staged delivery.
-                            </p>
-
-                            <p className="mt-4 leading-7 text-slate-600">
-                                Tell us what needs collecting, where it is located and
-                                how frequently you expect storage or delivery support.
-                            </p>
-
-                            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                {/* WHAT CAN WE HELP WITH */}
+                <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-2xl">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">What do you need?</p>
+                            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Pick a service to get started</h2>
+                        </div>
+                        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {services.map((s, i) => (
                                 <Link
-                                    href="/business-storage-london"
-                                    className="rounded-xl bg-emerald-700 px-6 py-3 text-center font-semibold text-white transition hover:bg-emerald-800"
+                                    key={s.href + s.title}
+                                    href={s.href}
+                                    className="kxh-reveal kxh-card3d group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl"
+                                    style={{ transitionDelay: `${(i % 4) * 60}ms` }}
                                 >
-                                    Explore Business Storage
+                                    <span className="grid h-11 w-11 place-items-center rounded-xl bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-600 group-hover:text-white">
+                                        {SERVICE_ICONS[s.href] ?? <Package className="h-5 w-5" />}
+                                    </span>
+                                    <h3 className="mt-4 font-bold text-slate-950">{s.title}</h3>
+                                    <p className="mt-2 text-sm leading-6 text-slate-600">{s.description}</p>
+                                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-emerald-700">
+                                        Learn more <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                                    </span>
                                 </Link>
-
-                                <a
-                                    href={`mailto:${EMAIL}?subject=Business%20Storage%20Enquiry`}
-                                    className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-center font-semibold text-slate-700 transition hover:bg-slate-50"
-                                >
-                                    Email Business Enquiry
-                                </a>
-                            </div>
+                            ))}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                            {industries.map((industry) => (
-                                <div
-                                    key={industry}
-                                    className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-center text-sm font-semibold text-slate-700 shadow-sm"
+                        <div className="mt-10 grid gap-3 md:grid-cols-2">
+                            {serviceContactCards.map((c) => (
+                                <a
+                                    key={c.title}
+                                    href={c.href}
+                                    className="kxh-reveal group flex items-center justify-between gap-4 rounded-2xl border border-emerald-200 bg-white p-5 transition hover:border-emerald-400 hover:bg-emerald-50"
                                 >
-                                    {industry}
+                                    <span>
+                                        <span className="block font-bold text-slate-950">{c.title}</span>
+                                        <span className="mt-1 block text-sm text-slate-600">{c.description}</span>
+                                    </span>
+                                    <Mail className="h-5 w-5 shrink-0 text-emerald-600 transition group-hover:scale-110" aria-hidden="true" />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* COMMON ENQUIRIES */}
+                <section className="bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Common enquiries</p>
+                            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">We regularly help with</h2>
+                        </div>
+                        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {enquiryScenarios.map((s, i) => {
+                                const Icon = SCENARIO_ICONS[i % SCENARIO_ICONS.length];
+                                return (
+                                    <div key={s.title} className="kxh-reveal flex gap-4 rounded-2xl border border-slate-200 p-5 transition hover:border-emerald-300 hover:shadow-lg">
+                                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-950 text-emerald-400">
+                                            <Icon className="h-5 w-5" aria-hidden="true" />
+                                        </span>
+                                        <span>
+                                            <span className="block font-bold text-slate-950">{s.title}</span>
+                                            <span className="mt-1 block text-sm leading-6 text-slate-600">{s.description}</span>
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+
+                {/* WHY KXH */}
+                <section className="kxh-hero relative overflow-hidden bg-slate-950 py-16 text-white lg:py-24">
+                    <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl" aria-hidden="true" />
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-2xl">
+                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">Why contact KXH</p>
+                            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">One team for storage, moving and logistics</h2>
+                        </div>
+                        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {reasons.map((r, i) => (
+                                <div
+                                    key={r.title}
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-emerald-400/50 hover:bg-white/10"
+                                    style={{ transitionDelay: `${(i % 3) * 70}ms` }}
+                                >
+                                    <CheckCircle2 className="h-6 w-6 text-emerald-400" aria-hidden="true" />
+                                    <h3 className="mt-3 text-lg font-bold">{r.title}</h3>
+                                    <p className="mt-2 text-sm leading-6 text-slate-300">{r.description}</p>
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </section>
-
-                <section
-                    aria-labelledby="why-contact"
-                    className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20"
-                >
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Why KXH
-                            </p>
-                            <h2
-                                id="why-contact"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                Practical Support Built Around Your Requirements
-                            </h2>
-                        </div>
-
-                        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                            {reasons.map((reason) => (
-                                <article
-                                    key={reason.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6"
-                                >
-                                    <span
-                                        className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 font-bold text-emerald-700"
-                                        aria-hidden="true"
-                                    >
-                                        ✓
-                                    </span>
-                                    <h3 className="mt-5 text-lg font-bold text-slate-950">
-                                        {reason.title}
-                                    </h3>
-                                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                                        {reason.description}
-                                    </p>
-                                </article>
+                        <div className="mt-10 flex flex-wrap items-center gap-2">
+                            <span className="text-sm font-semibold text-slate-400">Industries we support:</span>
+                            {industries.map((x) => (
+                                <span key={x} className="rounded-full border border-white/15 px-3 py-1 text-sm text-slate-200">{x}</span>
                             ))}
                         </div>
                     </div>
                 </section>
+
+                {/* AREAS */}
+                <section id="areas" className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal max-w-3xl">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Areas we cover</p>
+                            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Collection and delivery across London</h2>
+                            <p className="mt-3 leading-7 text-slate-600">Tap an area to open its map and see the services available there.</p>
+                        </div>
+                        <div className="mt-10"><AreaMapExplorer /></div>
+                    </div>
+                </section>
+
                 <TestimonialsSection />
 
-                <section
-                    aria-labelledby="contact-faq"
-                    className="border-b border-slate-200 bg-white py-16 sm:py-20"
-                >
-                    <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                                Contact FAQs
-                            </p>
-                            <h2
-                                id="contact-faq"
-                                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
-                            >
-                                Questions Before You Contact KXH
-                            </h2>
-                            <p className="mt-4 leading-7 text-slate-600">
-                                These answers cover common questions about quotes, bookings,
-                                coverage, packing and business enquiries.
-                            </p>
+                {/* FAQ */}
+                <section id="faqs" className="bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">FAQs</p>
+                            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Before you get in touch</h2>
                         </div>
-
-                        <div className="mt-10 space-y-4">
-                            {faqs.map((faq) => (
-                                <details
-                                    key={faq.question}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 open:border-emerald-200 open:bg-white sm:p-6"
-                                >
-                                    <summary className="cursor-pointer pr-5 text-base font-bold text-slate-950 marker:text-emerald-700 sm:text-lg">
-                                        {faq.question}
+                        <div className="mt-10 space-y-3">
+                            {faqs.map((f) => (
+                                <details key={f.question} className="group rounded-2xl border border-slate-200 bg-slate-50 open:border-emerald-300 open:bg-white open:shadow-lg">
+                                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-bold text-slate-950 [&::-webkit-details-marker]:hidden">
+                                        {f.question}
+                                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700 transition group-open:rotate-45" aria-hidden="true">+</span>
                                     </summary>
-                                    <p className="mt-4 border-t border-slate-200 pt-4 leading-7 text-slate-600">
-                                        {faq.answer}
-                                    </p>
+                                    <p className="px-5 pb-5 text-sm leading-7 text-slate-600">{f.answer}</p>
                                 </details>
                             ))}
                         </div>
-
-                        <div className="mt-8 text-center">
-                            <Link
-                                href="/faqs"
-                                className="font-semibold text-emerald-700 hover:underline"
-                            >
-                                Browse all frequently asked questions →
-                            </Link>
-                        </div>
+                        <p className="mt-6 text-center text-sm text-slate-600">
+                            More answers in our <Link href="/faqs" className="font-bold text-emerald-700 hover:underline">FAQs</Link>.
+                        </p>
                     </div>
                 </section>
 
-                <section className="bg-emerald-700 py-16 text-white sm:py-20">
-                    <div className="mx-auto max-w-4xl px-5 text-center sm:px-6 lg:px-8">
-                        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-100">
-                            Ready to Get Started?
-                        </p>
-                        <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-                            Let&apos;s Discuss Your Moving, Storage or Logistics Requirements
-                        </h2>
-                        <p className="mx-auto mt-5 max-w-2xl leading-7 text-emerald-50">
-                            Request a tailored quote, call our London team or send your
-                            requirements by email.
-                        </p>
-
-                        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
-                            <Link
-                                href="/get-a-quote"
-                                className="rounded-xl bg-white px-6 py-4 font-semibold text-emerald-700 transition hover:bg-emerald-50"
-                            >
-                                Request a Quote
+                {/* CTA */}
+                <section className="px-4 pb-16 sm:px-6 lg:px-8 lg:pb-24">
+                    <div className="kxh-hero relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-950 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
+                        <h2 className="text-3xl font-black tracking-tight sm:text-4xl">Ready when you are, day or night</h2>
+                        <p className="mx-auto mt-4 max-w-2xl text-emerald-50">Get a clear quote in minutes, or call and speak to the team.</p>
+                        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                            <Link href="/get-a-quote" className="kxh-shine relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-white px-7 py-4 text-sm font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5">
+                                Get Instant Quote <ArrowRight className="h-4 w-4" />
                             </Link>
-
-                            {CONTACT_NUMBERS.map((contact) => (
-                                <a
-                                    key={contact.href}
-                                    href={contact.href}
-                                    className="rounded-xl border border-white/40 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
-                                >
-                                    Call {contact.label}
-                                </a>
-                            ))}
-
-                            <a
-                                href={`mailto:${EMAIL}`}
-                                className="rounded-xl border border-white/40 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
-                            >
-                                Email Us
+                            <a href={PHONE_HREF} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-7 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/20">
+                                <Phone className="h-4 w-4" /> 020 3916 5312
                             </a>
                         </div>
                     </div>
                 </section>
             </main>
-
             <MainFooter locations={londonLocations} />
         </>
     );

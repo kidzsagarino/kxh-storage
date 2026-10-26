@@ -1,5 +1,7 @@
 export const metadata = {
-  title: "Refund Policy | KXH Logistics",
+  title: "Refund Policy | KXH Storage & Logistics",
+  description: "Refund and cancellation policy for KXH Storage & Logistics storage, moving and shredding bookings in London.",
+  alternates: { canonical: "https://kxhlogistics.co.uk/refunds" },
 };
 
 export default function RefundPolicyPage() {
@@ -102,7 +104,7 @@ export default function RefundPolicyPage() {
 
         <Section title="8. CONTACT">
           <p>Email: help@kxhlogistics.co.uk</p>
-          <p>Phone: +44 1474 396663</p>
+          <p>Phone: +44 20 3916 5312</p>
         </Section>
       </div>
     </main>

@@ -1,3 +1,6 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import { Wine as HIcWine, Sofa as HIcSofa, Plane as HIcPlane, Package as HIcPackage } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Image from "next/image";
@@ -17,9 +20,9 @@ const parentPageUrl = "https://kxhlogistics.co.uk/logistics-moving-london";
 const quoteUrl = "/get-a-quote?service=moving";
 
 export const metadata: Metadata = {
-    title: "Packing Services London | Business & Office Packing | KXH",
+    title: "Packing Services London | Home & Office Packing | KXH",
     description:
-        "Professional packing services in London for offices, businesses, moves, storage and relocations, including materials, labelling and organised handling.",
+    "Professional packing services in London for homes and offices: furniture wrapping, fragile item protection, export packing and packing materials. Get a quote.",
     applicationName: "KXH Storage & Logistics",
     category: "Moving and packing services",
     creator: "KXH Storage & Logistics",
@@ -681,7 +684,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+447386277785",
+            telephone: "+442039165312",
         },
         areaServed: { "@type": "City", name: "London" },
         audience: {
@@ -801,11 +804,11 @@ function SectionHeading({
     return (
         <div className={`mx-auto ${widthClass} text-center`}>
             {eyebrow && (
-                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                     {eyebrow}
                 </p>
             )}
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                 {title}
             </h2>
             {description && <p className="mt-4 leading-7 text-slate-600">{description}</p>}
@@ -875,30 +878,13 @@ const pageSections = [
 ];
 
 function PageBreadcrumb() {
-    return (
-        <nav
-            aria-label="Breadcrumb"
-            className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
-        >
-            <Link href="/" className="transition hover:text-emerald-700">Home</Link>
-            <span className="mx-2">/</span>
-            <Link href="/services" className="transition hover:text-emerald-700">Services</Link>
-            <span className="mx-2">/</span>
-            <Link href="/logistics-moving-london" className="transition hover:text-emerald-700">
-                Moving Services
-            </Link>
-            <span className="mx-2">/</span>
-            <span aria-current="page" className="font-medium text-slate-700">
-                Packing Services London
-            </span>
-        </nav>
-    );
+    return null;
 }
 
 function PageSectionNav() {
     return (
         <nav aria-label="Packing services page sections" className="border-b border-slate-200 bg-white">
-            <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-5 py-4 sm:px-6 lg:px-8">
+            <div className="mx-auto flex max-w-screen-xl gap-2 overflow-x-auto px-5 py-4 sm:px-6 lg:px-8">
                 {pageSections.map((item) => (
                     <a
                         key={item.href}
@@ -915,90 +901,37 @@ function PageSectionNav() {
 
 function HeroSection() {
     return (
-        <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-            <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    Professional Packing for London Moves
-                </div>
-
-                <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                    Packing Services London
-                </h1>
-
-                <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Professional packing support for house moves, office relocations, commercial removals,
-                    storage projects, refurbishments and other London moves.
-                </p>
-
-                <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                    KXH can supply materials, pack approved business contents, organise labels
-                    and prepare items for moving, warehouse storage or phased delivery.
-                </p>
-
-                <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                    {coreBenefits.map((benefit) => (
-                        <div
-                            key={benefit}
-                            className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                        >
-                            ✓ {benefit}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link
-                        href={quoteUrl}
-                        className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 sm:w-auto"
-                    >
-                        Get Packing Services Quote
-                    </Link>
-                    {CONTACT_NUMBERS.map((contact) => (
-                        <a
-                            key={contact.href}
-                            href={contact.href}
-                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                        >
-                            Call {contact.label}
-                        </a>
-                    ))}
-                </div>
-
-                <p className="mt-4 text-sm text-slate-500">
-                    Not sure how many boxes or rooms are involved? An estimate is enough to begin.
-                </p>
-
-                <div className="mt-6 flex justify-center">
-                    <TrustpilotPill />
-                </div>
-
-                <div className="mt-12">
-                    <Image
-                        src="/images/moving-services/moving-services-hero.webp"
-                        alt="Professional business packing team preparing office items for a London move"
-                        width={1200}
-                        height={800}
-                        priority
-                        quality={80}
-                        sizes="(max-width: 768px) 100vw, 960px"
-                        className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                    />
-                </div>
-            </div>
-        </section>
+        <ServiceHero
+            image="/images/kxh-moving-removals-london.webp"
+            imageAlt="Packing Services London with KXH Storage & Logistics"
+            breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Packing Services London"}]}
+            eyebrow="Professional packing"
+            title="Packing Services London"
+            highlight="Packing Services"
+            intro="Our team packs your home or office for you: fragile items, furniture wrapping, export packing and all the materials, ready for moving or storage."
+            chips={["Fragile item protection", "Furniture wrapping", "Packing materials included", "Homes and offices"]}
+            ctaHref="/get-a-quote?service=moving"
+            ctaLabel="Get a Packing Quote"
+            cardEyebrow="We pack"
+            cardTitle="Everything, carefully"
+            cardItems={[
+                { icon: <HIcWine className="h-6 w-6" aria-hidden="true" />, title: "Fragile items", text: "Glass and ceramics" },
+                { icon: <HIcSofa className="h-6 w-6" aria-hidden="true" />, title: "Furniture", text: "Blankets and film" },
+                { icon: <HIcPlane className="h-6 w-6" aria-hidden="true" />, title: "Export packing", text: "Shipping-ready" },
+                { icon: <HIcPackage className="h-6 w-6" aria-hidden="true" />, title: "Materials", text: "Boxes and tape" },
+            ]}
+        />
     );
 }
-
 
 function ParentServiceSection() {
     return (
         <section className="border-b border-slate-200 bg-white py-10 sm:py-12">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 sm:p-8">
                     <div className="grid items-center gap-6 lg:grid-cols-[1fr_auto]">
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Part of KXH Moving Services London
                             </p>
                             <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
@@ -1026,8 +959,8 @@ function ParentServiceSection() {
 
 function DifferentiationSection() {
     return (
-        <section className="border-b border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-b border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Managed Business Packing"
                     title="More Than Boxes and Tape"
@@ -1042,13 +975,13 @@ function DifferentiationSection() {
 
 function ProjectGuidanceSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Planning a Packing Project
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Good Packing Starts with the Destination Plan
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1083,8 +1016,8 @@ function ProjectGuidanceSection() {
 
 function ProblemsSection() {
     return (
-        <section className="border-b border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-b border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Problems We Solve"
                     title={
@@ -1104,8 +1037,8 @@ function ProblemsSection() {
 
 function ProcessSection() {
     return (
-        <section id="how-it-works" className="scroll-mt-24 border-b border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section id="how-it-works" className="scroll-mt-24 border-b border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="How It Works"
                     title="Four Steps from Project Scope to Move-Ready Packing"
@@ -1119,8 +1052,8 @@ function ProcessSection() {
 
 function PostPackingSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="After Packing"
                     title="What Happens Once the Items Are Packed?"
@@ -1135,8 +1068,8 @@ function PostPackingSection() {
 
 function PricingSection() {
     return (
-        <section id="pricing" className="scroll-mt-24 border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section id="pricing" className="scroll-mt-24 border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Flexible Packing Services Pricing"
                     title="A Quote Based on the Packing Work Required"
@@ -1149,7 +1082,7 @@ function PricingSection() {
                 <div className="mt-10 text-center">
                     <Link
                         href={quoteUrl}
-                        className="inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
+                        className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
                     >
                         Calculate Your Packing Services Quote
                     </Link>
@@ -1164,25 +1097,25 @@ function PricingSection() {
 
 function ManagedPackingSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <Image
-                    src="/images/moving-services/moving-services-packing-loading.webp"
+                    src="/images/kxh-collection-delivery-london.webp"
                     alt="Office packing team labelling business cartons for a London relocation"
                     width={1200}
                     height={800}
                     quality={75}
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                    className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                     loading="lazy"
                     decoding="async"
                 />
 
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Managed Packing Support
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Pack for the Move, Storage Plan and Receiving Site
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1221,8 +1154,8 @@ function ManagedPackingSection() {
 
 function PreparationSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Preparing for Packing"
                     title="Help the Packing Team Work Efficiently"
@@ -1237,8 +1170,8 @@ function PreparationSection() {
 
 function WhatWePackSection() {
     return (
-        <section id="what-we-pack" className="scroll-mt-24 bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section id="what-we-pack" className="scroll-mt-24 bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="What We Can Pack"
                     title="Packing Support for Office, Commercial and Storage Projects"
@@ -1253,8 +1186,8 @@ function WhatWePackSection() {
 
 function IndustriesSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Industries We Support"
                     title="Packing Services Across Professional, Public and Commercial Sectors"
@@ -1269,19 +1202,8 @@ function IndustriesSection() {
 
 function UseCasesSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <Image
-                    src="/images/moving-services/moving-services-student-move.webp"
-                    alt="Packed and labelled office boxes prepared for a London business move"
-                    width={1200}
-                    height={800}
-                    quality={75}
-                    sizes="(max-width: 768px) 100vw, 960px"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                    loading="lazy"
-                    decoding="async"
-                />
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
 
                 <div className="mt-12">
                     <SectionHeading
@@ -1300,8 +1222,8 @@ function UseCasesSection() {
 
 function ComparisonSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Choose the Right Packing Model"
                     title="Self Packing vs Labour-Only Help vs KXH Managed Packing"
@@ -1311,7 +1233,7 @@ function ComparisonSection() {
 
                 <div className="mt-10 hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white lg:block">
                     <div className="min-w-[980px]">
-                        <div className="grid grid-cols-[0.7fr_1fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
+                        <div className="grid grid-cols-[0.7fr_1fr_1fr_1fr] bg-slate-950 text-sm font-bold text-white">
                             <div className="p-5">Comparison</div>
                             <div className="border-l border-white/10 p-5">Self Packing</div>
                             <div className="border-l border-white/10 p-5">Labour-Only Help</div>
@@ -1364,8 +1286,8 @@ function ComparisonSection() {
 
 function WhyKxhSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Business Packing Partner"
                     title="Why London Businesses Choose KXH Storage & Logistics"
@@ -1380,13 +1302,13 @@ function WhyKxhSection() {
 
 function LabellingSection() {
     return (
-        <section id="labelling" className="scroll-mt-24 border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section id="labelling" className="scroll-mt-24 border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Packing Labels & Organisation
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Make Delivery and Unpacking Easier
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1425,13 +1347,13 @@ function LabellingSection() {
 
 function ExistingSystemsSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Existing Move Plans
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         Use the References Your Team Already Understands
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1453,8 +1375,8 @@ function ExistingSystemsSection() {
 
 function TypicalRequestsSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Typical Packing Requests"
                     title="Choose the Level of Packing Support Your Project Needs"
@@ -1466,7 +1388,7 @@ function TypicalRequestsSection() {
                 <div className="mt-10 text-center">
                     <Link
                         href={quoteUrl}
-                        className="inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
+                        className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
                     >
                         Discuss Your Packing Requirements
                     </Link>
@@ -1478,13 +1400,13 @@ function TypicalRequestsSection() {
 
 function QuoteChecklistSection() {
     return (
-        <section className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:px-8">
+        <section className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Prepare Your Packing Quote
                     </p>
-                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                         What Information Helps Us Scope the Service?
                     </h2>
                     <p className="mt-4 leading-7 text-slate-600">
@@ -1497,7 +1419,7 @@ function QuoteChecklistSection() {
                     </p>
                     <Link
                         href={quoteUrl}
-                        className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
+                        className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
                     >
                         Request a Packing Services Quote
                     </Link>
@@ -1511,10 +1433,10 @@ function QuoteChecklistSection() {
 
 function CustomerFitSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 sm:rounded-3xl sm:p-10">
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
                         Are KXH Packing Services Right for Your Business?
                     </h2>
                     <p className="mt-4 max-w-3xl leading-7 text-slate-700">
@@ -1532,7 +1454,7 @@ function CustomerFitSection() {
 function LondonCoverageSection() {
     return (
         <section id="coverage" className="scroll-mt-24 border-t border-slate-200 bg-slate-50 py-16 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="London Coverage"
                     title="Business Packing Services Across London"
@@ -1545,7 +1467,7 @@ function LondonCoverageSection() {
                         <Link
                             key={area.href}
                             href={area.href}
-                            className="rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                            className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6"
                         >
                             <h3 className="font-bold text-slate-900">{area.name}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">
@@ -1580,8 +1502,8 @@ function LondonCoverageSection() {
 
 function RelatedServicesSection() {
     return (
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     title="Related Moving, Removal and Storage Services"
                     description="Connect professional packing with house removals, office relocation, commercial moving, temporary storage and final delivery."
@@ -1617,8 +1539,8 @@ function RelatedServicesSection() {
 
 function FinalCtaSection() {
     return (
-        <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-            <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+        <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
                 <p className="text-sm font-semibold uppercase tracking-wide !text-white">
                     Plan Your Packing Project
                 </p>
@@ -1676,15 +1598,15 @@ function FinalCtaSection() {
 function FaqSection() {
     return (
         <section id="faqs" className="scroll-mt-24 border-t border-slate-200 bg-slate-50 py-12">
-            <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-                <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <h2 className="mb-8 text-center text-3xl font-black text-slate-950 sm:text-4xl">
                     Packing Services FAQs
                 </h2>
                 <div className="space-y-3">
                     {faqs.map((faq) => (
                         <details
                             key={faq.question}
-                            className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
+                            className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg"
                         >
                             <summary className="cursor-pointer rounded-md font-semibold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2">
                                 {faq.question}
@@ -1735,6 +1657,19 @@ export default function PackingServicesLondonPage() {
                 <CustomerFitSection />
                 <LondonCoverageSection />
                 <RelatedServicesSection />
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Professional packing for every room"
+                    intro="Our team brings the materials and packs, wraps and labels everything so it arrives safely at your new place."
+                    points={["Fragile item protection", "Furniture wrapping", "Packing materials included", "Homes and offices"]}
+                    images={[
+                        { src: "/images/new-van.webp", alt: "KXH Storage & Logistics van outside a London apartment block", label: "Our own KXH vans" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Packing Services London with KXH Storage & Logistics", label: "Packed and labelled" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=moving"
+                    ctaLabel="Get a Packing Quote"
+                />
                 <TestimonialsSection />
                 <FinalCtaSection />
                 <FaqSection />

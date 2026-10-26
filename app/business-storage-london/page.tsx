@@ -1,4 +1,29 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import {
+  Archive,
+  Armchair,
+  ArrowRight,
+  BadgeCheck,
+  Boxes,
+  Building2,
+  CalendarRange,
+  CheckCircle2,
+  ClipboardList,
+  HeartPulse,
+  Layers,
+  Package,
+  PackageCheck,
+  PartyPopper,
+  Phone,
+  Rocket,
+  Scaling,
+  ShieldCheck,
+  ShoppingCart,
+  Store,
+  Truck,
+  Warehouse,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,15 +32,15 @@ import MainFooter from "../components/footer/MainFooter";
 import Nav from "../components/MobileNav";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
-import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
+import ServiceHero from "../components/ServiceHero";
+import AreaMapExplorer from "../components/AreaMapExplorer";
 import { londonLocations } from "../lib/location";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
-  title:
-    "Business Storage London | Secure Managed Storage with Collection",
+  title: "Business Storage London | Collection & Delivery | KXH",
   description:
-    "Door-to-door business storage in London with collection, secure warehouse storage, organised inventory, pallet support, and return delivery.",
+    "Business storage in London with collection from your premises, secure managed warehouse storage, organised inventory and return delivery. Get a quote.",
   alternates: {
     canonical: "https://kxhlogistics.co.uk/business-storage-london",
   },
@@ -28,9 +53,9 @@ export const metadata: Metadata = {
       "Flexible managed business storage with collection, secure warehouse storage, inventory organisation, pallet support, and return delivery across London.",
     images: [
       {
-        url: "/images/business-storage/business-storage-london-warehouse-inventory.webp",
-        width: 1200,
-        height: 630,
+        url: "/images/kxh-business-storage-london.webp",
+        width: 1600,
+        height: 900,
         alt: "Business stock stored inside a managed London warehouse",
       },
     ],
@@ -319,7 +344,7 @@ function ServiceJsonLd() {
       "@id": "https://kxhlogistics.co.uk/#business",
       name: "KXH Storage & Logistics",
       url: "https://kxhlogistics.co.uk",
-      telephone: "+44 1474 396663",
+      telephone: "+44 20 3916 5312",
     },
     areaServed: {
       "@type": "City",
@@ -403,10 +428,54 @@ function BreadcrumbJsonLd() {
   );
 }
 
-export default function BusinessStoragePage() {
-  const availableIndustries = industries.filter(
-    (industry) => industry.available,
+const storageTypeIcons = [Package, Armchair, Boxes, Layers];
+const problemIcons = [Building2, CalendarRange, Truck, Warehouse];
+const whyIcons = [BadgeCheck, Truck, Scaling, ShieldCheck, Rocket, Layers];
+const industryIcons: Record<string, typeof Package> = {
+  "/ecommerce-storage-london": ShoppingCart,
+  "/retail-stock-storage-london": Store,
+  "/furniture-storage-london": Armchair,
+  "/archive-storage-london": Archive,
+  "/event-equipment-storage-london": PartyPopper,
+  "/healthcare-storage-london": HeartPulse,
+};
+const relatedImages: Record<string, string> = {
+  "/inventory-management-london": "/images/kxh-inventory-management-london.webp",
+  "/warehouse-storage-london": "/images/kxh-collection-delivery-london.webp",
+  "/pallet-storage-london": "/images/kxh-pallet-storage-london.webp",
+  "/commercial-storage-london": "/images/kxh-commercial-storage-london.webp",
+  "/third-party-logistics-london": "/images/kxh-third-party-logistics-london.webp",
+};
+
+const comparisonRows = [
+  { feature: "Collection from your business", selfStorage: "Usually arranged by your team", warehouseLease: "Your team arranges transport", kxh: "Collection can be arranged across London" },
+  { feature: "Return delivery", selfStorage: "Your team collects stored items", warehouseLease: "Your team manages retrieval and transport", kxh: "Selected-item or full return delivery available" },
+  { feature: "Storage capacity", selfStorage: "Limited to the unit size rented", warehouseLease: "Fixed warehouse size", kxh: "Capacity can change with business requirements" },
+  { feature: "Warehouse management", selfStorage: "You organise and manage the unit", warehouseLease: "Your business manages the facility", kxh: "Professionally managed warehouse storage" },
+  { feature: "Inventory organisation", selfStorage: "Managed by your own team", warehouseLease: "Requires internal staff and processes", kxh: "Physical inventory organisation available" },
+  { feature: "Property commitment", selfStorage: "Separate unit rental", warehouseLease: "Longer commercial lease and overhead", kxh: "No separate warehouse lease required" },
+];
+
+const whyItems = [
+  { title: "Business Storage Specialists", description: "Managed business, commercial, warehouse, and ecommerce storage across London." },
+  { title: "Door-to-Door Service", description: "Collection, organised warehouse storage, and return delivery without repeated self-storage visits." },
+  { title: "Flexible Storage Capacity", description: "Increase or reduce storage as stock levels and operational requirements change." },
+  { title: "Secure Warehouse", description: "Business inventory stored in a professionally managed commercial warehouse." },
+  { title: "Supports Growing Businesses", description: "Suitable for startups, retailers, ecommerce brands, importers, wholesalers, and offices." },
+  { title: "Complete Storage Solution", description: "Business storage supported by inventory management, pallet storage, warehouse storage, and logistics." },
+];
+
+function Eyebrow({ children, light = false }: { children: ReactNode; light?: boolean }) {
+  return (
+    <p className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] ${light ? "bg-white/10 text-emerald-300" : "bg-emerald-50 text-emerald-700"}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${light ? "bg-emerald-300" : "bg-emerald-600"}`} />
+      {children}
+    </p>
   );
+}
+
+export default function BusinessStoragePage() {
+  const availableIndustries = industries.filter((industry) => industry.available);
 
   return (
     <>
@@ -419,528 +488,249 @@ export default function BusinessStoragePage() {
         <BreadcrumbJsonLd />
         <TrustpilotJsonLd />
 
-        {/* BREADCRUMB */}
-        <nav
-          aria-label="Breadcrumb"
-          className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
-        >
-          <Link href="/" className="transition hover:text-emerald-700">
-            Home
-          </Link>
-
-          <span className="mx-2">/</span>
-
-          <Link
-            href="/services"
-            className="transition hover:text-emerald-700"
-          >
-            Services
-          </Link>
-
-          <span className="mx-2">/</span>
-
-          <span className="font-medium text-slate-700">
-            Business Storage London
-          </span>
-        </nav>
-
         {/* HERO */}
-        <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-          <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Door-to-Door Business Storage
-            </div>
-
-            <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-              Business Storage London with Collection & Return Delivery
-            </h1>
-
-            <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-              We collect business items from your premises, store them
-              securely, organise them, and deliver them back when required.
-            </p>
-
-            <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-              Pay for the boxes, individual items, inventory, pallets, and
-              storage capacity your business uses—without renting an entire
-              storage unit or leasing more commercial space.
-            </p>
-
-            <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-              {coreBenefits.map((benefit) => (
-                <div
-                  key={benefit}
-                  className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                >
-                  ✓ {benefit}
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <Link
-                href="/get-a-quote?service=storage"
-                className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 sm:w-auto"
-              >
-                Get Business Storage Quote
-              </Link>
-
-              {CONTACT_NUMBERS.map((contact) => (
-                <a
-                  key={contact.href}
-                  href={contact.href}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                >
-                  Call {contact.label}
-                </a>
-              ))}
-            </div>
-
-            <div className="mt-6 flex justify-center">
-              <TrustpilotPill />
-            </div>
-
-            <div className="mt-12">
-              <Image
-                src="/images/business-storage/business-storage-london-warehouse-inventory.webp"
-                alt="Business stock stored inside a managed London warehouse"
-                width={1200}
-                height={800}
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 960px"
-                className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </div>
-        </section>
+        <ServiceHero
+          image="/images/kxh-business-storage-london.webp"
+          imageAlt="Business stock and office equipment stored inside the KXH warehouse in London"
+          breadcrumb={[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "Business Storage London" }]}
+          eyebrow="Door-to-door business storage"
+          title="Business Storage London with Collection & Return Delivery"
+          highlight="Collection & Return Delivery"
+          intro="We collect business items from your premises, store them securely, organise them and deliver them back when required. Pay only for the boxes, items, stock and pallets you store, without renting a whole unit or leasing more space."
+          chips={coreBenefits}
+          ctaHref="/get-a-quote?service=storage"
+          ctaLabel="Get Business Storage Quote"
+          cardEyebrow="What we store"
+          cardTitle="Storage for every business"
+          cardItems={storageTypes.map((t, i) => {
+            const Icon = storageTypeIcons[i % storageTypeIcons.length];
+            return { icon: <Icon className="h-6 w-6" aria-hidden="true" />, title: t.title, text: t.description.split(",")[0] };
+          })}
+        />
 
         {/* PROCESS */}
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                How It Works
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                We Collect, Store, Organise and Return
-              </h2>
-
-              <p className="mt-4 leading-7 text-slate-600">
-                A managed storage service that removes the need for van hire,
-                warehouse leases, and repeated self-storage visits.
+        <section className="bg-white py-16 lg:py-24">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+            <div className="kxh-reveal mx-auto max-w-3xl text-center">
+              <Eyebrow>How it works</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl lg:text-5xl">We collect, store, organise and return</h2>
+              <p className="mt-4 text-lg text-slate-600">
+                A managed storage service that removes the need for van hire, warehouse leases and repeated self-storage visits.
               </p>
             </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-              {processSteps.map((step) => (
-                <article
-                  key={step.number}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
-                >
-                  <span className="text-sm font-black text-emerald-700">
-                    {step.number}
-                  </span>
-
-                  <h3 className="mt-4 text-xl font-bold">{step.title}</h3>
-
-                  <p className="mt-3 text-sm leading-6 text-slate-600">
-                    {step.description}
-                  </p>
-                </article>
-              ))}
-            </div>
+            <ol className="relative mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <span className="absolute left-0 right-0 top-8 hidden h-0.5 bg-gradient-to-r from-emerald-100 via-emerald-400 to-emerald-100 lg:block" aria-hidden="true" />
+              {processSteps.map((step, i) => {
+                const Icon = [ClipboardList, Truck, Warehouse, PackageCheck][i];
+                return (
+                  <li key={step.number} className="kxh-reveal kxh-card3d group relative rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" style={{ transitionDelay: `${i * 80}ms` }}>
+                    <span className="kxh-pop relative flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
+                      <Icon className="h-7 w-7" aria-hidden="true" />
+                      <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-slate-950 text-xs font-bold text-white">{step.number}</span>
+                    </span>
+                    <h3 className="mt-6 text-xl font-bold text-slate-900">{step.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
         </section>
 
         {/* PRICING */}
-        <section className="bg-slate-50 py-14 sm:py-20">
-          <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Flexible Pricing
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Pay for the Storage Your Business Uses
-              </h2>
-
+        <section className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+          <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+            <div className="kxh-reveal">
+              <Eyebrow>Flexible pricing</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Pay for the storage your business uses</h2>
               <p className="mt-4 leading-7 text-slate-600">
-                Your quote reflects what you need to store rather than the
-                cost of an entire unit that may remain partly empty.
+                Your quote reflects what you need to store rather than the cost of an entire unit that may remain partly empty.
               </p>
-
               <p className="mt-4 leading-7 text-slate-600">
-                Pricing can account for the type and quantity of boxes,
-                individual items or pallets, the storage duration, collection,
-                handling, and return delivery.
+                Pricing can account for the type and quantity of boxes, individual items or pallets, the storage duration, collection, handling and return delivery.
               </p>
-
               <p className="mt-4 text-sm leading-6 text-slate-500">
-                Collection, storage, handling, and return-delivery charges are
-                calculated according to your items, locations, storage term,
-                and service requirements.
+                Collection, storage, handling and return-delivery charges are calculated according to your items, locations, storage term and service requirements.
               </p>
-
               <Link
                 href="/get-a-quote?service=storage"
-                className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                className="kxh-shine relative mt-8 inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
               >
-                Calculate Your Storage Quote
+                Calculate your storage quote <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-
             <div className="grid gap-4 sm:grid-cols-2">
-              {storageTypes.map((type) => (
-                <article
-                  key={type.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-6"
-                >
-                  <h3 className="font-bold text-slate-900">{type.title}</h3>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {type.description}
-                  </p>
-                </article>
-              ))}
+              {storageTypes.map((type, i) => {
+                const Icon = storageTypeIcons[i % storageTypeIcons.length];
+                return (
+                  <article key={type.title} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6" style={{ transitionDelay: `${(i % 2) * 80}ms` }}>
+                    <span className="kxh-pop flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-600 group-hover:text-white">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
+                    <h3 className="mt-4 text-lg font-bold text-slate-900">{type.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{type.description}</p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
         {/* BUSINESS PROBLEMS */}
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Make Space for Growth
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:text-4xl">
-                Your Office, Shop or Studio Should Not Become Your{" "}
-                <span className="text-emerald-700">
-                  Warehouse
-                </span>
+        <section className="relative overflow-hidden bg-[#04140f] py-16 text-white lg:py-24">
+          <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-emerald-600/25 blur-3xl" aria-hidden="true" />
+          <div className="relative mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+            <div className="kxh-reveal mx-auto max-w-3xl text-center">
+              <Eyebrow light>Make space for growth</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black sm:text-4xl" style={{ color: "#fff" }}>
+                Your office, shop or studio should not become your <span className="text-emerald-300">warehouse</span>
               </h2>
-
-              <p className="mt-5 leading-7 text-slate-600">
-                Free up valuable working space, avoid unnecessary property
-                overhead, and scale storage around the changing needs of your
-                business.
+              <p className="mt-5 text-slate-300">
+                Free up valuable working space, avoid unnecessary property overhead and scale storage around the changing needs of your business.
               </p>
             </div>
-
-            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {businessProblems.map((problem) => (
-                <article
-                  key={problem.title}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                  <h3 className="text-lg font-bold text-slate-950">{problem.title}</h3>
-
-                  <p className="mt-3 text-sm leading-6 text-slate-600">
-                    {problem.description}
-                  </p>
-                </article>
-              ))}
+            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {businessProblems.map((problem, i) => {
+                const Icon = problemIcons[i % problemIcons.length];
+                return (
+                  <article key={problem.title} className="kxh-reveal group rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur transition hover:-translate-y-1 hover:border-emerald-400/50 hover:bg-white/[0.08]" style={{ transitionDelay: `${i * 70}ms` }}>
+                    <Icon className="h-8 w-8 text-emerald-300 transition group-hover:scale-110" aria-hidden="true" />
+                    <h3 className="mt-4 text-lg font-bold" style={{ color: "#fff" }}>{problem.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">{problem.description}</p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
         {/* MANAGED STORAGE */}
-        <section className="bg-slate-50 py-14 sm:py-20">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
-            <Image
-              src="/images/business-storage/business-storage-pickup-delivery-london.webp"
-              alt="KXH collecting storage items from a London business"
-              width={1200}
-              height={800}
-              quality={75}
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-              loading="lazy"
-              decoding="async"
-            />
-
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Managed Door-to-Door Storage
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                No Van Hire. No Storage-Unit Visits. No Extra Premises.
-              </h2>
-
+        <section className="bg-white py-16 lg:py-24">
+          <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+            <div className="kxh-reveal relative">
+              <div className="absolute -inset-4 -z-10 -rotate-2 rounded-[2rem] bg-gradient-to-br from-emerald-200 to-lime-100" aria-hidden="true" />
+              <div className="overflow-hidden rounded-[1.75rem] shadow-2xl">
+                <Image
+                  src="/images/kxh-collection-delivery-london.webp"
+                  alt="KXH collecting storage items from a London business"
+                  width={1600}
+                  height={900}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="h-[320px] w-full object-cover transition duration-700 hover:scale-105 sm:h-[440px]"
+                />
+              </div>
+            </div>
+            <div className="kxh-reveal">
+              <Eyebrow>Managed door-to-door storage</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">No van hire. No storage-unit visits. No extra premises.</h2>
               <p className="mt-4 leading-7 text-slate-600">
-                KXH collects from offices, shops, warehouses, studios, and
-                approved commercial locations across London.
+                KXH collects from offices, shops, warehouses, studios and approved commercial locations across London.
               </p>
-
               <p className="mt-4 leading-7 text-slate-600">
-                When your team needs items back, request the relevant boxes,
-                inventory, equipment, furniture, or pallets and arrange
-                scheduled delivery.
+                When your team needs items back, request the relevant boxes, inventory, equipment, furniture or pallets and arrange scheduled delivery.
               </p>
               <p className="mt-4 leading-7 text-slate-600">
                 Businesses looking for specialist storage can also explore our{" "}
-                <Link
-                  href="/ecommerce-storage-london"
-                  className="font-semibold text-emerald-700 hover:underline"
-                >
-                  Ecommerce Storage
-                </Link>
-                ,{" "}
-                <Link
-                  href="/inventory-management-london"
-                  className="font-semibold text-emerald-700 hover:underline"
-                >
-                  Inventory Management
-                </Link>
-                {" "}and{" "}
-                <Link
-                  href="/pallet-storage-london"
-                  className="font-semibold text-emerald-700 hover:underline"
-                >
-                  Pallet Storage
-                </Link>
-                {" "}services.
+                <Link href="/ecommerce-storage-london" className="font-semibold text-emerald-700 hover:underline">Ecommerce Storage</Link>,{" "}
+                <Link href="/inventory-management-london" className="font-semibold text-emerald-700 hover:underline">Inventory Management</Link> and{" "}
+                <Link href="/pallet-storage-london" className="font-semibold text-emerald-700 hover:underline">Pallet Storage</Link> services.
               </p>
-
-              <ul className="mt-7 space-y-3 text-sm font-medium text-slate-700 sm:text-base">
-                <li>✓ Collection from business premises</li>
-                <li>✓ Secure managed warehouse storage</li>
-                <li>✓ Organised physical inventory records</li>
-                <li>✓ Selected-item or full return requests</li>
-                <li>✓ Scheduled return delivery</li>
+              <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+                {["Collection from business premises", "Secure managed warehouse storage", "Organised physical inventory records", "Selected-item or full return requests", "Scheduled return delivery"].map((t) => (
+                  <li key={t} className="flex items-start gap-2 text-sm font-medium text-slate-700">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" /> {t}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </section>
+
         {/* INDUSTRY PAGES */}
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Storage by Business Type
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Storage Designed Around Your Industry
-              </h2>
-
-              <p className="mt-4 leading-7 text-slate-600">
-                Explore storage solutions based on the products, equipment,
-                furniture, documents, and operational materials your company
-                needs to manage.
+        <section className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+            <div className="kxh-reveal mx-auto max-w-3xl text-center">
+              <Eyebrow>Storage by business type</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Storage designed around your industry</h2>
+              <p className="mt-4 text-slate-600">
+                Explore storage solutions based on the products, equipment, furniture, documents and operational materials your company needs to manage.
               </p>
             </div>
-
-            <div
-              className={`mt-12 grid gap-6 ${availableIndustries.length === 1
-                ? "mx-auto max-w-xl"
-                : "md:grid-cols-2 lg:grid-cols-4"
-                }`}
-            >
-              {availableIndustries.map((industry) => (
-                <Link
-                  key={industry.href}
-                  href={industry.href}
-                  className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm sm:p-6"
-                >
-                  <h3 className="text-lg font-bold text-slate-900">
-                    {industry.title}
-                  </h3>
-
-                  <p className="mt-3 text-sm leading-6 text-slate-600">
-                    {industry.description}
-                  </p>
-
-                  <span className="mt-5 inline-block text-sm font-semibold text-emerald-700">
-                    Explore storage options →
-                  </span>
-                </Link>
-              ))}
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {availableIndustries.map((industry, i) => {
+                const Icon = industryIcons[industry.href] ?? Package;
+                return (
+                  <Link key={industry.href} href={industry.href} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6" style={{ transitionDelay: `${(i % 3) * 70}ms` }}>
+                    <span className="kxh-pop flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/25">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
+                    <h3 className="mt-5 text-lg font-bold text-slate-900">{industry.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{industry.description}</p>
+                    <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-emerald-700">
+                      Explore storage options <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
-
-
           </div>
         </section>
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Compare Your Storage Options
-              </p>
 
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Self Storage vs Warehouse Lease vs KXH Business Storage
-              </h2>
-
-              <p className="mt-5 leading-7 text-slate-600">
-                Compare the differences between renting a self-storage unit, leasing
-                your own warehouse, and using KXH managed business storage with
-                collection, organised handling, and return delivery.
+        {/* COMPARISON */}
+        <section className="bg-white py-16 lg:py-24">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+            <div className="kxh-reveal mx-auto max-w-3xl text-center">
+              <Eyebrow>Compare your storage options</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Self storage vs warehouse lease vs KXH business storage</h2>
+              <p className="mt-4 text-slate-600">
+                Compare renting a self-storage unit, leasing your own warehouse and using KXH managed business storage with collection, organised handling and return delivery.
               </p>
             </div>
 
-            {/* DESKTOP TABLE */}
-            <div className="mt-12 hidden overflow-hidden rounded-2xl border border-slate-200 md:block">
-              <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
-                <div className="p-5">Service Feature</div>
-
-                <div className="border-l border-white/10 p-5 text-center">
-                  Self Storage
-                </div>
-
-                <div className="border-l border-white/10 p-5 text-center">
-                  Warehouse Lease
-                </div>
-
-                <div className="border-l border-white/10 p-5 text-center">
-                  KXH Managed Storage
-                </div>
-              </div>
-
-              {[
-                {
-                  feature: "Collection from your business",
-                  selfStorage: "Usually arranged by your team",
-                  warehouseLease: "Your team arranges transport",
-                  kxh: "Collection can be arranged across London",
-                },
-                {
-                  feature: "Return delivery",
-                  selfStorage: "Your team collects stored items",
-                  warehouseLease: "Your team manages retrieval and transport",
-                  kxh: "Selected-item or full return delivery available",
-                },
-                {
-                  feature: "Storage capacity",
-                  selfStorage: "Limited to the unit size rented",
-                  warehouseLease: "Fixed warehouse size",
-                  kxh: "Capacity can change with business requirements",
-                },
-                {
-                  feature: "Warehouse management",
-                  selfStorage: "You organise and manage the unit",
-                  warehouseLease: "Your business manages the facility",
-                  kxh: "Professionally managed warehouse storage",
-                },
-                {
-                  feature: "Inventory organisation",
-                  selfStorage: "Managed by your own team",
-                  warehouseLease: "Requires internal staff and processes",
-                  kxh: "Physical inventory organisation available",
-                },
-                {
-                  feature: "Property commitment",
-                  selfStorage: "Separate unit rental",
-                  warehouseLease: "Longer commercial lease and overhead",
-                  kxh: "No separate warehouse lease required",
-                },
-              ].map((row) => (
-                <div
-                  key={row.feature}
-                  className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-slate-200 text-sm"
-                >
-                  <div className="bg-slate-100 p-5 font-semibold text-slate-900">
-                    {row.feature}
-                  </div>
-
-                  <div className="border-l border-slate-200 p-5 leading-6 text-slate-600">
-                    {row.selfStorage}
-                  </div>
-
-                  <div className="border-l border-slate-200 p-5 leading-6 text-slate-600">
-                    {row.warehouseLease}
-                  </div>
-
-                  <div className="border-l border-slate-200 bg-emerald-50 p-5 font-medium leading-6 text-slate-900">
-                    <span className="mr-2 text-emerald-700">✓</span>
-                    {row.kxh}
-                  </div>
-                </div>
-              ))}
+            <div className="kxh-reveal mt-12 hidden overflow-hidden rounded-3xl border border-slate-200 shadow-xl md:block">
+              <table className="w-full text-left text-sm">
+                <caption className="sr-only">Comparison of self storage, a warehouse lease and KXH managed business storage</caption>
+                <thead>
+                  <tr className="bg-slate-950 text-white">
+                    <th scope="col" className="p-5 font-bold">Service feature</th>
+                    <th scope="col" className="p-5 text-center font-bold">Self storage</th>
+                    <th scope="col" className="p-5 text-center font-bold">Warehouse lease</th>
+                    <th scope="col" className="bg-emerald-600 p-5 text-center font-bold">KXH managed storage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row) => (
+                    <tr key={row.feature} className="border-t border-slate-200 transition hover:bg-slate-50">
+                      <th scope="row" className="bg-slate-50 p-5 font-semibold text-slate-900">{row.feature}</th>
+                      <td className="p-5 leading-6 text-slate-600">{row.selfStorage}</td>
+                      <td className="p-5 leading-6 text-slate-600">{row.warehouseLease}</td>
+                      <td className="bg-emerald-50 p-5 font-medium leading-6 text-slate-900">
+                        <span className="inline-flex items-start gap-2">
+                          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
+                          {row.kxh}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
-            {/* MOBILE CARDS */}
-            <div className="mt-10 grid gap-5 md:hidden">
-              {[
-                {
-                  feature: "Collection from your business",
-                  selfStorage: "Usually arranged by your team",
-                  warehouseLease: "Your team arranges transport",
-                  kxh: "Collection can be arranged across London",
-                },
-                {
-                  feature: "Return delivery",
-                  selfStorage: "Your team collects stored items",
-                  warehouseLease: "Your team manages retrieval and transport",
-                  kxh: "Selected-item or full return delivery available",
-                },
-                {
-                  feature: "Storage capacity",
-                  selfStorage: "Limited to the unit size rented",
-                  warehouseLease: "Fixed warehouse size",
-                  kxh: "Capacity can change with business requirements",
-                },
-                {
-                  feature: "Warehouse management",
-                  selfStorage: "You organise and manage the unit",
-                  warehouseLease: "Your business manages the facility",
-                  kxh: "Professionally managed warehouse storage",
-                },
-                {
-                  feature: "Inventory organisation",
-                  selfStorage: "Managed by your own team",
-                  warehouseLease: "Requires internal staff and processes",
-                  kxh: "Physical inventory organisation available",
-                },
-                {
-                  feature: "Property commitment",
-                  selfStorage: "Separate unit rental",
-                  warehouseLease: "Longer commercial lease and overhead",
-                  kxh: "No separate warehouse lease required",
-                },
-              ].map((row) => (
-                <article
-                  key={row.feature}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-                >
-                  <h3 className="bg-emerald-800 px-5 py-4 font-bold text-white">
-                    {row.feature}
-                  </h3>
-
+            <div className="mt-10 grid gap-4 md:hidden">
+              {comparisonRows.map((row) => (
+                <article key={row.feature} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                  <h3 className="bg-slate-950 px-5 py-4 font-bold" style={{ color: "#fff" }}>{row.feature}</h3>
                   <div className="p-5">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Self storage
-                    </p>
-
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {row.selfStorage}
-                    </p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Self storage</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{row.selfStorage}</p>
                   </div>
-
                   <div className="border-t border-slate-200 p-5">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Warehouse lease
-                    </p>
-
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {row.warehouseLease}
-                    </p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Warehouse lease</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{row.warehouseLease}</p>
                   </div>
-
                   <div className="border-t border-emerald-100 bg-emerald-50 p-5">
-                    <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
-                      KXH managed storage
-                    </p>
-
-                    <p className="mt-2 text-sm font-medium leading-6 text-slate-900">
-                      ✓ {row.kxh}
-                    </p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">KXH managed storage</p>
+                    <p className="mt-1 text-sm font-medium leading-6 text-slate-900">✓ {row.kxh}</p>
                   </div>
                 </article>
               ))}
@@ -949,245 +739,164 @@ export default function BusinessStoragePage() {
             <div className="mt-10 text-center">
               <Link
                 href="/get-a-quote?service=storage"
-                className="inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
               >
-                Compare Your Storage Requirements
+                Compare your storage requirements <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
         </section>
-        {/* WHY BUSINESSES TRUST KXH */}
 
-        <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Trusted Business Storage Partner
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Why London Businesses Choose KXH Storage & Logistics
-              </h2>
-
-              <p className="mt-5 leading-7 text-slate-600">
-                Businesses choose KXH because we provide more than warehouse space.
-                We offer collection, managed storage, organised inventory handling,
-                and return delivery that adapts as your storage requirements change.
+        {/* WHY KXH */}
+        <section className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+            <div className="kxh-reveal mx-auto max-w-3xl text-center">
+              <Eyebrow>Trusted business storage partner</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Why London businesses choose KXH Storage &amp; Logistics</h2>
+              <p className="mt-4 text-slate-600">
+                Businesses choose KXH because we provide more than warehouse space: collection, managed storage, organised inventory handling and return delivery that adapts as your requirements change.
               </p>
             </div>
-
-            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-
-              {[
-                {
-                  title: "Business Storage Specialists",
-                  description:
-                    "Managed business, commercial, warehouse, and ecommerce storage across London.",
-                },
-                {
-                  title: "Door-to-Door Service",
-                  description:
-                    "Collection, organised warehouse storage, and return delivery without repeated self-storage visits.",
-                },
-                {
-                  title: "Flexible Storage Capacity",
-                  description:
-                    "Increase or reduce storage as stock levels and operational requirements change.",
-                },
-                {
-                  title: "Secure Warehouse",
-                  description:
-                    "Business inventory stored in a professionally managed commercial warehouse.",
-                },
-                {
-                  title: "Supports Growing Businesses",
-                  description:
-                    "Suitable for startups, retailers, ecommerce brands, importers, wholesalers, and offices.",
-                },
-                {
-                  title: "Complete Storage Solution",
-                  description:
-                    "Business storage supported by inventory management, pallet storage, warehouse storage, and logistics.",
-                },
-              ].map((item) => (
-                <article
-                  key={item.title}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold text-emerald-700">
-                    ✓
-                  </div>
-
-                  <h3 className="text-lg font-bold">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-3 text-sm leading-7 text-slate-600">
-                    {item.description}
-                  </p>
-                </article>
-              ))}
-
+            <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {whyItems.map((item, i) => {
+                const Icon = whyIcons[i % whyIcons.length];
+                return (
+                  <article key={item.title} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-7" style={{ transitionDelay: `${(i % 3) * 70}ms` }}>
+                    <span className="kxh-pop flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-600 group-hover:text-white">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
+                    <h3 className="mt-5 text-lg font-bold text-slate-900">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        {/* INVENTORY DIFFERENTIATOR */}
-        <section className="bg-slate-50 py-14 sm:py-20">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Evolving Beyond Basic Storage
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Keep Stored Business Inventory Organised
-              </h2>
-
+        {/* INVENTORY */}
+        <section className="bg-white py-16 lg:py-24">
+          <div className="mx-auto grid max-w-screen-xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+            <div className="kxh-reveal">
+              <Eyebrow>Beyond basic storage</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Keep stored business inventory organised</h2>
               <p className="mt-4 leading-7 text-slate-600">
-                KXH competes directly as a door-to-door storage provider while
-                also supporting businesses that need clearer physical inventory
-                organisation and warehouse handling.
+                KXH works as a door-to-door storage provider while also supporting businesses that need clearer physical inventory organisation and warehouse handling.
               </p>
-
               <p className="mt-4 leading-7 text-slate-600">
-                This service concerns real stored products, boxes, cartons,
-                equipment, and pallets—not standalone inventory software.
+                This service concerns real stored products, boxes, cartons, equipment and pallets, not standalone inventory software.
               </p>
-
               <div className="mt-7 grid gap-3 sm:grid-cols-2">
                 {inventoryBenefits.map((benefit) => (
-                  <div
-                    key={benefit}
-                    className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
-                  >
-                    ✓ {benefit}
+                  <div key={benefit} className="flex items-center gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" /> {benefit}
                   </div>
                 ))}
               </div>
-
               <Link
                 href="/inventory-management-london"
-                className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                className="kxh-shine relative mt-8 inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
               >
-                Explore Inventory Management
+                Explore inventory management <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-
-            <Image
-              src="/images/business-storage/inventory-management-business-storage-london.webp"
-              alt="Warehouse worker organising and scanning business inventory"
-              width={1200}
-              height={800}
-              quality={75}
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-              loading="lazy"
-              decoding="async"
-            />
+            <div className="kxh-reveal relative">
+              <div className="absolute -inset-4 -z-10 rotate-2 rounded-[2rem] bg-gradient-to-br from-emerald-200 to-lime-100" aria-hidden="true" />
+              <div className="overflow-hidden rounded-[1.75rem] shadow-2xl">
+                <Image
+                  src="/images/kxh-inventory-management-london.webp"
+                  alt="Business inventory organised on warehouse racking in London"
+                  width={1600}
+                  height={900}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="h-[320px] w-full object-cover transition duration-700 hover:scale-105 sm:h-[440px]"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
         {/* CUSTOMER FIT */}
-        <section className="border-y border-slate-200 bg-slate-50 py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 sm:rounded-3xl sm:p-10">
-              <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Is KXH Business Storage Right for Your Company?
-              </h2>
-
-              <p className="mt-4 max-w-2xl leading-7 text-slate-700">
-                KXH is suitable for businesses that prefer collection,
-                managed storage, organisation, and return delivery over
-                unrestricted access to a self-storage unit.
-              </p>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                {reasonsToChooseKxh.map((reason) => (
-                  <div
-                    key={reason}
-                    className="rounded-xl border border-emerald-100 bg-white p-4 font-medium text-slate-800"
-                  >
-                    ✓ {reason}
-                  </div>
-                ))}
+        <section className="px-4 pb-16 sm:px-6 lg:px-8">
+          <div className="kxh-reveal mx-auto max-w-screen-xl rounded-[2rem] border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-lime-50 p-7 sm:p-12">
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              <div>
+                <Eyebrow>Is KXH right for you?</Eyebrow>
+                <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Is KXH business storage right for your company?</h2>
+                <p className="mt-4 leading-7 text-slate-700">
+                  KXH suits businesses that prefer collection, managed storage, organisation and return delivery over unrestricted access to a self-storage unit.
+                </p>
               </div>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {reasonsToChooseKxh.map((reason) => (
+                  <li key={reason} className="flex items-start gap-3 rounded-2xl border border-emerald-100 bg-white p-4 font-medium text-slate-800 shadow-sm">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" /> {reason}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
-        <section className="border-t border-slate-200 bg-slate-50 py-16">
 
-          <div className="mx-auto max-w-6xl px-5">
-
-            <div className="mx-auto max-w-3xl text-center">
-
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                London Coverage
+        {/* LONDON COVERAGE */}
+        <section id="areas" className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-24">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+            <div className="kxh-reveal max-w-3xl">
+              <Eyebrow>London coverage</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Business storage across Greater London</h2>
+              <p className="mt-4 text-slate-600">
+                Tap an area to see it on the map. KXH provides collection, managed warehouse storage, inventory organisation and return delivery for businesses throughout Greater London.
               </p>
-
-              <h2 className="mt-2 text-3xl font-bold">
-                Business Storage Across Greater London
-              </h2>
-
-              <p className="mt-5 leading-7 text-slate-600">
-                KXH provides collection, managed warehouse storage,
-                inventory organisation and return delivery for businesses
-                throughout Greater London.
-              </p>
-
             </div>
-
-            <div className="mt-10 flex flex-wrap gap-x-5 gap-y-3">
-
+            <div className="mt-10">
+              <AreaMapExplorer primaryHref="/business-storage-london" />
+            </div>
+            <div className="mt-8 flex flex-wrap gap-2">
               {londonLocations.map((location) => (
-
                 <Link
                   key={location.slug}
                   href={`/business-storage-london/${location.slug}`}
-                  className="text-sm font-medium text-emerald-700 hover:underline"
+                  className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-800"
                 >
                   Business Storage {location.name}
                 </Link>
-
               ))}
-
             </div>
-
           </div>
-
         </section>
-        {/* RELATED SERVICES */}
-        <section className="bg-white py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Related Storage & Logistics Services
-              </h2>
 
+        {/* RELATED SERVICES */}
+        <section className="bg-white py-16 lg:py-24">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+            <div className="kxh-reveal mx-auto max-w-3xl text-center">
+              <Eyebrow>Related services</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Related storage &amp; logistics services</h2>
               <p className="mt-4 text-slate-600">
-                Combine managed storage with inventory handling, pallet
-                capacity, warehouse services, and logistics support.
+                Combine managed storage with inventory handling, pallet capacity, warehouse services and logistics support.
               </p>
             </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-              {relatedServices.map((service) => (
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+              {relatedServices.map((service, i) => (
                 <Link
                   key={service.href}
                   href={service.href}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-emerald-300 hover:bg-white"
+                  className="kxh-reveal kxh-card3d group relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-3xl bg-slate-900"
+                  style={{ transitionDelay: `${(i % 5) * 60}ms` }}
                 >
-                  <h3 className="font-semibold text-slate-900">
-                    {service.title}
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {service.description}
-                  </p>
-
-                  <span className="mt-4 inline-block text-xs font-semibold text-emerald-700">
-                    Learn more →
+                  <Image
+                    src={relatedImages[service.href] ?? "/images/kxh-business-storage-london.webp"}
+                    alt={`${service.title} in London`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                    className="object-cover opacity-90 transition duration-700 group-hover:scale-110"
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" aria-hidden="true" />
+                  <span className="kxh-pop relative p-5">
+                    <span className="block text-lg font-black text-white">{service.title}</span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-200">{service.description}</span>
+                    <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-300">
+                      Learn more <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
                   </span>
                 </Link>
               ))}
@@ -1195,56 +904,33 @@ export default function BusinessStoragePage() {
           </div>
         </section>
 
-        {/* TEAM IMAGE */}
-        <section className="border-t border-slate-200 bg-slate-50 py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <Image
-              src="/images/business-storage/business-storage-warehouse-team-london.webp"
-              alt="KXH warehouse team supporting London business storage"
-              width={1200}
-              height={800}
-              quality={75}
-              sizes="(max-width: 768px) 100vw, 960px"
-              className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </section>
-
         <TestimonialsSection />
 
         {/* FINAL CTA */}
-        <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-          <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide !text-white">
-              Flexible Business Storage
-            </p>
-
-            <h2 className="mt-3 text-3xl font-bold tracking-tight !text-white sm:text-4xl">
-              Free Up Business Space Without Leasing More Premises
+        <section className="px-4 py-16 sm:px-6 lg:px-8">
+          <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center shadow-2xl sm:px-12">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-lime-300/20 blur-3xl" aria-hidden="true" />
+            <p className="relative text-sm font-bold uppercase tracking-[0.18em] text-emerald-200">Flexible business storage</p>
+            <h2 className="relative mx-auto mt-3 max-w-3xl text-3xl font-black sm:text-4xl lg:text-5xl" style={{ color: "#fff" }}>
+              Free up business space without leasing more premises
             </h2>
-
-            <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-300">
-              Get a quote for collection, secure managed storage,
-              inventory organisation, and return delivery across London.
+            <p className="relative mx-auto mt-5 max-w-2xl text-emerald-50/90">
+              Get a quote for collection, secure managed storage, inventory organisation and return delivery across London.
             </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <div className="relative mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/get-a-quote?service=storage"
-                className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8"
+                className="kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-white px-8 py-4 text-sm font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5"
               >
-                Get Business Storage Quote
+                Get Business Storage Quote <ArrowRight className="h-4 w-4" />
               </Link>
-
               {CONTACT_NUMBERS.map((contact) => (
                 <a
                   key={contact.href}
                   href={contact.href}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/30 px-8 py-4 text-sm font-bold text-white transition hover:bg-white/10"
                 >
-                  Call {contact.label}
+                  <Phone className="h-4 w-4" /> Call {contact.label}
                 </a>
               ))}
             </div>
@@ -1252,35 +938,28 @@ export default function BusinessStoragePage() {
         </section>
 
         {/* FAQ */}
-        <section className="border-t border-slate-200 bg-slate-50 py-12">
-          <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-              Business Storage FAQs
-            </h2>
-
+        <section id="faq" className="border-t border-slate-200/70 bg-slate-50 py-16 lg:py-20">
+          <div className="mx-auto grid max-w-screen-xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+            <div className="kxh-reveal">
+              <Eyebrow>FAQs</Eyebrow>
+              <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Business storage FAQs</h2>
+              <p className="mt-4 text-slate-600">Can’t find your answer? Call us any time on 020 3916 5312.</p>
+            </div>
             <div className="space-y-3">
               {faqs.map((faq) => (
-                <details
-                  key={faq.question}
-                  className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5"
-                >
-                  <summary className="cursor-pointer font-semibold">
+                <details key={faq.question} className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-slate-900">
                     {faq.question}
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-lg text-emerald-700 transition group-open:rotate-45" aria-hidden="true">+</span>
                   </summary>
-
-                  <p className="mt-3 leading-7 text-slate-600">
-                    {faq.answer}
-                  </p>
+                  <p className="mt-4 leading-7 text-slate-600">{faq.answer}</p>
                 </details>
               ))}
             </div>
           </div>
         </section>
 
-        <MainFooter
-
-          locations={londonLocations}
-        />
+        <MainFooter locations={londonLocations} />
       </main>
     </>
   );

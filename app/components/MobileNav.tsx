@@ -27,7 +27,7 @@ import SocialLinks from "./SocialLinks";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 const PHONE_DISPLAY = CONTACT_NUMBERS[0].phone;
-const PHONE_HREF = `tel:${CONTACT_NUMBERS[0].phone}`;
+const PHONE_HREF = CONTACT_NUMBERS[0].href;
 
 const primaryNavItems = [
     {
@@ -160,6 +160,27 @@ export default function Nav() {
     >(null);
 
     const navRef = useRef<HTMLElement>(null);
+    const [scrolled, setScrolled] = useState(false);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        let frame = 0;
+        const onScroll = () => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(() => {
+                const y = window.scrollY;
+                const max = document.documentElement.scrollHeight - window.innerHeight;
+                setScrolled(y > 12);
+                setProgress(max > 0 ? Math.min(1, y / max) : 0);
+            });
+        };
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => {
+            cancelAnimationFrame(frame);
+            window.removeEventListener("scroll", onScroll);
+        };
+    }, []);
 
     const isActive = (href: string, exact = false) => {
         if (exact) {
@@ -227,8 +248,13 @@ export default function Nav() {
 
     return (
         <>
-            <header className="sticky top-0 z-40 w-full border-b border-slate-200/70 bg-white/95 backdrop-blur">
-                <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+            <header className={`sticky top-0 z-40 w-full border-b backdrop-blur-xl transition-all duration-300 ${scrolled ? "border-slate-200 bg-white/85 shadow-lg shadow-slate-900/5" : "border-transparent bg-white/95"}`}>
+                <div
+                    className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-emerald-500 via-emerald-400 to-lime-300 transition-[width] duration-150"
+                    style={{ width: `${progress * 100}%` }}
+                    aria-hidden="true"
+                />
+                <div className={`mx-auto flex w-full max-w-screen-xl items-center justify-between gap-3 px-4 transition-all duration-300 sm:px-6 lg:px-8 ${scrolled ? "py-2" : "py-3"}`}>
                     <Link
                         href="/"
                         className="shrink-0"
@@ -240,13 +266,13 @@ export default function Nav() {
                             width={125}
                             height={30}
                             priority
-                            className="h-auto w-[110px] sm:w-[125px]"
+                            className={`h-auto transition-all duration-300 ${scrolled ? "w-[100px] sm:w-[112px]" : "w-[110px] sm:w-[125px]"}`}
                         />
                     </Link>
 
                     <nav
                         ref={navRef}
-                        className="hidden items-center gap-1 xl:flex"
+                        className="hidden items-center gap-0.5 lg:flex xl:gap-1"
                         aria-label="Primary navigation"
                     >
                         {primaryNavItems.map((item) => {
@@ -262,7 +288,7 @@ export default function Nav() {
                                     aria-current={
                                         active ? "page" : undefined
                                     }
-                                    className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${active
+                                    className={`kxh-navlink relative whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold transition xl:px-3 ${item.exact ? "hidden xl:block" : ""} ${active
                                         ? "bg-emerald-50 text-emerald-700"
                                         : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                         }`}
@@ -287,7 +313,7 @@ export default function Nav() {
                                     openDesktopMenu === "services"
                                 }
                                 aria-controls="desktop-services-menu"
-                                className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition ${isServicesActive
+                                className={`kxh-navlink relative flex items-center whitespace-nowrap gap-1 rounded-lg px-2 py-2 text-sm font-semibold transition xl:px-3 ${isServicesActive
                                     ? "bg-emerald-50 text-emerald-700"
                                     : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                     }`}
@@ -306,7 +332,7 @@ export default function Nav() {
                             {openDesktopMenu === "services" && (
                                 <div
                                     id="desktop-services-menu"
-                                    className="absolute left-1/2 top-full mt-3 w-[650px] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl"
+                                    className="kxh-drop absolute left-1/2 top-full mt-3 w-[650px] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-2xl backdrop-blur-xl"
                                 >
                                     <div className="grid grid-cols-2 gap-6">
                                         {serviceGroups.map((group) => (
@@ -329,9 +355,9 @@ export default function Nav() {
                                                                     href={
                                                                         item.href
                                                                     }
-                                                                    className="group flex gap-3 rounded-xl p-3 transition hover:bg-slate-50"
+                                                                    className="group flex gap-3 rounded-xl p-3 transition hover:-translate-y-0.5 hover:bg-emerald-50/60"
                                                                 >
-                                                                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+                                                                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 transition group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white">
                                                                         <Icon
                                                                             className="h-5 w-5"
                                                                             aria-hidden="true"
@@ -378,7 +404,7 @@ export default function Nav() {
                                     openDesktopMenu === "locations"
                                 }
                                 aria-controls="desktop-locations-menu"
-                                className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition ${isLocationsActive
+                                className={`kxh-navlink relative flex items-center whitespace-nowrap gap-1 rounded-lg px-2 py-2 text-sm font-semibold transition xl:px-3 ${isLocationsActive
                                     ? "bg-emerald-50 text-emerald-700"
                                     : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                     }`}
@@ -397,7 +423,7 @@ export default function Nav() {
                             {openDesktopMenu === "locations" && (
                                 <div
                                     id="desktop-locations-menu"
-                                    className="absolute right-0 top-full mt-3 w-80 rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl"
+                                    className="kxh-drop absolute right-0 top-full mt-3 w-80 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl backdrop-blur-xl"
                                 >
                                     <div className="mb-3 flex items-center gap-2 px-2">
                                         <MapPin
@@ -435,7 +461,7 @@ export default function Nav() {
                                     aria-current={
                                         active ? "page" : undefined
                                     }
-                                    className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${active
+                                    className={`kxh-navlink relative whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold transition xl:px-3 ${active
                                         ? "bg-emerald-50 text-emerald-700"
                                         : "text-slate-700 hover:bg-slate-50 hover:text-emerald-700"
                                         }`}
@@ -446,7 +472,7 @@ export default function Nav() {
                         })}
 
                     </nav>
-                    <div className="hidden xl:block">
+                    <div className="hidden min-[1720px]:block">
                         <SocialLinks
                             variant="brand"
                             size="sm"
@@ -458,31 +484,37 @@ export default function Nav() {
                         <a
                             href={PHONE_HREF}
                             aria-label={`Call KXH Storage and Logistics on ${PHONE_DISPLAY}`}
-                            className="inline-flex xl:hidden items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                            className="inline-flex lg:hidden items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
                         >
                             Call
                         </a>
 
                         <Link
                             href="/get-a-quote"
-                            className="inline-flex xl:hidden items-center justify-center rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
+                            className="inline-flex lg:hidden items-center justify-center rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
                         >
                             Quote
                         </Link>
 
                         {/* Desktop */}
-                        <div className="hidden xl:flex items-center gap-2">
+                        <div className="hidden lg:flex items-center gap-2">
                             <a
                                 href={PHONE_HREF}
                                 aria-label={`Call KXH Storage and Logistics on ${PHONE_DISPLAY}`}
-                                className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                                className="group inline-flex items-center gap-2 whitespace-nowrap rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 xl:px-4"
                             >
-                                Call KXH
+                                <span className="relative flex h-2 w-2">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                                </span>
+                                <Phone className="h-4 w-4 text-emerald-700" aria-hidden="true" />
+                                <span className="hidden xl:inline">{PHONE_DISPLAY.replace("+44 ", "0")}</span>
+                                <span className="xl:hidden">Call</span>
                             </a>
 
                             <Link
                                 href="/get-a-quote"
-                                className="inline-flex rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-emerald-800"
+                                className="kxh-shine relative inline-flex overflow-hidden whitespace-nowrap rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                             >
                                 Get Free Quote
                             </Link>
@@ -493,7 +525,7 @@ export default function Nav() {
                     <button
                         type="button"
                         onClick={() => setIsOpen(true)}
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition hover:bg-slate-50 xl:hidden"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition hover:bg-slate-50 lg:hidden"
                         aria-label="Open navigation menu"
                         aria-expanded={isOpen}
                         aria-controls="mobile-navigation"
@@ -510,7 +542,7 @@ export default function Nav() {
             <button
                 type="button"
                 onClick={closeMenus}
-                className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] transition-opacity duration-300 xl:hidden ${isOpen
+                className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] transition-opacity duration-300 lg:hidden ${isOpen
                     ? "pointer-events-auto opacity-100"
                     : "pointer-events-none opacity-0"
                     }`}
@@ -521,7 +553,7 @@ export default function Nav() {
             {/* Mobile navigation */}
             <aside
                 id="mobile-navigation"
-                className={`fixed left-0 top-0 z-50 h-dvh w-[min(20rem,calc(100vw-2rem))] max-w-full overflow-y-auto bg-white shadow-2xl transition-transform duration-300 xl:hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
+                className={`fixed left-0 top-0 z-50 h-dvh w-[min(20rem,calc(100vw-2rem))] max-w-full overflow-y-auto bg-white shadow-2xl transition-transform duration-300 lg:hidden ${isOpen ? "translate-x-0" : "-translate-x-full"
                     }`}
                 aria-hidden={!isOpen}
                 aria-label="Mobile navigation menu"

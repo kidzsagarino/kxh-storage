@@ -1,5 +1,7 @@
 export const metadata = {
-  title: "Privacy Policy | KXH Logistics",
+  title: "Privacy Policy | KXH Storage & Logistics",
+  description: "How KXH Storage & Logistics collects, uses and protects your personal data when you use our storage, moving and shredding services.",
+  alternates: { canonical: "https://kxhlogistics.co.uk/privacy" },
 };
 
 export default function PrivacyPage() {
@@ -111,7 +113,7 @@ export default function PrivacyPage() {
 
         <Section title="11. CONTACT US">
          <p>Email: help@kxhlogistics.co.uk</p>
-          <p>Phone: +44 1474 396663</p>
+          <p>Phone: +44 20 3916 5312</p>
           <p>
             You also have the right to lodge a complaint with the UK Information Commissioner’s Office (ICO).
           </p>

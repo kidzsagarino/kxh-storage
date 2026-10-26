@@ -1,3 +1,6 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import { Monitor as HIcMonitor, Armchair as HIcArmchair, Archive as HIcArchive, Warehouse as HIcWarehouse } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,14 +14,14 @@ import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import { londonLocations } from "../lib/location";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
-const pageUrl = "https://kxhlogistics.co.uk/office-relocation-london";
+const pageUrl = "https://kxhlogistics.co.uk/office-removals-london";
 const quoteUrl = "/get-a-quote?service=moving";
-const phoneNumber = "+447386277785";
+const phoneNumber = "+442039165312";
 
 export const metadata: Metadata = {
-    title: "Office Relocation London | Managed Office Moves & Storage",
+    title: "Office Removals London | Managed Office Moves | KXH",
     description:
-        "Fully managed office relocation in London with professional removals, furniture handling, IT equipment transport, secure storage and scheduled delivery.",
+    "Office removals in London with planning, IT and furniture moves, crate packing, out-of-hours moves and storage. Keep downtime low. Get an office moving quote.",
     alternates: {
         canonical: pageUrl,
     },
@@ -30,7 +33,7 @@ export const metadata: Metadata = {
             "Plan your London office move with one team managing removals, packing, furniture, IT equipment, warehouse storage, inventory organisation and staged delivery.",
         images: [
             {
-                url: "/images/moving-services/moving-services-team-working.webp",
+                url: "/images/new-van.webp",
                 width: 1200,
                 height: 630,
                 alt: "KXH team handling office furniture during a London office relocation",
@@ -42,7 +45,7 @@ export const metadata: Metadata = {
         title: "Office Relocation London | KXH",
         description:
             "Professional office removals, secure business storage, inventory organisation and staged delivery across London.",
-        images: ["/images/moving-services/moving-services-team-working.webp"],
+        images: ["/images/delivery-warehouse.webp"],
     },
 };
 
@@ -504,7 +507,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 7386 277785",
+            telephone: "+44 20 3916 5312",
         },
         areaServed: {
             "@type": "City",
@@ -576,95 +579,46 @@ function BreadcrumbJsonLd() {
 }
 
 function BreadcrumbNavigation() {
-    return (
-        <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8">
-            <Link href="/" className="transition hover:text-emerald-700">Home</Link>
-            <span className="mx-2">/</span>
-            <Link href="/services" className="transition hover:text-emerald-700">Services</Link>
-            <span className="mx-2">/</span>
-            <Link href="/logistics-moving-london" className="transition hover:text-emerald-700">Moving Services</Link>
-            <span className="mx-2">/</span>
-            <span className="font-medium text-slate-700">Office Relocation London</span>
-        </nav>
-    );
+    return null;
 }
 
 function HeroSection() {
     return (
-        <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-            <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
-                    Fully Managed Business Relocation Across London
-                </div>
-
-                <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                    Office Relocation London Made Simple
-                </h1>
-
-                <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Move your office with one London logistics partner managing professional removals, packing, furniture handling, approved IT equipment, secure warehouse storage, inventory organisation and scheduled delivery.
-                </p>
-
-                <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                    KXH supports complete office moves, phased relocations, departmental moves, refurbishments and premises changes where business continuity matters more than simply transporting items from A to B.
-                </p>
-
-                <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                    {heroBenefits.map((benefit) => (
-                        <div key={benefit} className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
-                            <span aria-hidden="true">✓</span> {benefit}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link href={quoteUrl} className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto">
-                        Get a Free Office Move Quote
-                    </Link>
-                    {CONTACT_NUMBERS.map((contact) => (
-                        <a
-                            key={contact.href}
-                            href={contact.href}
-                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                        >
-                            Call {contact.label}
-                        </a>
-                    ))}
-                </div>
-
-                <p className="mt-4 text-sm text-slate-500">Tell us your locations, office size, preferred dates, access requirements and whether temporary storage is needed.</p>
-                <div className="mt-6 flex justify-center"><TrustpilotPill /></div>
-
-                <div className="mt-12 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-                    <Image
-                        src="/images/moving-services/moving-services-team-working.webp"
-                        alt="KXH office relocation team moving business furniture and equipment in London"
-                        width={1400}
-                        height={800}
-                        priority
-                        quality={80}
-                        sizes="(max-width: 768px) 100vw, 960px"
-                        className="h-auto w-full object-cover"
-                    />
-                </div>
-            </div>
-        </section>
+        <ServiceHero
+            image="/images/kxh-commercial-storage-london.webp"
+            imageAlt="Office Removals London Made Simple with KXH Storage & Logistics"
+            breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Office Removals London"}]}
+            eyebrow="Office relocation"
+            title="Office Removals London Made Simple"
+            highlight="Made Simple"
+            intro="Planned office moves for London businesses: desks, IT, files and furniture moved with minimal downtime, plus storage for anything you are not taking yet."
+            chips={["Move planning", "IT and furniture", "Evening and weekend moves", "Storage available"]}
+            ctaHref="/get-a-quote?service=moving"
+            ctaLabel="Get an Office Removals Quote"
+            cardEyebrow="We move"
+            cardTitle="Whole offices"
+            cardItems={[
+                { icon: <HIcMonitor className="h-6 w-6" aria-hidden="true" />, title: "IT equipment", text: "Screens and PCs" },
+                { icon: <HIcArmchair className="h-6 w-6" aria-hidden="true" />, title: "Furniture", text: "Desks and chairs" },
+                { icon: <HIcArchive className="h-6 w-6" aria-hidden="true" />, title: "Files", text: "Records and archives" },
+                { icon: <HIcWarehouse className="h-6 w-6" aria-hidden="true" />, title: "Storage", text: "Surplus and phased moves" },
+            ]}
+        />
     );
 }
 
 function WhyProfessionalRelocationSection() {
     return (
-        <section aria-labelledby="why-professional-relocation" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Why Use Office Relocation Specialists?</p>
-                    <h2 id="why-professional-relocation" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Protect Business Continuity While the Workplace Changes</h2>
+        <section aria-labelledby="why-professional-relocation" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Why Use Office Relocation Specialists?</p>
+                    <h2 id="why-professional-relocation" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Protect Business Continuity While the Workplace Changes</h2>
                     <p className="mt-4 leading-7 text-slate-600">An office move affects staff, technology, customer service, building access and daily operations. A managed plan reduces avoidable handovers and keeps the physical relocation aligned with your business timeline.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {relocationReasons.map((item) => (
-                        <article key={item.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <article key={item.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
                         </article>
@@ -677,16 +631,16 @@ function WhyProfessionalRelocationSection() {
 
 function ProcessSection() {
     return (
-        <section aria-labelledby="office-relocation-process" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">How It Works</p>
-                    <h2 id="office-relocation-process" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">One Managed Office Relocation Plan From First Collection to Final Delivery</h2>
+        <section aria-labelledby="office-relocation-process" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">How It Works</p>
+                    <h2 id="office-relocation-process" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">One Managed Office Relocation Plan From First Collection to Final Delivery</h2>
                     <p className="mt-4 leading-7 text-slate-600">The exact sequence depends on your premises, timetable and assets, but every project starts with a clear scope and finishes with an agreed delivery outcome.</p>
                 </div>
                 <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {serviceSteps.map((step) => (
-                        <article key={step.number} className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                        <article key={step.number} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
                             <span className="text-sm font-black text-emerald-700">{step.number}</span>
                             <h3 className="mt-4 text-lg font-bold text-slate-950">{step.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{step.description}</p>
@@ -696,7 +650,7 @@ function ProcessSection() {
                 <div className="mt-10 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center sm:p-8">
                     <h3 className="text-xl font-bold text-slate-950">What happens after you request a quote?</h3>
                     <p className="mx-auto mt-3 max-w-3xl leading-7 text-slate-600">KXH reviews the information, identifies anything that needs clarification and prepares a tailored scope covering labour, vehicles, packing, access, storage and delivery. Work is scheduled only after the quotation and service requirements are agreed.</p>
-                    <Link href={quoteUrl} className="mt-5 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800">Start Your Relocation Plan</Link>
+                    <Link href={quoteUrl} className="mt-5 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800">Start Your Relocation Plan</Link>
                 </div>
             </div>
         </section>
@@ -705,16 +659,16 @@ function ProcessSection() {
 
 function WhatWeMoveSection() {
     return (
-        <section aria-labelledby="what-we-move" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">What We Move</p>
-                    <h2 id="what-we-move" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Office Furniture, Equipment, Archives and Operational Assets</h2>
+        <section aria-labelledby="what-we-move" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">What We Move</p>
+                    <h2 id="what-we-move" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Office Furniture, Equipment, Archives and Operational Assets</h2>
                     <p className="mt-4 leading-7 text-slate-600">Every relocation should start with an accurate inventory. Tell KXH about unusually heavy, fragile, confidential, high-value or specialist items before the move so suitability and handling can be assessed.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {moveItems.map((item) => (
-                        <article key={item.title} className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm">
+                        <article key={item.title} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.items}</p>
                         </article>
@@ -727,16 +681,16 @@ function WhatWeMoveSection() {
 
 function StorageSection() {
     return (
-        <section aria-labelledby="temporary-business-storage" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Temporary Business Storage</p>
-                    <h2 id="temporary-business-storage" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Build Storage Into the Office Move Instead of Arranging It Later</h2>
+        <section aria-labelledby="temporary-business-storage" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Temporary Business Storage</p>
+                    <h2 id="temporary-business-storage" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Build Storage Into the Office Move Instead of Arranging It Later</h2>
                     <p className="mt-4 leading-7 text-slate-600">Storage gives your relocation room to adapt when fit-out work, lease dates, furniture decisions or departmental delivery schedules do not align.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {storageScenarios.map((item) => (
-                        <article key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+                        <article key={item.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
                         </article>
@@ -752,16 +706,16 @@ function StorageSection() {
 
 function CostSection() {
     return (
-        <section aria-labelledby="office-relocation-cost" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Pricing Explained</p>
-                    <h2 id="office-relocation-cost" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">What Affects the Cost of an Office Relocation in London?</h2>
+        <section aria-labelledby="office-relocation-cost" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Pricing Explained</p>
+                    <h2 id="office-relocation-cost" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">What Affects the Cost of an Office Relocation in London?</h2>
                     <p className="mt-4 leading-7 text-slate-600">A reliable quote must reflect the real labour, access, protection, transport, storage and delivery requirements. KXH prices the agreed project rather than relying on a headline rate that may exclude essential work.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {costFactors.map((factor) => (
-                        <article key={factor.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <article key={factor.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="text-lg font-bold text-slate-950">{factor.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{factor.description}</p>
                         </article>
@@ -770,7 +724,7 @@ function CostSection() {
                 <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
                     <h3 className="text-xl font-bold text-slate-950">For the most accurate quotation, provide:</h3>
                     <p className="mt-3 leading-7 text-slate-600">An item list or photographs, both addresses, floor and access details, preferred dates, packing responsibilities, IT or specialist handling requirements, furniture dismantling needs, expected storage duration and the proposed delivery sequence.</p>
-                    <Link href={quoteUrl} className="mt-5 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800">Get a Tailored Office Move Quote</Link>
+                    <Link href={quoteUrl} className="mt-5 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800">Get a Tailored Office Move Quote</Link>
                 </div>
             </div>
         </section>
@@ -779,16 +733,16 @@ function CostSection() {
 
 function ProblemsSection() {
     return (
-        <section aria-labelledby="business-problems" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Business Problems We Solve</p>
-                    <h2 id="business-problems" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">A Relocation Plan Built Around Operational Reality</h2>
+        <section aria-labelledby="business-problems" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Business Problems We Solve</p>
+                    <h2 id="business-problems" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">A Relocation Plan Built Around Operational Reality</h2>
                     <p className="mt-4 leading-7 text-slate-600">London office moves rarely involve a single empty building, an unrestricted loading area and a new premises that is completely ready. The service is designed around those practical complications.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {businessProblems.map((problem) => (
-                        <article key={problem.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+                        <article key={problem.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-lg font-bold text-slate-950">{problem.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{problem.description}</p>
                         </article>
@@ -801,22 +755,23 @@ function ProblemsSection() {
 
 function ManagedRelocationSection() {
     return (
-        <section aria-labelledby="managed-office-relocation" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section aria-labelledby="managed-office-relocation" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <Image
-                    src="/images/moving-services/moving-services-packing-loading.webp"
+                    src="/images/kxh-moving-removals-london.webp"
                     alt="Professional packing and furniture protection for a London office relocation"
                     width={1400}
                     height={800}
                     quality={75}
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                    className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                     loading="lazy"
                     decoding="async"
                 />
+
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">More Than an Office Moving Company</p>
-                    <h2 id="managed-office-relocation" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">One Partner for Removals, Storage, Organisation and Delivery</h2>
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">More Than an Office Moving Company</p>
+                    <h2 id="managed-office-relocation" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">One Partner for Removals, Storage, Organisation and Delivery</h2>
                     <p className="mt-4 leading-7 text-slate-600">Traditional office removals focus on the journey between two buildings. KXH can also manage the gap between those buildings: temporary storage, physical inventory organisation, phased returns and ongoing commercial storage.</p>
                     <p className="mt-4 leading-7 text-slate-600">That means your business does not have to separately coordinate movers, van hire, self-storage, warehouse unloading and another delivery provider later. The agreed service is planned as one connected workflow.</p>
                     <ul className="mt-7 grid gap-3 sm:grid-cols-2">
@@ -841,16 +796,16 @@ function ManagedRelocationSection() {
 
 function WhyKxhSection() {
     return (
-        <section aria-labelledby="why-kxh" className="bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Why London Businesses Choose KXH</p>
-                    <h2 id="why-kxh" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Managed Logistics Without the Self-Storage Handoffs</h2>
+        <section aria-labelledby="why-kxh" className="bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Why London Businesses Choose KXH</p>
+                    <h2 id="why-kxh" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Managed Logistics Without the Self-Storage Handoffs</h2>
                     <p className="mt-4 leading-7 text-slate-600">KXH focuses on the full journey of your business assets—from the old office, through storage where required and into the destination according to the agreed sequence.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {whyChooseKxh.map((item, index) => (
-                        <article key={item.title} className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm">
+                        <article key={item.title} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 font-bold text-emerald-700" aria-hidden="true">{index + 1}</div>
                             <h3 className="mt-5 text-lg font-bold text-slate-950">{item.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
@@ -864,16 +819,16 @@ function WhyKxhSection() {
 
 function ComparisonSection() {
     return (
-        <section aria-labelledby="office-relocation-comparison" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Office Movers Compared</p>
-                    <h2 id="office-relocation-comparison" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Traditional Office Movers vs KXH Managed Office Relocation</h2>
+        <section aria-labelledby="office-relocation-comparison" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Office Movers Compared</p>
+                    <h2 id="office-relocation-comparison" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Traditional Office Movers vs KXH Managed Office Relocation</h2>
                     <p className="mt-4 leading-7 text-slate-600">Direct movers are suitable when everything can travel immediately into a ready office. KXH is designed for businesses that also need storage, organisation, flexible timing or staged delivery.</p>
                 </div>
 
                 <div className="mt-12 hidden overflow-hidden rounded-2xl border border-slate-200 lg:block">
-                    <div className="grid grid-cols-[1.3fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
+                    <div className="grid grid-cols-[1.3fr_1fr_1fr] bg-slate-950 text-sm font-bold text-white">
                         <div className="p-5">Service Feature</div>
                         <div className="border-l border-white/10 p-5 text-center">Traditional Office Movers</div>
                         <div className="border-l border-white/10 p-5 text-center">KXH Office Relocation</div>
@@ -905,16 +860,16 @@ function ComparisonSection() {
 
 function IndustriesSection() {
     return (
-        <section aria-labelledby="industries-supported" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Industries We Support</p>
-                    <h2 id="industries-supported" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Commercial Relocation Support for Different London Workplaces</h2>
+        <section aria-labelledby="industries-supported" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Industries We Support</p>
+                    <h2 id="industries-supported" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Commercial Relocation Support for Different London Workplaces</h2>
                     <p className="mt-4 leading-7 text-slate-600">The project scope should reflect the building, assets and operational requirements of your organisation rather than using a one-size-fits-all office moving checklist.</p>
                 </div>
                 <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {industries.map((industry) => (
-                        <article key={industry.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <article key={industry.title} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6">
                             <h3 className="text-lg font-bold text-slate-950">{industry.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{industry.description}</p>
                         </article>
@@ -927,16 +882,16 @@ function IndustriesSection() {
 
 function PreparationSection() {
     return (
-        <section aria-labelledby="prepare-office-move" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:px-8">
+        <section aria-labelledby="prepare-office-move" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl gap-10 px-5 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Prepare for the Move</p>
-                    <h2 id="prepare-office-move" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Information That Helps Your Office Relocation Run Smoothly</h2>
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Prepare for the Move</p>
+                    <h2 id="prepare-office-move" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Information That Helps Your Office Relocation Run Smoothly</h2>
                     <p className="mt-4 leading-7 text-slate-600">Accurate details help prevent avoidable delays on collection day. London offices often involve security checks, booked service lifts, loading restrictions, controlled parking zones and strict building-management windows.</p>
                     <p className="mt-4 leading-7 text-slate-600">Internally, assign decision-makers early. Your staff should know what is moving, what is being stored, what they must pack and which equipment must remain operational until the final working day.</p>
-                    <Link href={quoteUrl} className="mt-6 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800">Discuss Your Office Move</Link>
+                    <Link href={quoteUrl} className="mt-6 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800">Discuss Your Office Move</Link>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+                <div className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
                     <h3 className="text-xl font-bold text-slate-950">Office relocation planning checklist</h3>
                     <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                         {preparationItems.map((item) => (
@@ -954,11 +909,11 @@ function PreparationSection() {
 
 function DeliverySection() {
     return (
-        <section aria-labelledby="staged-delivery" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+        <section aria-labelledby="staged-delivery" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Flexible Delivery Planning</p>
-                    <h2 id="staged-delivery" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Deliver the Office in the Order the Business Needs It</h2>
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Flexible Delivery Planning</p>
+                    <h2 id="staged-delivery" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Deliver the Office in the Order the Business Needs It</h2>
                     <p className="mt-4 leading-7 text-slate-600">Commercial relocations do not always require every asset at the same time. Storage and labelling can support a more controlled sequence.</p>
                     <ol className="mt-7 space-y-4 text-sm leading-6 text-slate-700 sm:text-base">
                         <li><strong className="text-slate-950">Direct move:</strong> approved assets travel from the existing office to the ready destination.</li>
@@ -969,16 +924,17 @@ function DeliverySection() {
                     <p className="mt-6 leading-7 text-slate-600">Likely retrieval and delivery requirements should be identified before items enter storage so the consignment can be organised around the relocation plan.</p>
                 </div>
                 <Image
-                    src="/images/moving-services/moving-services-team.webp"
+                    src="/images/new-van.webp"
                     alt="KXH team preparing staged delivery for a London office relocation"
                     width={1400}
                     height={800}
                     quality={75}
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                    className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                     loading="lazy"
                     decoding="async"
                 />
+
             </div>
         </section>
     );
@@ -986,16 +942,16 @@ function DeliverySection() {
 
 function LondonCoverageSection() {
     return (
-        <section aria-labelledby="london-coverage" className="bg-slate-50 py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Areas We Cover</p>
-                    <h2 id="london-coverage" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Office Relocation Across London Boroughs</h2>
+        <section aria-labelledby="london-coverage" className="bg-slate-50 py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Areas We Cover</p>
+                    <h2 id="london-coverage" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Office Relocation Across London Boroughs</h2>
                     <p className="mt-4 leading-7 text-slate-600">KXH supports approved office collections and deliveries across London. Every plan considers building access, parking controls, loading restrictions, service lifts, security and time-sensitive moving windows.</p>
                 </div>
                 <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {coverageAreas.map((area) => (
-                        <Link key={area.href} href={area.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm">
+                        <Link key={area.href} href={area.href} className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5">
                             <h3 className="font-semibold text-slate-900">Office Relocation in {area.name}</h3>
                             <p className="mt-2 text-sm leading-6 text-slate-600">Commercial removals, temporary storage and scheduled delivery for London businesses.</p>
                         </Link>
@@ -1008,16 +964,16 @@ function LondonCoverageSection() {
 
 function RelatedServicesSection() {
     return (
-        <section aria-labelledby="related-services" className="border-y border-slate-200 bg-white py-14 sm:py-20">
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Related Services</p>
-                    <h2 id="related-services" className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Build the Right Logistics and Storage Plan Around Your Office Move</h2>
+        <section aria-labelledby="related-services" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Related Services</p>
+                    <h2 id="related-services" className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">Build the Right Logistics and Storage Plan Around Your Office Move</h2>
                     <p className="mt-4 leading-7 text-slate-600">Use specialist KXH services for ongoing business storage, larger warehouse requirements, inventory organisation and commercial stock.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {relatedServices.map((service) => (
-                        <Link key={service.href} href={service.href} className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm">
+                        <Link key={service.href} href={service.href} className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6">
                             <h3 className="text-lg font-bold text-slate-950">{service.title}</h3>
                             <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
                             <span className="mt-5 inline-block text-sm font-semibold text-emerald-700">Explore this service →</span>
@@ -1032,7 +988,7 @@ function RelatedServicesSection() {
 function FinalCallToActionSection() {
     return (
         <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-            <div className="mx-auto max-w-3xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
                 <p className="text-sm font-semibold uppercase tracking-wide !text-white">Plan Your Business Move</p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight !text-white sm:text-4xl">Planning an Office Relocation in London?</h2>
                 <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-200">Tell us what is moving, both locations, your target dates, access requirements and whether you need packing, temporary storage or staged delivery. KXH will review the project and prepare a tailored quotation.</p>
@@ -1043,7 +999,7 @@ function FinalCallToActionSection() {
                     <span>✓ Scheduled delivery</span>
                 </div>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link href={quoteUrl} className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8">Get Your Free Business Moving Quote</Link>
+                    <Link href={quoteUrl} className="kxh-shine relative w-full overflow-hidden rounded-2xl bg-white px-8 py-4 text-center font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 sm:w-auto">Get Your Free Business Moving Quote</Link>
                     {CONTACT_NUMBERS.map((contact) => (
                         <a
                             key={contact.href}
@@ -1062,11 +1018,11 @@ function FinalCallToActionSection() {
 function OfficeRelocationFaqsSection() {
     return (
         <section aria-labelledby="office-relocation-faqs" className="border-t border-slate-200 bg-slate-50 py-12 sm:py-16">
-            <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-                <h2 id="office-relocation-faqs" className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Office Relocation London FAQs</h2>
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <h2 id="office-relocation-faqs" className="mb-8 text-center text-3xl font-black text-slate-950 sm:text-4xl">Office Relocation London FAQs</h2>
                 <div className="space-y-3">
                     {faqs.map((faq) => (
-                        <details key={faq.question} className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                        <details key={faq.question} className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg">
                             <summary className="cursor-pointer font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">{faq.question}</summary>
                             <p className="mt-3 leading-7 text-slate-600">{faq.answer}</p>
                         </details>
@@ -1105,6 +1061,19 @@ export default function OfficeRelocationLondonPage() {
                 <DeliverySection />
                 <LondonCoverageSection />
                 <RelatedServicesSection />
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Office moves with minimal downtime"
+                    intro="Desks, IT and files are packed, labelled and moved to plan, with storage for anything you are not ready to unpack."
+                    points={["Move planning", "IT and furniture", "Evening and weekend moves", "Storage available"]}
+                    images={[
+                        { src: "/images/new-van.webp", alt: "KXH Storage & Logistics van outside a London apartment block", label: "Our own KXH vans" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Office Removals London with KXH Storage & Logistics", label: "Office relocation" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=moving"
+                    ctaLabel="Get an Office Removals Quote"
+                />
                 <TestimonialsSection />
                 <FinalCallToActionSection />
                 <OfficeRelocationFaqsSection />

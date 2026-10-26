@@ -1,3 +1,6 @@
+import ServiceShowcase from "../components/ServiceShowcase";
+import ServiceHero from "../components/ServiceHero";
+import { ShoppingCart as HIcShoppingCart, Package as HIcPackage, RotateCcw as HIcRotateCcw, CalendarRange as HIcCalendarRange } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,9 +15,9 @@ import { londonLocations } from "../sitemap";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
-    title: "Ecommerce Storage London | Stock & Warehouse Storage",
+    title: "Ecommerce Storage London | Stock & Fulfilment | KXH",
     description:
-        "Flexible ecommerce storage in London with stock collection, secure warehouse storage, inventory organisation, pallet support, and return delivery.",
+    "Ecommerce storage in London for online sellers. Store stock and packaging, keep inventory organised and get collection and delivery when you need it. Get a quote.",
     keywords: [
         "ecommerce storage London",
         "ecommerce warehouse London",
@@ -38,7 +41,7 @@ export const metadata: Metadata = {
             "Managed ecommerce stock and warehouse storage with collection, flexible capacity, inventory organisation, pallet support, and return delivery across London.",
         images: [
             {
-                url: "/images/ecommerce-storage/ecommerce-storage-london.webp",
+                url: "/images/kxh-third-party-logistics-london.webp",
                 width: 1200,
                 height: 630,
                 alt: "Ecommerce stock stored inside a managed London warehouse",
@@ -50,7 +53,7 @@ export const metadata: Metadata = {
         title: "Ecommerce Storage London | KXH Storage & Logistics",
         description:
             "Flexible ecommerce warehouse storage with stock collection, organised inventory handling, and return delivery across London.",
-        images: ["/images/ecommerce-storage/ecommerce-storage-london.webp"],
+        images: ["/images/kxh-third-party-logistics-london.webp"],
     },
 };
 
@@ -456,7 +459,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+447386277785",
+            telephone: "+442039165312",
         },
         areaServed: {
             "@type": "City",
@@ -559,110 +562,35 @@ export default function EcommerceStorageLondonPage() {
                 <TrustpilotJsonLd />
 
                 {/* BREADCRUMB */}
-                <nav
-                    aria-label="Breadcrumb"
-                    className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
-                >
-                    <Link href="/" className="transition hover:text-emerald-700">
-                        Home
-                    </Link>
-                    <span className="mx-2">/</span>
-                    <Link
-                        href="/services"
-                        className="transition hover:text-emerald-700"
-                    >
-                        Services
-                    </Link>
-                    <span className="mx-2">/</span>
-                    <Link
-                        href="/business-storage-london"
-                        className="transition hover:text-emerald-700"
-                    >
-                        Business Storage
-                    </Link>
-                    <span className="mx-2">/</span>
-                    <span className="font-medium text-slate-700">
-                        Ecommerce Storage London
-                    </span>
-                </nav>
+                
 
                 {/* HERO */}
-                <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-                    <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                            Managed Storage for Online Retailers
-                        </div>
-
-                        <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                            Ecommerce Warehouse Storage London
-                        </h1>
-
-                        <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                            Collection, inventory organisation and return delivery for online retailers across London.
-                        </p>
-
-                        <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                            Pay for the inventory storage capacity your business uses without
-                            leasing a larger ecommerce warehouse or paying fixed overhead for
-                            unused commercial space.
-                        </p>
-
-                        <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                            {coreBenefits.map((benefit) => (
-                                <div
-                                    key={benefit}
-                                    className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                                >
-                                    ✓ {benefit}
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                            <Link
-                                href="/get-a-quote?service=storage"
-                                className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 sm:w-auto"
-                            >
-                                Get Ecommerce Storage Quote
-                            </Link>
-
-                            {CONTACT_NUMBERS.map((contact) => (
-                                <a
-                                    key={contact.href}
-                                    href={contact.href}
-                                    className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                                >
-                                    Call {contact.label}
-                                </a>
-                            ))}
-                        </div>
-
-                        <div className="mt-6 flex justify-center">
-                            <TrustpilotPill />
-                        </div>
-
-                        <div className="mt-12">
-                            <Image
-                                src="/images/ecommerce-storage/ecommerce-storage-london.webp"
-                                alt="Ecommerce inventory stored inside a managed London warehouse"
-                                width={1200}
-                                height={800}
-                                quality={80}
-                                sizes="(max-width: 768px) 100vw, 960px"
-                                className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                                loading="lazy"
-                                decoding="async"
-                            />
-                        </div>
-                    </div>
-                </section>
+                <ServiceHero
+                    image="/images/kxh-third-party-logistics-london.webp"
+                    imageAlt="Ecommerce Storage London for Online Sellers with KXH Storage & Logistics"
+                    breadcrumb={[{"label": "Home", "href": "/"}, {"label": "Services", "href": "/services"}, {"label": "Ecommerce Storage London"}]}
+                    eyebrow="Storage for online sellers"
+                    title="Ecommerce Storage London for Online Sellers"
+                    highlight="Online Sellers"
+                    intro="Free up your home or office from stock and packaging. KXH stores your ecommerce inventory, keeps it organised and delivers it back when you need to restock or fulfil orders."
+                    chips={["Stock and packaging storage", "Organised inventory", "Seasonal peaks covered", "Collection and delivery"]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get an Ecommerce Storage Quote"
+                    cardEyebrow="We store"
+                    cardTitle="Your online shop stock"
+                    cardItems={[
+                        { icon: <HIcShoppingCart className="h-6 w-6" aria-hidden="true" />, title: "Products", text: "Ready-to-sell stock" },
+                        { icon: <HIcPackage className="h-6 w-6" aria-hidden="true" />, title: "Packaging", text: "Boxes and mailers" },
+                        { icon: <HIcRotateCcw className="h-6 w-6" aria-hidden="true" />, title: "Returns", text: "Returned items" },
+                        { icon: <HIcCalendarRange className="h-6 w-6" aria-hidden="true" />, title: "Seasonal stock", text: "Black Friday and Christmas" },
+                    ]}
+                />
 
                 {/* CUSTOMER PROBLEMS */}
-                <section className="border-b border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-b border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Make Space for Growth
                             </p>
 
@@ -682,7 +610,7 @@ export default function EcommerceStorageLondonPage() {
                             {customerProblems.map((problem) => (
                                 <article
                                     key={problem.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <h3 className="text-lg font-bold text-slate-950">
                                         {problem.title}
@@ -697,13 +625,13 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* PROCESS */}
-                <section className="border-b border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-b border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 How It Works
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 We Collect, Store, Organise and Return
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -717,7 +645,7 @@ export default function EcommerceStorageLondonPage() {
                             {processSteps.map((step) => (
                                 <article
                                     key={step.number}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
                                 >
                                     <span className="text-sm font-black text-emerald-700">
                                         {step.number}
@@ -733,13 +661,13 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* PRICING AND STORAGE TYPES */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Flexible Ecommerce Storage Pricing
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Pay for the Stock Storage Your Business Uses
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -761,7 +689,7 @@ export default function EcommerceStorageLondonPage() {
 
                             <Link
                                 href="/get-a-quote?service=storage"
-                                className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                                className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                             >
                                 Calculate Your Storage Quote
                             </Link>
@@ -771,7 +699,7 @@ export default function EcommerceStorageLondonPage() {
                             {storageTypes.map((type) => (
                                 <article
                                     key={type.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6"
                                 >
                                     <h3 className="font-bold text-slate-900">{type.title}</h3>
                                     <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -784,25 +712,25 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* MANAGED ECOMMERCE WAREHOUSING */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                         <Image
-                            src="/images/ecommerce-storage/ecommerce-stock-organisation-london.webp"
+                            src="/images/kxh-inventory-management-london.webp"
                             alt="Organised ecommerce products and packaging stored in a London warehouse"
                             width={1200}
                             height={800}
                             quality={75}
                             sizes="(max-width: 1024px) 100vw, 50vw"
-                            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                            className="kxh-reveal h-64 w-full rounded-[1.75rem] object-cover shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 sm:h-80 lg:h-[420px]"
                             loading="lazy"
                             decoding="async"
                         />
 
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Managed Ecommerce Warehousing
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Grow Your Online Business Without Leasing Another Warehouse
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -832,13 +760,13 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* WHAT CAN BE STORED */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Ecommerce Inventory Storage
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 What Can Your Ecommerce Business Store?
                             </h2>
                             <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-600">
@@ -852,7 +780,7 @@ export default function EcommerceStorageLondonPage() {
                             {inventoryTypes.map((item) => (
                                 <div
                                     key={item}
-                                    className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-semibold text-slate-800"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5 text-sm font-semibold text-slate-800"
                                 >
                                     ✓ {item}
                                 </div>
@@ -862,13 +790,13 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* INDUSTRIES */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Industries We Support
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Ecommerce Storage for Products, Brands and Online Retailers
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -882,7 +810,7 @@ export default function EcommerceStorageLondonPage() {
                             {industries.map((industry) => (
                                 <article
                                     key={industry.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <h3 className="text-lg font-bold text-slate-950">
                                         {industry.title}
@@ -897,13 +825,13 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* PLATFORMS */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Online Selling Channels
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Storage for Marketplace Sellers and Growing Online Brands
                             </h2>
                             <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-600">
@@ -917,7 +845,7 @@ export default function EcommerceStorageLondonPage() {
                             {ecommercePlatforms.map((platform) => (
                                 <article
                                     key={platform.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6"
                                 >
                                     <h3 className="text-lg font-bold">{platform.title}</h3>
                                     <p className="mt-3 text-sm leading-6 text-slate-600">
@@ -930,25 +858,14 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* OPERATIONS AND USE CASES */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <Image
-                            src="/images/ecommerce-storage/ecommerce-warehouse-storage-london.webp"
-                            alt="Warehouse team organising ecommerce stock in London"
-                            width={1200}
-                            height={800}
-                            quality={75}
-                            sizes="(max-width: 768px) 100vw, 960px"
-                            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                            loading="lazy"
-                            decoding="async"
-                        />
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
 
                         <div className="mx-auto mt-12 max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Storage Built Around Ecommerce Operations
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Add Warehouse Capacity When Your Business Needs It
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -962,7 +879,7 @@ export default function EcommerceStorageLondonPage() {
                             {ecommerceUseCases.map((item) => (
                                 <article
                                     key={item.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <h3 className="font-bold text-slate-950">{item.title}</h3>
                                     <p className="mt-2 text-sm leading-7 text-slate-600">
@@ -975,13 +892,13 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* COMPARISON */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Flexible Warehouse Capacity
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Managed Ecommerce Storage vs a Traditional Warehouse Lease
                             </h2>
                             <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-600">
@@ -992,7 +909,7 @@ export default function EcommerceStorageLondonPage() {
                         </div>
 
                         <div className="mt-10 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white md:block">
-                            <div className="grid grid-cols-[0.8fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
+                            <div className="grid grid-cols-[0.8fr_1fr_1fr] bg-slate-950 text-sm font-bold text-white">
                                 <div className="p-5">Comparison</div>
                                 <div className="border-l border-white/10 p-5">
                                     Traditional Warehouse Lease
@@ -1052,14 +969,14 @@ export default function EcommerceStorageLondonPage() {
                     </div>
                 </section>
                 {/* WHY BUSINESSES CHOOSE KXH */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Trusted Ecommerce Storage Partner
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Why London Businesses Choose KXH Storage & Logistics
                             </h2>
 
@@ -1106,7 +1023,7 @@ export default function EcommerceStorageLondonPage() {
                             ].map((item) => (
                                 <article
                                     key={item.title}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-6"
                                 >
                                     <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold text-emerald-700">
                                         ✓
@@ -1138,13 +1055,13 @@ export default function EcommerceStorageLondonPage() {
                     </div>
                 </section>
                 {/* INVENTORY DIFFERENTIATOR */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Physical Inventory Management
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Keep Stored Ecommerce Stock Organised
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -1171,7 +1088,7 @@ export default function EcommerceStorageLondonPage() {
 
                             <Link
                                 href="/inventory-management-london"
-                                className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                                className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                             >
                                 Explore Inventory Management
                             </Link>
@@ -1198,8 +1115,8 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* PALLET STORAGE */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+                <section className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 sm:p-8 lg:order-2">
                             <h3 className="text-2xl font-bold tracking-tight text-slate-950">
                                 Flexible capacity for growing brands
@@ -1212,10 +1129,10 @@ export default function EcommerceStorageLondonPage() {
                         </div>
 
                         <div className="lg:order-1">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 Pallet & Bulk Stock Storage
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Need Storage for Pallets or Larger Stock Volumes?
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -1232,7 +1149,7 @@ export default function EcommerceStorageLondonPage() {
 
                             <Link
                                 href="/pallet-storage-london"
-                                className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                                className="mt-8 kxh-shine relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                             >
                                 View Pallet Storage
                             </Link>
@@ -1241,10 +1158,10 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* CUSTOMER FIT */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 sm:rounded-3xl sm:p-10">
-                            <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
                                 Is KXH Ecommerce Storage Right for Your Business?
                             </h2>
                             <p className="mt-4 max-w-2xl leading-7 text-slate-700">
@@ -1270,14 +1187,14 @@ export default function EcommerceStorageLondonPage() {
                 {/* LONDON AREAS */}
                 {/* LONDON COVERAGE */}
                 <section className="border-t border-slate-200 bg-slate-50 py-16 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
 
-                        <div className="mx-auto max-w-3xl text-center">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                                 London Coverage
                             </p>
 
-                            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
                                 Ecommerce Storage Across London
                             </h2>
 
@@ -1295,7 +1212,7 @@ export default function EcommerceStorageLondonPage() {
                                 <Link
                                     key={area.href}
                                     href={area.href}
-                                    className="rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                                    className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-6"
                                 >
                                     <h3 className="font-bold text-slate-900">
                                         {area.name}
@@ -1343,10 +1260,10 @@ export default function EcommerceStorageLondonPage() {
                 </section>
 
                 {/* RELATED SERVICES */}
-                <section className="border-y border-slate-200 bg-white py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                        <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                            <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
                                 Related Business Storage & Logistics Services
                             </h2>
                             <p className="mt-4 leading-7 text-slate-600">
@@ -1388,28 +1305,24 @@ export default function EcommerceStorageLondonPage() {
                     </div>
                 </section>
 
-                {/* DELIVERY IMAGE */}
-                <section className="bg-slate-50 py-14 sm:py-20">
-                    <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                        <Image
-                            src="/images/ecommerce-storage/ecommerce-inventory-collection-delivery-london.webp"
-                            alt="Ecommerce inventory collection and return delivery service in London"
-                            width={1200}
-                            height={800}
-                            quality={75}
-                            sizes="(max-width: 768px) 100vw, 960px"
-                            className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
-                            loading="lazy"
-                            decoding="async"
-                        />
-                    </div>
-                </section>
-
+                <ServiceShowcase
+                    eyebrow="See it in action"
+                    title="Ecommerce stock stored close to your customers"
+                    intro="Keep inventory in London, cut storage costs and get stock delivered back when orders pick up."
+                    points={["Stock and packaging storage", "Organised inventory", "Seasonal peaks covered", "Collection and delivery"]}
+                    images={[
+                        { src: "/images/warehouse.webp", alt: "Stock and boxes stored on racking in the KXH London warehouse", label: "Inside our warehouse" },
+                        { src: "/images/kxh-collection-delivery-london.webp", alt: "Ecommerce Storage London with KXH Storage & Logistics", label: "Online seller stock" },
+                        { src: "/images/delivery-warehouse.webp", alt: "Branded KXH Storage & Logistics van ready for collection and delivery", label: "Collection & delivery" },
+                    ]}
+                    ctaHref="/get-a-quote?service=storage"
+                    ctaLabel="Get an Ecommerce Storage Quote"
+                />
                 <TestimonialsSection />
 
                 {/* FINAL CTA */}
-                <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-                    <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+                <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
                         <p className="text-sm font-semibold uppercase tracking-wide !text-white">
                             Flexible Ecommerce Storage
                         </p>
@@ -1425,7 +1338,7 @@ export default function EcommerceStorageLondonPage() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                             <Link
                                 href="/get-a-quote?service=storage"
-                                className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8"
+                                className="kxh-shine relative w-full overflow-hidden rounded-2xl bg-white px-8 py-4 text-center font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 sm:w-auto"
                             >
                                 Get Ecommerce Storage Quote
                             </Link>
@@ -1444,8 +1357,8 @@ export default function EcommerceStorageLondonPage() {
 
                 {/* FAQ */}
                 <section className="border-t border-slate-200 bg-slate-50 py-12">
-                    <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-                        <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                        <h2 className="mb-8 text-center text-3xl font-black text-slate-950 sm:text-4xl">
                             Ecommerce Storage FAQs
                         </h2>
 
@@ -1453,7 +1366,7 @@ export default function EcommerceStorageLondonPage() {
                             {faqs.map((faq) => (
                                 <details
                                     key={faq.question}
-                                    className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
+                                    className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg"
                                 >
                                     <summary className="cursor-pointer font-semibold text-slate-900">
                                         {faq.question}

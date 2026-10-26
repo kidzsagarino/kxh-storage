@@ -7,12 +7,14 @@ import MainFooter from "../components/footer/MainFooter";
 import Nav from "../components/MobileNav";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
-import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
+import ServiceHero from "../components/ServiceHero";
+import AreaMapExplorer from "../components/AreaMapExplorer";
+import { Armchair, Building2, GraduationCap, Home as HomeIcon, Package, Truck } from "lucide-react";
 import { londonLocations } from "../lib/location";
 import { CONTACT_NUMBERS } from "../lib/contact";
 
 export const metadata: Metadata = {
-    title: "Moving Services London | House, Office & Commercial Removals",
+    title: "Moving Services London | Home & Office Moves | KXH",
     description:
         "Managed moving services across London for homes, apartments, offices, businesses and students, with packing, furniture transport and optional storage.",
     alternates: {
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
             "Plan a London move with packing, loading, transport, delivery and optional temporary storage coordinated by one team.",
         images: [
             {
-                url: "/images/moving-services/moving-services-hero.webp",
+                url: "/images/kxh-moving-removals-london.webp",
                 width: 1200,
                 height: 630,
                 alt: "KXH movers completing a managed move in London",
@@ -610,7 +612,7 @@ function ServiceJsonLd() {
             "@id": "https://kxhlogistics.co.uk/#business",
             name: "KXH Storage & Logistics",
             url: "https://kxhlogistics.co.uk",
-            telephone: "+44 7386 277785",
+            telephone: "+44 20 3916 5312",
         },
 
         areaServed: {
@@ -821,13 +823,14 @@ type SectionHeadingProps = {
 
 function SectionHeading({ eyebrow, title, description, id }: SectionHeadingProps) {
     return (
-        <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+        <div className="kxh-reveal mx-auto max-w-3xl text-center">
+            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
                 {eyebrow}
             </p>
             <h2
                 id={id}
-                className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
             >
                 {title}
             </h2>
@@ -850,14 +853,14 @@ function LinkedInfoCard({ title, description, href, cta = "Explore this moving s
     return (
         <Link
             href={href}
-            className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"
+            className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"
         >
             <h3 className="text-lg font-bold text-slate-950 group-hover:text-emerald-800">
                 {title}
             </h3>
             <p className="mt-3 text-sm leading-6 text-slate-600">{description}</p>
-            <span className="mt-5 inline-block text-sm font-semibold text-emerald-700">
-                {cta} →
+            <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-emerald-700">
+                {cta} <span className="transition group-hover:translate-x-1">→</span>
             </span>
         </Link>
     );
@@ -886,7 +889,7 @@ function BreadcrumbNav() {
     return (
         <nav
             aria-label="Breadcrumb"
-            className="mx-auto max-w-6xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
+            className="mx-auto max-w-screen-xl overflow-x-auto px-5 pt-4 text-xs text-slate-500 sm:px-6 sm:pt-6 sm:text-sm lg:px-8"
         >
             <Link href="/" className="transition hover:text-emerald-700">
                 Home
@@ -905,95 +908,26 @@ function BreadcrumbNav() {
 
 function HeroSection() {
     return (
-        <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
-            <div className="mx-auto max-w-6xl px-5 text-center sm:px-6 lg:px-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                    <span
-                        className="h-2 w-2 rounded-full bg-emerald-500"
-                        aria-hidden="true"
-                    />
-                    Managed Moving Support Across London
-                </div>
-
-                <h1 className="mx-auto mt-5 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">
-                    Moving Services London for Homes, Offices and Businesses
-                </h1>
-
-                <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Plan your move with one professional moving company for packing,
-                    loading, transport, delivery and optional storage across London.
-                    Whether you need a complete house removal, apartment relocation,
-                    office move or commercial removal service, KXH provides tailored
-                    support based on your requirements.
-                </p>
-
-                <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
-                    KXH supports house removals, apartment moves, office relocations,
-                    commercial moves, student accommodation changes and furniture
-                    transport with a tailored quote based on the actual job.
-                </p>
-
-                <div className="mx-auto mt-7 grid max-w-4xl grid-cols-1 gap-3 min-[430px]:grid-cols-2 lg:grid-cols-4">
-                    {heroBenefits.map((benefit) =>
-                        benefit.href ? (
-                            <Link
-                                key={benefit.label}
-                                href={benefit.href}
-                                className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100 hover:text-emerald-900"
-                            >
-                                <span aria-hidden="true">✓</span>{" "}
-                                <span className="underline underline-offset-2">
-                                    {benefit.label}
-                                </span>
-                            </Link>
-                        ) : (
-                            <div
-                                key={benefit.label}
-                                className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-                            >
-                                <span aria-hidden="true">✓</span> {benefit.label}
-                            </div>
-                        )
-                    )}
-                </div>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link
-                        href="/get-a-quote?service=moving"
-                        className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-center font-semibold text-white shadow-lg transition hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:w-auto"
-                    >
-                        Get a Moving Quote
-                    </Link>
-                    {CONTACT_NUMBERS.map((contact) => (
-                        <a
-                            key={contact.href}
-                            href={contact.href}
-                            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:w-auto"
-                        >
-                            Call {contact.label}
-                        </a>
-                    ))}
-                </div>
-
-                <div className="mt-6 flex justify-center">
-                    <TrustpilotPill />
-                </div>
-
-                <div className="mt-12 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-                    <Image
-                        src="/images/moving-services/moving-services-hero.webp"
-                        alt="KXH moving team loading belongings for a London move"
-                        width={1400}
-                        height={800}
-                        quality={80}
-                        sizes="(max-width: 768px) 100vw, 960px"
-                        className="h-auto w-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                    />
-                </div>
-            </div>
-        </section>
+        <ServiceHero
+            image="/images/kxh-moving-removals-london.webp"
+            imageAlt="KXH movers loading boxes into a van for a London move"
+            breadcrumb={[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "Moving Services London" }]}
+            eyebrow="Managed moving support across London"
+            title="Moving Services London for Homes, Offices and Businesses"
+            highlight="Homes, Offices and Businesses"
+            intro="One professional moving company for packing, loading, transport, delivery and optional storage across London. House removals, apartment moves, office relocations, commercial moves, student moves and furniture transport, with a tailored quote based on the actual job."
+            chips={heroBenefits.map((b) => b.label)}
+            ctaHref="/get-a-quote?service=moving"
+            ctaLabel="Get a Moving Quote"
+            cardEyebrow="We move"
+            cardTitle="Every kind of London move"
+            cardItems={[
+                { icon: <HomeIcon className="h-6 w-6" aria-hidden="true" />, title: "Homes & flats", text: "House and apartment moves" },
+                { icon: <Building2 className="h-6 w-6" aria-hidden="true" />, title: "Offices", text: "Office and commercial relocations" },
+                { icon: <GraduationCap className="h-6 w-6" aria-hidden="true" />, title: "Students", text: "Halls and shared houses" },
+                { icon: <Armchair className="h-6 w-6" aria-hidden="true" />, title: "Furniture", text: "Single items and full loads" },
+            ]}
+        />
     );
 }
 
@@ -1001,16 +935,16 @@ function MovingProcessSection() {
     return (
         <section
             aria-labelledby="moving-process"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-2xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-2xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         How It Works
                     </p>
                     <h2
                         id="moving-process"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         One Managed Process From Quote to Delivery
                     </h2>
@@ -1024,9 +958,9 @@ function MovingProcessSection() {
                     {movingSteps.map((step) => (
                         <article
                             key={step.number}
-                            className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
+                            className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
                         >
-                            <span className="text-sm font-black text-emerald-700">
+                            <span className="kxh-pop flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-600 text-base font-black text-white shadow-lg shadow-emerald-600/30">
                                 {step.number}
                             </span>
                             <h3 className="mt-4 text-lg font-bold">{step.title}</h3>
@@ -1045,16 +979,16 @@ function MovingCostSection() {
     return (
         <section
             aria-labelledby="moving-cost"
-            className="bg-slate-50 py-14 sm:py-20"
+            className="bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+            <div className="mx-auto grid max-w-screen-xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Tailored Moving Costs
                     </p>
                     <h2
                         id="moving-cost"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         What Affects the Cost of Moving in London?
                     </h2>
@@ -1102,7 +1036,7 @@ function MovingCostSection() {
                     </div>
                     <Link
                         href="/get-a-quote?service=moving"
-                        className="mt-8 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-800"
+                        className="kxh-shine relative mt-8 inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-emerald-700 px-6 py-3.5 font-bold text-white shadow-lg shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:bg-emerald-800"
                     >
                         Request Your Moving Quote
                     </Link>
@@ -1112,7 +1046,7 @@ function MovingCostSection() {
                     {pricingFactors.map((factor) => (
                         <li
                             key={factor}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-700"
+                            className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-700"
                         >
                             <span
                                 className="mr-2 font-bold text-emerald-700"
@@ -1133,18 +1067,18 @@ function MovingTimesSection() {
     return (
         <section
             aria-labelledby="moving-times"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
 
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Typical Moving Times
                     </p>
 
                     <h2
                         id="moving-times"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         How Long Does a London Move Usually Take?
                     </h2>
@@ -1157,9 +1091,9 @@ function MovingTimesSection() {
                     </p>
                 </div>
 
-                <div className="mt-12 overflow-hidden rounded-2xl border border-slate-200">
+                <div className="kxh-reveal mt-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
 
-                    <div className="grid grid-cols-[2fr_1fr_2fr] bg-emerald-800 text-sm font-bold text-white">
+                    <div className="grid grid-cols-[2fr_1fr_2fr] bg-slate-950 text-sm font-bold text-white">
                         <div className="p-5">Property Type</div>
                         <div className="p-5 text-center">Estimated Duration</div>
                         <div className="p-5">Typical Scenario</div>
@@ -1200,16 +1134,16 @@ function MovingProblemsSection() {
     return (
         <section
             aria-labelledby="moving-problems"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Problems We Solve
                     </p>
                     <h2
                         id="moving-problems"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         London Moves Need More Than a Van
                     </h2>
@@ -1232,7 +1166,7 @@ function MovingProblemsSection() {
                         <Link
                             key={problem.title}
                             href={problem.href}
-                            className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition hover:border-emerald-300 hover:bg-white hover:shadow-sm"
+                            className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-slate-50 p-6 transition hover:border-emerald-300 hover:bg-white hover:shadow-sm"
                         >
                             <h3 className="text-lg font-bold text-slate-950 group-hover:text-emerald-800">
                                 {problem.title}
@@ -1255,27 +1189,27 @@ function ManagedMovingSection() {
     return (
         <section
             aria-labelledby="managed-moving"
-            className="bg-slate-50 py-14 sm:py-20"
+            className="bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <Image
-                    src="/images/moving-services/moving-services-packing-loading.webp"
+                    src="/images/kxh-collection-delivery-london.webp"
                     alt="KXH movers packing and loading belongings for transport"
                     width={1400}
                     height={700}
                     quality={75}
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="h-auto w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                    className="kxh-reveal h-auto w-full rounded-[1.75rem] object-cover shadow-2xl"
                     loading="lazy"
                     decoding="async"
                 />
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Managed Moving Services
                     </p>
                     <h2
                         id="managed-moving"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Choose a Complete Move or Only the Support You Need
                     </h2>
@@ -1309,16 +1243,16 @@ function WhyChooseKxhSection() {
     return (
         <section
             aria-labelledby="why-kxh"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Why Choose KXH
                     </p>
                     <h2
                         id="why-kxh"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Moving Support Designed Around London Properties
                     </h2>
@@ -1327,7 +1261,7 @@ function WhyChooseKxhSection() {
                     {whyChooseKxh.map((item, index) => (
                         <article
                             key={item.title}
-                            className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                            className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6"
                         >
                             <div
                                 className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 font-bold text-emerald-700"
@@ -1353,9 +1287,9 @@ function MovingCategoriesSection() {
     return (
         <section
             aria-labelledby="moving-categories"
-            className="bg-slate-50 py-14 sm:py-20"
+            className="bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Moving Service Categories"
                     title="House, Apartment, Office, Commercial and Student Moves"
@@ -1382,16 +1316,16 @@ function MovingComparisonSection() {
     return (
         <section
             aria-labelledby="moving-comparison"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Compare Moving Options
                     </p>
                     <h2
                         id="moving-comparison"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         DIY Moving vs Van Hire vs a Managed Moving Service
                     </h2>
@@ -1408,7 +1342,7 @@ function MovingComparisonSection() {
                 </div>
 
                 <div className="mt-12 hidden overflow-hidden rounded-2xl border border-slate-200 lg:block">
-                    <div className="grid grid-cols-[1.25fr_1fr_1fr_1fr_1fr] bg-emerald-800 text-sm font-bold text-white">
+                    <div className="grid grid-cols-[1.25fr_1fr_1fr_1fr_1fr] bg-slate-950 text-sm font-bold text-white">
                         <div className="p-5">Service Feature</div>
                         <div className="border-l border-white/10 p-5 text-center">
                             DIY Moving
@@ -1486,16 +1420,16 @@ function MovingStorageSection() {
     return (
         <section
             aria-labelledby="moving-storage"
-            className="bg-slate-50 py-14 sm:py-20"
+            className="bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
+            <div className="mx-auto grid max-w-screen-xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Moving and Storage
                     </p>
                     <h2
                         id="moving-storage"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Move Now and Deliver When the Destination Is Ready
                     </h2>
@@ -1563,7 +1497,7 @@ function MovingStorageSection() {
                     {movingStorageScenarios.map((scenario) => (
                         <div
                             key={scenario}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-medium leading-6 text-slate-700"
+                            className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5 text-sm font-medium leading-6 text-slate-700"
                         >
                             <span className="mr-2 text-emerald-700" aria-hidden="true">
                                 ✓
@@ -1581,39 +1515,26 @@ function CustomerFitSection() {
     return (
         <section
             aria-labelledby="customer-fit"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Who the Service Is For
                     </p>
                     <h2
                         id="customer-fit"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Ideal If You Need Flexible Moving Support
                     </h2>
-                </div>
-                <div className="mt-12 overflow-hidden rounded-2xl border border-slate-200">
-                    <Image
-                        src="/images/moving-services/moving-services-student-move.webp"
-                        alt="Students and renters preparing belongings for a London move"
-                        width={1400}
-                        height={700}
-                        quality={75}
-                        sizes="(max-width: 768px) 100vw, 960px"
-                        className="h-auto w-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                    />
                 </div>
                 <div className="mt-10 grid gap-4 md:grid-cols-2">
                     {customerFitItems.map((item) => (
                         <Link
                             key={item.title}
                             href={item.href}
-                            className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-emerald-300 hover:bg-white hover:shadow-sm"
+                            className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-emerald-300 hover:bg-white hover:shadow-sm"
                         >
                             <h3 className="font-bold text-slate-950 group-hover:text-emerald-800">
                                 <span className="mr-2 text-emerald-700" aria-hidden="true">
@@ -1639,18 +1560,18 @@ function MovingChecklistSection() {
     return (
         <section
             aria-labelledby="moving-checklist"
-            className="bg-slate-50 py-14 sm:py-20"
+            className="bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
 
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Moving Day Preparation
                     </p>
 
                     <h2
                         id="moving-checklist"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Before Moving Day Checklist
                     </h2>
@@ -1667,7 +1588,7 @@ function MovingChecklistSection() {
                     {movingChecklist.map((item) => (
                         <div
                             key={item}
-                            className="rounded-2xl border border-slate-200 bg-white p-5"
+                            className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5"
                         >
                             <span className="mr-2 text-emerald-700" aria-hidden="true">✓</span>
                             {item}
@@ -1695,16 +1616,16 @@ function LondonCoverageSection() {
     return (
         <section
             aria-labelledby="london-coverage"
-            className="bg-slate-50 py-14 sm:py-20"
+            className="bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         London Coverage
                     </p>
                     <h2
                         id="london-coverage"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Moving Services Across London Boroughs
                     </h2>
@@ -1716,12 +1637,15 @@ function LondonCoverageSection() {
                         lift bookings and local property requirements.
                     </p>
                 </div>
-                <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="mt-10">
+                    <AreaMapExplorer primaryHref="/logistics-moving-london" />
+                </div>
+                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {coverageAreas.map((area) => (
                         <Link
                             key={area.href}
                             href={area.href}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm"
+                            className="kxh-reveal kxh-card3d rounded-3xl border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm"
                         >
                             <h3 className="font-semibold text-slate-900">
                                 Moving Services in {area.name}
@@ -1733,7 +1657,7 @@ function LondonCoverageSection() {
                         </Link>
                     ))}
                 </div>
-                <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-8">
+                <div className="kxh-reveal mt-10 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
 
                     <h3 className="text-xl font-bold text-slate-950">
                         Common London Moving Routes
@@ -1750,7 +1674,7 @@ function LondonCoverageSection() {
                         {commonRoutes.map(([from, to]) => (
                             <div
                                 key={`${from}-${to}`}
-                                className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                                className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50"
                             >
                                 <span className="font-semibold">
                                     {from}
@@ -1778,9 +1702,9 @@ function RelatedMovingServicesSection() {
     return (
         <section
             aria-labelledby="related-moving-services"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <SectionHeading
                     eyebrow="Related Moving Services"
                     title="Explore Our Dedicated Moving Services"
@@ -1807,16 +1731,16 @@ function RelatedServicesSection() {
     return (
         <section
             aria-labelledby="related-services"
-            className="border-y border-slate-200 bg-white py-14 sm:py-20"
+            className="border-y border-slate-200 bg-white py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Related Services
                     </p>
                     <h2
                         id="related-services"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Storage and Logistics Support Around Your Move
                     </h2>
@@ -1826,7 +1750,7 @@ function RelatedServicesSection() {
                         <Link
                             key={service.href}
                             href={service.href}
-                            className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-300 hover:shadow-sm"
+                            className="kxh-reveal kxh-card3d group rounded-3xl border border-slate-200 bg-white p-6"
                         >
                             <h3 className="text-lg font-bold text-slate-950">
                                 {service.title}
@@ -1849,16 +1773,16 @@ function MovingTeamSection() {
     return (
         <section
             aria-labelledby="moving-team"
-            className="bg-slate-50 py-14 sm:py-20"
+            className="bg-slate-50 py-16 lg:py-24"
         >
-            <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                <div className="kxh-reveal mx-auto max-w-3xl text-center">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">
                         Professional Moving Team
                     </p>
                     <h2
                         id="moving-team"
-                        className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                        className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl"
                     >
                         Careful Handling From Collection to Delivery
                     </h2>
@@ -1870,24 +1794,24 @@ function MovingTeamSection() {
                 </div>
                 <div className="mt-10 grid gap-6 lg:grid-cols-2">
                     <Image
-                        src="/images/moving-services/moving-services-team-working.webp"
+                        src="/images/new-van.webp"
                         alt="Professional KXH movers handling furniture during a London move"
                         width={1400}
                         height={700}
                         quality={75}
                         sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="h-full w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                        className="kxh-reveal kxh-card3d h-[300px] w-full rounded-[1.75rem] object-cover shadow-2xl sm:h-[380px]"
                         loading="lazy"
                         decoding="async"
                     />
                     <Image
-                        src="/images/moving-services/moving-services-team.webp"
+                        src="/images/delivery-warehouse.webp"
                         alt="KXH Storage and Logistics moving crew in London"
                         width={1400}
                         height={700}
                         quality={75}
                         sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="h-full w-full rounded-2xl border border-slate-200 object-cover shadow-sm"
+                        className="kxh-reveal kxh-card3d h-[300px] w-full rounded-[1.75rem] object-cover shadow-2xl sm:h-[380px]"
                         loading="lazy"
                         decoding="async"
                     />
@@ -1899,8 +1823,8 @@ function MovingTeamSection() {
 
 function MovingCtaSection() {
     return (
-        <section className="border-t border-emerald-800 bg-emerald-800 py-14 text-center text-white sm:py-20">
-            <div className="mx-auto max-w-2xl px-5 sm:px-6 lg:px-8">
+        <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="kxh-reveal relative mx-auto max-w-screen-xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-6 py-14 text-center text-white shadow-2xl sm:px-12">
                 <p className="text-sm font-semibold uppercase tracking-wide !text-white">
                     Plan Your London Move
                 </p>
@@ -1916,7 +1840,7 @@ function MovingCtaSection() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                     <Link
                         href="/get-a-quote?service=moving"
-                        className="w-full rounded-xl bg-emerald-600 px-6 py-4 text-center font-semibold text-white transition hover:bg-emerald-500 sm:w-auto sm:px-8"
+                        className="kxh-shine relative w-full overflow-hidden rounded-2xl bg-white px-8 py-4 text-center font-bold text-emerald-800 shadow-xl transition hover:-translate-y-0.5 sm:w-auto"
                     >
                         Get a Moving Quote
                     </Link>
@@ -1942,10 +1866,10 @@ function MovingFaqSection() {
             aria-labelledby="moving-faqs"
             className="border-t border-slate-200 bg-slate-50 py-12 sm:py-16"
         >
-            <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                 <h2
                     id="moving-faqs"
-                    className="mb-8 text-center text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl"
+                    className="mb-8 text-center text-3xl font-black text-slate-950 sm:text-4xl"
                 >
                     Moving Services London FAQs
                 </h2>
@@ -1953,7 +1877,7 @@ function MovingFaqSection() {
                     {faqs.map((faq) => (
                         <details
                             key={faq.question}
-                            className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
+                            className="kxh-reveal group rounded-2xl border border-slate-200 bg-white p-5 transition open:border-emerald-300 open:shadow-lg"
                         >
                             <summary className="cursor-pointer font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
                                 {faq.question}
@@ -1980,10 +1904,12 @@ export default function MovingServicePage() {
                 <BreadcrumbJsonLd />
                 <TrustpilotJsonLd />
 
-                <BreadcrumbNav />
-                <MovingServiceLinks className="mx-auto max-w-6xl px-5 pb-5 pt-4 sm:px-6 lg:px-8" />
-
+                
                 <HeroSection />
+
+                <div className="border-b border-slate-200/70 bg-white py-5">
+                    <MovingServiceLinks className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8" />
+                </div>
 
                 <MovingProcessSection />
 
@@ -2017,7 +1943,6 @@ export default function MovingServicePage() {
                 <MovingCtaSection />
 
                 <MovingFaqSection />
-
 
                 <MainFooter locations={londonLocations} />
             </main>

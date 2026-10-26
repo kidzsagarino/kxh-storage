@@ -80,7 +80,7 @@ export function OrderSummary({
                 {typeof durationMonth === "number" && (
                     <div className="flex justify-between text-sm text-slate-700">
                         <span>Duration</span>
-                        <span>{durationMonth} months</span>
+                        <span>{durationMonth} {Number(durationMonth) === 1 ? "month" : "months"}</span>
                     </div>
                 )}
 
