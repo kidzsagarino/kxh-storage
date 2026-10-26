@@ -347,7 +347,7 @@ const relatedServices = [
     { title: "Inventory Management London", href: "/inventory-management-london", description: "Physical inventory organisation, item records, categorisation, warehouse handling, and selected-item return support." },
     { title: "Warehouse Storage London", href: "/warehouse-storage-london", description: "Managed warehouse capacity for business records, stock, equipment, pallets, and commercial storage requirements." },
     { title: "Document Shredding", href: "/shredding-solutions-london", description: "Secure document shredding for records that have reached the end of their approved retention period." },
-    { title: "Office Relocation London", href: "/office-relocation-london", description: "Business moving support for offices relocating, consolidating, refurbishing, or changing how their workspace is used." },
+    { title: "Office Relocation London", href: "/office-removals-london", description: "Business moving support for offices relocating, consolidating, refurbishing, or changing how their workspace is used." },
     { title: "Moving & Storage London", href: "/logistics-moving-london", description: "Combined collection, moving, temporary storage, handling, and return delivery for London businesses." },
 ];
 

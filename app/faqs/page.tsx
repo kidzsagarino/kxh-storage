@@ -8,7 +8,7 @@ import Nav from "../components/MobileNav";
 export const metadata: Metadata = {
     title: { absolute: "Storage, Moving & Logistics FAQs London | KXH" },
     description:
-        "Find answers about storage, moving, business storage, warehouse storage, student storage, logistics, collection, delivery, pricing, security and bookings across London.",
+        "Answers about storage, moving, collection, delivery, pricing and bookings in London. Find out how KXH storage and removals work.",
     alternates: {
         canonical: "https://kxhlogistics.co.uk/faqs",
     },

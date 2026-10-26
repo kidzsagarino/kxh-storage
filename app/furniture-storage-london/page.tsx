@@ -527,7 +527,7 @@ const relatedServices: LinkCardItem[] = [
     },
     {
         title: "Office Relocation London",
-        href: "/office-relocation-london",
+        href: "/office-removals-london",
         description:
             "Business moving support for offices relocating, consolidating, refurbishing or changing how their workspace is used.",
     },

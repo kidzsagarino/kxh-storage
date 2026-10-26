@@ -8,6 +8,7 @@ import Nav from "../components/MobileNav";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TrustpilotPill from "../components/trustpilot/TrustpilotPill";
 import AreaMapExplorer from "../components/AreaMapExplorer";
+import ContactForm from "../components/ContactForm";
 import type { ReactNode } from "react";
 import { ArrowRight, Boxes, Building2, CheckCircle2, ChevronRight, ClipboardList, Clock, FileText, GraduationCap, Hammer, Home, Layers, Mail, MapPin, Package, Phone, ShoppingCart, Smartphone, Star, Truck, Warehouse, Zap } from "lucide-react";
 import { CONTACT_NUMBERS } from "../lib/contact";
@@ -26,7 +27,7 @@ const OPENING_HOURS = [
 export const metadata: Metadata = {
     title: "Contact KXH | Storage & Moving in London, Open 24/7",
     description:
-        "Contact KXH Storage & Logistics for moving services, managed storage, business storage, warehouse storage, student storage, collection and delivery across London. Request a tailored quotation today.",
+        "Contact KXH Storage & Logistics in London. Call 020 3916 5312, email us or send a message for storage, moving and shredding quotes. Open 24/7.",
     keywords: [
         "contact KXH Storage and Logistics",
         "moving company London contact",
@@ -673,6 +674,28 @@ export default function ContactPage() {
                                     </span>
                                 </a>
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* CONTACT FORM */}
+                <section id="enquiry" className="bg-slate-50 py-16 lg:py-24">
+                    <div className="mx-auto grid max-w-screen-xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+                        <div className="kxh-reveal">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Send us a message</p>
+                            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Tell us what you need</h2>
+                            <p className="mt-4 leading-7 text-slate-600">
+                                Fill in the form and our London team will reply by email or phone. Your message goes straight to{" "}
+                                <a href={`mailto:${EMAIL}`} className="font-semibold text-emerald-700 hover:underline">{EMAIL}</a>.
+                            </p>
+                            <ul className="mt-6 space-y-3 text-sm text-slate-700">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden="true" /> Storage, moving and shredding enquiries</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden="true" /> Collection anywhere in London</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden="true" /> Prefer to talk? Call 020 3916 5312</li>
+                            </ul>
+                        </div>
+                        <div className="kxh-reveal">
+                            <ContactForm />
                         </div>
                     </div>
                 </section>

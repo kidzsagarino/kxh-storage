@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Phone } from "lucide-react";
+import { FileText, MessageCircle, Phone } from "lucide-react";
+import { openCrisp } from "@/app/lib/crisp";
 
 const PHONE_HREF = "tel:+442039165312";
 const PHONE_LABEL = "020 3916 5312";
@@ -37,6 +38,11 @@ export default function FloatingContact() {
             role="complementary"
             aria-label="Quick contact"
         >
+            <button type="button" onClick={openCrisp} className={`${btn} bg-sky-600`} aria-label="Open live chat with KXH">
+                <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                <span className={tip}>Live chat</span>
+            </button>
+
             <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={`${btn} bg-[#25D366]`} aria-label="Chat with KXH on WhatsApp">
                 <WhatsAppIcon className="relative h-6 w-6 sm:h-7 sm:w-7" />
                 <span className={tip}>WhatsApp us</span>

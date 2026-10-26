@@ -1020,7 +1020,7 @@ function getMetadataCopy(service: ServiceSlug, location: LocationItem) {
         "third-party-logistics-london": fitTitle([`3PL & Third Party Logistics in ${short}, London | KXH`, `Third Party Logistics ${short} | KXH`, `3PL ${short} | KXH`]),
     };
     const descriptions: Record<ServiceSlug, string> = {
-        "warehouse-storage-london": `Secure storage space in ${locName}, London with collection, managed warehouse storage, flexible terms, and return delivery for students, renters, households, and businesses.`,
+        "warehouse-storage-london": `Storage in ${locName}, London with collection from your door, secure warehouse storage, flexible terms and return delivery.`,
         "logistics-moving-london": `Professional moving services in ${locName}, London for homes, offices, students, furniture, packing, loading, transport, and delivery.`,
         "shredding-solutions-london": `Secure document shredding in ${locName}, London with confidential collection, certified destruction, and compliant disposal support.`,
         "business-storage-london": `Secure business storage in ${locName}, London with collection, delivery, inventory support, and flexible managed warehouse storage.`,

@@ -223,6 +223,27 @@ export default function MainFooter({
             </ul>
           </nav>
         </div>
+
+        {/* Agency credit */}
+        <div className="border-t border-white/5">
+          <div className="mx-auto flex max-w-screen-xl flex-col items-center justify-center gap-2 px-4 py-4 text-xs text-slate-500 sm:flex-row sm:gap-3 sm:px-6 lg:px-8">
+            <span>This website is created &amp; SEO optimised by</span>
+            <a
+              href="https://salmovatech.com/"
+              target="_blank"
+              rel="noopener"
+              aria-label="Salmova Group (opens Salmova Tech website)"
+              className="inline-flex flex-col items-center rounded-lg bg-white px-3 py-1.5 leading-none transition hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              <span className="text-[13px] font-extrabold tracking-[0.08em]" style={{ color: "#0F1B2E" }}>SALMOVA</span>
+              <span className="mt-1 flex items-center gap-1.5" aria-hidden="true">
+                <span className="block h-[1.5px] w-3.5" style={{ background: "#F4813C" }} />
+                <span className="text-[7px] font-semibold tracking-[0.35em]" style={{ color: "#0F1B2E" }}>GROUP</span>
+                <span className="block h-[1.5px] w-3.5" style={{ background: "#EA4C89" }} />
+              </span>
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );

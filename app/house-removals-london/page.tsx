@@ -482,7 +482,7 @@ const coverageAreas = [
 const relatedGuides = [
     {
         title: "Moving & Storage London",
-        href: "/moving-storage-london",
+        href: "/moving-house-storage-london",
         description: "Collection, managed warehouse storage and flexible return delivery when moving dates do not match.",
     },
     {
@@ -843,7 +843,7 @@ function StorageSection() {
                         ))}
                     </ul>
                     <p className="mt-6 leading-7 text-slate-600">
-                        Explore <Link href="/moving-storage-london" className="font-semibold text-emerald-700 hover:underline">Moving &amp; Storage London</Link> or <Link href="/warehouse-storage-london" className="font-semibold text-emerald-700 hover:underline">Warehouse Storage London</Link> for moves where storage is central to the plan.
+                        Explore <Link href="/moving-house-storage-london" className="font-semibold text-emerald-700 hover:underline">Moving &amp; Storage London</Link> or <Link href="/warehouse-storage-london" className="font-semibold text-emerald-700 hover:underline">Warehouse Storage London</Link> for moves where storage is central to the plan.
                     </p>
                 </div>
                 <Image

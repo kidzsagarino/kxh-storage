@@ -374,7 +374,7 @@ const coverageAreas = [
 const relatedServices = [
     {
         title: "Moving & Storage London",
-        href: "/moving-storage-london",
+        href: "/moving-house-storage-london",
         description: "Managed removals, temporary storage and return delivery for moves where dates or destinations do not align.",
     },
     {

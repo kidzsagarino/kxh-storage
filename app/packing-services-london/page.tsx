@@ -510,7 +510,7 @@ const relatedServices: LinkCardItem[] = [
     },
     {
         title: "Office Relocation London",
-        href: "/office-relocation-london",
+        href: "/office-removals-london",
         description:
             "Managed office moving support for businesses relocating, consolidating or changing premises.",
     },
