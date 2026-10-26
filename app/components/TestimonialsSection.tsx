@@ -1,4 +1,3 @@
-import TrustpilotBlock from "./trustpilot/TrustpilotBlock";
 import { Quote, Star } from "lucide-react";
 
 type Testimonial = {
@@ -118,9 +117,6 @@ export default function TestimonialsSection() {
                     ))}
                 </div>
 
-                <div className="mx-auto mt-10 max-w-3xl">
-                    <TrustpilotBlock tone="light" />
-                </div>
             </div>
         </section>
     );

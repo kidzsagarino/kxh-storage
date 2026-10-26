@@ -1,4 +1,3 @@
-import TrustpilotBlock from "../trustpilot/TrustpilotBlock";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Clock, Mail, MapPin, Phone } from "lucide-react";
@@ -208,9 +207,6 @@ export default function MainFooter({
           </div>
         )}
 
-        <div className="mt-12">
-          <TrustpilotBlock tone="dark" />
-        </div>
       </div>
 
       {/* BOTTOM BAR */}
