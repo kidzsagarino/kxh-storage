@@ -263,14 +263,13 @@ export default async function HomePage() {
 
                 {/* Proof band */}
                 <section className="border-b border-slate-200/70 bg-white py-10">
-                    <div className="mx-auto grid max-w-screen-xl grid-cols-2 gap-6 px-4 text-center sm:px-6 lg:grid-cols-4 lg:px-8">
+                    <div className="mx-auto grid max-w-screen-xl grid-cols-2 gap-6 px-4 text-center sm:px-6 lg:grid-cols-3 lg:px-8">
                         {[
                             { big: "5.0★", small: "Google rating from 50 reviews" },
-                            { big: "4.8★", small: "Rated on Trustpilot" },
                             { big: "24/7", small: "Open 24 hours, 7 days a week" },
                             { big: "Door to door", small: "Collection and return across London" },
                         ].map((s) => (
-                            <div key={s.small} className="rounded-2xl p-2 transition hover:-translate-y-1">
+                            <div key={s.small} className="rounded-2xl p-2 transition hover:-translate-y-1 last:col-span-2 lg:last:col-span-1">
                                 <p className="text-3xl font-black text-emerald-700 sm:text-4xl">{s.big}</p>
                                 <p className="mt-2 text-sm text-slate-600 sm:text-base">{s.small}</p>
                             </div>

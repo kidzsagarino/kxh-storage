@@ -179,17 +179,6 @@ export default function HomeHeroCover() {
                             <span className="font-semibold">5.0</span>
                             <span className="text-slate-300">(50 reviews)</span>
                         </a>
-                        <a
-                            href="https://www.trustpilot.com/review/kxhlogistics.co.uk"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm backdrop-blur transition hover:bg-white/20"
-                            aria-label="Rated 4.8 on Trustpilot"
-                        >
-                            <Star className="h-4 w-4 fill-[#00b67a] text-[#00b67a]" />
-                            <span className="font-bold">Trustpilot</span>
-                            <span className="font-semibold">4.8</span>
-                        </a>
                     </div>
                 </div>
 

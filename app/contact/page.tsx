@@ -637,11 +637,6 @@ export default function ContactPage() {
                                         <span className="flex">{[0, 1, 2, 3, 4].map((i) => <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />)}</span>
                                         <span className="font-semibold">5.0</span>
                                     </span>
-                                    <a href="https://www.trustpilot.com/review/kxhlogistics.co.uk" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm backdrop-blur transition hover:bg-white/20">
-                                        <Star className="h-4 w-4 fill-[#00b67a] text-[#00b67a]" />
-                                        <span className="font-bold">Trustpilot</span>
-                                        <span className="font-semibold">4.8</span>
-                                    </a>
                                 </div>
                             </div>
 
