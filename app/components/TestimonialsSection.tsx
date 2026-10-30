@@ -82,7 +82,7 @@ export default function TestimonialsSection() {
                                 {Array.from({ length: 5 }).map((_, i) => (
                                     <span
                                         key={i}
-                                        className={`flex h-6 w-6 items-center justify-center ${i < t.rating ? "bg-[#00b67a]" : "bg-slate-200"}`}
+                                        className={`flex h-6 w-6 items-center justify-center bg-slate-900`}
                                     >
                                         <Star className="h-4 w-4 fill-white text-white" aria-hidden="true" />
                                     </span>
