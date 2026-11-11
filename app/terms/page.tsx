@@ -148,7 +148,11 @@ export default function TermsPage() {
 
         <Section title="9. INSURANCE">
           <p>
-            Optional insurance available during booking. High-value items must be declared.
+            The security of your belongings is our top priority. We understand the importance of keeping your items safe and protected. Our storage facilities are equipped with security measures, including 24/7 surveillance and strict access controls. £100 cover per item is included with your order.
+
+          </p>
+          <p>
+            This is liability cover rather than insurance, so for high-value items we recommend arranging your own insurance as well.
           </p>
         </Section>
 
