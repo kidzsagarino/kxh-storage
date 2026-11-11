@@ -148,11 +148,13 @@ export default function TermsPage() {
 
         <Section title="9. INSURANCE">
           <p>
-            The security of your belongings is our top priority. We understand the importance of keeping your items safe and protected. Our storage facilities are equipped with security measures, including 24/7 surveillance and strict access controls. £100 cover per item is included with your order.
-
+            The security of your belongings is our top priority. Our storage facilities feature 24/7 surveillance and strict access controls to help keep your items safe.
           </p>
           <p>
-            This is liability cover rather than insurance, so for high-value items we recommend arranging your own insurance as well.
+            Your order includes liability cover of up to £100 per item if an item is lost or broken while in our care and we are responsible, subject to our terms and conditions. This cover does not include minor cosmetic scratches or normal wear and tear.
+          </p>
+          <p>
+            This is liability cover, not insurance. For items worth more than £100, we recommend arranging your own insurance for their full replacement value before collection or storage. Nothing in these terms affects your statutory rights.
           </p>
         </Section>
 
