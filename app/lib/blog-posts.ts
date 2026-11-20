@@ -21,7 +21,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Why storage prices are hard to compare",
         paragraphs: [
-          "If you search for storage in London, you will notice that few providers show a single price that applies to everyone. That is not unusual. Storage is a service that depends on what you store, how much of it there is, how long it stays and what work is needed to get it in and out. Two people asking for storage on the same day can receive very different quotes.",
+          "If you search for storage in London, you will notice that few providers show a single price that applies to everyone. That is not unusual. Storage is a service that depends on what you store, how much of it there is, how long it stays and what work is needed to get it in and out. Two people asking for storage on the same day can receive very different quotes. This guide explains the cost of storage in London, and shows how [storage with collection and delivery in London](/storage-with-collection-and-delivery-london) and [short term storage in London](/short-term-storage-london) compare.",
           "Understanding what sits behind a quote helps you compare like with like, and helps you reduce the cost without compromising on what matters to you.",
         ],
       },
@@ -35,7 +35,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "2. How long you store for",
         paragraphs: [
-          "The longer the period, the more the storage costs in total. Some providers have minimum terms, and some give a better rate for longer commitments. Before agreeing, check whether there is a minimum, what notice you must give to end the arrangement, and what happens if you need to stay longer than planned.",
+          "The longer the period, the more the storage costs in total. Some providers have minimum terms, and some give a better rate for longer commitments. Before agreeing, check whether there is a minimum, what notice you must give to end the arrangement, and what happens if you need to stay longer than planned. If you only need space for a few weeks, [short term storage in London](/short-term-storage-london) avoids paying for time you do not use, while [long term storage in London](/long-term-storage-london) suits items you will not need for months.",
           "A realistic estimate of your storage period is better than an optimistic one. Underestimating can lead to rushed decisions later, while overestimating may mean paying for time you do not use.",
         ],
       },
@@ -49,7 +49,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "4. Type of items",
         paragraphs: [
-          "Standard boxes and ordinary furniture are the simplest to handle. Items that are very heavy, fragile or awkwardly shaped may need extra time, care or equipment. Pianos, large mirrors and glass-topped tables are typical examples. Say so at the quote stage, so that the price reflects the real job.",
+          "Standard boxes and ordinary furniture are the simplest to handle. Items that are very heavy, fragile or awkwardly shaped may need extra time, care or equipment. Pianos, large mirrors and glass-topped tables are typical examples. Say so at the quote stage, so that the price reflects the real job. Bulky furniture is covered by our [furniture storage in London](/furniture-storage-london) service, and smaller items suit [box storage in London](/box-storage-london).",
         ],
       },
       {
@@ -124,7 +124,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Two models, two different jobs",
         paragraphs: [
-          "When people in London look for storage, they usually find two kinds of service. The first is self storage, where you rent a unit, move your items in and have access to it. The second is collection storage, sometimes called valet or managed storage, where a provider collects your items, stores them in a warehouse and delivers them back.",
+          "When people in London look for storage, they usually find two kinds of service. The first is self storage, where you rent a unit, move your items in and have access to it. The second is collection storage, sometimes called valet or managed storage, where a provider collects your items, stores them in a warehouse and delivers them back. Here we compare self storage and collection storage in London, with links to our [storage with collection and delivery](/storage-with-collection-and-delivery-london) and [household storage in London](/household-storage-london) services.",
           "Neither is better in every case. The right choice depends on what you are storing, how often you need to reach it and how much work you want to do yourself.",
         ],
       },
@@ -138,7 +138,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "How collection storage works",
         paragraphs: [
-          "You tell the provider what you want to store and where it is. A team arrives, loads your items and takes them to a warehouse. When you want them back, you ask for delivery. You do not need a van and you do not need to visit.",
+          "You tell the provider what you want to store and where it is. A team arrives, loads your items and takes them to a warehouse. When you want them back, you ask for delivery. You do not need a van and you do not need to visit. KXH runs this model from its own [warehouse storage in London](/warehouse-storage-london), with our team collecting and returning your items.",
           "The trade-off is that you do not have direct access. To get an item back you ask for a delivery rather than walking in and fetching it. For many people this is a fair exchange for the time and effort saved.",
         ],
       },
@@ -164,7 +164,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "When collection storage makes sense",
         paragraphs: [
-          "Collection storage suits people who do not have a vehicle, who live in flats with difficult access or who want to avoid the effort of moving heavy furniture. It also suits those storing a modest amount of items, who would otherwise pay for an unit larger than they need.",
+          "Collection storage suits people who do not have a vehicle, who live in flats with difficult access or who want to avoid the effort of moving heavy furniture. It also suits those storing a modest amount of items, who would otherwise pay for an unit larger than they need. Students, movers and people between homes often choose [student storage in London](/student-storage-london) or [moving house storage in London](/moving-house-storage-london) for this reason.",
           "It is a natural choice for house moves, renovations, time abroad and student breaks, where you want your belongings out of the way for a defined period and returned when you are ready.",
         ],
       },
@@ -221,7 +221,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Why preparation matters",
         paragraphs: [
-          "Furniture can spend months or years in storage. Dirt left on a surface, moisture trapped in a cushion or a loose fitting that goes missing can turn into a problem by the time you get the item back. Spending an hour or two on preparation protects your furniture and makes both collection and return easier.",
+          "Furniture can spend months or years in storage. Dirt left on a surface, moisture trapped in a cushion or a loose fitting that goes missing can turn into a problem by the time you get the item back. Spending an hour or two on preparation protects your furniture and makes both collection and return easier. Whether you choose [household storage in London](/household-storage-london) or [long term storage in London](/long-term-storage-london), good preparation protects your furniture.",
         ],
       },
       {
@@ -260,7 +260,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Step 6: Label and list",
         paragraphs: [
-          "Label boxes and furniture with the room they belong to. Keep a list of what you have stored, and take photographs before collection. If you need only some items back, a list helps you describe them clearly.",
+          "Label boxes and furniture with the room they belong to. Keep a list of what you have stored, and take photographs before collection. If you need only some items back, a list helps you describe them clearly. If you would rather not pack alone, our [packing services in London](/packing-services-london) can do it for you, and our [furniture storage in London](/furniture-storage-london) team will collect everything.",
         ],
       },
       {
@@ -315,7 +315,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Why storage providers restrict some items",
         paragraphs: [
-          "Storage providers restrict certain items for good reason. Some are dangerous to people or property, some attract pests or cause damp, and some are illegal to keep. Following the rules protects your own belongings as well as those stored alongside them.",
+          "Storage providers restrict certain items for good reason. Some are dangerous to people or property, some attract pests or cause damp, and some are illegal to keep. Following the rules protects your own belongings as well as those stored alongside them. Read this before you book [box storage in London](/box-storage-london) or any other storage in London, so your items are accepted without delay.",
           "The exact list varies between providers, so always check the terms of the service you use. The categories below are the ones most commonly excluded.",
         ],
       },
@@ -346,7 +346,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Items better kept with you",
         paragraphs: [
-          "Some things are not forbidden, but are best kept close to you.",
+          "Some things are not forbidden, but are best kept close to you. Business papers can go to [archive storage in London](/archive-storage-london), and unwanted confidential documents can be handled through [document shredding in London](/shredding-solutions-london).",
         ],
         bullets: [
           "Passports, identity documents and important papers",
@@ -414,7 +414,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "The kitchen is rarely the only room affected",
         paragraphs: [
-          "A kitchen renovation involves dust, noise and a constant flow of tradespeople. Cabinets, appliances and worktops all arrive and leave through the rest of the home, and dust travels everywhere. Even if you plan to stay in the property, you will probably want to clear more than the kitchen itself.",
+          "A kitchen renovation involves dust, noise and a constant flow of tradespeople. Cabinets, appliances and worktops all arrive and leave through the rest of the home, and dust travels everywhere. Even if you plan to stay in the property, you will probably want to clear more than the kitchen itself. If you need [storage during a renovation in London](/storage-during-renovation-london), this guide shows what to move out and when.",
           "Planning what goes where, and when, saves stress during the project.",
         ],
       },
@@ -428,7 +428,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Which other items to move",
         paragraphs: [
-          "Furniture in adjoining rooms, especially an open plan dining or living area, is at risk from dust and knocks. Consider moving or storing the following.",
+          "Furniture in adjoining rooms, especially an open plan dining or living area, is at risk from dust and knocks. Consider moving or storing the following. Furniture from nearby rooms can go into [furniture storage in London](/furniture-storage-london), and loose items into [box storage in London](/box-storage-london).",
         ],
         bullets: [
           "Dining tables and chairs",
@@ -510,7 +510,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Start with the big question",
         paragraphs: [
-          "Before you decide what to do with each item, answer one question. Are you leaving London for good, or for a period? If you are sure you will not return, the sensible approach is usually to sell or give away most things. If you may return, or are unsure, storage buys you time.",
+          "Before you decide what to do with each item, answer one question. Are you leaving London for good, or for a period? If you are sure you will not return, the sensible approach is usually to sell or give away most things. If you may return, or are unsure, storage buys you time. If you decide to keep some things, [storage while abroad in London](/storage-while-abroad-london) lets you leave them safely until you return.",
         ],
       },
       {
@@ -534,7 +534,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "When storage makes sense",
         paragraphs: [
-          "Storage makes sense when you plan to return to London, when you are unsure about staying abroad, or when you have items of high sentimental or financial value. It also helps when your tenancy ends before you leave, and you need your belongings out of the property.",
+          "Storage makes sense when you plan to return to London, when you are unsure about staying abroad, or when you have items of high sentimental or financial value. It also helps when your tenancy ends before you leave, and you need your belongings out of the property. For a stay of a year or more, [long term storage in London](/long-term-storage-london) is usually the better fit, and our [house removals in London](/house-removals-london) team can move you out first.",
         ],
       },
       {
@@ -601,7 +601,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Begin early and go slowly",
         paragraphs: [
-          "The biggest mistake in downsizing is leaving it too late. Sorting a home full of belongings takes longer than most people expect, and rushed decisions lead to regret. Start as soon as you know a move is likely, even if you do not have a date.",
+          "The biggest mistake in downsizing is leaving it too late. Sorting a home full of belongings takes longer than most people expect, and rushed decisions lead to regret. Start as soon as you know a move is likely, even if you do not have a date. For what you decide to keep, [downsizing storage in London](/downsizing-storage-london) gives you space while you settle in.",
           "Work room by room, in short sessions. An hour or two at a time is far more manageable than a whole day.",
         ],
       },
@@ -638,7 +638,7 @@ export const blogPosts: BlogPostData[] = [
       {
         heading: "Where storage helps",
         paragraphs: [
-          "Storage is useful for items you cannot decide about yet, or that you want to keep for family. Set a review date, for example six months after the move, when you will decide what remains. KXH collects your items, stores them and delivers them back when you ask. See our downsizing storage page for details.",
+          "Storage is useful for items you cannot decide about yet, or that you want to keep for family. Set a review date, for example six months after the move, when you will decide what remains. KXH collects your items, stores them and delivers them back when you ask. See our downsizing storage page for details. Keep furniture in [household storage in London](/household-storage-london), or use [short term storage in London](/short-term-storage-london) while you finish selling and donating.",
         ],
       },
       {

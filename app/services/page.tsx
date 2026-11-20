@@ -33,6 +33,7 @@ import { londonLocations } from "../sitemap";
 import ServiceHero from "../components/ServiceHero";
 import ServiceShowcase from "../components/ServiceShowcase";
 import AreaMapExplorer from "../components/AreaMapExplorer";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 const SITE = "https://kxhlogistics.co.uk";
 
@@ -571,6 +572,7 @@ export default function ServicesPage() {
                     </div>
                 </section>
             </main>
+            <RelatedGuides  posts={["what-affects-the-cost-of-storage-in-london", "how-to-pack-furniture-for-storage", "self-storage-or-collection-storage-in-london"]} />
             <MainFooter locations={londonLocations} />
         </>
     );

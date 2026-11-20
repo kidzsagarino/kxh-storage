@@ -11,6 +11,7 @@ import Nav from "../components/MobileNav";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 import { londonLocations } from "../lib/location";
 import { CONTACT_NUMBERS } from "../lib/contact";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 const pageUrl = "https://kxhlogistics.co.uk/moving-house-storage-london";
 const quoteUrl = "/get-a-quote?service=storage";
@@ -1140,6 +1141,7 @@ export default function MovingStorageLondonPage() {
 
                 <MovingStorageFaqsSection />
 
+                <RelatedGuides slugs={["short-term-storage-london", "storage-during-renovation-london", "downsizing-storage-london", "storage-while-abroad-london", "storage-with-collection-and-delivery-london"]} posts={["what-to-do-with-your-belongings-when-moving-abroad-from-london"]} />
                 <MainFooter locations={londonLocations} />
             </main>
         </>

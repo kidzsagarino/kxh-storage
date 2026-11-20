@@ -11,6 +11,7 @@ import AreaMapExplorer from "../components/AreaMapExplorer";
 import { Armchair, Building2, GraduationCap, Home as HomeIcon, Package, Truck } from "lucide-react";
 import { londonLocations } from "../lib/location";
 import { CONTACT_NUMBERS } from "../lib/contact";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 export const metadata: Metadata = {
     title: "Moving Services London | Home & Office Moves | KXH",
@@ -1942,6 +1943,7 @@ export default function MovingServicePage() {
 
                 <MovingFaqSection />
 
+                <RelatedGuides slugs={["storage-with-collection-and-delivery-london", "storage-east-london", "household-storage-london"]} posts={["self-storage-or-collection-storage-in-london"]} />
                 <MainFooter locations={londonLocations} />
             </main>
         </>

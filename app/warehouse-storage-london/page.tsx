@@ -9,6 +9,7 @@ import Link from "next/link";
 import { londonLocations } from "../lib/location";
 import Image from "next/image";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 export const metadata = {
   title: "Warehouse Storage London | Pickup & Delivery | KXH",
@@ -512,6 +513,7 @@ export default function WarehouseStoragePage() {
         </section>
 
         {/* FOOTER */}
+        <RelatedGuides slugs={["storage-with-collection-and-delivery-london", "short-term-storage-london", "long-term-storage-london", "household-storage-london", "box-storage-london"]} posts={["what-affects-the-cost-of-storage-in-london"]} />
         <MainFooter
           locations={londonLocations}
         />

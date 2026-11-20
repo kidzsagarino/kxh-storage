@@ -12,6 +12,7 @@ import Nav from "../components/MobileNav";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 import { londonLocations } from "../sitemap";
 import { CONTACT_NUMBERS } from "../lib/contact";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 const pageUrl = "https://kxhlogistics.co.uk/furniture-storage-london";
 const quoteUrl = "/get-a-quote?service=storage";
@@ -1783,6 +1784,7 @@ export default function FurnitureStorageLondonPage() {
                 <FinalCtaSection />
                 <FaqSection />
 
+                <RelatedGuides slugs={["household-storage-london", "long-term-storage-london", "storage-during-renovation-london", "downsizing-storage-london"]} posts={["how-to-pack-furniture-for-storage", "what-not-to-put-in-storage-in-the-uk"]} />
                 <MainFooter locations={londonLocations} />
             </main>
         </>

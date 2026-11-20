@@ -11,6 +11,7 @@ import MainFooter from "../components/footer/MainFooter";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 import { londonLocations } from "../lib/location";
 import Image from "next/image";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 export const metadata: Metadata = {
     title: "Student Storage London | Collection & Delivery | KXH",
@@ -632,6 +633,7 @@ export default function StudentStoragePage() {
                     </div>
                 </section>
 
+                <RelatedGuides slugs={["short-term-storage-london", "seasonal-storage-london", "box-storage-london", "storage-while-abroad-london"]} posts={["how-to-pack-furniture-for-storage"]} />
                 <MainFooter locations={londonLocations} />
             </main>
         </>

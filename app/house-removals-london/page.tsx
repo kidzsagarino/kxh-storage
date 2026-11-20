@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import CrispChat from "../components/chat/CrispChat";
 import MainFooter from "../components/footer/MainFooter";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 import Nav from "../components/MobileNav";
 import TrustpilotJsonLd from "../components/seo/TrustPilotJsonLD";
 import { londonLocations } from "../lib/location";
@@ -1181,6 +1182,7 @@ export default function HomeRemovalsLondonPage() {
                 />
                 <FinalCallToActionSection />
                 <FaqsSection />
+                <RelatedGuides slugs={["downsizing-storage-london","storage-while-abroad-london","storage-with-collection-and-delivery-london","household-storage-london"]} posts={["how-to-declutter-before-downsizing"]} />
                 <MainFooter locations={londonLocations} />
             </main>
         </>

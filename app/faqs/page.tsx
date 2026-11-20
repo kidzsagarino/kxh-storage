@@ -4,6 +4,7 @@ import { londonLocations } from "../sitemap";
 import CrispChat from "../components/chat/CrispChat";
 import FAQsClient from "./FAQsClient";
 import Nav from "../components/MobileNav";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 export const metadata: Metadata = {
     title: { absolute: "Storage, Moving & Logistics FAQs London | KXH" },
@@ -1183,6 +1184,7 @@ export default function FAQsPage() {
                 lastUpdated="October 2026"
             />
 
+            <RelatedGuides slugs={["storage-with-collection-and-delivery-london", "short-term-storage-london", "long-term-storage-london", "box-storage-london"]} posts={["what-not-to-put-in-storage-in-the-uk", "what-affects-the-cost-of-storage-in-london"]} />
             <MainFooter locations={londonLocations} />
         </>
     );

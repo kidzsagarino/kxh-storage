@@ -10,6 +10,7 @@ import ContactForm from "../components/ContactForm";
 import type { ReactNode } from "react";
 import { ArrowRight, Boxes, Building2, CheckCircle2, ChevronRight, ClipboardList, Clock, FileText, GraduationCap, Hammer, Home, Layers, Mail, MapPin, Package, Phone, ShoppingCart, Smartphone, Star, Truck, Warehouse, Zap } from "lucide-react";
 import { CONTACT_EMAILS, CONTACT_NUMBERS } from "../lib/contact";
+import RelatedGuides from "@/app/components/seo/RelatedGuides";
 
 const SITE_URL = "https://kxhlogistics.co.uk";
 const PHONE_DISPLAY = CONTACT_NUMBERS[0].phone;
@@ -898,6 +899,7 @@ export default function ContactPage() {
                     </div>
                 </section>
             </main>
+            <RelatedGuides slugs={["storage-with-collection-and-delivery-london", "short-term-storage-london", "long-term-storage-london"]} posts={["what-affects-the-cost-of-storage-in-london"]} />
             <MainFooter locations={londonLocations} />
         </>
     );

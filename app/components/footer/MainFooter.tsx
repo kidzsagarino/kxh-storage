@@ -52,6 +52,20 @@ const locationServices: Service[] = [
   { label: "Document Shredding", href: "/shredding-solutions-london" },
 ];
 
+const storageGuides: Service[] = [
+  { label: "Collection & Delivery Storage", href: "/storage-with-collection-and-delivery-london" },
+  { label: "Short Term Storage", href: "/short-term-storage-london" },
+  { label: "Long Term Storage", href: "/long-term-storage-london" },
+  { label: "Household Storage", href: "/household-storage-london" },
+  { label: "Storage During Renovation", href: "/storage-during-renovation-london" },
+  { label: "Seasonal Storage", href: "/seasonal-storage-london" },
+  { label: "East London Storage", href: "/storage-east-london" },
+  { label: "Downsizing Storage", href: "/downsizing-storage-london" },
+  { label: "Box Storage", href: "/box-storage-london" },
+  { label: "Storage While Abroad", href: "/storage-while-abroad-london" },
+  { label: "Storage Blog & Guides", href: "/blog" },
+];
+
 const companyLinks: Service[] = [
   { label: "All Services", href: "/services" },
   { label: "Get a Quote", href: "/get-a-quote" },
@@ -168,6 +182,20 @@ export default function MainFooter({
           <div className="lg:col-span-2">
             <LinkColumn title="Company" links={companyLinks} />
           </div>
+        </div>
+
+        {/* STORAGE GUIDES */}
+        <div className="mt-14 border-t border-white/10 pt-10">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">Storage guides</p>
+          <ul className="mt-5 grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+            {storageGuides.map((g) => (
+              <li key={g.href}>
+                <Link href={g.href} className="text-sm leading-6 text-slate-400 transition hover:text-white">
+                  {g.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* LOCAL PAGES */}
